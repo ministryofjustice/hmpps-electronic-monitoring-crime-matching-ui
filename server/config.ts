@@ -93,6 +93,12 @@ export default {
       enabled: get('TOKEN_VERIFICATION_ENABLED', 'false') === 'true',
     },
   },
+  maps: {
+    authUrl: get('OS_MAPS_AUTH_URL', 'http://localhost:9090/maps', requiredInProduction),
+    tileUrl: get('OS_MAPS_TILE_URL', 'http://localhost:9090/maps', requiredInProduction),
+    apiKey: get('OS_MAPS_API_KEY', 'apikey', requiredInProduction),
+    apiSecret: get('OS_MAPS_API_SECRET', 'apisecret', requiredInProduction),
+  },
   sqs: {
     audit: auditConfig(),
   },

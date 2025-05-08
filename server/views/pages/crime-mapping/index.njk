@@ -1,0 +1,19 @@
+{% extends "../../partials/layout.njk" %}
+{% from "../../components/map/macro.njk" import appMap %}
+
+{% set pageTitle = applicationName + " - Home" %}
+{% set mainClasses = "app-container govuk-body" %}
+
+{% block content %}
+
+  <h1>Welcome to Electronic Monitoring Crime Matching</h1>
+
+  {{ appMap({
+    geoData: {
+      points: points,
+      lines: lines
+    },
+    tileUrl: tileUrl
+  }) }}
+
+{% endblock %}
