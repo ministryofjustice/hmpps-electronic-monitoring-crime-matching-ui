@@ -20,7 +20,7 @@ function MapComponent($module) {
 
 MapComponent.prototype = {
   init() {
-    this._getToken()
+    this.getToken()
       .then(token => {
         this.accessToken = token
         this.render()
@@ -43,9 +43,9 @@ MapComponent.prototype = {
   },
 
   render() {
-    this._renderMap()
-    this._appendPoints()
-    this._appendLines()
+    this.renderMap()
+    this.appendPoints()
+    this.appendLines()
   },
 
   createControls() {
@@ -56,19 +56,19 @@ MapComponent.prototype = {
     this.linesToggle.onchange = () => this.toggleLines()
   },
 
-  renderError(e) {
+  renderError() {
     this.$module.innerHTML = '<p class="app-map__error">The map could not be loaded.</p>'
   },
 
-  togglePoints(e) {
+  togglePoints() {
     this.$pointsLayer.setVisible(!this.$pointsLayer.getVisible())
   },
 
-  toggleLines(e) {
+  toggleLines() {
     this.$linesLayer.setVisible(!this.$linesLayer.getVisible())
   },
 
-  _ordnanceTileLoader(tile, src) {
+  ordnanceTileLoader(tile, src) {
     const config = {
       headers: { Authorization: `Bearer ${this.accessToken}` },
       responseType: 'blob',
@@ -78,25 +78,27 @@ MapComponent.prototype = {
       .get(src, config)
       .then(response => {
         if (response.data !== undefined) {
+          // eslint-disable-next-line no-param-reassign
           tile.getImage().src = URL.createObjectURL(response.data)
         } else {
           tile.setState(TileState.ERROR)
         }
       })
+      // eslint-disable-next-line no-console
       .catch(e => console.log(e))
   },
 
-  _getToken() {
+  getToken() {
     return axios.get('/map/token').then(response => response.data.access_token)
   },
 
-  _renderMap() {
+  renderMap() {
     this.$pointsLayer = new LayerGroup({
       title: 'Points',
       layers: [
         new VectorLayer({
           source: this.pointSource,
-          style: this._pointStyle.bind(this),
+          style: this.pointStyle.bind(this),
         }),
       ],
     })
@@ -106,7 +108,7 @@ MapComponent.prototype = {
       layers: [
         new VectorLayer({
           source: this.lineSource,
-          style: this._lineStyle.bind(this),
+          style: this.lineStyle.bind(this),
         }),
       ],
     })
@@ -117,7 +119,7 @@ MapComponent.prototype = {
         new TileLayer({
           source: new XYZ({
             url: this.tileUrl,
-            tileLoadFunction: this._ordnanceTileLoader.bind(this),
+            tileLoadFunction: this.ordnanceTileLoader.bind(this),
           }),
         }),
         this.$linesLayer,
@@ -134,7 +136,7 @@ MapComponent.prototype = {
     })
   },
 
-  _appendPoints() {
+  appendPoints() {
     const format = new GeoJSON()
     const features = format.readFeatures(
       {
@@ -147,7 +149,7 @@ MapComponent.prototype = {
       },
     )
 
-    for (let i = 0; i < features.length; i++) {
+    for (let i = 0; i < features.length; i += 1) {
       this.pointSource.addFeature(features[i])
     }
 
@@ -161,7 +163,7 @@ MapComponent.prototype = {
     })
   },
 
-  _appendLines() {
+  appendLines() {
     const format = new GeoJSON()
     const features = format.readFeatures(
       {
@@ -174,12 +176,12 @@ MapComponent.prototype = {
       },
     )
 
-    for (let i = 0; i < features.length; i++) {
+    for (let i = 0; i < features.length; i += 1) {
       this.lineSource.addFeature(features[i])
     }
   },
 
-  _lineStyle() {
+  lineStyle() {
     return new Style({
       stroke: new Stroke({
         width: 2,
@@ -188,7 +190,7 @@ MapComponent.prototype = {
     })
   },
 
-  _textStyle(feature) {
+  textStyle(feature) {
     return new Text({
       textAlign: 'left',
       textBaseline: 'middle',
@@ -201,7 +203,7 @@ MapComponent.prototype = {
     })
   },
 
-  _pointStyle(feature) {
+  pointStyle(feature) {
     let fill
     let stroke
 
@@ -222,7 +224,7 @@ MapComponent.prototype = {
         fill,
         stroke,
       }),
-      text: this._textStyle(feature),
+      text: this.textStyle(feature),
     })
   },
 }

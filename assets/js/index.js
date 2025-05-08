@@ -5,18 +5,19 @@ import MapComponent from './map'
 govukFrontend.initAll()
 mojFrontend.initAll()
 
-const $map = document.querySelectorAll('[data-module="app-map"]')
+const $maps = document.querySelectorAll('[data-module="app-map"]')
 
+// eslint-disable-next-line consistent-return
 function nodeListForEach(nodes, callback) {
   if (window.NodeList.prototype.forEach) {
     return nodes.forEach(callback)
   }
 
-  for (let i = 0; i < nodes.length; i++) {
+  for (let i = 0; i < nodes.length; i += 1) {
     callback.call(window, nodes[i], i, nodes)
   }
 }
 
-nodeListForEach($map, function ($map) {
+nodeListForEach($maps, $map => {
   new MapComponent($map).init()
 })
