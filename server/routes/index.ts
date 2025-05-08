@@ -3,8 +3,10 @@ import { type RequestHandler, Router } from 'express'
 import asyncMiddleware from '../middleware/asyncMiddleware'
 import type { Services } from '../services'
 import { Page } from '../services/auditService'
+import CrimeMappingController from '../controllers/crimeMapping'
+import MapController from '../controllers/map'
 
-export default function routes({ auditService }: Services): Router {
+export default function routes({ auditService, crimeMappingService, mapService }: Services): Router {
   const router = Router()
   const get = (path: string | string[], handler: RequestHandler) => router.get(path, asyncMiddleware(handler))
 
@@ -13,6 +15,12 @@ export default function routes({ auditService }: Services): Router {
 
     res.render('pages/index')
   })
+
+  const crimeMappingController = new CrimeMappingController(crimeMappingService)
+  const mapController = new MapController(mapService)
+
+  get('/crime-mapping', crimeMappingController.view)
+  get('/map/token', mapController.token)
 
   return router
 }
