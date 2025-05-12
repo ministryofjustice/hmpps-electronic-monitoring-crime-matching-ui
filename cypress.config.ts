@@ -1,5 +1,7 @@
 import { defineConfig } from 'cypress'
+import { configureVisualRegression } from 'cypress-visual-regression'
 import { resetStubs } from './integration_tests/mockApis/wiremock'
+
 import auth from './integration_tests/mockApis/auth'
 import tokenVerification from './integration_tests/mockApis/tokenVerification'
 
@@ -14,12 +16,16 @@ export default defineConfig({
   },
   taskTimeout: 60000,
   e2e: {
+    env: {
+      visualRegressionType: 'regression'
+    },
     setupNodeEvents(on) {
       on('task', {
         reset: resetStubs,
         ...auth,
         ...tokenVerification,
-      })
+      }),
+      configureVisualRegression(on)
     },
     baseUrl: 'http://localhost:3007',
     excludeSpecPattern: '**/!(*.cy).ts',
