@@ -17,14 +17,14 @@ export default defineConfig({
   taskTimeout: 60000,
   e2e: {
     env: {
-      visualRegressionType: 'regression'
+      visualRegressionType: 'regression',
     },
     setupNodeEvents(on) {
       on('task', {
         reset: resetStubs,
         ...auth,
         ...tokenVerification,
-      }),
+      })
       configureVisualRegression(on)
     },
     baseUrl: 'http://localhost:3007',
