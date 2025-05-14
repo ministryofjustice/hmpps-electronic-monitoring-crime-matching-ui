@@ -46,7 +46,7 @@ generic-service:
       CLIENT_CREDS_CLIENT_SECRET: 'CLIENT_CREDS_CLIENT_SECRET'
     hmpps-electronic-monitoring-crime-matching-ui-auth-code:
       AUTH_CODE_CLIENT_ID: 'AUTH_CODE_CLIENT_ID'
-      AUTH_CODE_CLIENT_SECRET: 'AUTH_CODE_CLIENT_SECRET'    
+      AUTH_CODE_CLIENT_SECRET: 'AUTH_CODE_CLIENT_SECRET'
     hmpps-electronic-monitoring-crime-matching-ui-session-secret:
       SESSION_SECRET: 'SESSION_SECRET'
     hmpps-electronic-monitoring-crime-matching-ui-elasticache-redis:
@@ -58,6 +58,9 @@ generic-service:
     # IRSA configuration in your namespace will also be required, and then uncomment serviceAccountName above.
     # sqs-hmpps-audit-secret:
     #   AUDIT_SQS_QUEUE_URL: 'sqs_queue_url'
+    hmpps-electronic-monitoring-crime-matching-os-maps:
+      OS_MAPS_API_KEY: 'OS_MAPS_API_KEY'
+      OS_MAPS_API_SECRET: 'OS_MAPS_API_SECRET'
 
   allowlist:
     groups:
