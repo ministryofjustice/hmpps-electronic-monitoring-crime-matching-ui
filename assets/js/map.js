@@ -134,6 +134,8 @@ MapComponent.prototype = {
         zoom: 13,
       }),
     })
+
+    this.$map.on('rendercomplete', () => window.dispatchEvent(new Event('map:render:complete')))
   },
 
   appendPoints() {
