@@ -64,6 +64,7 @@ jobs:
         path: |
           integration_tests/videos/
           integration_tests/screenshots/
+          cypress/snapshots/diff/
           coverage/
           test_results/
           ctrf/
