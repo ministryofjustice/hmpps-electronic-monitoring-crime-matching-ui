@@ -1,3 +1,5 @@
+// https://www.cypress.io/blog/generate-high-resolution-videos-and-screenshots
+
 const configureScreenshotResolution = (on: Cypress.PluginEvents) => {
   on('before:browser:launch', (browser: Cypress.Browser, launchOptions) => {
     // eslint-disable-next-line no-console
@@ -11,7 +13,7 @@ const configureScreenshotResolution = (on: Cypress.PluginEvents) => {
     const height = 1080
 
     // eslint-disable-next-line no-console
-    console.log('setting the browser window size to %d x %d', width, height)
+    console.log(`Setting the browser window size to ${width} x ${height}`)
 
     if (browser.name === 'chrome' && browser.isHeadless) {
       launchOptions.args.push(`--window-size=${width},${height}`)
