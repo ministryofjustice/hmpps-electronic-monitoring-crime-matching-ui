@@ -1,7 +1,9 @@
 const configureScreenshotResolution = (on: Cypress.PluginEvents) => {
   on('before:browser:launch', (browser: Cypress.Browser, launchOptions) => {
     // eslint-disable-next-line no-console
-    console.log('launching browser %s is headless? %s', browser.name, browser.isHeadless)
+    console.log(`Browser: ${browser.name}`)
+    // eslint-disable-next-line no-console
+    console.log(`Headless: ${browser.isHeadless}`)
 
     // the browser width and height we want to get
     // our screenshots and videos will be of that resolution
