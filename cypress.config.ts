@@ -1,9 +1,5 @@
 import { defineConfig } from 'cypress'
-import { configureVisualRegression } from 'cypress-visual-regression'
-import { resetStubs } from './integration_tests/mockApis/wiremock'
-
-import auth from './integration_tests/mockApis/auth'
-import tokenVerification from './integration_tests/mockApis/tokenVerification'
+import setupNodeEvents from './integration_tests/plugins'
 
 export default defineConfig({
   chromeWebSecurity: false,
@@ -15,18 +11,12 @@ export default defineConfig({
     configFile: 'reporter-config.json',
   },
   taskTimeout: 60000,
+  viewportWidth: 960,
   e2e: {
     env: {
       visualRegressionType: 'regression',
     },
-    setupNodeEvents(on) {
-      on('task', {
-        reset: resetStubs,
-        ...auth,
-        ...tokenVerification,
-      })
-      configureVisualRegression(on)
-    },
+    setupNodeEvents,
     baseUrl: 'http://localhost:3007',
     excludeSpecPattern: '**/!(*.cy).ts',
     specPattern: 'integration_tests/e2e/**/*.cy.{js,jsx,ts,tsx}',
