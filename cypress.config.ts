@@ -15,7 +15,6 @@ export default defineConfig({
     configFile: 'reporter-config.json',
   },
   taskTimeout: 60000,
-  viewportWidth: 1280,
   e2e: {
     env: {
       visualRegressionType: 'regression',
