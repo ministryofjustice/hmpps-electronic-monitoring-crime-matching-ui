@@ -92,6 +92,16 @@ export default {
       agent: new AgentConfig(Number(get('TOKEN_VERIFICATION_API_TIMEOUT_RESPONSE', 5000))),
       enabled: get('TOKEN_VERIFICATION_ENABLED', 'false') === 'true',
     },
+    crimeMatchingApi: {
+      url: get('CRIME_MATCHING_API_URL', 'http://localhost:8080', requiredInProduction),
+      healthPath: '/health/ping',
+      timeout: {
+        response: Number(get('CRIME_MATCHING_API_TIMEOUT_RESPONSE', 30000)),
+        deadline: Number(get('CRIME_MATCHING_API_TIMEOUT_DEADLINE', 30000)),
+      },
+      agent: new AgentConfig(Number(get('CRIME_MATCHING_API_TIMEOUT_RESPONSE', 15000))),
+      enabled: get('CRIME_MATCHING_API_ENABLED', 'false') === 'true',
+    },
   },
   maps: {
     authUrl: get('OS_MAPS_AUTH_URL', 'http://localhost:9090/maps', requiredInProduction),

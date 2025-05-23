@@ -1,0 +1,136 @@
+{% extends "../../partials/layout.njk" %}
+
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/table/macro.njk" import govukTable %}
+{% from "moj/components/search/macro.njk" import mojSearch %}
+
+{% set pageTitle = applicationName + " - Subject Search" %}
+{% set mainClasses = "app-container govuk-body" %}
+{% set rows = [] %}
+
+{# TODO is this necessary?, checkbox also currently placeholder #}
+{% for subject in data %}
+    {% set rows = (rows.push(
+    [
+      {
+        html: '<div class="govuk-checkboxes__item govuk-checkboxes--small moj-multi-select__checkbox">
+                <input type="checkbox" class="govuk-checkboxes__input" name="selectedLocations" id="' + subject.nomisId + '" value="' + subject.nomisId  + '" autocomplete="off">
+                <label class="govuk-label govuk-checkboxes__label" for="' + subject.nomisId + '">
+                </label>
+              </div>'
+      },
+      {
+        text: subject.nomisId
+      },
+      {
+        text: subject.name
+      },
+      {
+        text: subject.dateOfBirth
+      },
+      {
+        text: subject.address
+      },
+      {
+        text: subject.orderStartDate
+      },
+      {
+        text: subject.orderEndDate
+      },
+      {
+        text: subject.deviceId
+      },
+      {
+        text: subject.tagPeriodStartDate
+      },
+      {
+        text: subject.tagPeriodEndDate
+      }
+    ]
+  ), rows) %}
+{% endfor %}
+
+{% block content %}
+<h3>PoP Search</h3>
+  <form method="post" novalidate id="subject-search-form">
+    {{ govukButton({
+      text: "PoP Search",
+      name: "action"
+    }) }}
+
+    {{ govukInput({
+      label: {
+        text: "Name",
+        classes: "govuk-label--s"
+      },
+      classes: "govuk-!-width-two-thirds",
+      id: "name",
+      name: "name",
+      value: name.value,
+      errorMessage: name.error
+    }) }}
+
+    {{ govukInput({
+      label: {
+        text: "NOMIS ID",
+        classes: "govuk-label--s"
+      },
+      classes: "govuk-!-width-two-thirds",
+      id: "nomis-id",
+      name: "nomisId",
+      value: nomisId.value,
+      errorMessage: nomisId.error
+    }) }}
+
+    <input type="hidden" name="_csrf" value="{{ csrfToken }}"/>
+  </form>
+  {# Current search input fine or should we match the design more closely with icons etc #}
+  {% block innerContent %}
+    {{ govukTable({
+          classes: "search-results-table",
+          head: [
+            {
+              classes: "select-header"
+            },
+            {
+              text: "NOMIS ID",
+              classes: "nomis-id-header"
+            },
+            {
+              text: "Name",
+              classes: "name-header"
+            },
+            {
+              text: "Date of Birth",
+              classes: "date-of-birth-header"
+            },
+            {
+              text: "Address",
+              classes: "address-header"
+            },
+            {
+              text: "Order Start",
+              classes: "order-start-date-header"
+            },
+            {
+              text: "Order End",
+              classes: "order-end-date-header"
+            },
+            {
+              text: "Device ID",
+              classes: "device-id-header"
+            },
+            {
+              text: "Tag Period Start",
+              classes: "tag-period-start-header"
+            },
+            {
+              text: "Tag Period End",
+              classes: "tag-period-end-header"
+            }
+          ],
+          rows: rows
+    }) }}
+  {% endblock %}
+{% endblock %}
