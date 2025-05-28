@@ -3,7 +3,7 @@
 {% from "govuk/components/input/macro.njk" import govukInput %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/table/macro.njk" import govukTable %}
-{% from "moj/components/search/macro.njk" import mojSearch %}
+{% from "govuk/components/pagination/macro.njk" import govukPagination %}
 
 {% set pageTitle = applicationName + " - Subject Search" %}
 {% set mainClasses = "app-container govuk-body" %}
@@ -133,31 +133,22 @@
             ],
             rows: rows
       }) }}
-      
-      <nav class="moj-pagination{% if totalPages <= 1 %} hidden{% endif %}" aria-label="Pagination navigation">
-          <ul class="moj-pagination__list">
-            <li class="moj-pagination__item  moj-pagination__item--prev">
-              <a class="moj-pagination__link" href="">Previous<span class="govuk-visually-hidden"> page</span></a>
-            </li>
 
-            {% for i in range(1, totalPages + 1) %}
-              <li class="moj-pagination__item moj-pagination__item--link" data-button-number="{{ i }}">
-                <a class="moj-pagination__link" href="#" aria-label="Page {{ i }} of {{ totalPages }}">
-                  {{ i }}
-                </a>
-              </li>
-
-              {% if (i == 1) or (i == totalPages - 1) %}
-                <li class="moj-pagination__item moj-pagination__item--dots hidden">…</li>
-              {% endif %}
-            {% endfor %}
-
-            <li class="moj-pagination__item  moj-pagination__item--next">
-              <a class="moj-pagination__link" href="">Next<span class="govuk-visually-hidden"> page</span></a>
-            </li>
-          </ul>
-
-          <p class="moj-pagination__results">Showing <b></b> to <b></b> of <b></b> results</p>
-        </nav>
+      {# Placeholder #}
+      {{ govukPagination({ previous: { href: "#" }, next: { href: "#" }, items: [
+        {
+          number: 1,
+          current: true,
+          href: "#"
+        },
+        {
+          number: 2,
+          href: "#"
+        },
+        {
+          number: 3,
+          href: "#"
+        }]
+      }) }}
   {% endblock %}
 {% endblock %}

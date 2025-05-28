@@ -1,5 +1,7 @@
-type QueryExecutionResponse = {
-  queryExecutionId: string
-}
+import z from 'zod'
 
-export default QueryExecutionResponse
+export const QueryExecutionResponseModel = z.object({
+  queryExecutionId: z.string(),
+})
+
+export type QueryExecutionResponse = z.infer<typeof QueryExecutionResponseModel>
