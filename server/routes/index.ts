@@ -24,9 +24,9 @@ export default function routes({ auditService, crimeMappingService, mapService, 
 
   get('/crime-mapping', crimeMappingController.view)
   get('/map/token', mapController.token)
-  // TODO is this a good idea to have, may not be an issue once we setup the calling query execution id then search
-  get('/subjects', subjectController.view)
-  post('/subjects', subjectController.view)
+
+  get('/subjects', subjectController.getSearchResults)
+  post('/subjects', subjectController.submitSearch)
 
   return router
 }

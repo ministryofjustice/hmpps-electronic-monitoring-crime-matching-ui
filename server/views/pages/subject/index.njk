@@ -8,14 +8,16 @@
 {% set pageTitle = applicationName + " - Subject Search" %}
 {% set mainClasses = "app-container govuk-body" %}
 {% set rows = [] %}
+{% set pageSize = 10 %}
+{% set currentPage = 1 %}
+{% set totalPages = (data.length / pageSize) | round(0, 'ceil') %}
 
-{# TODO is this necessary?, checkbox also currently placeholder #}
 {% for subject in data %}
     {% set rows = (rows.push(
     [
       {
         html: '<div class="govuk-checkboxes__item govuk-checkboxes--small moj-multi-select__checkbox">
-                <input type="checkbox" class="govuk-checkboxes__input" name="selectedLocations" id="' + subject.nomisId + '" value="' + subject.nomisId  + '" autocomplete="off">
+                <input type="checkbox" class="govuk-checkboxes__input" name="selectedSubjects" id="' + subject.nomisId + '" value="' + subject.nomisId  + '" autocomplete="off">
                 <label class="govuk-label govuk-checkboxes__label" for="' + subject.nomisId + '">
                 </label>
               </div>'
@@ -85,52 +87,77 @@
 
     <input type="hidden" name="_csrf" value="{{ csrfToken }}"/>
   </form>
-  {# Current search input fine or should we match the design more closely with icons etc #}
   {% block innerContent %}
-    {{ govukTable({
-          classes: "search-results-table",
-          head: [
-            {
-              classes: "select-header"
-            },
-            {
-              text: "NOMIS ID",
-              classes: "nomis-id-header"
-            },
-            {
-              text: "Name",
-              classes: "name-header"
-            },
-            {
-              text: "Date of Birth",
-              classes: "date-of-birth-header"
-            },
-            {
-              text: "Address",
-              classes: "address-header"
-            },
-            {
-              text: "Order Start",
-              classes: "order-start-date-header"
-            },
-            {
-              text: "Order End",
-              classes: "order-end-date-header"
-            },
-            {
-              text: "Device ID",
-              classes: "device-id-header"
-            },
-            {
-              text: "Tag Period Start",
-              classes: "tag-period-start-header"
-            },
-            {
-              text: "Tag Period End",
-              classes: "tag-period-end-header"
-            }
-          ],
-          rows: rows
-    }) }}
+      {{ govukTable({
+            classes: "search-results-table",
+            head: [
+              {
+                classes: "select-header"
+              },
+              {
+                text: "NOMIS ID",
+                classes: "nomis-id-header"
+              },
+              {
+                text: "Name",
+                classes: "name-header"
+              },
+              {
+                text: "Date of Birth",
+                classes: "date-of-birth-header"
+              },
+              {
+                text: "Address",
+                classes: "address-header"
+              },
+              {
+                text: "Order Start",
+                classes: "order-start-date-header"
+              },
+              {
+                text: "Order End",
+                classes: "order-end-date-header"
+              },
+              {
+                text: "Device ID",
+                classes: "device-id-header"
+              },
+              {
+                text: "Tag Period Start",
+                classes: "tag-period-start-header"
+              },
+              {
+                text: "Tag Period End",
+                classes: "tag-period-end-header"
+              }
+            ],
+            rows: rows
+      }) }}
+      
+      <nav class="moj-pagination{% if totalPages <= 1 %} hidden{% endif %}" aria-label="Pagination navigation">
+          <ul class="moj-pagination__list">
+            <li class="moj-pagination__item  moj-pagination__item--prev">
+              <a class="moj-pagination__link" href="">Previous<span class="govuk-visually-hidden"> page</span></a>
+            </li>
+
+            {% for i in range(1, totalPages + 1) %}
+              <li class="moj-pagination__item moj-pagination__item--link" data-button-number="{{ i }}">
+                <a class="moj-pagination__link" href="#" aria-label="Page {{ i }} of {{ totalPages }}">
+                  {{ i }}
+                </a>
+              </li>
+
+              {% if (i == 1) or (i == totalPages - 1) %}
+                <li class="moj-pagination__item moj-pagination__item--dots hidden">…</li>
+              {% endif %}
+            {% endfor %}
+
+            <li class="moj-pagination__item  moj-pagination__item--next">
+              <a class="moj-pagination__link" href="">Next<span class="govuk-visually-hidden"> page</span></a>
+            </li>
+          </ul>
+
+          <p class="moj-pagination__results">Showing <b></b> to <b></b> of <b></b> results</p>
+        </nav>
   {% endblock %}
 {% endblock %}
