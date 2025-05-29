@@ -9,7 +9,7 @@ context('Crime Mapping', () => {
       cy.signIn()
     })
 
-    it('should display the crime bacthes page', () => {
+    it('should display the crime batches page', () => {
       cy.visit('/crime-mapping/crime-batches')
       Page.verifyOnPage(CrimeBatchesPage)
     })
