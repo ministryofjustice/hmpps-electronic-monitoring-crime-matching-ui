@@ -3,21 +3,24 @@
 {{ govukServiceNavigation({
   navigation: [
     {
-      href: "#",
+      href: "/crime-mapping/crime-batches",
       text: "Crime mapping",
-      active: true
+      active: activeLinkId == "crime-mapping"
     },
     {
       href: "#",
-      text: "Location data"
+      text: "Location data",
+      active: activeLinkId == "location-data"
+    },
+    {
+      href: "/legal",
+      text: "Legal",
+      active: activeLinkId == "legal"
     },
     {
       href: "#",
-      text: "Legal"
-    },
-    {
-      href: "#",
-      text: "Help"
+      text: "Help",
+      active: activeLinkId == "help"
     }
   ]
 }) }}
