@@ -79,6 +79,8 @@
     "@aws-sdk/client-sqs": "^3.758.0",
     "@ministryofjustice/frontend": "^4.0.1",
     "@ministryofjustice/hmpps-monitoring": "^0.0.1-beta.2",
+    "@ministryofjustice/hmpps-rest-client": "^0.0.1-alpha.9",
+    "@ministryofjustice/hmpps-auth-clients": "^0.0.1-alpha.4",
     "@types/qs": "^6.9.18",
     "agentkeepalive": "^4.6.0",
     "applicationinsights": "^2.9.6",
@@ -102,7 +104,8 @@
     "passport": "^0.7.0",
     "passport-oauth2": "^1.8.0",
     "redis": "^4.7.0",
-    "superagent": "^10.2.0"
+    "superagent": "^10.2.0",
+    "zod": "^3.24.3"
   },
   "devDependencies": {
     "@jgoz/esbuild-plugin-typecheck": "^4.0.3",
