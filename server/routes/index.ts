@@ -7,6 +7,7 @@ import CrimeMappingController from '../controllers/crimeMapping'
 import MapController from '../controllers/map'
 import CrimeBatchesController from '../controllers/crimeMapping/crimeBatches'
 import LegalController from '../controllers/legal'
+import HelpController from '../controllers/help'
 
 export default function routes({ auditService, crimeMappingService, mapService }: Services): Router {
   const router = Router()
@@ -20,11 +21,13 @@ export default function routes({ auditService, crimeMappingService, mapService }
 
   const crimeMappingController = new CrimeMappingController(crimeMappingService)
   const crimeBatchesController = new CrimeBatchesController()
+  const helpController = new HelpController()
   const legalController = new LegalController()
   const mapController = new MapController(mapService)
 
   get('/crime-mapping', crimeMappingController.view)
   get('/crime-mapping/crime-batches', crimeBatchesController.view)
+  get('/help', helpController.view)
   get('/legal', legalController.view)
   get('/map/token', mapController.token)
 
