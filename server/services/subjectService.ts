@@ -1,8 +1,8 @@
 import { asUser, RestClient } from '@ministryofjustice/hmpps-rest-client'
 import logger from '../../logger'
 import { SubjectSearchFormInput } from '../models/subjectSearchFormInput'
-import { Subject, SubjectModel } from '../models/subject'
-import { QueryExecutionResponse, QueryExecutionResponseModel } from '../models/queryExecutionResponse'
+import { Subject, SubjectModel } from '../schemas/subject'
+import { QueryExecutionResponse, QueryExecutionResponseModel } from '../schemas/queryExecutionResponse'
 
 export default class SubjectService {
   constructor(private readonly crimeMatchingApiClient: RestClient) {}
@@ -30,7 +30,6 @@ export default class SubjectService {
           path: '/subjects',
           data: input,
         },
-        // TODO test auth is working as expected
         asUser(userToken),
       )
       return QueryExecutionResponseModel.parse(res)

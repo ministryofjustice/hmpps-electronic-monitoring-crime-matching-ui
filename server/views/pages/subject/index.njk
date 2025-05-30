@@ -4,15 +4,16 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/table/macro.njk" import govukTable %}
 {% from "govuk/components/pagination/macro.njk" import govukPagination %}
+{% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
 
 {% set pageTitle = applicationName + " - Subject Search" %}
 {% set mainClasses = "app-container govuk-body" %}
 {% set rows = [] %}
 {% set pageSize = 10 %}
 {% set currentPage = 1 %}
-{% set totalPages = (data.length / pageSize) | round(0, 'ceil') %}
+{% set totalPages = (subjects.length / pageSize) | round(0, 'ceil') %}
 
-{% for subject in data %}
+{% for subject in subjects %}
     {% set rows = (rows.push(
     [
       {
@@ -54,13 +55,9 @@
 {% endfor %}
 
 {% block content %}
-<h3>PoP Search</h3>
+<h3>Subject Search</h3>
   <form method="post" novalidate id="subject-search-form">
-    {{ govukButton({
-      text: "PoP Search",
-      name: "action"
-    }) }}
-
+    
     {{ govukInput({
       label: {
         text: "Name",
@@ -83,6 +80,19 @@
       name: "nomisId",
       value: nomisId.value,
       errorMessage: nomisId.error
+    }) }}
+
+
+    {% if errorSummaryList %}
+      {{ govukErrorSummary({
+        titleText: "There is a problem",
+        errorList: errorSummaryList
+      }) }}
+    {% endif %}
+
+    {{ govukButton({
+      text: "Search",
+      name: "action"
     }) }}
 
     <input type="hidden" name="_csrf" value="{{ csrfToken }}"/>
