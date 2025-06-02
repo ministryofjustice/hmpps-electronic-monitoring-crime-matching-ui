@@ -36,6 +36,6 @@ export default class SubjectController {
     }
 
     const data = await this.service.submitSearchQuery(req.body, res.locals.user.token)
-    res.redirect(`/subjects?search_id=${encodeURIComponent(data.queryExecutionId)}`)
+    res.redirect(`/location-data/subjects?search_id=${encodeURIComponent(data.queryExecutionId)}`)
   }
 }

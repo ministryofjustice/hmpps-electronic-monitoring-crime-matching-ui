@@ -97,7 +97,7 @@ describe('SubjectController', () => {
 
       await subjectController.submitSearch(req, res, next)
 
-      expect(res.redirect).toHaveBeenCalledWith(`/subjects?search_id=query-execution-id`)
+      expect(res.redirect).toHaveBeenCalledWith(`/location-data/subjects?search_id=query-execution-id`)
     })
 
     it('shoud render a view containing no results if there is a validation error', async () => {
