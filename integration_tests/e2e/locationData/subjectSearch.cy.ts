@@ -6,8 +6,6 @@ context('Location Data', () => {
     beforeEach(() => {
       cy.task('reset')
       cy.task('stubSignIn')
-      cy.task('stubSubjectSearch')
-      cy.task('stubSubjectQueryExecution')
       cy.signIn()
     })
 
