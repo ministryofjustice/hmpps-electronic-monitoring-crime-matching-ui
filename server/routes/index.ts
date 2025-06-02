@@ -31,8 +31,8 @@ export default function routes({ auditService, crimeMappingService, mapService, 
   get('/legal', legalController.view)
   get('/map/token', mapController.token)
 
-  get('/subjects', subjectController.getSearchResults)
-  post('/subjects', subjectController.submitSearch)
+  get('/location-data/subjects', subjectController.getSearchResults)
+  post('/location-data/subjects', subjectController.submitSearch)
 
   return router
 }

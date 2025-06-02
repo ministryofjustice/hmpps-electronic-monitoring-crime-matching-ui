@@ -12,6 +12,7 @@
 {% set pageSize = 10 %}
 {% set currentPage = 1 %}
 {% set totalPages = (subjects.length / pageSize) | round(0, 'ceil') %}
+{% set activeLinkId = "location-data" %}
 
 {% for subject in subjects %}
     {% set rows = (rows.push(
@@ -55,7 +56,7 @@
 {% endfor %}
 
 {% block content %}
-<h3>Subject Search</h3>
+  <h1>Subject Search</h1>
   <form method="post" novalidate id="subject-search-form">
     
     {{ govukInput({
