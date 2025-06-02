@@ -11,10 +11,10 @@
 {% set rows = [] %}
 {% set pageSize = 10 %}
 {% set currentPage = 1 %}
-{% set totalPages = (subjects.length / pageSize) | round(0, 'ceil') %}
+{% set totalPages = (pageResults.results.length / pageSize) | round(0, 'ceil') %}
 {% set activeLinkId = "location-data" %}
 
-{% for subject in subjects %}
+{% for subject in pageResults.results %}
     {% set rows = (rows.push(
     [
       {
@@ -145,21 +145,6 @@
             rows: rows
       }) }}
 
-      {# Placeholder #}
-      {{ govukPagination({ previous: { href: "#" }, next: { href: "#" }, items: [
-        {
-          number: 1,
-          current: true,
-          href: "#"
-        },
-        {
-          number: 2,
-          href: "#"
-        },
-        {
-          number: 3,
-          href: "#"
-        }]
-      }) }}
+      {{ govukPagination( paginationData ) }}
   {% endblock %}
 {% endblock %}

@@ -1,22 +1,22 @@
 import { asUser, RestClient } from '@ministryofjustice/hmpps-rest-client'
 import logger from '../../logger'
 import { SubjectSearchFormInput } from '../models/subjectSearchFormInput'
-import { Subject, SubjectModel } from '../schemas/subject'
 import { QueryExecutionResponse, QueryExecutionResponseModel } from '../schemas/queryExecutionResponse'
+import PageResultModel, { PageResult } from '../schemas/PageResult'
 
 export default class SubjectService {
   constructor(private readonly crimeMatchingApiClient: RestClient) {}
 
-  async getSearchResults(queryId: string, userToken: string): Promise<Subject[]> {
+  async getSearchResults(queryId: string, userToken: string, page: number): Promise<PageResult> {
     try {
-      const res = await this.crimeMatchingApiClient.get<Subject[]>(
+      const res = await this.crimeMatchingApiClient.get<PageResult[]>(
         {
-          path: `/subjects?id='${queryId}`,
+          // TODO Change pagesize to 10 as default for now?
+          path: `/subjects?id=${queryId}&page=${page}&pageSize=3`,
         },
         asUser(userToken),
       )
-
-      return res.map(subject => SubjectModel.parse(subject))
+      return PageResultModel.parse(res)
     } catch (error) {
       logger.error(error, 'Error retrieving search results')
       throw error
