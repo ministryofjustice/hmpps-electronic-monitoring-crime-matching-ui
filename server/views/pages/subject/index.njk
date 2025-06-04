@@ -1,0 +1,165 @@
+{% extends "../../partials/layout.njk" %}
+
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/table/macro.njk" import govukTable %}
+{% from "govuk/components/pagination/macro.njk" import govukPagination %}
+{% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
+
+{% set pageTitle = applicationName + " - Subject Search" %}
+{% set mainClasses = "app-container govuk-body" %}
+{% set rows = [] %}
+{% set pageSize = 10 %}
+{% set currentPage = 1 %}
+{% set totalPages = (subjects.length / pageSize) | round(0, 'ceil') %}
+{% set activeLinkId = "location-data" %}
+
+{% for subject in subjects %}
+    {% set rows = (rows.push(
+    [
+      {
+        html: '<div class="govuk-checkboxes__item govuk-checkboxes--small moj-multi-select__checkbox">
+                <input type="checkbox" class="govuk-checkboxes__input" name="selectedSubjects" id="' + subject.nomisId + '" value="' + subject.nomisId  + '" autocomplete="off">
+                <label class="govuk-label govuk-checkboxes__label" for="' + subject.nomisId + '">
+                </label>
+              </div>'
+      },
+      {
+        text: subject.nomisId
+      },
+      {
+        text: subject.name
+      },
+      {
+        text: subject.dateOfBirth
+      },
+      {
+        text: subject.address
+      },
+      {
+        text: subject.orderStartDate
+      },
+      {
+        text: subject.orderEndDate
+      },
+      {
+        text: subject.deviceId
+      },
+      {
+        text: subject.tagPeriodStartDate
+      },
+      {
+        text: subject.tagPeriodEndDate
+      }
+    ]
+  ), rows) %}
+{% endfor %}
+
+{% block content %}
+  <h1>Subject Search</h1>
+  <form method="post" novalidate id="subject-search-form">
+    
+    {{ govukInput({
+      label: {
+        text: "Name",
+        classes: "govuk-label--s"
+      },
+      classes: "govuk-!-width-two-thirds",
+      id: "name",
+      name: "name",
+      value: name.value,
+      errorMessage: name.error
+    }) }}
+
+    {{ govukInput({
+      label: {
+        text: "NOMIS ID",
+        classes: "govuk-label--s"
+      },
+      classes: "govuk-!-width-two-thirds",
+      id: "nomis-id",
+      name: "nomisId",
+      value: nomisId.value,
+      errorMessage: nomisId.error
+    }) }}
+
+
+    {% if errorSummaryList %}
+      {{ govukErrorSummary({
+        titleText: "There is a problem",
+        errorList: errorSummaryList
+      }) }}
+    {% endif %}
+
+    {{ govukButton({
+      text: "Search",
+      name: "action"
+    }) }}
+
+    <input type="hidden" name="_csrf" value="{{ csrfToken }}"/>
+  </form>
+  {% block innerContent %}
+      {{ govukTable({
+            classes: "search-results-table",
+            head: [
+              {
+                classes: "select-header"
+              },
+              {
+                text: "NOMIS ID",
+                classes: "nomis-id-header"
+              },
+              {
+                text: "Name",
+                classes: "name-header"
+              },
+              {
+                text: "Date of Birth",
+                classes: "date-of-birth-header"
+              },
+              {
+                text: "Address",
+                classes: "address-header"
+              },
+              {
+                text: "Order Start",
+                classes: "order-start-date-header"
+              },
+              {
+                text: "Order End",
+                classes: "order-end-date-header"
+              },
+              {
+                text: "Device ID",
+                classes: "device-id-header"
+              },
+              {
+                text: "Tag Period Start",
+                classes: "tag-period-start-header"
+              },
+              {
+                text: "Tag Period End",
+                classes: "tag-period-end-header"
+              }
+            ],
+            rows: rows
+      }) }}
+
+      {# Placeholder #}
+      {{ govukPagination({ previous: { href: "#" }, next: { href: "#" }, items: [
+        {
+          number: 1,
+          current: true,
+          href: "#"
+        },
+        {
+          number: 2,
+          href: "#"
+        },
+        {
+          number: 3,
+          href: "#"
+        }]
+      }) }}
+  {% endblock %}
+{% endblock %}
