@@ -93,7 +93,7 @@ export default {
       enabled: get('TOKEN_VERIFICATION_ENABLED', 'false') === 'true',
     },
     crimeMatchingApi: {
-      url: get('CRIME_MATCHING_API_URL', 'http://localhost:8080', requiredInProduction),
+      url: get('EM_CRIME_MATCHING_API_URL', 'http://localhost:8080', requiredInProduction),
       healthPath: '/health/ping',
       timeout: {
         response: Number(get('CRIME_MATCHING_API_TIMEOUT_RESPONSE', 30000)),
