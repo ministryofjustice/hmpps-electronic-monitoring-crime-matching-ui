@@ -4,10 +4,16 @@ import Logger from 'bunyan'
 import SubjectService from '../services/subjectService'
 import SubjectController from './subjectController'
 import getMockSubject from '../../test/mocks/mockSubject'
+import { SubjectSearchResult } from '../schemas/SubjectSearchResult'
 
 jest.mock('../services/subjectService')
 
 const mockSubject = getMockSubject()
+const mockSearchResults = ({
+  page: 1,
+  totalPages: 2,
+  results: [getMockSubject()],
+})
 
 describe('SubjectController', () => {
   let logger: jest.Mocked<Logger>
@@ -72,7 +78,7 @@ describe('SubjectController', () => {
 
   describe('get search results', () => {
     it('shoud render a view containing subject results if there is a queryExecutionId', async () => {
-      mockSubjectService.getSearchResults.mockResolvedValue([mockSubject])
+      mockSubjectService.getSearchResults.mockResolvedValue(mockSearchResults)
       req.query.search_id = 'query-execution-id'
 
       await subjectController.getSearchResults(req, res, next)

@@ -9,9 +9,6 @@
 {% set pageTitle = applicationName + " - Subject Search" %}
 {% set mainClasses = "app-container govuk-body" %}
 {% set rows = [] %}
-{% set pageSize = 10 %}
-{% set currentPage = 1 %}
-{% set totalPages = (pageResults.results.length / pageSize) | round(0, 'ceil') %}
 {% set activeLinkId = "location-data" %}
 
 {% for subject in pageResults.results %}
@@ -145,6 +142,8 @@
             rows: rows
       }) }}
 
-      {{ govukPagination( paginationData ) }}
+      {% if  paginationData.items.length > 1 %}
+        {{ govukPagination( paginationData ) }}
+      {% endif %}
   {% endblock %}
 {% endblock %}

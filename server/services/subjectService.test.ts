@@ -54,7 +54,7 @@ describe('Subject Service', () => {
     it('should get search results', async () => {
       mockRestClient.get.mockResolvedValue([mockSubject])
 
-      const res = await subjectService.getSearchResults(queryExecutionId, '')
+      const res = await subjectService.getSearchResults(queryExecutionId, '', 1)
 
       expect(res).toEqual(expect.objectContaining([mockSubject]))
     })
@@ -62,7 +62,7 @@ describe('Subject Service', () => {
     it('should throw an error if the api returns an invalid object', async () => {
       mockRestClient.get.mockResolvedValue({})
 
-      expect(subjectService.getSearchResults(queryExecutionId, '')).rejects.toThrow()
+      expect(subjectService.getSearchResults(queryExecutionId, '', 1)).rejects.toThrow()
     })
   })
 })

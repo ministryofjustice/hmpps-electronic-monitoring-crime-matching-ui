@@ -2,6 +2,7 @@ import { Request, RequestHandler, Response } from 'express'
 import SubjectService from '../services/subjectService'
 import SubjectSearchCriteriaValidator from '../utils/validators/subjectSearchCriteriaValidator'
 import { ParsedSubjectSearchFormInputModel } from '../models/subjectSearchFormInput'
+import { createPaginationData } from '../utils/paginationData'
 
 export default class SubjectController {
   constructor(private readonly service: SubjectService) {}
@@ -17,25 +18,7 @@ export default class SubjectController {
 
     const pageResults = await this.service.getSearchResults(queryExecutionId, res.locals.user.token, page)
     const baseUrl = `/location-data/subjects?search_id=${queryExecutionId}`
-
-    const previous = page > 1 ? { href: `${baseUrl}&page=${page - 1}` } : null
-
-    const next = page < pageResults.totalPages ? { href: `${baseUrl}&page=${page + 1}` } : null
-
-    const items = Array.from({ length: pageResults.totalPages }, (_, i) => {
-      const number = i + 1
-      return {
-        number,
-        current: number === page,
-        href: `${baseUrl}&page=${number}`,
-      }
-    })
-
-    const paginationData = {
-      previous: { previous },
-      next: { next },
-      items,
-    }
+    const paginationData = createPaginationData(page, pageResults.totalPages, baseUrl)
 
     res.render('pages/subject/index', { pageResults, paginationData })
   }
