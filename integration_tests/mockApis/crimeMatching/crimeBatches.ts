@@ -5,25 +5,21 @@ const baseUrl = '/crime-matching'
 
 type StubCrimeBatchSearchOptions = {
   query: string
-  response: {
-    data: Array<{
-      policeForce: string
-      batch: string
-      start: string
-      end: string
-      time: number
-      distance: number
-      matches: number
-    }>
-  }
+  response: Array<{
+    policeForce: string
+    batch: string
+    start: string
+    end: string
+    time: number
+    distance: number
+    matches: number
+  }>
 }
 
 // Default options will return an empty array for any query string e.g. ?term=abc
 const defaultOptions: StubCrimeBatchSearchOptions = {
   query: '.*',
-  response: {
-    data: [],
-  },
+  response: [],
 }
 
 const stubCrimeBatchSearch = (options: StubCrimeBatchSearchOptions = defaultOptions) =>
