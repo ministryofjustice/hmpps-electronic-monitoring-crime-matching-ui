@@ -10,9 +10,14 @@ declare global {
       signIn(options?: { failOnStatusCode: boolean }): Chainable<AUTWindow>
 
       /**
-       * Stub a wiremock response for GET /crime-batches
+       * Stub a wiremock response for the crimeMatchingApi GET /crime-batches
        */
       stubCrimeBatchSearch(options: StubCrimeBatchSearchOptions): Chainable<void>
+
+      /**
+       * Stub a wiremock response for the crimeMatchingApi GET /subjects
+       */
+      stubSubjectSearch(options: StubCrimeBatchSearchOptions): Chainable<void>
     }
   }
 }

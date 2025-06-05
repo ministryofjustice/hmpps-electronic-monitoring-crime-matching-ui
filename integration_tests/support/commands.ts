@@ -6,3 +6,7 @@ Cypress.Commands.add('signIn', (options = { failOnStatusCode: true }) => {
 Cypress.Commands.add('stubCrimeBatchSearch', options => {
   cy.task('stubCrimeBatchSearch', options)
 })
+
+Cypress.Commands.add('stubSubjectSearch', options => {
+  cy.task('stubSubjectSearch', options)
+})
