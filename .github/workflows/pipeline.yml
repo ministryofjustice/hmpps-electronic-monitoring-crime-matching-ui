@@ -54,6 +54,11 @@ jobs:
     secrets: inherit
     with:
       environment: ${{ matrix.environments }}
+  nunjucks_format:
+    name: nunjucks format
+    uses: ./.github/workflows/test_nunjucks_format.yml
+    needs: [node_build]
+    secrets: inherit
   build:
     name: Build docker image from hmpps-github-actions
     if: github.ref == 'refs/heads/main'
