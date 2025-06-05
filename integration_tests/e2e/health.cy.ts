@@ -4,6 +4,7 @@ context('Healthcheck', () => {
       cy.task('reset')
       cy.task('stubAuthPing')
       cy.task('stubTokenVerificationPing')
+      cy.task('stubCrimeMatchingPing')
     })
 
     it('Health check page is visible and UP', () => {
@@ -24,6 +25,7 @@ context('Healthcheck', () => {
       cy.task('reset')
       cy.task('stubAuthPing')
       cy.task('stubTokenVerificationPing', 500)
+      cy.task('stubCrimeMatchingPing')
     })
 
     it('Reports correctly when token verification down', () => {
