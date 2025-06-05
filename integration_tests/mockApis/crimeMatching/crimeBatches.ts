@@ -1,6 +1,10 @@
 import { stubFor } from '../wiremock'
 
+// Has to match the path of the EM_CRIME_MATCHING_API_URL env variable
+const baseUrl = '/crime-matching'
+
 type StubCrimeBatchSearchOptions = {
+  query: string
   response: {
     data: Array<{
       policeForce: string
@@ -14,11 +18,19 @@ type StubCrimeBatchSearchOptions = {
   }
 }
 
-const stubCrimeBatchSearch = (options: StubCrimeBatchSearchOptions) =>
+// Default options will return an empty array for any query string e.g. ?term=abc
+const defaultOptions: StubCrimeBatchSearchOptions = {
+  query: '.*',
+  response: {
+    data: [],
+  },
+}
+
+const stubCrimeBatchSearch = (options: StubCrimeBatchSearchOptions = defaultOptions) =>
   stubFor({
     request: {
       method: 'GET',
-      urlPattern: `/crime-matching/crime-batches.*`,
+      urlPattern: `${baseUrl}/crime-batches${options.query}`,
     },
     response: {
       status: 200,
