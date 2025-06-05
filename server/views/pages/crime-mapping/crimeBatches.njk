@@ -1,11 +1,61 @@
 {% extends "../../partials/layout.njk" %}
+{% from "moj/components/search/macro.njk" import mojSearch %}
+{% from "../../components/datatable/macro.njk" import dataTable %}
 
 {% set pageTitle = applicationName + " - Home" %}
 {% set mainClasses = "app-container govuk-body" %}
 {% set activeLinkId = "crime-mapping" %}
 
 {% block content %}
-
   <h1>Crime Batches</h1>
 
+  {{
+    mojSearch({
+      action: "#",
+      method: "post",
+      input: {
+        id: "search",
+        name: "search"
+      },
+      label: {
+        text: "Find a crime batch",
+        classes: "govuk-!-font-weight-bold"
+      },
+      hint: {
+        text: "You can search by police force or ingestion date"
+      },
+      button: {
+        text: "Search"
+      }
+    })
+  }}
+
+  {{
+    dataTable({
+      columns: [
+        {
+          text: "Police Force"
+        },
+        {
+          text: "Batch"
+        },
+        {
+          text: "Start"
+        },
+        {
+          text: "End"
+        },
+        {
+          text: "Time (Mins)"
+        },
+        {
+          text: "Distance (Metres)"
+        },
+        {
+          text: "Matches"
+        }
+      ],
+      rows: []
+    })
+  }}
 {% endblock %}
