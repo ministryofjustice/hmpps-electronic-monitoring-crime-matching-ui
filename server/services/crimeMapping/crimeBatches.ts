@@ -1,62 +1,37 @@
-import { asUser, RestClient, SanitisedError } from '@ministryofjustice/hmpps-rest-client'
-import { ValidationResult, ValidationResultModel } from '../../models/ValidationResult'
-import Result from '../../types/result'
-import {
-  createCrimeBatchesQueryDtoSchema,
-  getCrimeBatchesQueryDtoSchema,
-} from '../../schemas/crimeMapping/crimeBatches'
-import {
-  CreateCrimeBatchesQueryRequestDto,
-  CreateCrimeBatchesQueryResponseDto,
-  GetCrimeBatchesQueryResponseDto,
-} from '../../types/crimeMapping/crimeBatches'
+import { asUser, RestClient } from '@ministryofjustice/hmpps-rest-client'
+import logger from '../../../logger'
+import { z } from 'zod'
+
+type CrimeBatch = {
+    prisonName: string
+}
+
+type CrimeBatchesSearchResult = {
+    data: Array<CrimeBatch>
+}
+
+const crimeBatchSearchResult = z.object({
+    data: z.array(z.object({
+        prisonName: z.string()
+    }))
+})
+
+type a = z.infer<typeof crimeBatchSearchResult>
 
 export default class CrimeBatchesService {
-  constructor(private readonly crimeMatchingApiClient: RestClient) {}
+    constructor(private readonly crimeMatchingApiClient: RestClient) {}
 
-  async createQuery(
-    userToken: string,
-    input: CreateCrimeBatchesQueryRequestDto,
-  ): Promise<Result<CreateCrimeBatchesQueryResponseDto, ValidationResult>> {
-    try {
-      const response = await this.crimeMatchingApiClient.post(
-        {
-          path: '/crime-batches-query',
-          data: input,
-        },
-        asUser(userToken),
-      )
-
-      return {
-        ok: true,
-        data: createCrimeBatchesQueryDtoSchema.parse(response),
-      }
-    } catch (e) {
-      const sanitisedError = e as SanitisedError
-
-      if (sanitisedError.responseStatus === 400) {
-        return {
-          ok: false,
-          error: ValidationResultModel.parse((e as SanitisedError).data),
+    async getResults(userToken: string, queryId?: string): Promise<CrimeBatchesSearchResult> {
+        if (queryId === undefined) {
+            return {
+                data: []
+            }
         }
-      }
 
-      throw e
-    }
-  }
+        const response = await this.crimeMatchingApiClient.get({
+            path: `crime-batchs?id=${queryId}`
+        }, asUser(userToken))
 
-  async getQuery(userToken: string, queryId?: string): Promise<GetCrimeBatchesQueryResponseDto> {
-    if (queryId === undefined) {
-      return []
-    }
-
-    const response = await this.crimeMatchingApiClient.get(
-      {
-        path: `/crime-batches-query?id=${queryId}`,
-      },
-      asUser(userToken),
-    )
-
-    return getCrimeBatchesQueryDtoSchema.parse(response)
-  }
+        return crimeBatchSearchResult.parse(response)
+     }
 }
