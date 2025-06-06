@@ -20,16 +20,17 @@ export function initialiseAppInsights(): void {
 export function buildAppInsightsClient(
   { applicationName, buildNumber }: ApplicationInfo,
   overrideName?: string,
-): TelemetryClient {
+): TelemetryClient| null {
   if (process.env.APPLICATIONINSIGHTS_CONNECTION_STRING) {
     defaultClient.context.tags['ai.cloud.role'] = overrideName || applicationName
     defaultClient.context.tags['ai.application.ver'] = buildNumber
 
     defaultClient.addTelemetryProcessor(({ tags, data }, contextObjects) => {
-      const operationNameOverride = contextObjects.correlationContext?.customProperties?.getProperty('operationName')
+      const operationNameOverride = contextObjects?.correlationContext?.customProperties?.getProperty('operationName')
       if (operationNameOverride) {
         /*  eslint-disable no-param-reassign */
         tags['ai.operation.name'] = operationNameOverride
+        // @ts-expect-error unknown behaviour
         data.baseData.name = operationNameOverride
         /*  eslint-enable no-param-reassign */
       }

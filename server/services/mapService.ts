@@ -2,6 +2,7 @@ import superagent from 'superagent'
 
 import qs from 'qs'
 import config from '../config'
+import { HttpError } from 'http-errors'
 
 type OSMapsToken = {
   access_token: string
@@ -23,7 +24,7 @@ export default class MapService {
 
       return result.body
     } catch (e) {
-      if (e.status === 401) {
+      if ((e as HttpError).status === 401) {
         throw new Error('Failed to authenticate to OS Maps API')
       }
 

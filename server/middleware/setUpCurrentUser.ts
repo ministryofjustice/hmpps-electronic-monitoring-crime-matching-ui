@@ -18,6 +18,10 @@ export default function setUpCurrentUser() {
         authorities?: string[]
       }
 
+      if (userId === undefined || name === undefined) {
+        throw new Error('There was a problem decoding the JWT')
+      }
+
       res.locals.user = {
         ...res.locals.user,
         userId,
@@ -27,7 +31,7 @@ export default function setUpCurrentUser() {
       }
 
       if (res.locals.user.authSource === 'nomis') {
-        res.locals.user.staffId = parseInt(userId, 10) || undefined
+        res.locals.user.staffId = parseInt(userId, 10)
       }
 
       next()
