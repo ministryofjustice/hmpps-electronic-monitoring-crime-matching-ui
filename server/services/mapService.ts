@@ -1,8 +1,8 @@
 import superagent from 'superagent'
 
 import qs from 'qs'
-import config from '../config'
 import { HttpError } from 'http-errors'
+import config from '../config'
 
 type OSMapsToken = {
   access_token: string

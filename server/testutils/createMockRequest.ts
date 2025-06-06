@@ -1,8 +1,6 @@
-import type { Request, Response } from 'express'
+import type { Request } from 'express'
 
-const createMockRequest = (
-  overrideProperties: Partial<Request> = {},
-): Request => {
+const createMockRequest = (overrideProperties: Partial<Request> = {}): Request => {
   return {
     // @ts-expect-error stubbing session
     session: {},
