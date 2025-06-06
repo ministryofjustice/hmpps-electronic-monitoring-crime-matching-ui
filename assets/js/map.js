@@ -1,14 +1,16 @@
 import axios from 'axios'
-import { Map, View } from 'ol'
+import { Feature, Map, View } from 'ol'
 import TileState from 'ol/TileState'
 import { buffer, boundingExtent } from 'ol/extent'
 import { GeoJSON } from 'ol/format'
+import { Point, Circle as CircleGeom } from 'ol/geom'
 import { Tile as TileLayer, Vector as VectorLayer } from 'ol/layer'
 import LayerGroup from 'ol/layer/Group'
 import { fromLonLat, transformExtent } from 'ol/proj'
 import VectorSource from 'ol/source/Vector'
 import XYZ from 'ol/source/XYZ'
-import { Circle as CircleStyle, Fill, Stroke, Style, Text } from 'ol/style'
+import { Circle as CircleStyle, Fill, Stroke, Style, Text, RegularShape } from 'ol/style'
+import { getLength } from'ol/sphere'
 
 function MapComponent($module) {
   this.cacheEls($module)
@@ -39,20 +41,26 @@ MapComponent.prototype = {
     this.tileUrl = $module.getAttribute('data-tile-url')
 
     this.lineSource = new VectorSource()
+    this.arrowSource = new VectorSource()
     this.pointSource = new VectorSource()
+    this.confidenceSource = new VectorSource()
   },
 
   render() {
     this.renderMap()
     this.appendPoints()
     this.appendLines()
+    this.appendArrows()
+    this.appendConfidenceCircles()
   },
 
   createControls() {
     this.pointsToggle = document.querySelector('#locations')
+    this.confidenceToggle = document.querySelector('#confidence')
     this.linesToggle = document.querySelector('#tracks')
 
     this.pointsToggle.onchange = () => this.togglePoints()
+    this.confidenceToggle.onchange = () => this.toggleConfidence()
     this.linesToggle.onchange = () => this.toggleLines()
   },
 
@@ -62,6 +70,10 @@ MapComponent.prototype = {
 
   togglePoints() {
     this.$pointsLayer.setVisible(!this.$pointsLayer.getVisible())
+  },
+
+  toggleConfidence() {
+    this.$confidenceLayer.setVisible(!this.$confidenceLayer.getVisible())
   },
 
   toggleLines() {
@@ -103,12 +115,25 @@ MapComponent.prototype = {
       ],
     })
 
+    this.$confidenceLayer = new LayerGroup({
+      title: 'Confidence',
+      layers: [
+        new VectorLayer({
+          source: this.confidenceSource,
+          style: this.confidenceCircleStyle.bind(),
+        }),
+      ],
+    })
+
     this.$linesLayer = new LayerGroup({
       title: 'Lines',
       layers: [
         new VectorLayer({
           source: this.lineSource,
           style: this.lineStyle.bind(this),
+        }),
+        new VectorLayer({
+          source: this.arrowSource,
         }),
       ],
     })
@@ -124,6 +149,7 @@ MapComponent.prototype = {
         }),
         this.$linesLayer,
         this.$pointsLayer,
+        this.$confidenceLayer,
       ],
       view: new View({
         projection: 'EPSG:3857',
@@ -134,6 +160,84 @@ MapComponent.prototype = {
         zoom: 13,
       }),
     })
+  },
+
+  generateArrowFeatures() {
+    const arrowFeatures = []
+
+    this.lineSource.getFeatures().forEach((lineFeature) => {
+      const geometry = lineFeature.getGeometry()
+      if (!geometry || geometry.getType() !== 'LineString') return
+      const lineLength = getLength(geometry)
+      const spacing = 50
+      const arrowCount = Math.floor(lineLength / spacing)
+
+      const coords = geometry.getCoordinates()
+
+      for (let i = 0; i < coords.length - 1; i++) {
+        //Get start and end coords of this line
+        const start = coords[i]
+        const end = coords[i + 1]
+
+        //Get mid point of the start and end points of the line
+        const midX = (start[0] + end[0]) / 2
+        const midY = (start[1] + end[1]) / 2
+
+        const arrowFeature = new Feature({
+              geometry: new Point([midX, midY]),
+          })
+
+        //Duplicate this depending on length of line?
+        // for(let j = 1; j <= arrowCount; j++) {
+        //   const fraction = j / (arrowCount + 1)
+        //   const coord = geometry.getCoordinates()
+
+        //   const arrowFeature = new Feature({
+        //     geometry: new Point(coord),
+        //   })
+
+          arrowFeature.setStyle(
+            new Style({
+              image: new RegularShape({
+                points: 3,
+                radius: 8,
+                fill: new Fill({ color: 'black' }),
+                rotation: lineFeature.get('direction'),
+                rotateWithView: true,
+              }),
+            }) 
+          )
+
+          arrowFeatures.push(arrowFeature)
+        }
+      // }
+    })
+    return arrowFeatures
+  },
+
+  generateConfidenceCircleFeatures() {
+    const confidenceFeatures = []
+    
+    this.pointSource.getFeatures().forEach((pointFeature) => {
+      const geometry = pointFeature.getGeometry()
+      const coords = geometry.getCoordinates()
+
+      const radius = pointFeature.get('confidence')
+
+      const circle = new CircleGeom(coords, radius)
+
+      const circleFeature = new Feature({
+        geometry: circle
+      })
+
+      confidenceFeatures.push(circleFeature)
+    })
+    return confidenceFeatures
+  },
+
+  appendConfidenceCircles() {
+    const confidenceFeatures = this.generateConfidenceCircleFeatures()
+    this.confidenceSource.addFeatures(confidenceFeatures)
   },
 
   appendPoints() {
@@ -181,12 +285,29 @@ MapComponent.prototype = {
     }
   },
 
+  appendArrows() {
+    const arrowFeatures = this.generateArrowFeatures()
+    this.arrowSource.addFeatures(arrowFeatures)
+  },
+
   lineStyle() {
     return new Style({
       stroke: new Stroke({
         width: 2,
         color: 'black',
       }),
+    })
+  },
+
+  confidenceCircleStyle() {
+    return new Style({
+      stroke: new Stroke({
+        color: 'orange',
+        width: 2
+      }),
+      fill: new Fill({
+        color: 'rgba(255, 165, 0, 0.1)'
+      })
     })
   },
 

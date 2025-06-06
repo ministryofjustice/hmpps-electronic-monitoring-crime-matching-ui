@@ -28,6 +28,25 @@
       }) }}
 
       {{ govukCheckboxes({
+        id: "confidence",
+        name: "confidence",
+        fieldset: {
+          legend: {
+            text: "Show confidence circles",
+            isPageHeading: true,
+            classes: "govuk-fieldset__legend--s"
+          }
+        },
+        items: [
+          {
+            value: "on",
+            text: "Toggled on",
+            checked: true
+          }
+        ]
+      }) }}
+
+      {{ govukCheckboxes({
         id: "tracks",
         name: "tracks",
         fieldset: {
