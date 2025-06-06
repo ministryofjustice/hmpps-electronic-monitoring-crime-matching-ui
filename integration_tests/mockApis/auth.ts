@@ -14,6 +14,7 @@ const createToken = (userToken: UserToken) => {
   const authorities = userToken.roles?.map(role => (role.startsWith('ROLE_') ? role : `ROLE_${role}`)) || []
   const payload = {
     name: userToken.name || 'john smith',
+    user_id: '123456789',
     user_name: 'USER1',
     scope: ['read'],
     auth_source: 'nomis',

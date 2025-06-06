@@ -2,6 +2,7 @@ import { RestClient } from '@ministryofjustice/hmpps-rest-client'
 import Logger from 'bunyan'
 import SubjectService from './subjectService'
 import getMockSubject from '../../test/mocks/mockSubject'
+import createMockLogger from '../testutils/createMockLogger'
 
 jest.mock('@ministryofjustice/hmpps-rest-client')
 
@@ -22,6 +23,7 @@ describe('Subject Service', () => {
   const mockSubject = getMockSubject()
 
   beforeEach(() => {
+    logger = createMockLogger()
     mockRestClient = new RestClient(
       'crimeMatchingApi',
       {

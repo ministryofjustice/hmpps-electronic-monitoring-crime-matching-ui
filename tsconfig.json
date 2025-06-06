@@ -6,12 +6,12 @@
     "sourceMap": true,
     "noEmit": false,
     "allowJs": false,
-    "strict": false,
     "resolveJsonModule": true,
     "allowSyntheticDefaultImports": true,
     "noImplicitAny": true,
     "experimentalDecorators": true,
-    "typeRoots": ["./server/@types", "./node_modules/@types"]
+    "typeRoots": ["./server/@types", "./node_modules/@types"],
+    "strict": true
   },
   "exclude": [
     "node_modules",

@@ -2,6 +2,7 @@ import jwt from 'jsonwebtoken'
 import type { Request, Response } from 'express'
 
 import authorisationMiddleware from './authorisationMiddleware'
+import createMockRequest from '../testutils/createMockRequest'
 
 function createToken(authorities: string[]) {
   const payload = {
@@ -33,6 +34,7 @@ describe('authorisationMiddleware', () => {
 
   beforeEach(() => {
     jest.resetAllMocks()
+    req = createMockRequest()
   })
 
   it('should return next when no required roles', () => {

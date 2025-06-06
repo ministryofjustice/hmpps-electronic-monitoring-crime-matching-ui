@@ -2,7 +2,6 @@ import { convertToTitleCase, initialiseName } from './utils'
 
 describe('convert to title case', () => {
   it.each([
-    [null, null, ''],
     ['empty string', '', ''],
     ['Lower case', 'robert', 'Robert'],
     ['Upper case', 'ROBERT', 'Robert'],
@@ -18,13 +17,13 @@ describe('convert to title case', () => {
 
 describe('initialise name', () => {
   it.each([
-    [null, null, null],
+    [undefined, undefined, null],
     ['Empty string', '', null],
     ['One word', 'robert', 'r. robert'],
     ['Two words', 'Robert James', 'R. James'],
     ['Three words', 'Robert James Smith', 'R. Smith'],
     ['Double barrelled', 'Robert-John Smith-Jones-Wilson', 'R. Smith-Jones-Wilson'],
-  ])('%s initialiseName(%s, %s)', (_: string, a: string, expected: string) => {
+  ])('%s initialiseName(%s, %s)', (_: string | undefined, a: string | undefined, expected: string | null) => {
     expect(initialiseName(a)).toEqual(expected)
   })
 })
