@@ -3,10 +3,13 @@ import nock from 'nock'
 import config from '../config'
 import HmppsAuthClient from './hmppsAuthClient'
 import TokenStore from './tokenStore/redisTokenStore'
+import { RedisClient } from './redisClient'
 
 jest.mock('./tokenStore/redisTokenStore')
+jest.mock('./redisClient')
 
-const tokenStore = new TokenStore(null) as jest.Mocked<TokenStore>
+const redisClient = {} as jest.Mocked<RedisClient>
+const tokenStore = new TokenStore(redisClient) as jest.Mocked<TokenStore>
 
 const username = 'Bob'
 const token = { access_token: 'token-1', expires_in: 300 }
@@ -38,7 +41,7 @@ describe('hmppsAuthClient', () => {
     })
 
     it('should return token from HMPPS Auth with username', async () => {
-      tokenStore.getToken.mockResolvedValue(null)
+      tokenStore.getToken.mockResolvedValue('')
 
       fakeHmppsAuthApi
         .post('/oauth/token', 'grant_type=client_credentials&username=Bob')
@@ -53,7 +56,7 @@ describe('hmppsAuthClient', () => {
     })
 
     it('should return token from HMPPS Auth without username', async () => {
-      tokenStore.getToken.mockResolvedValue(null)
+      tokenStore.getToken.mockResolvedValue('')
 
       fakeHmppsAuthApi
         .post('/oauth/token', 'grant_type=client_credentials')
