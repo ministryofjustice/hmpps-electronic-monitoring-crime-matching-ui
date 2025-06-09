@@ -19,7 +19,7 @@ function generateArrowFeatures(mapZoom, lineSource) {
     if (!geometry || geometry.getType() !== 'LineString') return
     const lineLength = getLength(geometry)
 
-    const adjustedSpacing = baseSpacing * zoomFactor ** (defaultZoom - mapZoom)
+    const adjustedSpacing = baseSpacing * Math.pow(zoomFactor, defaultZoom - mapZoom)
 
     let arrowCount = lineLength / adjustedSpacing
     arrowCount = Math.max(minArrows, Math.min(Math.floor(arrowCount), maxArrows))
