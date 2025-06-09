@@ -5,15 +5,15 @@
 {% set mainClasses = "app-container govuk-body" %}
 
 {% block content %}
-
   <h1>Welcome to Electronic Monitoring Crime Matching</h1>
 
-  {{ appMap({
-    geoData: {
-      points: points,
-      lines: lines
-    },
-    tileUrl: tileUrl
-  }) }}
-
+  {{
+    appMap({
+      geoData: {
+        points: points,
+        lines: lines
+      },
+      tileUrl: tileUrl
+    })
+  }}
 {% endblock %}

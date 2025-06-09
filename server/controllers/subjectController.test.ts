@@ -4,6 +4,7 @@ import Logger from 'bunyan'
 import SubjectService from '../services/subjectService'
 import SubjectController from './subjectController'
 import getMockSubject from '../../test/mocks/mockSubject'
+import createMockLogger from '../testutils/createMockLogger'
 
 jest.mock('../services/subjectService')
 
@@ -19,6 +20,7 @@ describe('SubjectController', () => {
   let next: NextFunction
 
   beforeEach(() => {
+    logger = createMockLogger()
     mockRestClient = new RestClient(
       'crimeMatchingApi',
       {

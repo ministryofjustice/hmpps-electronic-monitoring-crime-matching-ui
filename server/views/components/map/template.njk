@@ -1,31 +1,39 @@
 {% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
 
 <div class="govuk-grid-row">
-  <div class="app-map" data-module="app-map" data-points="{{ params.geoData.points }}" data-lines="{{ params.geoData.lines }}" data-tile-url={{ params.tileUrl }}>
+  <div
+    class="app-map"
+    data-module="app-map"
+    data-points="{{ params.geoData.points }}"
+    data-lines="{{ params.geoData.lines }}"
+    data-tile-url="{{ params.tileUrl }}"
+  >
     <div class="govuk-grid-column-two-thirds govuk-!-static-padding-0">
       <div id="app-map" class="app-map__viewport" data-map-viewport></div>
     </div>
     <div class="govuk-grid-column-one-third">
       <h3>Enhanced Analysis</h3>
 
-      {{ govukCheckboxes({
-        id: "locations",
-        name: "locations",
-        fieldset: {
-          legend: {
-            text: "Show locations",
-            isPageHeading: true,
-            classes: "govuk-fieldset__legend--s"
-          }
-        },
-        items: [
-          {
-            value: "on",
-            text: "Toggled on",
-            checked: true
-          }
-        ]
-      }) }}
+      {{
+        govukCheckboxes({
+          id: "locations",
+          name: "locations",
+          fieldset: {
+            legend: {
+              text: "Show locations",
+              isPageHeading: true,
+              classes: "govuk-fieldset__legend--s"
+            }
+          },
+          items: [
+            {
+              value: "on",
+              text: "Toggled on",
+              checked: true
+            }
+          ]
+        })
+      }}
 
       {{ govukCheckboxes({
         id: "confidence",
