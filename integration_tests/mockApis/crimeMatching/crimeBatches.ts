@@ -87,7 +87,7 @@ const stubGetCrimeBatchesQuery = (options: StubGetCrimeBatchesOptions = defaultG
       urlPattern: `${baseUrl}/crime-batches-query${options.query}`,
     },
     response: {
-      status: 200,
+      status: options.status,
       headers: {
         'Content-Type': 'application/json;charset=UTF-8',
       },

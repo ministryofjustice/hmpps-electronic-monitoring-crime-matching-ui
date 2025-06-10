@@ -21,8 +21,6 @@ const populateSessionData = async (req: Request, res: Response, next: NextFuncti
     {} as Record<string, GovUkErrorMessage>,
   )
 
-  console.log(res.locals)
-
   next()
 }
 

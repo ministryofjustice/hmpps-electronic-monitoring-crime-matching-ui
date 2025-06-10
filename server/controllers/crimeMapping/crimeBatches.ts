@@ -12,7 +12,7 @@ export default class CrimeBatchesController {
     // Validate request
     const parsedQuery = crimeBatchesQuerySchema.parse(query)
 
-    const queryResults = await this.service.getQuery(token, parsedQuery.searchId)
+    const queryResults = await this.service.getQuery(token, parsedQuery.queryId)
 
     res.render('pages/crime-mapping/crimeBatches', {
       crimeBatches: queryResults.data,
