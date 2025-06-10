@@ -4,33 +4,41 @@ import { ValidationResult, ValidationResultModel } from '../../models/Validation
 import Result from '../../types/result'
 
 type CrimeBatch = {
-  prisonName: string
+  policeForce: string
+  batch: string
+  start: string
+  end: string
+  time: number
+  distance: number
+  matches: number
 }
 
-type CrimeBatchesSearchResult = {
-  data: Array<CrimeBatch>
-}
+type GetCrimeBatchesQueryDto = Array<CrimeBatch>
 
-const crimeBatchSearchResult = z.object({
-  data: z.array(
-    z.object({
-      prisonName: z.string(),
-    }),
-  ),
-})
+const getCrimeBatchesQueryDtoSchema = z.array(
+  z.object({
+    policeForce: z.string(),
+    batch: z.string(),
+    start: z.string(),
+    end: z.string(),
+    time: z.number(),
+    distance: z.number(),
+    matches: z.number(),
+  }),
+)
 
-const CreateCrimeBatchQueryDto = z.object({
+const createCrimeBatchesQueryDtoSchema = z.object({
   queryExecutionId: z.string(),
 })
 
-type CreateCrimeBatchQueryDto = {
+type CreateCrimeBatchesQueryDto = {
   queryExecutionId: string
 }
 
 export default class CrimeBatchesService {
   constructor(private readonly crimeMatchingApiClient: RestClient) {}
 
-  async createQuery(userToken: string, input: any): Promise<Result<CreateCrimeBatchQueryDto, ValidationResult>> {
+  async createQuery(userToken: string, input: any): Promise<Result<CreateCrimeBatchesQueryDto, ValidationResult>> {
     try {
       const response = await this.crimeMatchingApiClient.post(
         {
@@ -42,7 +50,7 @@ export default class CrimeBatchesService {
 
       return {
         ok: true,
-        data: CreateCrimeBatchQueryDto.parse(response),
+        data: createCrimeBatchesQueryDtoSchema.parse(response),
       }
     } catch (e) {
       const sanitisedError = e as SanitisedError
@@ -58,11 +66,9 @@ export default class CrimeBatchesService {
     }
   }
 
-  async getQuery(userToken: string, queryId?: string): Promise<CrimeBatchesSearchResult> {
+  async getQuery(userToken: string, queryId?: string): Promise<GetCrimeBatchesQueryDto> {
     if (queryId === undefined) {
-      return {
-        data: [],
-      }
+      return []
     }
 
     const response = await this.crimeMatchingApiClient.get(
@@ -72,6 +78,6 @@ export default class CrimeBatchesService {
       asUser(userToken),
     )
 
-    return crimeBatchSearchResult.parse(response)
+    return getCrimeBatchesQueryDtoSchema.parse(response)
   }
 }

@@ -6,6 +6,37 @@
 {% set pageTitle = applicationName + " - Home" %}
 {% set mainClasses = "app-container govuk-body" %}
 {% set activeLinkId = "crime-mapping" %}
+{% set rows = [] %}
+
+{% for crimeBatch in crimeBatches %}
+  {%
+    set rows = (rows.push(
+      [
+        {
+          text: crimeBatch.policeForce
+        },
+        {
+          text: crimeBatch.batch
+        },
+        {
+          text: crimeBatch.start
+        },
+        {
+          text: crimeBatch.end
+        },
+        {
+          text: crimeBatch.time
+        },
+        {
+          text: crimeBatch.distance
+        },
+        {
+          text: crimeBatch.matches
+        }
+      ]
+    ), rows)
+  %}
+{% endfor %}
 
 {% block content %}
   <h1>Crime Batches</h1>
@@ -60,7 +91,7 @@
           text: "Matches"
         }
       ],
-      rows: []
+      rows: rows
     })
   }}
 {% endblock %}

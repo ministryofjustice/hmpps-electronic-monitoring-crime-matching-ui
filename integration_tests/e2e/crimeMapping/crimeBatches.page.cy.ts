@@ -1,6 +1,5 @@
 import Page from '../../pages/page'
 import CrimeBatchesPage from '../../pages/crimeMapping/crimeBatches'
-import ErrorPage from '../../pages/error'
 
 const url = '/crime-mapping/crime-batches'
 
@@ -19,11 +18,43 @@ context('Crime Mapping', () => {
       page.dataTable.shouldNotHaveResults()
     })
 
-    it('should display a validation error if the api returns 400 when creating a query', () => {
-      // Stub the api to simulate the create query request being rejected
-      cy.stubCreateCrimeBatchesQuery({
-        status: 400,
-        response: [{ field: 'searchTerm', message: 'Search term is required' }],
+    it('should display the no result message if the query returns no results', () => {
+      // Stub the api to simulate a query being successfully created
+      cy.stubCreateCrimeBatchesQuery()
+      // Stub the api to simulate the query returning no results
+      cy.stubGetCrimeBatchesQuery()
+
+      cy.visit(url)
+      let page = Page.verifyOnPage(CrimeBatchesPage)
+
+      // Submit a search
+      page.form.fillInWith({ searchTerm: 'foo' })
+      page.form.searchButton.click()
+
+      // User should be shown the results
+      cy.url().should('include', '?queryId=1234')
+      page = Page.verifyOnPage(CrimeBatchesPage)
+      page.dataTable.shouldNotHaveResults()
+    })
+
+    it('should display the query results if the query returned results', () => {
+      // Stub the api to simulate a query being successfully created
+      cy.stubCreateCrimeBatchesQuery()
+      // Stub the api to simulate the query returning no results
+      cy.stubGetCrimeBatchesQuery({
+        status: 200,
+        query: '.*',
+        response: [
+          {
+            policeForce: 'Police Force 1',
+            batch: '01234456789',
+            distance: 100,
+            end: '2024-12-01T23:59:59.000Z',
+            matches: 1,
+            start: '2024-12-01T00:00:00.000Z',
+            time: 10,
+          },
+        ],
       })
 
       cy.visit(url)
@@ -33,50 +64,11 @@ context('Crime Mapping', () => {
       page.form.fillInWith({ searchTerm: 'foo' })
       page.form.searchButton.click()
 
-      // Verify still on page, with error message
-      page = Page.verifyOnPage(CrimeBatchesPage)
-      page.form.searchTermField.shouldHaveValidationMessage('Search term is required')
-      page.form.searchTermField.shouldHaveValue('foo')
-    })
-
-    it('should display an error if the api returns 500 when creating a query', () => {
-      // Stub the api to simulate an error in the create query request
-      cy.stubCreateCrimeBatchesQuery({
-        status: 500,
-        response: 'Internal Server Error',
-      })
-
-      cy.visit(url)
-      const page = Page.verifyOnPage(CrimeBatchesPage)
-
-      // Submit a search
-      page.form.fillInWith({ searchTerm: 'bar' })
-      page.form.searchButton.click()
-
-      // User should be redirected to an error page
-      Page.verifyOnPage(ErrorPage, 'Internal Server Error')
-    })
-
-    it('should display an error if the api cannot find the query', () => {
-      // Stub the api to simulate a query being successfully created
-      cy.stubCreateCrimeBatchesQuery()
-      // Stub the api to simulate the query not being found
-      cy.stubGetCrimeBatchesQuery({
-        query: '.*',
-        status: 404,
-        response: 'Not Found',
-      })
-
-      cy.visit(url)
-      const page = Page.verifyOnPage(CrimeBatchesPage)
-
-      // Submit a search
-      page.form.fillInWith({ searchTerm: 'foo' })
-      page.form.searchButton.click()
-
-      // User should be redirected to an error page
-      Page.verifyOnPage(ErrorPage, 'Not Found')
+      // User should be shown the results
       cy.url().should('include', '?queryId=1234')
+      page = Page.verifyOnPage(CrimeBatchesPage)
+      page.dataTable.shouldHaveResults()
+      // TODO - add check that results are correct e.g. date time formatting
     })
   })
 })
