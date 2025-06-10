@@ -1,6 +1,6 @@
 import { RequestHandler } from 'express'
 import CrimeBatchesService from '../../services/crimeMapping/crimeBatches'
-import { crimeBatchesQueryParametersSchema } from '../../schemas/crimeMapping/crimeBatches'
+import { crimeBatchesFormDataSchema, crimeBatchesQueryParametersSchema } from '../../schemas/crimeMapping/crimeBatches'
 
 export default class CrimeBatchesController {
   constructor(private readonly service: CrimeBatchesService) {}
@@ -8,10 +8,7 @@ export default class CrimeBatchesController {
   view: RequestHandler = async (req, res) => {
     const { query } = req
     const { token } = res.locals.user
-
-    // Validate request
     const parsedQuery = crimeBatchesQueryParametersSchema.parse(query)
-
     const queryResults = await this.service.getQuery(token, parsedQuery.queryId)
 
     res.render('pages/crime-mapping/crimeBatches', {
@@ -22,9 +19,10 @@ export default class CrimeBatchesController {
   search: RequestHandler = async (req, res) => {
     const { token } = res.locals.user
     const formData = req.body
+    const parsedFormData = crimeBatchesFormDataSchema.parse(formData)
+    const result = await this.service.createQuery(token, parsedFormData)
 
-    const result = await this.service.createQuery(token, req.body)
-
+    // Persist the raw form data in the session
     req.session.formData = formData
 
     if (result.ok) {
