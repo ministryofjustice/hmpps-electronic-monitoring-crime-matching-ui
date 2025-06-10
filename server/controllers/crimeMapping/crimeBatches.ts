@@ -1,6 +1,6 @@
 import { RequestHandler } from 'express'
 import CrimeBatchesService from '../../services/crimeMapping/crimeBatches'
-import { crimeBatchesQuerySchema } from '../../schemas/crimeMapping/crimeBatches'
+import { crimeBatchesQueryParametersSchema } from '../../schemas/crimeMapping/crimeBatches'
 
 export default class CrimeBatchesController {
   constructor(private readonly service: CrimeBatchesService) {}
@@ -10,7 +10,7 @@ export default class CrimeBatchesController {
     const { token } = res.locals.user
 
     // Validate request
-    const parsedQuery = crimeBatchesQuerySchema.parse(query)
+    const parsedQuery = crimeBatchesQueryParametersSchema.parse(query)
 
     const queryResults = await this.service.getQuery(token, parsedQuery.queryId)
 
@@ -35,16 +35,3 @@ export default class CrimeBatchesController {
     }
   }
 }
-
-// view
-// parse session form data into a strongly typed object
-// parse session errors into strongly typed object
-// parse query into strongly type object
-// display validation errors
-// display submitted data
-// display query results
-
-// search
-// parse the form data into strongly typed object
-// validate the form data with rules (e.g. min length)
-// persist validation errors in session

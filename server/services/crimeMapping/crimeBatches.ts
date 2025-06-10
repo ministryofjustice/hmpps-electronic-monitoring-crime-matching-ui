@@ -5,26 +5,11 @@ import {
   createCrimeBatchesQueryDtoSchema,
   getCrimeBatchesQueryDtoSchema,
 } from '../../schemas/crimeMapping/crimeBatches'
-
-type CrimeBatch = {
-  policeForce: string
-  batch: string
-  start: string
-  end: string
-  time: number
-  distance: number
-  matches: number
-}
-
-type GetCrimeBatchesQueryDto = Array<CrimeBatch>
-
-type CreateCrimeBatchesQueryDto = {
-  queryExecutionId: string
-}
-
-type CreateCrimeBatchesQueryRequestDto = {
-  searchTerm: string
-}
+import {
+  CreateCrimeBatchesQueryRequestDto,
+  CreateCrimeBatchesQueryResponseDto,
+  GetCrimeBatchesQueryResponseDto,
+} from '../../types/crimeMapping/crimeBatches'
 
 export default class CrimeBatchesService {
   constructor(private readonly crimeMatchingApiClient: RestClient) {}
@@ -32,7 +17,7 @@ export default class CrimeBatchesService {
   async createQuery(
     userToken: string,
     input: CreateCrimeBatchesQueryRequestDto,
-  ): Promise<Result<CreateCrimeBatchesQueryDto, ValidationResult>> {
+  ): Promise<Result<CreateCrimeBatchesQueryResponseDto, ValidationResult>> {
     try {
       const response = await this.crimeMatchingApiClient.post(
         {
@@ -60,7 +45,7 @@ export default class CrimeBatchesService {
     }
   }
 
-  async getQuery(userToken: string, queryId?: string): Promise<GetCrimeBatchesQueryDto> {
+  async getQuery(userToken: string, queryId?: string): Promise<GetCrimeBatchesQueryResponseDto> {
     if (queryId === undefined) {
       return []
     }

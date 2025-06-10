@@ -1,6 +1,6 @@
 import { z } from 'zod'
 
-const crimeBatchesQuerySchema = z.object({
+const crimeBatchesQueryParametersSchema = z.object({
   queryId: z.string().optional(),
 })
 
@@ -20,4 +20,4 @@ const getCrimeBatchesQueryDtoSchema = z.array(
   }),
 )
 
-export { crimeBatchesQuerySchema, createCrimeBatchesQueryDtoSchema, getCrimeBatchesQueryDtoSchema }
+export { crimeBatchesQueryParametersSchema, createCrimeBatchesQueryDtoSchema, getCrimeBatchesQueryDtoSchema }
