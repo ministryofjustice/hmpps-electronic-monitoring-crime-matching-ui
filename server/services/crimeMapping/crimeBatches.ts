@@ -1,7 +1,10 @@
 import { asUser, RestClient, SanitisedError } from '@ministryofjustice/hmpps-rest-client'
-import { z } from 'zod'
 import { ValidationResult, ValidationResultModel } from '../../models/ValidationResult'
 import Result from '../../types/result'
+import {
+  createCrimeBatchesQueryDtoSchema,
+  getCrimeBatchesQueryDtoSchema,
+} from '../../schemas/crimeMapping/crimeBatches'
 
 type CrimeBatch = {
   policeForce: string
@@ -15,30 +18,21 @@ type CrimeBatch = {
 
 type GetCrimeBatchesQueryDto = Array<CrimeBatch>
 
-const getCrimeBatchesQueryDtoSchema = z.array(
-  z.object({
-    policeForce: z.string(),
-    batch: z.string(),
-    start: z.string(),
-    end: z.string(),
-    time: z.number(),
-    distance: z.number(),
-    matches: z.number(),
-  }),
-)
-
-const createCrimeBatchesQueryDtoSchema = z.object({
-  queryExecutionId: z.string(),
-})
-
 type CreateCrimeBatchesQueryDto = {
   queryExecutionId: string
+}
+
+type CreateCrimeBatchesQueryRequestDto = {
+  searchTerm: string
 }
 
 export default class CrimeBatchesService {
   constructor(private readonly crimeMatchingApiClient: RestClient) {}
 
-  async createQuery(userToken: string, input: any): Promise<Result<CreateCrimeBatchesQueryDto, ValidationResult>> {
+  async createQuery(
+    userToken: string,
+    input: CreateCrimeBatchesQueryRequestDto,
+  ): Promise<Result<CreateCrimeBatchesQueryDto, ValidationResult>> {
     try {
       const response = await this.crimeMatchingApiClient.post(
         {
