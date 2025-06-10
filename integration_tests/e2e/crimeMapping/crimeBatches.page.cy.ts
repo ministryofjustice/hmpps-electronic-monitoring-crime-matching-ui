@@ -1,5 +1,6 @@
 import Page from '../../pages/page'
 import CrimeBatchesPage from '../../pages/crimeMapping/crimeBatches'
+import ErrorPage from '../../pages/error'
 
 const url = '/crime-mapping/crime-batches'
 
@@ -46,38 +47,36 @@ context('Crime Mapping', () => {
       })
 
       cy.visit(url)
-      let page = Page.verifyOnPage(CrimeBatchesPage)
+      const page = Page.verifyOnPage(CrimeBatchesPage)
 
       // Submit a search
       page.form.fillInWith({ searchTerm: 'bar' })
       page.form.searchButton.click()
 
-      // Verify still on page, with error message
-      page = Page.verifyOnPage(CrimeBatchesPage)
-      page.form.searchTermField.shouldHaveValue('bar')
+      // User should be redirected to an error page
+      Page.verifyOnPage(ErrorPage, 'Internal Server Error')
     })
 
-    it('should display an error if the api returns an error when getting a query', () => {
+    it('should display an error if the api cannot find the query', () => {
       // Stub the api to simulate a query being successfully created
       cy.stubCreateCrimeBatchesQuery()
       // Stub the api to simulate the query not being found
       cy.stubGetCrimeBatchesQuery({
         query: '.*',
         status: 404,
-        response: 'Not found',
+        response: 'Not Found',
       })
 
       cy.visit(url)
-      let page = Page.verifyOnPage(CrimeBatchesPage)
+      const page = Page.verifyOnPage(CrimeBatchesPage)
 
       // Submit a search
       page.form.fillInWith({ searchTerm: 'foo' })
       page.form.searchButton.click()
 
-      // Verify still on page, with error message
+      // User should be redirected to an error page
+      Page.verifyOnPage(ErrorPage, 'Not Found')
       cy.url().should('include', '?queryId=1234')
-      page = Page.verifyOnPage(CrimeBatchesPage)
-      page.form.searchTermField.shouldHaveValue('foo')
     })
   })
 })

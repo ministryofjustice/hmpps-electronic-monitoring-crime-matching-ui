@@ -1,7 +1,7 @@
 import z from 'zod'
 
 const crimeBatchesQuerySchema = z.object({
-  searchId: z.string().optional(),
+  queryId: z.string().optional(),
 })
 
 export { crimeBatchesQuerySchema }
