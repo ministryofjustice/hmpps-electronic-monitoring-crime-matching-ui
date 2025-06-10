@@ -4,6 +4,10 @@ const crimeBatchesQueryParametersSchema = z.object({
   queryId: z.string().optional(),
 })
 
+const crimeBatchesFormDataSchema = z.object({
+  searchTerm: z.string().default(''),
+})
+
 const createCrimeBatchesQueryDtoSchema = z.object({
   queryExecutionId: z.string(),
 })
@@ -20,4 +24,9 @@ const getCrimeBatchesQueryDtoSchema = z.array(
   }),
 )
 
-export { crimeBatchesQueryParametersSchema, createCrimeBatchesQueryDtoSchema, getCrimeBatchesQueryDtoSchema }
+export {
+  crimeBatchesQueryParametersSchema,
+  createCrimeBatchesQueryDtoSchema,
+  getCrimeBatchesQueryDtoSchema,
+  crimeBatchesFormDataSchema,
+}
