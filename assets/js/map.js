@@ -44,6 +44,7 @@ MapComponent.prototype = {
     this.arrowSource = new VectorSource()
     this.pointSource = new VectorSource()
     this.confidenceSource = new VectorSource()
+    this.clusteringEnabled = true
   },
 
   render() {
@@ -68,7 +69,11 @@ MapComponent.prototype = {
   },
 
   togglePoints() {
-    this.$pointsLayer.setVisible(!this.$pointsLayer.getVisible())
+    if (this.clusteringEnabled) {
+      this.$clusterPointLayer.setVisible(!this.$clusterPointLayer.getVisible())
+    } else {
+      this.$pointsLayer.setVisible(!this.$pointsLayer.getVisible())
+    }
   },
 
   toggleConfidence() {
@@ -106,6 +111,7 @@ MapComponent.prototype = {
   renderMap() {
     this.$pointsLayer = new LayerGroup({
       title: 'Points',
+      visible: !this.clusteringEnabled,
       layers: [
         new VectorLayer({
           source: this.pointSource,
@@ -126,6 +132,7 @@ MapComponent.prototype = {
 
     this.$clusterPointLayer = new LayerGroup({
       title: 'Cluster',
+      visible: this.clustering,
       layers: [this.$clusters],
     })
 
