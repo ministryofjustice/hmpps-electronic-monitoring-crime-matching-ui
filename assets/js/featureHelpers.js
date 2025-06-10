@@ -5,26 +5,29 @@ import { Point, Circle as CircleGeom } from 'ol/geom'
 
 function generateArrowFeatures(mapZoom, lineSource) {
   const arrowFeatures = []
-  const zoomFactor = 1.2
-  const defaultZoom = 13
+  const zoomFactor = 1.3
+  const baseZoom = 13
   const maxArrows = 10
   const minArrows = 1
   const baseSpacing = 200
+  const baseArrowSize = 100
 
-  // Calculates arrow size when zooming
-  const arrowSize = (100 / mapZoom) * zoomFactor
+  // Calculates arrow size based on zoom
+  const arrowSize = (baseArrowSize / mapZoom) * zoomFactor
 
   lineSource.getFeatures().forEach(lineFeature => {
     const geometry = lineFeature.getGeometry()
-    if (!geometry || geometry.getType() !== 'LineString') return
     const lineLength = getLength(geometry)
 
-    const adjustedSpacing = baseSpacing * Math.pow(zoomFactor, defaultZoom - mapZoom)
+    // Calculate arrow spacing based on zoom
+    const adjustedSpacing = baseSpacing * zoomFactor ** (baseZoom - mapZoom)
 
+    // Arrow count in relation to line length with min and max check
     let arrowCount = lineLength / adjustedSpacing
     arrowCount = Math.max(minArrows, Math.min(Math.floor(arrowCount), maxArrows))
 
     for (let i = 1; i <= arrowCount; i += 1) {
+      // Fraction on line string for arrow placement
       const arrowPoint = i / (arrowCount + 1)
       const coord = geometry.getCoordinateAt(arrowPoint)
 

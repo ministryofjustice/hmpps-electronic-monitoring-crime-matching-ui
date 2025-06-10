@@ -9,7 +9,7 @@ import { fromLonLat, transformExtent } from 'ol/proj'
 import VectorSource from 'ol/source/Vector'
 import XYZ from 'ol/source/XYZ'
 import { Circle as CircleStyle, Fill, Stroke, Style, Text } from 'ol/style'
-import { generateArrowFeatures, generateConfidenceCircleFeatures } from './helpers'
+import { generateArrowFeatures, generateConfidenceCircleFeatures } from './featureHelpers'
 
 function MapComponent($module) {
   this.cacheEls($module)
