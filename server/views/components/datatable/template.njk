@@ -5,7 +5,6 @@
     {% if params.rows.length %}
       {{
         govukTable({
-          firstCellIsHeader: true,
           head: params.columns,
           rows: params.rows
         })

@@ -22,7 +22,33 @@ export default class DataTableComponent {
     return this.element.get('[data-qa="no-results-message"]')
   }
 
+  get columns(): Cypress.Chainable<Array<string>> {
+    return this.element.get('table thead tr th').then(cells => {
+      return Cypress._.map(cells, 'innerText')
+    })
+  }
+
+  get rows(): Cypress.Chainable<Array<Array<string>>> {
+    return this.element.get('table tbody tr').then(rows => {
+      const out = [] as Array<Array<string>>
+
+      rows.each((_, el) => {
+        out.push(Cypress._.map(el.children, 'innerText'))
+      })
+
+      return out
+    })
+  }
+
   // HELPERS
+
+  shouldHaveColumns(columns: Array<string>): void {
+    this.columns.should('deep.equal', columns)
+  }
+
+  shouldHaveRows(rows: Array<Array<string>>): void {
+    this.rows.should('deep.equal', rows)
+  }
 
   shouldHaveResults(): void {
     this.table.should('exist')
