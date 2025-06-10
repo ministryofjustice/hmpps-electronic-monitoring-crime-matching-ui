@@ -6,7 +6,7 @@ export declare module 'express-session' {
   interface SessionData {
     returnTo: string
     nowInMinutes: number
-    formData: unknown
+    formData: any
     validationErrors: ValidationResult
   }
 }

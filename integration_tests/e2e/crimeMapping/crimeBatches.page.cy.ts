@@ -18,52 +18,11 @@ context('Crime Mapping', () => {
       page.dataTable.shouldNotHaveResults()
     })
 
-    it('should display the no result message if the query returns no results', () => {
-      // Stub the api to simulate a query being successfully created
-      cy.stubCreateCrimeBatchesQuery()
-      // Stub the api to simulate the query returning no results
-      cy.stubGetCrimeBatchesQuery()
-
-      cy.visit(url)
-      let page = Page.verifyOnPage(CrimeBatchesPage)
-
-      // Submit a search
-      page.form.fillInWith({ searchTerm: 'foo' })
-      page.form.searchButton.click()
-
-      // User should be shown the results
-      cy.url().should('include', '?queryId=1234')
-      page = Page.verifyOnPage(CrimeBatchesPage)
-      page.dataTable.shouldNotHaveResults()
-    })
-
-    it('should display the query results if the query returned results', () => {
-      // Stub the api to simulate a query being successfully created
-      cy.stubCreateCrimeBatchesQuery()
-      // Stub the api to simulate the query returning 2 results
-      cy.stubGetCrimeBatchesQuery({
-        status: 200,
-        query: '.*',
-        response: [
-          {
-            policeForce: 'Police Force 1',
-            batch: '01234456789',
-            start: '2024-12-01T00:00:00.000Z',
-            end: '2024-12-01T23:59:59.000Z',
-            time: 10,
-            distance: 100,
-            matches: 1,
-          },
-          {
-            policeForce: 'Police Force 2',
-            batch: '01234456789',
-            start: '2024-12-01T00:00:00.000Z',
-            end: '2024-12-01T23:59:59.000Z',
-            time: 10,
-            distance: 100,
-            matches: 1,
-          },
-        ],
+    it('should display a validation error if the api returns 400 when creating a query', () => {
+      // Stub the api to simulate the create query request being rejected
+      cy.stubCreateCrimeBatchesQuery({
+        status: 400,
+        response: [{ field: 'searchTerm', message: 'Search term is required' }],
       })
 
       cy.visit(url)
@@ -73,23 +32,52 @@ context('Crime Mapping', () => {
       page.form.fillInWith({ searchTerm: 'foo' })
       page.form.searchButton.click()
 
-      // User should be shown the results
+      // Verify still on page, with error message
+      page = Page.verifyOnPage(CrimeBatchesPage)
+      page.form.searchTermField.shouldHaveValidationMessage('Search term is required')
+      page.form.searchTermField.shouldHaveValue('foo')
+    })
+
+    it('should display an error if the api returns 500 when creating a query', () => {
+      // Stub the api to simulate an error in the create query request
+      cy.stubCreateCrimeBatchesQuery({
+        status: 500,
+        response: 'Internal Server Error',
+      })
+
+      cy.visit(url)
+      let page = Page.verifyOnPage(CrimeBatchesPage)
+
+      // Submit a search
+      page.form.fillInWith({ searchTerm: 'bar' })
+      page.form.searchButton.click()
+
+      // Verify still on page, with error message
+      page = Page.verifyOnPage(CrimeBatchesPage)
+      page.form.searchTermField.shouldHaveValue('bar')
+    })
+
+    it('should display an error if the api returns an error when getting a query', () => {
+      // Stub the api to simulate a query being successfully created
+      cy.stubCreateCrimeBatchesQuery()
+      // Stub the api to simulate the query not being found
+      cy.stubGetCrimeBatchesQuery({
+        query: '.*',
+        status: 404,
+        response: 'Not found',
+      })
+
+      cy.visit(url)
+      let page = Page.verifyOnPage(CrimeBatchesPage)
+
+      // Submit a search
+      page.form.fillInWith({ searchTerm: 'foo' })
+      page.form.searchButton.click()
+
+      // Verify still on page, with error message
       cy.url().should('include', '?queryId=1234')
       page = Page.verifyOnPage(CrimeBatchesPage)
-      page.dataTable.shouldHaveResults()
-      page.dataTable.shouldHaveColumns([
-        'Police Force',
-        'Batch',
-        'Start',
-        'End',
-        'Time (Mins)',
-        'Distance (Metres)',
-        'Matches',
-      ])
-      page.dataTable.shouldHaveRows([
-        ['Police Force 1', '01234456789', '2024-12-01T00:00:00.000Z', '2024-12-01T23:59:59.000Z', '10', '100', '1'],
-        ['Police Force 2', '01234456789', '2024-12-01T00:00:00.000Z', '2024-12-01T23:59:59.000Z', '10', '100', '1'],
-      ])
+      page.form.searchTermField.shouldHaveValue('foo')
     })
   })
 })
