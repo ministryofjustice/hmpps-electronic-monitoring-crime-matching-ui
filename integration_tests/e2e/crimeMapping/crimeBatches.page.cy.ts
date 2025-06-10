@@ -40,7 +40,7 @@ context('Crime Mapping', () => {
     it('should display the query results if the query returned results', () => {
       // Stub the api to simulate a query being successfully created
       cy.stubCreateCrimeBatchesQuery()
-      // Stub the api to simulate the query returning no results
+      // Stub the api to simulate the query returning 2 results
       cy.stubGetCrimeBatchesQuery({
         status: 200,
         query: '.*',
@@ -48,11 +48,20 @@ context('Crime Mapping', () => {
           {
             policeForce: 'Police Force 1',
             batch: '01234456789',
-            distance: 100,
-            end: '2024-12-01T23:59:59.000Z',
-            matches: 1,
             start: '2024-12-01T00:00:00.000Z',
+            end: '2024-12-01T23:59:59.000Z',
             time: 10,
+            distance: 100,
+            matches: 1,
+          },
+          {
+            policeForce: 'Police Force 2',
+            batch: '01234456789',
+            start: '2024-12-01T00:00:00.000Z',
+            end: '2024-12-01T23:59:59.000Z',
+            time: 10,
+            distance: 100,
+            matches: 1,
           },
         ],
       })
@@ -68,7 +77,19 @@ context('Crime Mapping', () => {
       cy.url().should('include', '?queryId=1234')
       page = Page.verifyOnPage(CrimeBatchesPage)
       page.dataTable.shouldHaveResults()
-      // TODO - add check that results are correct e.g. date time formatting
+      page.dataTable.shouldHaveColumns([
+        'Police Force',
+        'Batch',
+        'Start',
+        'End',
+        'Time (Mins)',
+        'Distance (Metres)',
+        'Matches',
+      ])
+      page.dataTable.shouldHaveRows([
+        ['Police Force 1', '01234456789', '2024-12-01T00:00:00.000Z', '2024-12-01T23:59:59.000Z', '10', '100', '1'],
+        ['Police Force 2', '01234456789', '2024-12-01T00:00:00.000Z', '2024-12-01T23:59:59.000Z', '10', '100', '1'],
+      ])
     })
   })
 })
