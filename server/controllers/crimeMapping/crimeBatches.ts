@@ -1,23 +1,18 @@
 import { RequestHandler } from 'express'
-import { z } from 'zod'
 import CrimeBatchesService from '../../services/crimeMapping/crimeBatches'
-
-const crimeBatchesQuerySchema = z.object({
-  searchId: z.string().optional(),
-})
-
-const crimeBatchesFormData = z.object({
-  term: z.string()
-})
+import { crimeBatchesQuerySchema } from '../../schemas/crimeMapping/crimeBatches'
 
 export default class CrimeBatchesController {
   constructor(private readonly service: CrimeBatchesService) {}
 
   view: RequestHandler = async (req, res) => {
-    const token = res.locals.user.token
-    const query = crimeBatchesQuerySchema.parse(req.query)
-    const queryExecutionId = query.searchId
-    const queryResults = await this.service.getResults(token, queryExecutionId)
+    const { query } = req
+    const { token } = res.locals.user
+
+    // Validate request
+    const parsedQuery = crimeBatchesQuerySchema.parse(query)
+
+    const queryResults = await this.service.getQuery(token, parsedQuery.searchId)
 
     res.render('pages/crime-mapping/crimeBatches', {
       crimeBatches: queryResults.data,
@@ -25,8 +20,31 @@ export default class CrimeBatchesController {
   }
 
   search: RequestHandler = async (req, res) => {
-    const formData = crimeBatchesFormData.parse(req.body)
+    const { token } = res.locals.user
+    const formData = req.body
 
-    res.redirect(`/crime-mapping/crime-batches?search_id=${encodeURIComponent()}`)
+    const result = await this.service.createQuery(token, req.body)
+
+    req.session.formData = formData
+
+    if (result.ok) {
+      res.redirect(`/crime-mapping/crime-batches?queryId=${encodeURIComponent(result.data.queryExecutionId)}`)
+    } else {
+      req.session.validationErrors = result.error
+      res.redirect('/crime-mapping/crime-batches')
+    }
   }
 }
+
+// view
+// parse session form data into a strongly typed object
+// parse session errors into strongly typed object
+// parse query into strongly type object
+// display validation errors
+// display submitted data
+// display query results
+
+// search
+// parse the form data into strongly typed object
+// validate the form data with rules (e.g. min length)
+// persist validation errors in session

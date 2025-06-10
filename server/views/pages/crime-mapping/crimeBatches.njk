@@ -1,6 +1,7 @@
 {% extends "../../partials/layout.njk" %}
-{% from "moj/components/search/macro.njk" import mojSearch %}
 {% from "../../components/datatable/macro.njk" import dataTable %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
 
 {% set pageTitle = applicationName + " - Home" %}
 {% set mainClasses = "app-container govuk-body" %}
@@ -8,27 +9,31 @@
 
 {% block content %}
   <h1>Crime Batches</h1>
+  <form method="post" novalidate id="crime-batches-search-form">
+    <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+    {{
+      govukInput({
+        label: {
+          text: "Search",
+          classes: "govuk-label--s"
+        },
+        hint: {
+          text: "You can search by police force or ingestion date"
+        },
+        classes: "govuk-!-width-two-thirds",
+        id: "searchTerm",
+        name: "searchTerm",
+        value: formData.searchTerm,
+        errorMessage: errors.searchTerm
+      })
+    }}
 
-  {{
-    mojSearch({
-      action: "#",
-      method: "post",
-      input: {
-        id: "search",
-        name: "search"
-      },
-      label: {
-        text: "Find a crime batch",
-        classes: "govuk-!-font-weight-bold"
-      },
-      hint: {
-        text: "You can search by police force or ingestion date"
-      },
-      button: {
+    {{
+      govukButton({
         text: "Search"
-      }
-    })
-  }}
+      })
+    }}
+  </form>
 
   {{
     dataTable({
