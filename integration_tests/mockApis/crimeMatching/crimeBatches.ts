@@ -66,7 +66,7 @@ type StubGetCrimeBatches200Options = {
 }
 
 type StubGetCrimeBatches404Options = {
-  status: 404
+  status: 404 | 500
   query: string
   response: string
 }
