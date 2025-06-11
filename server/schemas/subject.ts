@@ -1,5 +1,4 @@
-// eslint-disable-next-line import/no-named-as-default
-import z from 'zod'
+import { z } from 'zod'
 
 export const SubjectModel = z.object({
   nomisId: z.string(),
