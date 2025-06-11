@@ -19,8 +19,10 @@ const getCrimeBatchesQueryDtoSchema = z.array(
     start: z.string(),
     end: z.string(),
     time: z.number(),
-    distance: z.number(),
     matches: z.number(),
+    ingestionDate: z.string(),
+    caseloadMappingDate: z.string(),
+    crimeMatchingAlgorithmVersion: z.string(),
   }),
 )
 

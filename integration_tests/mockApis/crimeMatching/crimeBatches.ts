@@ -60,8 +60,10 @@ type StubGetCrimeBatches200Options = {
     start: string
     end: string
     time: number
-    distance: number
     matches: number
+    ingestionDate: string
+    caseloadMappingDate: string
+    crimeMatchingAlgorithmVersion: string
   }>
 }
 
