@@ -19,10 +19,10 @@
           text: crimeBatch.batch
         },
         {
-          text: crimeBatch.start
+          text: crimeBatch.start | formatDate
         },
         {
-          text: crimeBatch.end
+          text: crimeBatch.end | formatDate
         },
         {
           text: crimeBatch.time
@@ -31,10 +31,10 @@
           text: crimeBatch.matches
         },
         {
-          text: crimeBatch.ingestionDate
+          text: crimeBatch.ingestionDate | formatDate
         },
         {
-          text: crimeBatch.caseloadMappingDate
+          text: crimeBatch.caseloadMappingDate | formatDate
         },
         {
           text: crimeBatch.crimeMatchingAlgorithmVersion
