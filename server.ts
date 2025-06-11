@@ -9,7 +9,6 @@ import logger from './logger'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
-dayjs.tz.setDefault('Europe/London')
 
 app.listen(app.get('port'), () => {
   logger.info(`Server listening on port ${app.get('port')}`)

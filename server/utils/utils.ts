@@ -35,5 +35,5 @@ export const formatDate = (datetime?: string | null): string => {
     return ''
   }
 
-  return date.format('DD/MM/YYYY HH:mm')
+  return date.tz('Europe/London').format('DD/MM/YYYY HH:mm')
 }
