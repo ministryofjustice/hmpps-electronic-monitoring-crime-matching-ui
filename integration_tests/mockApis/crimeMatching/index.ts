@@ -1,9 +1,10 @@
 import ping from './ping'
-import stubCrimeBatchSearch from './crimeBatches'
+import { stubCreateCrimeBatchesQuery, stubGetCrimeBatchesQuery } from './crimeBatches'
 import stubSubjectSearch from './subjects'
 
 export default {
   stubCrimeMatchingPing: ping,
-  stubCrimeBatchSearch,
+  stubCreateCrimeBatchesQuery,
+  stubGetCrimeBatchesQuery,
   stubSubjectSearch,
 }

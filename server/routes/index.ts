@@ -9,8 +9,15 @@ import CrimeBatchesController from '../controllers/crimeMapping/crimeBatches'
 import LegalController from '../controllers/legal'
 import HelpController from '../controllers/help'
 import SubjectController from '../controllers/subjectController'
+import populateSessionData from '../middleware/populateSessionData'
 
-export default function routes({ auditService, crimeMappingService, mapService, subjectService }: Services): Router {
+export default function routes({
+  auditService,
+  crimeBatchesService,
+  crimeMappingService,
+  mapService,
+  subjectService,
+}: Services): Router {
   const router = Router()
   const get = (path: string | string[], handler: RequestHandler) => router.get(path, asyncMiddleware(handler))
   const post = (path: string | string[], handler: RequestHandler) => router.post(path, asyncMiddleware(handler))
@@ -22,17 +29,22 @@ export default function routes({ auditService, crimeMappingService, mapService, 
   })
 
   const crimeMappingController = new CrimeMappingController(crimeMappingService)
-  const crimeBatchesController = new CrimeBatchesController()
+  const crimeBatchesController = new CrimeBatchesController(crimeBatchesService)
   const helpController = new HelpController()
   const legalController = new LegalController()
   const mapController = new MapController(mapService)
   const subjectController = new SubjectController(subjectService)
 
+  router.use(populateSessionData)
+
   get('/crime-mapping', crimeMappingController.view)
-  get('/crime-mapping/crime-batches', crimeBatchesController.view)
+
   get('/help', helpController.view)
   get('/legal', legalController.view)
   get('/map/token', mapController.token)
+
+  get('/crime-mapping/crime-batches', crimeBatchesController.view)
+  post('/crime-mapping/crime-batches', crimeBatchesController.search)
 
   get('/location-data/subjects', subjectController.getSearchResults)
   post('/location-data/subjects', subjectController.submitSearch)
