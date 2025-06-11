@@ -98,8 +98,10 @@ describe('CrimeBatchesController', () => {
           start: '2024-12-01T00:00:00.000Z',
           end: '2024-12-01T23:59:59.000Z',
           time: 10,
-          distance: 100,
           matches: 1,
+          ingestionDate: '2024-12-09:00:00.000Z',
+          caseloadMappingDate: '2024-12-01T00:00:00.000Z',
+          crimeMatchingAlgorithmVersion: 'v0.0.1',
         },
       ])
 
@@ -123,8 +125,10 @@ describe('CrimeBatchesController', () => {
               start: '2024-12-01T00:00:00.000Z',
               end: '2024-12-01T23:59:59.000Z',
               time: 10,
-              distance: 100,
               matches: 1,
+              ingestionDate: '2024-12-09:00:00.000Z',
+              caseloadMappingDate: '2024-12-01T00:00:00.000Z',
+              crimeMatchingAlgorithmVersion: 'v0.0.1',
             },
           ],
         }),
