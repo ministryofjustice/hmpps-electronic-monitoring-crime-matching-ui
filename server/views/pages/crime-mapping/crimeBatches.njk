@@ -28,10 +28,16 @@
           text: crimeBatch.time
         },
         {
-          text: crimeBatch.distance
+          text: crimeBatch.matches
         },
         {
-          text: crimeBatch.matches
+          text: crimeBatch.ingestionDate
+        },
+        {
+          text: crimeBatch.caseloadMappingDate
+        },
+        {
+          text: crimeBatch.crimeMatchingAlgorithmVersion
         }
       ]
     ), rows)
@@ -85,10 +91,16 @@
           text: "Time (Mins)"
         },
         {
-          text: "Distance (Metres)"
+          text: "Matches"
         },
         {
-          text: "Matches"
+          text: "AC Ingestion Date"
+        },
+        {
+          text: "AC Caseload Mapping Date"
+        },
+        {
+          text: "Algorithm Version"
         }
       ],
       rows: rows

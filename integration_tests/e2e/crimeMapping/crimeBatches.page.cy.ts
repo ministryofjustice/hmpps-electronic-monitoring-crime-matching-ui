@@ -51,8 +51,10 @@ context('Crime Mapping', () => {
             start: '2024-12-01T00:00:00.000Z',
             end: '2024-12-01T23:59:59.000Z',
             time: 10,
-            distance: 100,
             matches: 1,
+            ingestionDate: '2024-12-02T09:00:00.000Z',
+            caseloadMappingDate: '2024-12-01T00:00:00.000Z',
+            crimeMatchingAlgorithmVersion: 'v0.0.1',
           },
           {
             policeForce: 'Police Force 2',
@@ -60,8 +62,10 @@ context('Crime Mapping', () => {
             start: '2024-12-01T00:00:00.000Z',
             end: '2024-12-01T23:59:59.000Z',
             time: 10,
-            distance: 100,
             matches: 1,
+            ingestionDate: '2024-12-02T09:00:00.000Z',
+            caseloadMappingDate: '2024-12-01T00:00:00.000Z',
+            crimeMatchingAlgorithmVersion: 'v0.0.1',
           },
         ],
       })
@@ -83,12 +87,34 @@ context('Crime Mapping', () => {
         'Start',
         'End',
         'Time (Mins)',
-        'Distance (Metres)',
         'Matches',
+        'AC Ingestion Date',
+        'AC Caseload Mapping Date',
+        'Algorithm Version',
       ])
       page.dataTable.shouldHaveRows([
-        ['Police Force 1', '01234456789', '2024-12-01T00:00:00.000Z', '2024-12-01T23:59:59.000Z', '10', '100', '1'],
-        ['Police Force 2', '01234456789', '2024-12-01T00:00:00.000Z', '2024-12-01T23:59:59.000Z', '10', '100', '1'],
+        [
+          'Police Force 1',
+          '01234456789',
+          '2024-12-01T00:00:00.000Z',
+          '2024-12-01T23:59:59.000Z',
+          '10',
+          '1',
+          '2024-12-02T09:00:00.000Z',
+          '2024-12-01T00:00:00.000Z',
+          'v0.0.1',
+        ],
+        [
+          'Police Force 2',
+          '01234456789',
+          '2024-12-01T00:00:00.000Z',
+          '2024-12-01T23:59:59.000Z',
+          '10',
+          '1',
+          '2024-12-02T09:00:00.000Z',
+          '2024-12-01T00:00:00.000Z',
+          'v0.0.1',
+        ],
       ])
     })
   })
