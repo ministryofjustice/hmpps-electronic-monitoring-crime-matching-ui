@@ -9,6 +9,7 @@ import { fromLonLat, transformExtent } from 'ol/proj'
 import VectorSource from 'ol/source/Vector'
 import XYZ from 'ol/source/XYZ'
 import { Circle as CircleStyle, Fill, Stroke, Style, Text } from 'ol/style'
+import { generateArrowFeatures, generateConfidenceCircleFeatures } from './featureHelpers'
 
 function MapComponent($module) {
   this.cacheEls($module)
@@ -39,20 +40,25 @@ MapComponent.prototype = {
     this.tileUrl = $module.getAttribute('data-tile-url')
 
     this.lineSource = new VectorSource()
+    this.arrowSource = new VectorSource()
     this.pointSource = new VectorSource()
+    this.confidenceSource = new VectorSource()
   },
 
   render() {
     this.renderMap()
     this.appendPoints()
     this.appendLines()
+    this.appendConfidenceCircles()
   },
 
   createControls() {
     this.pointsToggle = document.querySelector('#locations')
+    this.confidenceToggle = document.querySelector('#confidence')
     this.linesToggle = document.querySelector('#tracks')
 
     this.pointsToggle.onchange = () => this.togglePoints()
+    this.confidenceToggle.onchange = () => this.toggleConfidence()
     this.linesToggle.onchange = () => this.toggleLines()
   },
 
@@ -62,6 +68,10 @@ MapComponent.prototype = {
 
   togglePoints() {
     this.$pointsLayer.setVisible(!this.$pointsLayer.getVisible())
+  },
+
+  toggleConfidence() {
+    this.$confidenceLayer.setVisible(!this.$confidenceLayer.getVisible())
   },
 
   toggleLines() {
@@ -103,12 +113,27 @@ MapComponent.prototype = {
       ],
     })
 
+    this.$confidenceLayer = new LayerGroup({
+      title: 'Confidence',
+      visible: false,
+      layers: [
+        new VectorLayer({
+          source: this.confidenceSource,
+          style: this.confidenceCircleStyle.bind(),
+        }),
+      ],
+    })
+
     this.$linesLayer = new LayerGroup({
       title: 'Lines',
+      visible: false,
       layers: [
         new VectorLayer({
           source: this.lineSource,
           style: this.lineStyle.bind(this),
+        }),
+        new VectorLayer({
+          source: this.arrowSource,
         }),
       ],
     })
@@ -124,6 +149,7 @@ MapComponent.prototype = {
         }),
         this.$linesLayer,
         this.$pointsLayer,
+        this.$confidenceLayer,
       ],
       view: new View({
         projection: 'EPSG:3857',
@@ -134,6 +160,21 @@ MapComponent.prototype = {
         zoom: 13,
       }),
     })
+
+    this.$map.getView().on('change:resolution', () => {
+      this.updateArrows(this.$map.getView().getZoom())
+    })
+  },
+
+  updateArrows(mapZoom) {
+    this.arrowSource.clear()
+    const arrowFeatures = generateArrowFeatures(mapZoom, this.lineSource)
+    this.arrowSource.addFeatures(arrowFeatures)
+  },
+
+  appendConfidenceCircles() {
+    const confidenceFeatures = generateConfidenceCircleFeatures(this.pointSource)
+    this.confidenceSource.addFeatures(confidenceFeatures)
   },
 
   appendPoints() {
@@ -179,6 +220,8 @@ MapComponent.prototype = {
     for (let i = 0; i < features.length; i += 1) {
       this.lineSource.addFeature(features[i])
     }
+
+    this.updateArrows(this.$map.getView().getZoom())
   },
 
   lineStyle() {
@@ -186,6 +229,18 @@ MapComponent.prototype = {
       stroke: new Stroke({
         width: 2,
         color: 'black',
+      }),
+    })
+  },
+
+  confidenceCircleStyle() {
+    return new Style({
+      stroke: new Stroke({
+        color: 'orange',
+        width: 2,
+      }),
+      fill: new Fill({
+        color: 'rgba(255, 165, 0, 0.1)',
       }),
     })
   },

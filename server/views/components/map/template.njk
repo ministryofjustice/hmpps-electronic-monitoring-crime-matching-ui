@@ -35,26 +35,43 @@
         })
       }}
 
-      {{
-        govukCheckboxes({
-          id: "tracks",
-          name: "tracks",
-          fieldset: {
-            legend: {
-              text: "Show tracks",
-              isPageHeading: true,
-              classes: "govuk-fieldset__legend--s"
-            }
-          },
-          items: [
-            {
-              value: "on",
-              text: "Toggled on",
-              checked: true
-            }
-          ]
-        })
-      }}
+      {{ govukCheckboxes({
+        id: "confidence",
+        name: "confidence",
+        fieldset: {
+          legend: {
+            text: "Show confidence circles",
+            isPageHeading: true,
+            classes: "govuk-fieldset__legend--s"
+          }
+        },
+        items: [
+          {
+            value: "on",
+            text: "Toggled on",
+            checked: false
+          }
+        ]
+      }) }}
+
+      {{ govukCheckboxes({
+        id: "tracks",
+        name: "tracks",
+        fieldset: {
+          legend: {
+            text: "Show tracks",
+            isPageHeading: true,
+            classes: "govuk-fieldset__legend--s"
+          }
+        },
+        items: [
+          {
+            value: "on",
+            text: "Toggled on",
+            checked: false
+          }
+        ]
+      }) }}
     </div>
   </div>
 </div>

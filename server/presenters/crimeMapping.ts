@@ -7,6 +7,7 @@ type LineFeature = {
   id: string
   properties: {
     '@id': string
+    direction: number
   }
   geometry: {
     type: 'LineString'
@@ -37,6 +38,7 @@ const createGeoJsonData = (locations: Array<Location>): GeoJsonData => ({
     id: index.toString(),
     properties: {
       '@id': index.toString(),
+      confidence: location.confidence,
     },
     geometry: {
       type: 'Point',
@@ -50,6 +52,7 @@ const createGeoJsonData = (locations: Array<Location>): GeoJsonData => ({
         id: index.toString(),
         properties: {
           '@id': index.toString(),
+          direction: location.direction,
         },
         geometry: {
           type: 'LineString',
