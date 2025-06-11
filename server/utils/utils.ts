@@ -21,3 +21,30 @@ export const initialiseName = (fullName?: string): string | null => {
   const array = fullName.split(' ')
   return `${array[0][0]}. ${array.reverse()[0]}`
 }
+
+/**
+ * Validate that a date instance is valid
+ */
+const isValidDate = (date: Date) => {
+  return !Number.isNaN(date.getTime())
+}
+
+export const formatDate = (datetime?: string | null): string => {
+  if (!datetime) {
+    return ''
+  }
+
+  const date = new Date(datetime)
+
+  if (!isValidDate(date)) {
+    return ''
+  }
+
+  const year = date.getFullYear()
+  const month = (date.getMonth() + 1).toString().padStart(2, '0') // Months are 0 indexed
+  const day = date.getDate().toString().padStart(2, '0')
+  const hours = date.getHours().toString().padStart(2, '0')
+  const minutes = date.getMinutes().toString().padStart(2, '0')
+
+  return `${day}/${month}/${year} ${hours}:${minutes}`
+}
