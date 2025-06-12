@@ -8,7 +8,7 @@ import MapController from '../controllers/map'
 import CrimeBatchesController from '../controllers/crimeMapping/crimeBatches'
 import LegalController from '../controllers/legal'
 import HelpController from '../controllers/help'
-import SubjectController from '../controllers/subjectController'
+import SubjectController from '../controllers/subject/subjects'
 import populateSessionData from '../middleware/populateSessionData'
 
 export default function routes({
@@ -46,8 +46,8 @@ export default function routes({
   get('/crime-mapping/crime-batches', crimeBatchesController.view)
   post('/crime-mapping/crime-batches', crimeBatchesController.search)
 
-  get('/location-data/subjects', subjectController.getSearchResults)
-  post('/location-data/subjects', subjectController.submitSearch)
+  get('/location-data/subjects', subjectController.view)
+  post('/location-data/subjects', subjectController.search)
 
   return router
 }
