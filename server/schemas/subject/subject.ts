@@ -1,5 +1,4 @@
-// eslint-disable-next-line import/no-named-as-default
-import z from 'zod'
+import { z } from 'zod'
 
 const MISSING_FORM_VALUE_ERROR = 'You must enter a value for either Name or NOMIS ID'
 
