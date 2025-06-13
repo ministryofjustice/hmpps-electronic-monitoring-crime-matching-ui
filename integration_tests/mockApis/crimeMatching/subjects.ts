@@ -1,37 +1,48 @@
 import { stubFor } from '../wiremock'
 
-// This has to match the path of the EM_CRIME_MATCHING_API_URL env variable
 const baseUrl = '/crime-matching'
 
-type StubSubjectSearchOptions = {
-  query: string
+type StubCreateSubjectsQuery200Options = {
+  status: 200
+  response: {
+    queryExecutionId: string
+  }
+}
+
+type StubSubjectsQuery400Options = {
+  status: 400
   response: Array<{
-    nomisId: string
-    name: string | null
-    dateOfBirth: string | null
-    address: string | null
-    orderStartDate: string | null
-    orderEndDate: string | null
-    deviceId: string | null
-    tagPeriodStartDate: string | null
-    tagPeriodEndDate: string | null
+    field: string
+    message: string
   }>
 }
 
-// Default options will return an empty array for any query string e.g. ?term=abc
-const defaultOptions: StubSubjectSearchOptions = {
-  query: '.*',
-  response: [],
+type StubCreateSubjectsQuery500Options = {
+  status: 500
+  response: string
 }
 
-const stubSubjectSearch = (options: StubSubjectSearchOptions = defaultOptions) =>
+type StubCreateSubjectQueryOptions =
+  | StubCreateSubjectsQuery200Options
+  | StubSubjectsQuery400Options
+  | StubCreateSubjectsQuery500Options
+
+// Default options returns a successful response with a mock queryExecutionId
+const defaultCreateSubjectOptions: StubCreateSubjectQueryOptions = {
+  status: 200,
+  response: {
+    queryExecutionId: '1234',
+  },
+}
+
+const stubCreateSubjectsQuery = (options: StubCreateSubjectQueryOptions = defaultCreateSubjectOptions) =>
   stubFor({
     request: {
-      method: 'GET',
-      urlPattern: `${baseUrl}/subjects${options.query}`,
+      method: 'POST',
+      urlPattern: `${baseUrl}/subjects-query`,
     },
     response: {
-      status: 200,
+      status: options.status,
       headers: {
         'Content-Type': 'application/json;charset=UTF-8',
       },
@@ -39,6 +50,49 @@ const stubSubjectSearch = (options: StubSubjectSearchOptions = defaultOptions) =
     },
   })
 
-export default stubSubjectSearch
+type StubGetSubjects200Options = {
+  status: 200
+  query: string
+  response: Array<{
+    nomisId: string
+    name: string
+    dateOfBirth: string
+    address: string
+    orderStartDate: string
+    orderEndDate: string
+    deviceId: string
+    tagPeriodStartDate: string
+    tagPeriodEndDate: string
+  }>
+}
 
-export { StubSubjectSearchOptions }
+type StubGetSubjects404Options = {
+  status: 404 | 500
+  query: string
+  response: string
+}
+
+type StubGetSubjectsOptions = StubGetSubjects200Options | StubGetSubjects404Options
+
+const defaultGetSubjectOptions: StubGetSubjectsOptions = {
+  status: 200,
+  query: '.*',
+  response: [],
+}
+
+const stubGetSubjectsQuery = (options: StubGetSubjectsOptions = defaultGetSubjectOptions) =>
+  stubFor({
+    request: {
+      method: 'GET',
+      urlPattern: `${baseUrl}/subjects-query${options.query}`,
+    },
+    response: {
+      status: options.status,
+      headers: {
+        'Content-Type': 'application/json;charset=UTF-8',
+      },
+      jsonBody: options.response,
+    },
+  })
+
+export { stubCreateSubjectsQuery, stubGetSubjectsQuery, StubCreateSubjectQueryOptions, StubGetSubjectsOptions }
