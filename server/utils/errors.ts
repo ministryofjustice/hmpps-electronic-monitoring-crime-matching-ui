@@ -1,4 +1,4 @@
-import { ZodError } from 'zod'
+import { ZodError } from 'zod/v4'
 import { ValidationError, ValidationResult } from '../models/ValidationResult'
 import { GovUkErrorMessage } from '../types/govUk'
 

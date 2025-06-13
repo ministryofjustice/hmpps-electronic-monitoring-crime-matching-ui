@@ -1,4 +1,4 @@
-import { z } from 'zod'
+import { z } from 'zod/v4'
 
 const MISSING_FORM_VALUE_ERROR = 'You must enter a value for either Name or NOMIS ID'
 
@@ -11,10 +11,11 @@ const subjectsFormDataSchema = z
     name: z.string(),
     nomisId: z.string(),
   })
-  .superRefine((data, ctx) => {
-    if (Object.values(data).every(value => value === '' || value === undefined)) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
+  .check(ctx => {
+    if (Object.values(ctx.value).every(value => value === '' || value === undefined)) {
+      ctx.issues.push({
+        code: 'custom',
+        input: ctx.value,
         message: MISSING_FORM_VALUE_ERROR,
         path: ['name'],
       })

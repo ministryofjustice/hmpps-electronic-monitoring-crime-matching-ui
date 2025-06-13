@@ -1,5 +1,5 @@
 import { asUser, RestClient, SanitisedError } from '@ministryofjustice/hmpps-rest-client'
-import { ZodError } from 'zod'
+import { ZodError } from 'zod/v4'
 import {
   CreateSubjectsQueryRequestDto,
   CreateSubjectsQueryResponseDto,
