@@ -3,7 +3,7 @@ import AuditService from './auditService'
 import CrimeMappingService from './crimeMapping'
 import CrimeBatchesService from './crimeMapping/crimeBatches'
 import MapService from './mapService'
-import SubjectService from './subjectService'
+import SubjectService from './subject/subjects'
 
 export const services = () => {
   const { applicationInfo, hmppsAuditClient, crimeMatchingApiClient } = dataAccess()

@@ -1,4 +1,4 @@
-import { z } from 'zod'
+import { z } from 'zod/v4'
 
 const crimeBatchesQueryParametersSchema = z.object({
   queryId: z.string().optional(),

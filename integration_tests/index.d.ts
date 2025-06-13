@@ -1,4 +1,5 @@
 import { StubCreateCrimeBatchQueryOptions, StubGetCrimeBatchesOptions } from './mockApis/crimeMatching/crimeBatches'
+import { StubCreateSubjectQueryOptions, StubGetSubjectsOptions } from './mockApis/crimeMatching/subjects'
 
 declare global {
   namespace Cypress {
@@ -29,9 +30,14 @@ declare global {
       stubGetCrimeBatchesQuery(options?: StubGetCrimeBatchesOptions): Chainable<void>
 
       /**
-       * Stub a wiremock response for the crimeMatchingApi GET /subjects
+       * Stub a wiremock response for the crimeMatchingApi POST /subjects-query
        */
-      stubSubjectSearch(options: StubCrimeBatchSearchOptions): Chainable<void>
+      stubCreateSubjectsQuery(options?: StubCreateSubjectQueryOptions): Chainable<void>
+
+      /**
+       * Stub a wiremock response for the crimeMatchingApi GET /subjects-query
+       */
+      stubGetSubjectsQuery(options?: StubGetSubjectsOptions): Chainable<void>
     }
   }
 }
