@@ -1,3 +1,5 @@
+import dayjs from 'dayjs'
+
 const properCase = (word: string): string =>
   word.length >= 1 ? word[0].toUpperCase() + word.toLowerCase().slice(1) : word
 
@@ -20,4 +22,18 @@ export const initialiseName = (fullName?: string): string | null => {
 
   const array = fullName.split(' ')
   return `${array[0][0]}. ${array.reverse()[0]}`
+}
+
+export const formatDate = (datetime?: string | null): string => {
+  if (!datetime) {
+    return ''
+  }
+
+  const date = dayjs(datetime)
+
+  if (!date.isValid()) {
+    return ''
+  }
+
+  return date.tz('Europe/London').format('DD/MM/YYYY HH:mm')
 }

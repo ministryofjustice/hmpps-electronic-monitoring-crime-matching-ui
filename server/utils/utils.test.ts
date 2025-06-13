@@ -1,4 +1,10 @@
-import { convertToTitleCase, initialiseName } from './utils'
+import dayjs from 'dayjs'
+import utc from 'dayjs/plugin/utc'
+import timezone from 'dayjs/plugin/timezone'
+import { convertToTitleCase, formatDate, initialiseName } from './utils'
+
+dayjs.extend(utc)
+dayjs.extend(timezone)
 
 describe('convert to title case', () => {
   it.each([
@@ -25,5 +31,18 @@ describe('initialise name', () => {
     ['Double barrelled', 'Robert-John Smith-Jones-Wilson', 'R. Smith-Jones-Wilson'],
   ])('%s initialiseName(%s, %s)', (_: string | undefined, a: string | undefined, expected: string | null) => {
     expect(initialiseName(a)).toEqual(expected)
+  })
+})
+
+describe('formatDate', () => {
+  it.each([
+    ['Undefined', undefined, ''],
+    ['Null', null, ''],
+    ['Empty string', '', ''],
+    ['Invalid date', 'foo', ''],
+    ['GMT', '2025-02-01T00:00:00.000Z', '01/02/2025 00:00'],
+    ['BST', '2025-08-01T12:15:00.000Z', '01/08/2025 13:15'],
+  ])('%s formatDate(%s)', (_: string, datetime: string | undefined | null, expected: string) => {
+    expect(formatDate(datetime)).toEqual(expected)
   })
 })
