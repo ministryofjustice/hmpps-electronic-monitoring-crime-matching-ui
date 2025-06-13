@@ -4,7 +4,6 @@ import {
   CreateSubjectsQueryRequestDto,
   CreateSubjectsQueryResponseDto,
   GetSubjectsQueryResponseDto,
-  Subject,
 } from '../../types/subject/subjects'
 import Result from '../../types/result'
 import { ValidationResult, ValidationResultModel } from '../../models/ValidationResult'
