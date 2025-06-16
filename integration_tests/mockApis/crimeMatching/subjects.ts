@@ -24,7 +24,7 @@ type StubCreateSubjectsQuery500Options = {
 
 type StubCreateSubjectQueryOptions =
   | StubCreateSubjectsQuery200Options
-  | StubSubjectsQuery400Options
+  | StubCreateSubjectsQuery400Options
   | StubCreateSubjectsQuery500Options
 
 // Default options returns a successful response with a mock queryExecutionId
@@ -66,13 +66,13 @@ type StubGetSubjects200Options = {
   }>
 }
 
-type StubGetSubjects404Options = {
+type StubGetSubjectsQuery404Options = {
   status: 404 | 500
   query: string
   response: string
 }
 
-type StubGetSubjectsOptions = StubGetSubjects200Options | StubGetSubjects404Options
+type StubGetSubjectsOptions = StubGetSubjects200Options | StubGetSubjectsQuery404Options
 
 const defaultGetSubjectOptions: StubGetSubjectsOptions = {
   status: 200,

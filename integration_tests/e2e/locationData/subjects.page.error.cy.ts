@@ -73,7 +73,7 @@ context('Location Data', () => {
     it('should display an error if the api returns 500 when getting the query', () => {
       // Stub the api to simulate a query being successfully created
       cy.stubCreateSubjectsQuery()
-      // Stub the api to simulate the query not being found
+      // Stub the api to simulate an internal server error
       cy.stubGetSubjectsQuery({
         query: '.*',
         status: 500,
