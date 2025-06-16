@@ -32,13 +32,13 @@ const createPrevItem = (currentPage: number, hrefPrefix: string): GovUkPaginatio
 const createItem = (item: number, hrefPrefix: string, current: boolean = false): GovUkPaginationItem => {
   if (current) {
     return {
-      text: item.toString(),
+      number: item.toString(),
       href: `${hrefPrefix}page=${item}`,
       current: true,
     }
   }
 
-  return { text: item.toString(), href: `${hrefPrefix}page=${item}` }
+  return { number: item.toString(), href: `${hrefPrefix}page=${item}` }
 }
 
 const createItemsPrefix = (previousPage: number, hrefPrefix: string): Array<GovUkPaginationItem> => {

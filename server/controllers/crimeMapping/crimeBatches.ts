@@ -15,6 +15,7 @@ export default class CrimeBatchesController {
       crimeBatches: queryResults.data,
       pageCount: queryResults.pageCount,
       pageNumber: queryResults.pageNumber,
+      queryId: parsedQuery.queryId
     })
   }
 

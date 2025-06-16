@@ -103,7 +103,12 @@
           text: "Algorithm Version"
         }
       ],
-      rows: rows
+      rows: rows,
+      pagination: {
+        pageCount: pageCount,
+        currentPage: pageNumber,
+        hrefPrefix: '?queryId=' + queryId
+      }
     })
   }}
 {% endblock %}

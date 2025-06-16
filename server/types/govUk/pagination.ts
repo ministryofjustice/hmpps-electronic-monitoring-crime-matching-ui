@@ -21,7 +21,7 @@ export type GovUkPagination = {
 
 export type GovUkPaginationItem = {
   // The pagination item text – usually a page number.  Required unless the item is an ellipsis.
-  text?: string
+  number?: string
 
   // The visually hidden label for the pagination item, which will be applied to an `aria-label` and announced by screen readers on the pagination item link. Should include page number. Defaults to, for example "Page 1".
   visuallyHiddenText?: string
