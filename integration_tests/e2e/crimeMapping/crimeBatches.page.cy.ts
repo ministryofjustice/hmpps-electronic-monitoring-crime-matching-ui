@@ -125,13 +125,13 @@ context('Crime Mapping', () => {
       page.dataTable.shouldNotHavePagination()
     })
 
-    it('should display the pagination if the query returned > 1 page of results', () => {
+    it('should display the second page of results if the user clicks the next page button', () => {
       // Stub the api to simulate a query being successfully created
       cy.stubCreateCrimeBatchesQuery()
-      // Stub the api to simulate the query returning 2 results
+      // Stub the api to simulate the query returning the first page results
       cy.stubGetCrimeBatchesQuery({
         status: 200,
-        query: '.*',
+        query: '\\?id=1234',
         response: {
           data: [
             {
@@ -145,6 +145,18 @@ context('Crime Mapping', () => {
               caseloadMappingDate: '2024-12-01T00:00:00.000Z',
               crimeMatchingAlgorithmVersion: 'v0.0.1',
             },
+          ],
+          pageCount: 2,
+          pageNumber: 1,
+          pageSize: 10,
+        },
+      })
+      // Stub the api to simulate the query returning the second page results
+      cy.stubGetCrimeBatchesQuery({
+        status: 200,
+        query: '\\?id=1234&page=2',
+        response: {
+          data: [
             {
               policeForce: 'Police Force 2',
               batch: '01234456789',
@@ -158,7 +170,7 @@ context('Crime Mapping', () => {
             },
           ],
           pageCount: 2,
-          pageNumber: 1,
+          pageNumber: 2,
           pageSize: 10,
         },
       })
@@ -197,6 +209,20 @@ context('Crime Mapping', () => {
           '01/12/2024 00:00',
           'v0.0.1',
         ],
+      ])
+      page.dataTable.shouldHavePagination()
+      page.dataTable.pagination.shouldHaveCurrentPage('1')
+      page.dataTable.pagination.shouldHaveNextButton()
+      page.dataTable.pagination.shouldNotHavePrevButton()
+
+      // Navigate to the next page
+      page.dataTable.pagination.next.click()
+
+      // User should be shown the second page of results
+      cy.url().should('include', '?queryId=1234&page=2')
+      page = Page.verifyOnPage(CrimeBatchesPage)
+      page.dataTable.shouldHaveResults()
+      page.dataTable.shouldHaveRows([
         [
           'Police Force 2',
           '01234456789',
@@ -210,6 +236,9 @@ context('Crime Mapping', () => {
         ],
       ])
       page.dataTable.shouldHavePagination()
+      page.dataTable.pagination.shouldHaveCurrentPage('2')
+      page.dataTable.pagination.shouldNotHaveNextButton()
+      page.dataTable.pagination.shouldHavePrevButton()
     })
   })
 })
