@@ -9,7 +9,7 @@ type StubCreateSubjectsQuery200Options = {
   }
 }
 
-type StubSubjectsQuery400Options = {
+type StubCreateSubjectsQuery400Options = {
   status: 400
   response: Array<{
     field: string
