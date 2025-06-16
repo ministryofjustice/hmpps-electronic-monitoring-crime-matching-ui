@@ -28,14 +28,14 @@ type StubCreateSubjectQueryOptions =
   | StubCreateSubjectsQuery500Options
 
 // Default options returns a successful response with a mock queryExecutionId
-const defaultCreateSubjectOptions: StubCreateSubjectQueryOptions = {
+const defaultCreateSubjectQueryOptions: StubCreateSubjectQueryOptions = {
   status: 200,
   response: {
     queryExecutionId: '1234',
   },
 }
 
-const stubCreateSubjectsQuery = (options: StubCreateSubjectQueryOptions = defaultCreateSubjectOptions) =>
+const stubCreateSubjectsQuery = (options: StubCreateSubjectQueryOptions = defaultCreateSubjectQueryOptions) =>
   stubFor({
     request: {
       method: 'POST',
