@@ -1,6 +1,6 @@
 import { ZodError } from 'zod/v4'
 import { ValidationError, ValidationResult } from '../models/ValidationResult'
-import { GovUkErrorMessage } from '../types/govUk'
+import { GovUkErrorMessage } from '../types/govUk/errorMessage'
 
 const createGovUkErrorMessage = (error: ValidationError): GovUkErrorMessage => ({
   text: error.message,

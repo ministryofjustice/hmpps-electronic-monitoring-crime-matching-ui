@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express'
 import { createGovUkErrorMessage } from '../utils/errors'
-import { GovUkErrorMessage } from '../types/govUk'
+import { GovUkErrorMessage } from '../types/govUk/errorMessage'
 
 // Automatically exposes validation errors present in the session to the view engine
 // Automatically exposes formData present in the session to the view engine

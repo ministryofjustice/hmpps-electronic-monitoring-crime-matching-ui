@@ -1,3 +1,4 @@
+{% from "govuk/components/pagination/macro.njk" import govukPagination %}
 {% from "govuk/components/table/macro.njk" import govukTable %}
 
 <div class="datatable govuk-grid-row">
@@ -9,6 +10,18 @@
           rows: params.rows
         })
       }}
+
+      {% if params.pagination.pageCount > 1 %}
+        {{
+          govukPagination(
+            pagination(
+              params.pagination.currentPage,
+              params.pagination.pageCount,
+              params.pagination.hrefPrefix
+            )
+          )
+        }}
+      {% endif %}
     {% else %}
       <p class="govuk-body" data-qa="no-results-message">There are no results.</p>
     {% endif %}
