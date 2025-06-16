@@ -6,4 +6,5 @@ const paginatedDtoSchema = z.object({
   pageSize: z.number(),
 })
 
+// eslint-disable-next-line import/prefer-default-export
 export { paginatedDtoSchema }

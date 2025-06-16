@@ -9,7 +9,7 @@ export default class CrimeBatchesController {
     const { query } = req
     const { token } = res.locals.user
     const parsedQuery = crimeBatchesQueryParametersSchema.parse(query)
-    const queryResults = await this.service.getQuery(token, parsedQuery.queryId)
+    const queryResults = await this.service.getQuery(token, parsedQuery.queryId, parsedQuery.page)
 
     res.render('pages/crime-mapping/crimeBatches', {
       crimeBatches: queryResults.data,

@@ -3,6 +3,10 @@ import { paginatedDtoSchema } from '../pagination'
 
 const crimeBatchesQueryParametersSchema = z.object({
   queryId: z.string().optional(),
+  page: z
+    .string()
+    .regex(/^\d{1,2}$/)
+    .optional(),
 })
 
 const crimeBatchesFormDataSchema = z.object({

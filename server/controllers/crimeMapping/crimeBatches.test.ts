@@ -1,5 +1,6 @@
 import { RestClient } from '@ministryofjustice/hmpps-rest-client'
 import Logger from 'bunyan'
+import { ZodError } from 'zod/v4'
 import createMockRequest from '../../testutils/createMockRequest'
 import createMockResponse from '../../testutils/createMockResponse'
 import CrimeBatchesController from './crimeBatches'
@@ -71,7 +72,10 @@ describe('CrimeBatchesController', () => {
       // Then
       expect(mockRestClient.get).toHaveBeenCalledWith(
         {
-          path: '/crime-batches-query?id=1234',
+          path: '/crime-batches-query',
+          query: {
+            id: '1234',
+          },
         },
         undefined,
       )
@@ -119,7 +123,10 @@ describe('CrimeBatchesController', () => {
       // Then
       expect(mockRestClient.get).toHaveBeenCalledWith(
         {
-          path: '/crime-batches-query?id=1234',
+          path: '/crime-batches-query',
+          query: {
+            id: '1234',
+          },
         },
         undefined,
       )
@@ -180,7 +187,11 @@ describe('CrimeBatchesController', () => {
       // Then
       expect(mockRestClient.get).toHaveBeenCalledWith(
         {
-          path: '/crime-batches-query?id=1234&page=2',
+          path: '/crime-batches-query',
+          query: {
+            id: '1234',
+            page: '2',
+          },
         },
         undefined,
       )
@@ -201,6 +212,24 @@ describe('CrimeBatchesController', () => {
         pageCount: 2,
         pageNumber: 2,
       })
+    })
+
+    it('should throw an error if the "page" query parameter if a non-numerical value', async () => {
+      // Given
+      const req = createMockRequest({
+        query: {
+          queryId: '1234',
+          page: 'abc',
+        },
+      })
+      const res = createMockResponse()
+      const next = jest.fn()
+      const service = new CrimeBatchesService(mockRestClient)
+      const controller = new CrimeBatchesController(service)
+
+      // When / Then
+      expect(controller.view(req, res, next)).rejects.toBeInstanceOf(ZodError)
+      expect(mockRestClient.get).not.toHaveBeenCalled()
     })
   })
 

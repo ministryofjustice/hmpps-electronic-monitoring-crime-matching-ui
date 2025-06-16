@@ -45,7 +45,7 @@ export default class CrimeBatchesService {
     }
   }
 
-  async getQuery(userToken: string, queryId?: string): Promise<GetCrimeBatchesQueryResponseDto> {
+  async getQuery(userToken: string, queryId?: string, page?: string): Promise<GetCrimeBatchesQueryResponseDto> {
     if (queryId === undefined) {
       return {
         data: [],
@@ -57,7 +57,11 @@ export default class CrimeBatchesService {
 
     const response = await this.crimeMatchingApiClient.get(
       {
-        path: `/crime-batches-query?id=${queryId}`,
+        path: `/crime-batches-query`,
+        query: {
+          id: queryId,
+          page,
+        },
       },
       asUser(userToken),
     )
