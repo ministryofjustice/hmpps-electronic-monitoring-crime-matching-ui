@@ -44,30 +44,35 @@ context('Crime Mapping', () => {
       cy.stubGetCrimeBatchesQuery({
         status: 200,
         query: '.*',
-        response: [
-          {
-            policeForce: 'Police Force 1',
-            batch: '01234456789',
-            start: '2024-12-01T00:00:00.000Z',
-            end: '2024-12-01T23:59:59.000Z',
-            time: 10,
-            matches: 1,
-            ingestionDate: '2024-12-02T09:00:00.000Z',
-            caseloadMappingDate: '2024-12-01T00:00:00.000Z',
-            crimeMatchingAlgorithmVersion: 'v0.0.1',
-          },
-          {
-            policeForce: 'Police Force 2',
-            batch: '01234456789',
-            start: '2024-12-01T00:00:00.000Z',
-            end: '2024-12-01T23:59:59.000Z',
-            time: 10,
-            matches: 1,
-            ingestionDate: '2024-12-02T09:00:00.000Z',
-            caseloadMappingDate: '2024-12-01T00:00:00.000Z',
-            crimeMatchingAlgorithmVersion: 'v0.0.1',
-          },
-        ],
+        response: {
+          data: [
+            {
+              policeForce: 'Police Force 1',
+              batch: '01234456789',
+              start: '2024-12-01T00:00:00.000Z',
+              end: '2024-12-01T23:59:59.000Z',
+              time: 10,
+              matches: 1,
+              ingestionDate: '2024-12-02T09:00:00.000Z',
+              caseloadMappingDate: '2024-12-01T00:00:00.000Z',
+              crimeMatchingAlgorithmVersion: 'v0.0.1',
+            },
+            {
+              policeForce: 'Police Force 2',
+              batch: '01234456789',
+              start: '2024-12-01T00:00:00.000Z',
+              end: '2024-12-01T23:59:59.000Z',
+              time: 10,
+              matches: 1,
+              ingestionDate: '2024-12-02T09:00:00.000Z',
+              caseloadMappingDate: '2024-12-01T00:00:00.000Z',
+              crimeMatchingAlgorithmVersion: 'v0.0.1',
+            },
+          ],
+          pageCount: 1,
+          pageNumber: 1,
+          pageSize: 10,
+        },
       })
 
       cy.visit(url)
