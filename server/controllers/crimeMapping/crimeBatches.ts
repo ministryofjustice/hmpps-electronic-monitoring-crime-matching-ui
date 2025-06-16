@@ -14,7 +14,7 @@ export default class CrimeBatchesController {
     res.render('pages/crime-mapping/crimeBatches', {
       crimeBatches: queryResults.data,
       pageCount: queryResults.pageCount,
-      pageNumber: queryResults.pageNumber
+      pageNumber: queryResults.pageNumber,
     })
   }
 
