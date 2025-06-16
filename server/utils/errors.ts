@@ -1,9 +1,19 @@
-import { ValidationError } from '../models/ValidationResult'
+import { ZodError } from 'zod/v4'
+import { ValidationError, ValidationResult } from '../models/ValidationResult'
 import { GovUkErrorMessage } from '../types/govUk'
 
 const createGovUkErrorMessage = (error: ValidationError): GovUkErrorMessage => ({
   text: error.message,
 })
 
-// eslint-disable-next-line import/prefer-default-export
-export { createGovUkErrorMessage }
+const convertZodErrorToValidationError = (error: ZodError): ValidationResult => {
+  return error.issues.reduce((acc, issue) => {
+    acc.push({
+      field: issue.path.join('_').toString(),
+      message: issue.message,
+    })
+    return acc
+  }, [] as ValidationResult)
+}
+
+export { createGovUkErrorMessage, convertZodErrorToValidationError }

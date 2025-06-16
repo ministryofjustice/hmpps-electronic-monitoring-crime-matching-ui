@@ -1,9 +1,8 @@
 {% extends "../../partials/layout.njk" %}
 {% from "govuk/components/input/macro.njk" import govukInput %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
-{% from "govuk/components/table/macro.njk" import govukTable %}
+{% from "../../components/datatable/macro.njk" import dataTable %}
 {% from "govuk/components/pagination/macro.njk" import govukPagination %}
-{% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
 
 {% set pageTitle = applicationName + " - Subject Search" %}
 {% set mainClasses = "app-container govuk-body" %}
@@ -59,6 +58,7 @@
 {% block content %}
   <h1>Subject Search</h1>
   <form method="post" novalidate id="subject-search-form">
+    <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
     {{
       govukInput({
         label: {
@@ -69,7 +69,7 @@
         id: "name",
         name: "name",
         value: name.value,
-        errorMessage: name.error
+        errorMessage: errors.name
       })
     }}
 
@@ -82,19 +82,9 @@
         classes: "govuk-!-width-two-thirds",
         id: "nomis-id",
         name: "nomisId",
-        value: nomisId.value,
-        errorMessage: nomisId.error
+        value: nomisId.value
       })
     }}
-
-    {% if errorSummaryList %}
-      {{
-        govukErrorSummary({
-          titleText: "There is a problem",
-          errorList: errorSummaryList
-        })
-      }}
-    {% endif %}
 
     {{
       govukButton({
@@ -102,55 +92,43 @@
         name: "action"
       })
     }}
-
-    <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
   </form>
-  {% block innerContent %}
+
     {{
-      govukTable({
-            classes: "search-results-table",
-            head: [
-              {
-                classes: "select-header"
-              },
-              {
-                text: "NOMIS ID",
-                classes: "nomis-id-header"
-              },
-              {
-                text: "Name",
-                classes: "name-header"
-              },
-              {
-                text: "Date of Birth",
-                classes: "date-of-birth-header"
-              },
-              {
-                text: "Address",
-                classes: "address-header"
-              },
-              {
-                text: "Order Start",
-                classes: "order-start-date-header"
-              },
-              {
-                text: "Order End",
-                classes: "order-end-date-header"
-              },
-              {
-                text: "Device ID",
-                classes: "device-id-header"
-              },
-              {
-                text: "Tag Period Start",
-                classes: "tag-period-start-header"
-              },
-              {
-                text: "Tag Period End",
-                classes: "tag-period-end-header"
-              }
-            ],
-            rows: rows
+      dataTable({
+        columns: [
+          {
+            text: ""
+          },
+          {
+            text: "NOMIS ID"
+          },
+          {
+            text: "Name"
+          },
+          {
+            text: "Date of Birth"
+          },
+          {
+            text: "Address"
+          },
+          {
+            text: "Order Start"
+          },
+          {
+            text: "Order End"
+          },
+          {
+            text: "Device ID"
+          },
+          {
+            text: "Tag Period Start"
+          },
+          {
+            text: "Tag Period End"
+          }
+        ],
+        rows: rows
       })
     }}
 
@@ -172,5 +150,4 @@
         }]
       })
     }}
-  {% endblock %}
 {% endblock %}
