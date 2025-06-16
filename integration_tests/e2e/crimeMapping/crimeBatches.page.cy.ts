@@ -35,6 +35,7 @@ context('Crime Mapping', () => {
       cy.url().should('include', '?queryId=1234')
       page = Page.verifyOnPage(CrimeBatchesPage)
       page.dataTable.shouldNotHaveResults()
+      page.dataTable.shouldNotHavePagination()
     })
 
     it('should display the query results if the query returned results', () => {
@@ -121,6 +122,7 @@ context('Crime Mapping', () => {
           'v0.0.1',
         ],
       ])
+      page.dataTable.shouldNotHavePagination()
     })
 
     it('should display the pagination if the query returned > 1 page of results', () => {
@@ -207,6 +209,7 @@ context('Crime Mapping', () => {
           'v0.0.1',
         ],
       ])
+      page.dataTable.shouldHavePagination()
     })
   })
 })

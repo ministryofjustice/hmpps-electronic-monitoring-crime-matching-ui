@@ -1,5 +1,6 @@
 import { v4 as uuidv4 } from 'uuid'
 import { PageElement } from '../page'
+import PaginationComponent from './pagination'
 
 export default class DataTableComponent {
   private elementCacheId: string = uuidv4()
@@ -40,6 +41,10 @@ export default class DataTableComponent {
     })
   }
 
+  get pagination(): PaginationComponent {
+    return new PaginationComponent()
+  }
+
   // HELPERS
 
   shouldHaveColumns(columns: Array<string>): void {
@@ -58,5 +63,13 @@ export default class DataTableComponent {
   shouldNotHaveResults(): void {
     this.table.should('not.exist')
     this.noResultsMessage.should('have.text', 'There are no results.')
+  }
+
+  shouldHavePagination(): void {
+    this.pagination.shouldExist()
+  }
+
+  shouldNotHavePagination(): void {
+    this.pagination.shouldNotExist()
   }
 }
