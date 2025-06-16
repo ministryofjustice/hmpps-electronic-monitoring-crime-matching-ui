@@ -83,6 +83,7 @@ describe('CrimeBatchesController', () => {
         crimeBatches: [],
         pageCount: 1,
         pageNumber: 1,
+        queryId: '1234'
       })
     })
 
@@ -146,6 +147,7 @@ describe('CrimeBatchesController', () => {
         ],
         pageCount: 1,
         pageNumber: 1,
+        queryId: '1234'
       })
     })
 
@@ -211,6 +213,7 @@ describe('CrimeBatchesController', () => {
         ],
         pageCount: 2,
         pageNumber: 2,
+        queryId: '1234'
       })
     })
 
