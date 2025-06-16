@@ -50,7 +50,7 @@ const stubCreateSubjectsQuery = (options: StubCreateSubjectQueryOptions = defaul
     },
   })
 
-type StubGetSubjects200Options = {
+type StubGetSubjectsQuery200Options = {
   status: 200
   query: string
   response: Array<{
@@ -72,15 +72,15 @@ type StubGetSubjectsQuery404Options = {
   response: string
 }
 
-type StubGetSubjectsOptions = StubGetSubjects200Options | StubGetSubjectsQuery404Options
+type StubGetSubjectsQueryOptions = StubGetSubjectsQuery200Options | StubGetSubjectsQuery404Options
 
-const defaultGetSubjectOptions: StubGetSubjectsOptions = {
+const defaultGetSubjectQueryOptions: StubGetSubjectsQueryOptions = {
   status: 200,
   query: '.*',
   response: [],
 }
 
-const stubGetSubjectsQuery = (options: StubGetSubjectsOptions = defaultGetSubjectOptions) =>
+const stubGetSubjectsQuery = (options: StubGetSubjectsQueryOptions = defaultGetSubjectQueryOptions) =>
   stubFor({
     request: {
       method: 'GET',
@@ -95,4 +95,4 @@ const stubGetSubjectsQuery = (options: StubGetSubjectsOptions = defaultGetSubjec
     },
   })
 
-export { stubCreateSubjectsQuery, stubGetSubjectsQuery, StubCreateSubjectQueryOptions, StubGetSubjectsOptions }
+export { stubCreateSubjectsQuery, stubGetSubjectsQuery, StubCreateSubjectQueryOptions, StubGetSubjectsQueryOptions }
