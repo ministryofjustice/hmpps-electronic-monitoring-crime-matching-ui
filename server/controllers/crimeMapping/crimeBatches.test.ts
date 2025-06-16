@@ -41,9 +41,11 @@ describe('CrimeBatchesController', () => {
       expect(mockRestClient.get).not.toHaveBeenCalled()
       expect(res.render).toHaveBeenCalledWith(
         'pages/crime-mapping/crimeBatches',
-        expect.objectContaining({
+        {
           crimeBatches: [],
-        }),
+          pageCount: 1,
+          pageNumber: 1
+        },
       )
     })
 
@@ -59,7 +61,12 @@ describe('CrimeBatchesController', () => {
       const service = new CrimeBatchesService(mockRestClient)
       const controller = new CrimeBatchesController(service)
 
-      mockRestClient.get.mockResolvedValue([])
+      mockRestClient.get.mockResolvedValue({
+        data: [],
+        pageCount: 1,
+        pageNumber: 1,
+        pageSize: 10
+      })
 
       // When
       await controller.view(req, res, next)
@@ -73,9 +80,11 @@ describe('CrimeBatchesController', () => {
       )
       expect(res.render).toHaveBeenCalledWith(
         'pages/crime-mapping/crimeBatches',
-        expect.objectContaining({
+        {
           crimeBatches: [],
-        }),
+          pageCount: 1,
+          pageNumber: 1
+        },
       )
     })
 
@@ -91,7 +100,8 @@ describe('CrimeBatchesController', () => {
       const service = new CrimeBatchesService(mockRestClient)
       const controller = new CrimeBatchesController(service)
 
-      mockRestClient.get.mockResolvedValue([
+      mockRestClient.get.mockResolvedValue({
+        data: [
         {
           policeForce: 'Police Force 1',
           batch: '01234456789',
@@ -102,8 +112,13 @@ describe('CrimeBatchesController', () => {
           ingestionDate: '2024-12-09:00:00.000Z',
           caseloadMappingDate: '2024-12-01T00:00:00.000Z',
           crimeMatchingAlgorithmVersion: 'v0.0.1',
-        },
-      ])
+        }
+      ],
+        pageCount: 1,
+        pageNumber: 1,
+        pageSize: 10,
+      }
+      )
 
       // When
       await controller.view(req, res, next)
@@ -117,7 +132,7 @@ describe('CrimeBatchesController', () => {
       )
       expect(res.render).toHaveBeenCalledWith(
         'pages/crime-mapping/crimeBatches',
-        expect.objectContaining({
+        {
           crimeBatches: [
             {
               policeForce: 'Police Force 1',
@@ -131,7 +146,9 @@ describe('CrimeBatchesController', () => {
               crimeMatchingAlgorithmVersion: 'v0.0.1',
             },
           ],
-        }),
+          pageCount: 1,
+          pageNumber: 1
+        },
       )
     })
   })

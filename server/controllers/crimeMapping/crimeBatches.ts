@@ -12,7 +12,9 @@ export default class CrimeBatchesController {
     const queryResults = await this.service.getQuery(token, parsedQuery.queryId)
 
     res.render('pages/crime-mapping/crimeBatches', {
-      crimeBatches: queryResults,
+      crimeBatches: queryResults.data,
+      pageCount: queryResults.pageCount,
+      pageNumber: queryResults.pageNumber
     })
   }
 
