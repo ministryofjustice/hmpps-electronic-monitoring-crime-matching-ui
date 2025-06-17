@@ -25,10 +25,12 @@
           text: crimeBatch.end | formatDate
         },
         {
-          text: crimeBatch.time
+          text: crimeBatch.time,
+          format: "numeric"
         },
         {
-          text: crimeBatch.matches
+          text: crimeBatch.matches,
+          format: "numeric"
         },
         {
           text: crimeBatch.ingestionDate | formatDate
@@ -88,10 +90,12 @@
           text: "End"
         },
         {
-          text: "Time (Mins)"
+          text: "Time (Mins)",
+          format: "numeric"
         },
         {
-          text: "Matches"
+          text: "Matches",
+          format: "numeric"
         },
         {
           text: "AC Ingestion Date"
