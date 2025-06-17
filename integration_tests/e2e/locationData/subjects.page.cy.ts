@@ -184,15 +184,16 @@ context('Location Data', () => {
       page = Page.verifyOnPage(SubjectsPage)
       page.dataTable.shouldHaveResults()
       page.dataTable.shouldHaveColumns([
-        'Police Force',
-        'Batch',
-        'Start',
-        'End',
-        'Time (Mins)',
-        'Matches',
-        'AC Ingestion Date',
-        'AC Caseload Mapping Date',
-        'Algorithm Version',
+        '',
+        'NOMIS ID',
+        'Name',
+        'Date of Birth',
+        'Address',
+        'Order Start',
+        'Order End',
+        'Device ID',
+        'Tag Period Start',
+        'Tag Period End',
       ])
       page.dataTable.shouldHaveRows([
         [
