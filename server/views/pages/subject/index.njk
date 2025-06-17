@@ -94,60 +94,60 @@
     }}
   </form>
 
-    {{
-      dataTable({
-        columns: [
-          {
-            text: ""
-          },
-          {
-            text: "NOMIS ID"
-          },
-          {
-            text: "Name"
-          },
-          {
-            text: "Date of Birth"
-          },
-          {
-            text: "Address"
-          },
-          {
-            text: "Order Start"
-          },
-          {
-            text: "Order End"
-          },
-          {
-            text: "Device ID"
-          },
-          {
-            text: "Tag Period Start"
-          },
-          {
-            text: "Tag Period End"
-          }
-        ],
-        rows: rows
-      })
-    }}
+  {{
+    dataTable({
+      columns: [
+        {
+          text: ""
+        },
+        {
+          text: "NOMIS ID"
+        },
+        {
+          text: "Name"
+        },
+        {
+          text: "Date of Birth"
+        },
+        {
+          text: "Address"
+        },
+        {
+          text: "Order Start"
+        },
+        {
+          text: "Order End"
+        },
+        {
+          text: "Device ID"
+        },
+        {
+          text: "Tag Period Start"
+        },
+        {
+          text: "Tag Period End"
+        }
+      ],
+      rows: rows
+    })
+  }}
 
-    {# Placeholder #}
-    {{
-      govukPagination({ previous: { href: "#" }, next: { href: "#" }, items: [
-        {
-          number: 1,
-          current: true,
-          href: "#"
-        },
-        {
-          number: 2,
-          href: "#"
-        },
-        {
-          number: 3,
-          href: "#"
-        }]
-      })
-    }}
+  {# Placeholder #}
+  {{
+    govukPagination({ previous: { href: "#" }, next: { href: "#" }, items: [
+      {
+        number: 1,
+        current: true,
+        href: "#"
+      },
+      {
+        number: 2,
+        href: "#"
+      },
+      {
+        number: 3,
+        href: "#"
+      }]
+    })
+  }}
 {% endblock %}

@@ -8,8 +8,8 @@ describe('pagination', () => {
 
     expect(pagination(currentPage, pageCount, hrefPrefix)).toEqual({
       items: [
-        { text: '1', href: 'example.com?a=b&page=1', current: true },
-        { text: '2', href: 'example.com?a=b&page=2' },
+        { number: '1', href: 'example.com?a=b&page=1', current: true },
+        { number: '2', href: 'example.com?a=b&page=2' },
       ],
       next: { href: 'example.com?a=b&page=2' },
       previous: undefined,
@@ -23,8 +23,8 @@ describe('pagination', () => {
 
     expect(pagination(currentPage, pageCount, hrefPrefix)).toEqual({
       items: [
-        { text: '1', href: 'example.com?page=1' },
-        { text: '2', href: 'example.com?page=2', current: true },
+        { number: '1', href: 'example.com?page=1' },
+        { number: '2', href: 'example.com?page=2', current: true },
       ],
       next: undefined,
       previous: { href: 'example.com?page=1' },
@@ -38,9 +38,9 @@ describe('pagination', () => {
 
     expect(pagination(currentPage, pageCount, hrefPrefix)).toEqual({
       items: [
-        { text: '1', href: 'example.com?a=b&page=1', current: true },
-        { text: '2', href: 'example.com?a=b&page=2' },
-        { text: '3', href: 'example.com?a=b&page=3' },
+        { number: '1', href: 'example.com?a=b&page=1', current: true },
+        { number: '2', href: 'example.com?a=b&page=2' },
+        { number: '3', href: 'example.com?a=b&page=3' },
       ],
       next: { href: 'example.com?a=b&page=2' },
       previous: undefined,
@@ -54,9 +54,9 @@ describe('pagination', () => {
 
     expect(pagination(currentPage, pageCount, hrefPrefix)).toEqual({
       items: [
-        { text: '1', href: 'example.com?page=1' },
-        { text: '2', href: 'example.com?page=2', current: true },
-        { text: '3', href: 'example.com?page=3' },
+        { number: '1', href: 'example.com?page=1' },
+        { number: '2', href: 'example.com?page=2', current: true },
+        { number: '3', href: 'example.com?page=3' },
       ],
       previous: { href: 'example.com?page=1' },
       next: { href: 'example.com?page=3' },
@@ -70,9 +70,9 @@ describe('pagination', () => {
 
     expect(pagination(currentPage, pageCount, hrefPrefix)).toEqual({
       items: [
-        { text: '1', href: 'example.com?page=1' },
-        { text: '2', href: 'example.com?page=2' },
-        { text: '3', href: 'example.com?page=3', current: true },
+        { number: '1', href: 'example.com?page=1' },
+        { number: '2', href: 'example.com?page=2' },
+        { number: '3', href: 'example.com?page=3', current: true },
       ],
       previous: { href: 'example.com?page=2' },
       next: undefined,
@@ -86,10 +86,10 @@ describe('pagination', () => {
 
     expect(pagination(currentPage, pageCount, hrefPrefix)).toEqual({
       items: [
-        { text: '1', href: 'example.com?page=1', current: true },
-        { text: '2', href: 'example.com?page=2' },
+        { number: '1', href: 'example.com?page=1', current: true },
+        { number: '2', href: 'example.com?page=2' },
         { ellipsis: true },
-        { text: '7', href: 'example.com?page=7' },
+        { number: '7', href: 'example.com?page=7' },
       ],
       previous: undefined,
       next: { href: 'example.com?page=2' },
@@ -103,11 +103,11 @@ describe('pagination', () => {
 
     expect(pagination(currentPage, pageCount, hrefPrefix)).toEqual({
       items: [
-        { text: '1', href: 'example.com?page=1' },
-        { text: '2', href: 'example.com?page=2', current: true },
-        { text: '3', href: 'example.com?page=3' },
+        { number: '1', href: 'example.com?page=1' },
+        { number: '2', href: 'example.com?page=2', current: true },
+        { number: '3', href: 'example.com?page=3' },
         { ellipsis: true },
-        { text: '7', href: 'example.com?page=7' },
+        { number: '7', href: 'example.com?page=7' },
       ],
       previous: { href: 'example.com?page=1' },
       next: { href: 'example.com?page=3' },
@@ -121,12 +121,12 @@ describe('pagination', () => {
 
     expect(pagination(currentPage, pageCount, hrefPrefix)).toEqual({
       items: [
-        { text: '1', href: 'example.com?page=1' },
-        { text: '2', href: 'example.com?page=2' },
-        { text: '3', href: 'example.com?page=3', current: true },
-        { text: '4', href: 'example.com?page=4' },
+        { number: '1', href: 'example.com?page=1' },
+        { number: '2', href: 'example.com?page=2' },
+        { number: '3', href: 'example.com?page=3', current: true },
+        { number: '4', href: 'example.com?page=4' },
         { ellipsis: true },
-        { text: '7', href: 'example.com?page=7' },
+        { number: '7', href: 'example.com?page=7' },
       ],
       previous: { href: 'example.com?page=2' },
       next: { href: 'example.com?page=4' },
@@ -140,13 +140,13 @@ describe('pagination', () => {
 
     expect(pagination(currentPage, pageCount, hrefPrefix)).toEqual({
       items: [
-        { text: '1', href: 'example.com?page=1' },
-        { text: '2', href: 'example.com?page=2' },
-        { text: '3', href: 'example.com?page=3' },
-        { text: '4', href: 'example.com?page=4', current: true },
-        { text: '5', href: 'example.com?page=5' },
-        { text: '6', href: 'example.com?page=6' },
-        { text: '7', href: 'example.com?page=7' },
+        { number: '1', href: 'example.com?page=1' },
+        { number: '2', href: 'example.com?page=2' },
+        { number: '3', href: 'example.com?page=3' },
+        { number: '4', href: 'example.com?page=4', current: true },
+        { number: '5', href: 'example.com?page=5' },
+        { number: '6', href: 'example.com?page=6' },
+        { number: '7', href: 'example.com?page=7' },
       ],
       previous: { href: 'example.com?page=3' },
       next: { href: 'example.com?page=5' },
@@ -160,12 +160,12 @@ describe('pagination', () => {
 
     expect(pagination(currentPage, pageCount, hrefPrefix)).toEqual({
       items: [
-        { text: '1', href: 'example.com?page=1' },
+        { number: '1', href: 'example.com?page=1' },
         { ellipsis: true },
-        { text: '4', href: 'example.com?page=4' },
-        { text: '5', href: 'example.com?page=5', current: true },
-        { text: '6', href: 'example.com?page=6' },
-        { text: '7', href: 'example.com?page=7' },
+        { number: '4', href: 'example.com?page=4' },
+        { number: '5', href: 'example.com?page=5', current: true },
+        { number: '6', href: 'example.com?page=6' },
+        { number: '7', href: 'example.com?page=7' },
       ],
       previous: { href: 'example.com?page=4' },
       next: { href: 'example.com?page=6' },
@@ -179,11 +179,11 @@ describe('pagination', () => {
 
     expect(pagination(currentPage, pageCount, hrefPrefix)).toEqual({
       items: [
-        { text: '1', href: 'example.com?page=1' },
+        { number: '1', href: 'example.com?page=1' },
         { ellipsis: true },
-        { text: '5', href: 'example.com?page=5' },
-        { text: '6', href: 'example.com?page=6', current: true },
-        { text: '7', href: 'example.com?page=7' },
+        { number: '5', href: 'example.com?page=5' },
+        { number: '6', href: 'example.com?page=6', current: true },
+        { number: '7', href: 'example.com?page=7' },
       ],
       previous: { href: 'example.com?page=5' },
       next: { href: 'example.com?page=7' },
@@ -197,10 +197,10 @@ describe('pagination', () => {
 
     expect(pagination(currentPage, pageCount, hrefPrefix)).toEqual({
       items: [
-        { text: '1', href: 'example.com?page=1' },
+        { number: '1', href: 'example.com?page=1' },
         { ellipsis: true },
-        { text: '6', href: 'example.com?page=6' },
-        { text: '7', href: 'example.com?page=7', current: true },
+        { number: '6', href: 'example.com?page=6' },
+        { number: '7', href: 'example.com?page=7', current: true },
       ],
       previous: { href: 'example.com?page=6' },
       next: undefined,

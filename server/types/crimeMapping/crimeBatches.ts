@@ -1,3 +1,5 @@
+import { PaginatedResponse } from '../pagination'
+
 type CrimeBatch = {
   policeForce: string
   batch: string
@@ -10,7 +12,7 @@ type CrimeBatch = {
   crimeMatchingAlgorithmVersion: string
 }
 
-type GetCrimeBatchesQueryResponseDto = Array<CrimeBatch>
+type GetCrimeBatchesQueryResponseDto = PaginatedResponse<CrimeBatch>
 
 type CreateCrimeBatchesQueryRequestDto = {
   searchTerm: string

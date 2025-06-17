@@ -54,17 +54,22 @@ const stubCreateCrimeBatchesQuery = (options: StubCreateCrimeBatchQueryOptions =
 type StubGetCrimeBatches200Options = {
   status: 200
   query: string
-  response: Array<{
-    policeForce: string
-    batch: string
-    start: string
-    end: string
-    time: number
-    matches: number
-    ingestionDate: string
-    caseloadMappingDate: string
-    crimeMatchingAlgorithmVersion: string
-  }>
+  response: {
+    data: Array<{
+      policeForce: string
+      batch: string
+      start: string
+      end: string
+      time: number
+      matches: number
+      ingestionDate: string
+      caseloadMappingDate: string
+      crimeMatchingAlgorithmVersion: string
+    }>
+    pageCount: number
+    pageNumber: number
+    pageSize: number
+  }
 }
 
 type StubGetCrimeBatches404Options = {
@@ -79,7 +84,12 @@ type StubGetCrimeBatchesOptions = StubGetCrimeBatches200Options | StubGetCrimeBa
 const defaultGetCrimeBatchOptions: StubGetCrimeBatchesOptions = {
   status: 200,
   query: '.*',
-  response: [],
+  response: {
+    data: [],
+    pageCount: 1,
+    pageNumber: 1,
+    pageSize: 10,
+  },
 }
 
 const stubGetCrimeBatchesQuery = (options: StubGetCrimeBatchesOptions = defaultGetCrimeBatchOptions) =>
