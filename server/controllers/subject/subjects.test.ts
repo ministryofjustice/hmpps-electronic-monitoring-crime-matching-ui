@@ -1,5 +1,6 @@
 import { RestClient } from '@ministryofjustice/hmpps-rest-client'
 import Logger from 'bunyan'
+import { ZodError } from 'zod/v4'
 import getMockSubject from '../../../test/mocks/mockSubject'
 import createMockLogger from '../../testutils/createMockLogger'
 import createMockRequest from '../../testutils/createMockRequest'
@@ -45,7 +46,12 @@ describe('SubjectController', () => {
       const service = new SubjectService(mockRestClient)
       const controller = new SubjectController(service)
 
-      mockRestClient.get.mockResolvedValue([mockSubject])
+      mockRestClient.get.mockResolvedValue({
+        data: [mockSubject],
+        pageCount: 1,
+        pageNumber: 1,
+        pageSize: 10,
+      })
 
       // When
       await controller.view(req, res, next)
@@ -53,14 +59,18 @@ describe('SubjectController', () => {
       // Then
       expect(mockRestClient.get).toHaveBeenCalledWith(
         {
-          path: '/subjects-query?id=1234',
+          path: '/subjects-query',
+          query: {
+            id: '1234',
+          },
         },
         undefined,
       )
-      expect(res.render).toHaveBeenCalledWith(
-        'pages/subject/index',
-        expect.objectContaining({ subjects: [mockSubject] }),
-      )
+      expect(res.render).toHaveBeenCalledWith('pages/subject/index', {
+        subjects: [mockSubject],
+        pageCount: 1,
+        pageNumber: 1,
+      })
     })
 
     it('shoud render a view containing no results if there is no queryId', async () => {
@@ -76,7 +86,7 @@ describe('SubjectController', () => {
 
       // Then
       expect(mockRestClient.get).not.toHaveBeenCalled()
-      expect(res.render).toHaveBeenCalledWith('pages/subject/index', expect.objectContaining({ subjects: [] }))
+      expect(res.render).toHaveBeenCalledWith('pages/subject/index', { subjects: [], pageCount: 1, pageNumber: 1 })
     })
 
     it('shoud render a view containing no results if the api response is empty', async () => {
@@ -91,7 +101,12 @@ describe('SubjectController', () => {
       const service = new SubjectService(mockRestClient)
       const controller = new SubjectController(service)
 
-      mockRestClient.get.mockResolvedValue([])
+      mockRestClient.get.mockResolvedValue({
+        data: [],
+        pageCount: 1,
+        pageNumber: 1,
+        pageSize: 10,
+      })
 
       // When
       await controller.view(req, res, next)
@@ -99,11 +114,74 @@ describe('SubjectController', () => {
       // Then
       expect(mockRestClient.get).toHaveBeenCalledWith(
         {
-          path: '/subjects-query?id=1234',
+          path: '/subjects-query',
+          query: {
+            id: '1234',
+          },
         },
         undefined,
       )
-      expect(res.render).toHaveBeenCalledWith('pages/subject/index', expect.objectContaining({ subjects: [] }))
+      expect(res.render).toHaveBeenCalledWith('pages/subject/index', { subjects: [], pageCount: 1, pageNumber: 1 })
+    })
+
+    it('should pass pagination query parameters to the api if present', async () => {
+      // Given
+      const req = createMockRequest({
+        query: {
+          queryId: '1234',
+          page: '2',
+        },
+      })
+      const res = createMockResponse()
+      const next = jest.fn()
+      const service = new SubjectService(mockRestClient)
+      const controller = new SubjectController(service)
+
+      mockRestClient.get.mockResolvedValue({
+        data: [mockSubject],
+        pageCount: 2,
+        pageNumber: 2,
+        pageSize: 10,
+      })
+
+      // When
+      await controller.view(req, res, next)
+
+      // Then
+      expect(mockRestClient.get).toHaveBeenCalledWith(
+        {
+          path: '/subjects-query',
+          query: {
+            id: '1234',
+            page: '2',
+          },
+        },
+        undefined,
+      )
+      expect(res.render).toHaveBeenCalledWith('pages/subject/index', {
+        subjects: [mockSubject],
+        pageCount: 2,
+        pageNumber: 2,
+        queryId: '1234',
+      })
+    })
+
+    it('should throw an error if the "page" query parameter if a non-numerical value', async () => {
+      // Given
+      const req = createMockRequest({
+        query: {
+          queryId: '1234',
+          page: 'abc',
+        },
+      })
+      const res = createMockResponse()
+      const next = jest.fn()
+      const service = new SubjectService(mockRestClient)
+      const controller = new SubjectController(service)
+
+      // When / Then
+      expect(controller.view(req, res, next)).rejects.toBeInstanceOf(ZodError)
+      expect(mockRestClient.get).not.toHaveBeenCalled()
     })
   })
 
