@@ -70,6 +70,7 @@ describe('SubjectController', () => {
         subjects: [mockSubject],
         pageCount: 1,
         pageNumber: 1,
+        queryId: '1234',
       })
     })
 
@@ -121,7 +122,12 @@ describe('SubjectController', () => {
         },
         undefined,
       )
-      expect(res.render).toHaveBeenCalledWith('pages/subject/index', { subjects: [], pageCount: 1, pageNumber: 1 })
+      expect(res.render).toHaveBeenCalledWith('pages/subject/index', {
+        subjects: [],
+        pageCount: 1,
+        pageNumber: 1,
+        queryId: '1234',
+      })
     })
 
     it('should pass pagination query parameters to the api if present', async () => {
