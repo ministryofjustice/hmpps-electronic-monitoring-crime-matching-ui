@@ -9,10 +9,13 @@ export default class SubjectController {
     const { query } = req
     const { token } = res.locals.user
     const parsedQuery = subjectsQueryParametersSchema.parse(query)
-    const queryResults = await this.service.getQuery(token, parsedQuery.queryId)
+    const queryResults = await this.service.getQuery(token, parsedQuery.queryId, parsedQuery.page)
 
     res.render('pages/subject/index', {
-      subjects: queryResults,
+      subjects: queryResults.data,
+      pageCount: queryResults.pageCount,
+      pageNumber: queryResults.pageNumber,
+      queryId: parsedQuery.queryId,
     })
   }
 

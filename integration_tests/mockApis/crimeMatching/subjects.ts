@@ -53,17 +53,22 @@ const stubCreateSubjectsQuery = (options: StubCreateSubjectQueryOptions = defaul
 type StubGetSubjectsQuery200Options = {
   status: 200
   query: string
-  response: Array<{
-    nomisId: string
-    name: string
-    dateOfBirth: string
-    address: string
-    orderStartDate: string
-    orderEndDate: string
-    deviceId: string
-    tagPeriodStartDate: string
-    tagPeriodEndDate: string
-  }>
+  response: {
+    data: Array<{
+      nomisId: string
+      name: string
+      dateOfBirth: string
+      address: string
+      orderStartDate: string
+      orderEndDate: string
+      deviceId: string
+      tagPeriodStartDate: string
+      tagPeriodEndDate: string
+    }>
+    pageCount: number
+    pageNumber: number
+    pageSize: number
+  }
 }
 
 type StubGetSubjectsQuery404Options = {
@@ -77,7 +82,12 @@ type StubGetSubjectsQueryOptions = StubGetSubjectsQuery200Options | StubGetSubje
 const defaultGetSubjectQueryOptions: StubGetSubjectsQueryOptions = {
   status: 200,
   query: '.*',
-  response: [],
+  response: {
+    data: [],
+    pageCount: 1,
+    pageNumber: 1,
+    pageSize: 10,
+  },
 }
 
 const stubGetSubjectsQuery = (options: StubGetSubjectsQueryOptions = defaultGetSubjectQueryOptions) =>

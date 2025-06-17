@@ -16,6 +16,7 @@ context('Crime Mapping', () => {
       const page = Page.verifyOnPage(CrimeBatchesPage)
 
       page.dataTable.shouldNotHaveResults()
+      page.dataTable.shouldNotHavePagination()
     })
 
     it('should display the no result message if the query returns no results', () => {
