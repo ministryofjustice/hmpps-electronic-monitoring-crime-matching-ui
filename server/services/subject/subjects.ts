@@ -11,7 +11,7 @@ import {
   createSubjectsQueryDtoSchema,
   getSubjectsQueryDtoSchema,
   subjectsFormDataSchema,
-} from '../../schemas/subject/subject'
+} from '../../schemas/subject/subjects'
 import { convertZodErrorToValidationError } from '../../utils/errors'
 
 export default class SubjectService {

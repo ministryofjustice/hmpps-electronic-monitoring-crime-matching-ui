@@ -1,5 +1,5 @@
 import { RequestHandler } from 'express'
-import { subjectsQueryParametersSchema } from '../../schemas/subject/subject'
+import { subjectsQueryParametersSchema } from '../../schemas/subject/subjects'
 import SubjectService from '../../services/subject/subjects'
 
 export default class SubjectController {
