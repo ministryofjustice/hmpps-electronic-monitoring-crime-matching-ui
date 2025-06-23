@@ -15,7 +15,9 @@ generic-service:
     AUDIT_ENABLED: "false"
     OS_MAPS_AUTH_URL: "https://api.os.uk/oauth2/token/v1"
     OS_MAPS_TILE_URL: "https://api.os.uk/maps/raster/v1/zxy/Road_3857/{z}/{x}/{y}"
-    EM_CRIME_MATCHING_API_URL: "https://electronic-monitoring-crime-matching-api-dev.hmpps.service.justice.gov.uk/"
+    EM_CRIME_MATCHING_API_URL: "http://hmpps-electronic-monitoring-crime-matching-api-stubs/crime-matching"
 
 generic-prometheus-alerts:
   alertSeverity: na
+
+deploy_stubs: true
