@@ -4,17 +4,17 @@ import {
   CreateSubjectsQueryRequestDto,
   CreateSubjectsQueryResponseDto,
   GetSubjectsQueryResponseDto,
-} from '../../types/subject/subjects'
+} from '../../types/locationData/subjects'
 import Result from '../../types/result'
 import { ValidationResult, ValidationResultModel } from '../../models/ValidationResult'
 import {
   createSubjectsQueryDtoSchema,
   getSubjectsQueryDtoSchema,
   subjectsFormDataSchema,
-} from '../../schemas/subject/subject'
+} from '../../schemas/locationData/subjects'
 import { convertZodErrorToValidationError } from '../../utils/errors'
 
-export default class SubjectService {
+export default class SubjectsService {
   constructor(private readonly crimeMatchingApiClient: RestClient) {}
 
   async createQuery(

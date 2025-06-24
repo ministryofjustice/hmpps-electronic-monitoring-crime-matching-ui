@@ -22,20 +22,20 @@ type StubCreateSubjectsQuery500Options = {
   response: string
 }
 
-type StubCreateSubjectQueryOptions =
+type StubCreateSubjectsQueryOptions =
   | StubCreateSubjectsQuery200Options
   | StubCreateSubjectsQuery400Options
   | StubCreateSubjectsQuery500Options
 
 // Default options returns a successful response with a mock queryExecutionId
-const defaultCreateSubjectQueryOptions: StubCreateSubjectQueryOptions = {
+const defaultCreateSubjectsQueryOptions: StubCreateSubjectsQueryOptions = {
   status: 200,
   response: {
     queryExecutionId: '1234',
   },
 }
 
-const stubCreateSubjectsQuery = (options: StubCreateSubjectQueryOptions = defaultCreateSubjectQueryOptions) =>
+const stubCreateSubjectsQuery = (options: StubCreateSubjectsQueryOptions = defaultCreateSubjectsQueryOptions) =>
   stubFor({
     request: {
       method: 'POST',
@@ -79,7 +79,7 @@ type StubGetSubjectsQuery404Options = {
 
 type StubGetSubjectsQueryOptions = StubGetSubjectsQuery200Options | StubGetSubjectsQuery404Options
 
-const defaultGetSubjectQueryOptions: StubGetSubjectsQueryOptions = {
+const defaultGetSubjectsQueryOptions: StubGetSubjectsQueryOptions = {
   status: 200,
   query: '.*',
   response: {
@@ -90,7 +90,7 @@ const defaultGetSubjectQueryOptions: StubGetSubjectsQueryOptions = {
   },
 }
 
-const stubGetSubjectsQuery = (options: StubGetSubjectsQueryOptions = defaultGetSubjectQueryOptions) =>
+const stubGetSubjectsQuery = (options: StubGetSubjectsQueryOptions = defaultGetSubjectsQueryOptions) =>
   stubFor({
     request: {
       method: 'GET',
@@ -105,4 +105,4 @@ const stubGetSubjectsQuery = (options: StubGetSubjectsQueryOptions = defaultGetS
     },
   })
 
-export { stubCreateSubjectsQuery, stubGetSubjectsQuery, StubCreateSubjectQueryOptions, StubGetSubjectsQueryOptions }
+export { stubCreateSubjectsQuery, stubGetSubjectsQuery, StubCreateSubjectsQueryOptions, StubGetSubjectsQueryOptions }
