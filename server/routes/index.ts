@@ -52,7 +52,7 @@ export default function routes({
   get('/location-data/subjects', subjectController.view)
   post('/location-data/subjects', subjectController.search)
 
-  get('/location-data/subjects/:nomisId', crimeMappingController.view)
+  get('/location-data/subjects/location-search', crimeMappingController.view)
   post('/location-data/subjects/location-search', subjectLocationController.search)
 
   return router

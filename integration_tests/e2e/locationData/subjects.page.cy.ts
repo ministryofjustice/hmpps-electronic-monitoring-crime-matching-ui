@@ -40,6 +40,7 @@ context('Location Data', () => {
         query: '.*',
         response: [
           {
+            personId: '1',
             nomisId: 'Nomis 1',
             name: 'John',
             dateOfBirth: '2000-12-01T00:00:00.000Z',
@@ -51,6 +52,7 @@ context('Location Data', () => {
             tagPeriodEndDate: null,
           },
           {
+            personId: '2',
             nomisId: 'Nomis 2',
             name: 'Lee',
             dateOfBirth: '2000-12-01T00:00:00.000Z',

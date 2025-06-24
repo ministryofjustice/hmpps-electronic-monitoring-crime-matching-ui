@@ -15,8 +15,8 @@
       [
         {
           html: '<div class="govuk-radios__item govuk-radios--small">
-                  <input type="radio" class="govuk-radios__input" name="nomisId" id="select-' + subject.nomisId + '" value="' + subject.nomisId + '" data-start="' + subject.orderStartDate + '" data-end="' + subject.orderEndDate + '" autocomplete="off" onChange="updateInputs(this)">
-                  <label class="govuk-label govuk-radios__label" for="' + subject.nomisId + '">
+                  <input type="radio" class="govuk-radios__input" name="personId" id="select-' + subject.personId + '" value="' + subject.personId + '" data-start="' + subject.orderStartDate + '" data-end="' + subject.orderEndDate + '" autocomplete="off" onChange="updateInputs(this)">
+                  <label class="govuk-label govuk-radios__label" for="' + subject.personId + '">
                   </label>
                 </div>'
         },
@@ -94,24 +94,23 @@
       </form>
     </div>
   
-  {# TODO Tidier method for this post url? Also decide on url routing as current location -> subjects -> location sounds odd, may also want to include subjectId #}
     <form action="/location-data/subjects/location-search" method="post" novalidate id="subject-location-form">
       <div class="govuk-grid-column-one-third">
         <h2>Location Data</h2>
           <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
           {{
             dateTimePicker({
-              id: "from",
+              id: "from-date",
               name: "fromDate",
               text: "Date and time from",
               label: "From",
-              errors: errors
+              errors: errors.date
             })
           }}
 
           {{
             dateTimePicker({
-              id: "to",
+              id: "to-date",
               name: "toDate",
               text: "Date and time to",
               label: "To"
