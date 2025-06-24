@@ -1,9 +1,15 @@
 import { asUser, RestClient, SanitisedError } from '@ministryofjustice/hmpps-rest-client'
-import { ValidationResult, ValidationResultModel } from '../../models/ValidationResult'
-import { CreateSubjectLocationsQueryRequestDto, CreateSubjectLocationsQueryResponseDto } from '../../types/subjectLocation/subjectLocations'
-import Result from '../../types/result'
-import { createSubjectLocationsQueryDtoSchema, subjectLocationsFormDataSchema } from '../../schemas/subjectLocation/subjectLocations'
 import { ZodError } from 'zod/v4'
+import { ValidationResult, ValidationResultModel } from '../../models/ValidationResult'
+import {
+  CreateSubjectLocationsQueryRequestDto,
+  CreateSubjectLocationsQueryResponseDto,
+} from '../../types/subjectLocation/subjectLocations'
+import Result from '../../types/result'
+import {
+  createSubjectLocationsQueryDtoSchema,
+  subjectLocationsFormDataSchema,
+} from '../../schemas/subjectLocation/subjectLocations'
 import { convertZodErrorToValidationError } from '../../utils/errors'
 
 export default class SubjectLocationService {
@@ -17,7 +23,7 @@ export default class SubjectLocationService {
       const parsedFormData = subjectLocationsFormDataSchema.parse(input)
       const res = await this.crimeMatchingApiClient.post(
         {
-          path: `/subjects/${input.nomisId}/locations-query/`,
+          path: `/subjects/locations-query`,
           data: parsedFormData,
         },
         asUser(userToken),

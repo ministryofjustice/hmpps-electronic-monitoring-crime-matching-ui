@@ -1,15 +1,15 @@
 {% from "moj/components/date-picker/macro.njk" import mojDatePicker %}
 {% from "govuk/components/input/macro.njk" import govukInput %}
 
-{{ 
+{{
   mojDatePicker({
     id: params.id,
-    name: params.name,
+    name: params.name + "[date]",
     label: {
       text: params.text
     },
-    errorMessage: params.errors.date
-  }) 
+    errorMessage: params.errors
+  })
 }}
 
 <div class="govuk-date-input">
@@ -23,13 +23,12 @@
             },
             classes: "govuk-date-input__input govuk-input--width-2",
             id: params.id + "-hour",
-            name: params.id + "Hour",
-            errorMessage: params.errors.hour
+            name: params.name + "[hour]"
           })
         }}
       </div>
     </div>
-    
+
     <div class="govuk-date-input__item">
       <div class="govuk-form-group">
         {{
@@ -40,8 +39,7 @@
             },
             classes: "govuk-date-input__input govuk-input--width-2",
             id: params.id + "-minute",
-            name: params.id + "Minute",
-            errorMessage: params.errors.minute
+            name: params.name + "[minute]"
           })
         }}
       </div>
@@ -57,8 +55,7 @@
             },
             classes: "govuk-date-input__input govuk-input--width-2",
             id: params.id + "-second",
-            name: params.id + "Second",
-            errorMessage: params.errors.second
+            name: params.name + "[second]"
           })
         }}
       </div>

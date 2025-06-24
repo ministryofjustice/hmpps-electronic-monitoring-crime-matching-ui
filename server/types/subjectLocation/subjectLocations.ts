@@ -1,5 +1,5 @@
 type SubjectLocation = {
-  nomisId: string
+  personId: string
   longitude: string
   latitude: string
   confidence: string
@@ -10,15 +10,9 @@ type SubjectLocation = {
 type GetSubjectLocationsQueryResponseDto = Array<SubjectLocation>
 
 type CreateSubjectLocationsQueryRequestDto = {
-  nomisId?: string
-  fromDate: string
-  fromHour: number
-  fromMinute: number
-  fromSecond: number
-  toDate: string
-  toHour: number
-  toMinute: number
-  toSecond: number
+  personId?: string
+  fromDate: DateAndTimeInput
+  toDate: DateAndTimeInput
   orderStartDate: string
   orderEndDate: string
 }
@@ -27,4 +21,16 @@ type CreateSubjectLocationsQueryResponseDto = {
   queryExecutionId: string
 }
 
-export { CreateSubjectLocationsQueryRequestDto, CreateSubjectLocationsQueryResponseDto, SubjectLocation, GetSubjectLocationsQueryResponseDto }
+type DateAndTimeInput = {
+  date: string
+  hour: string
+  minute: string
+  second: string
+}
+
+export {
+  CreateSubjectLocationsQueryRequestDto,
+  CreateSubjectLocationsQueryResponseDto,
+  SubjectLocation,
+  GetSubjectLocationsQueryResponseDto,
+}
