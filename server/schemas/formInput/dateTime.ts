@@ -42,7 +42,7 @@ const DateTimeInputModel = () => {
 }
 
 function formatDate(date: string, hour: string, minute: string, second: string) {
-  return dayjs(`${date} ${hour}:${minute}:${second}`, 'D/M/YYYY H:m:s', true)
+  return dayjs.tz(`${date} ${hour}:${minute}:${second}`, 'D/M/YYYY H:m:s', 'Europe/London')
 }
 
 export default DateTimeInputModel

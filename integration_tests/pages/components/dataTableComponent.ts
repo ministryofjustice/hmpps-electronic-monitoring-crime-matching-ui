@@ -72,4 +72,8 @@ export default class DataTableComponent {
   shouldNotHavePagination(): void {
     this.pagination.shouldNotExist()
   }
+
+  selectRow(id: string): void {
+    cy.get(`input[type=radio][value="${id}"]`).check()
+  }
 }

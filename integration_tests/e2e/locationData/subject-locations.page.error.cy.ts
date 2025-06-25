@@ -50,7 +50,7 @@ context('Location Data', () => {
       page.dataTable.shouldHaveResults()
 
       page.locationsForm.fillInWith({ fromDate: undefined, toDate: undefined })
-      cy.get('input[type="radio"][value="1"]').check()
+      page.dataTable.selectRow('1')
       page.locationsForm.continueButton.click()
       page.locationsForm.searchFromDateField.shouldHaveValidationMessage('You must enter a valid value for date')
       page.locationsForm.searchToDateField.shouldHaveValidationMessage('You must enter a valid value for date')
@@ -96,7 +96,7 @@ context('Location Data', () => {
       page.dataTable.shouldHaveResults()
 
       page.locationsForm.fillInWith({ fromDate: invalidDate.toDate(), toDate: now.toDate() })
-      cy.get('input[type="radio"][value="1"]').check()
+      page.dataTable.selectRow('1')
       page.locationsForm.continueButton.click()
       page.locationsForm.searchFromDateField.shouldHaveValidationMessage(
         'Date and time search window should be within Order date range',
@@ -143,7 +143,7 @@ context('Location Data', () => {
       page.dataTable.shouldHaveResults()
 
       page.locationsForm.fillInWith({ fromDate: now.toDate(), toDate: invalidDate.toDate() })
-      cy.get('input[type="radio"][value="1"]').check()
+      page.dataTable.selectRow('1')
       page.locationsForm.continueButton.click()
       page.locationsForm.searchFromDateField.shouldHaveValidationMessage(
         'Date and time search window should not exceed 48 hours',
@@ -190,7 +190,7 @@ context('Location Data', () => {
       page.dataTable.shouldHaveResults()
 
       page.locationsForm.fillInWith({ fromDate: now.toDate(), toDate: invalidDate.toDate() })
-      cy.get('input[type="radio"][value="1"]').check()
+      page.dataTable.selectRow('1')
       page.locationsForm.continueButton.click()
       page.locationsForm.searchFromDateField.shouldHaveValidationMessage('To date must be after From date')
     })

@@ -51,9 +51,9 @@ context('Location Data', () => {
 
       page.locationsForm.continueButton.should('be.disabled')
       const now = dayjs()
-      const invalidDate = now.add(1, 'day')
-      page.locationsForm.fillInWith({ fromDate: now.toDate(), toDate: invalidDate.toDate() })
-      cy.get('input[type="radio"][value="1"]').check()
+      const toDate = now.add(1, 'day')
+      page.locationsForm.fillInWith({ fromDate: now.toDate(), toDate: toDate.toDate() })
+      page.dataTable.selectRow('1')
       page.locationsForm.continueButton.should('not.be.disabled')
       page.locationsForm.continueButton.click()
       cy.url().should('include', '?queryId=4321')

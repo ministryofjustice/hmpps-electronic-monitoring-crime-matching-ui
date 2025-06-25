@@ -1,3 +1,6 @@
+import dayjs from 'dayjs'
+import utc from 'dayjs/plugin/utc'
+import timezone from 'dayjs/plugin/timezone'
 import { RestClient } from '@ministryofjustice/hmpps-rest-client'
 import Logger from 'bunyan'
 import createMockLogger from '../../testutils/createMockLogger'
@@ -6,9 +9,12 @@ import createMockResponse from '../../testutils/createMockResponse'
 import SubjectService from '../../services/locationData/subject'
 import SubjectController from './subject'
 
+dayjs.extend(utc)
+dayjs.extend(timezone)
+
 jest.mock('@ministryofjustice/hmpps-rest-client')
 
-describe('SubjectLocationController', () => {
+describe('SubjectController', () => {
   let logger: jest.Mocked<Logger>
   let mockRestClient: jest.Mocked<RestClient>
 
