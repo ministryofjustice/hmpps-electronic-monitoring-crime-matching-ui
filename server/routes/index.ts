@@ -10,7 +10,7 @@ import LegalController from '../controllers/legal'
 import HelpController from '../controllers/help'
 import SubjectsController from '../controllers/locationData/subjects'
 import populateSessionData from '../middleware/populateSessionData'
-import SubjectLocationController from '../controllers/subjectLocation/subjectLocations'
+import SubjectController from '../controllers/locationData/subject'
 
 export default function routes({
   auditService,
@@ -18,7 +18,7 @@ export default function routes({
   crimeMappingService,
   mapService,
   subjectsService,
-  subjectLocationService,
+  subjectService,
 }: Services): Router {
   const router = Router()
   const get = (path: string | string[], handler: RequestHandler) => router.get(path, asyncMiddleware(handler))
@@ -36,7 +36,7 @@ export default function routes({
   const legalController = new LegalController()
   const mapController = new MapController(mapService)
   const subjectsController = new SubjectsController(subjectsService)
-  const subjectLocationController = new SubjectLocationController(subjectLocationService)
+  const subjectController = new SubjectController(subjectService)
 
   router.use(populateSessionData)
 
@@ -52,8 +52,8 @@ export default function routes({
   get('/location-data/subjects', subjectsController.view)
   post('/location-data/subjects', subjectsController.search)
 
-  get('/location-data/subjects/location-search', crimeMappingController.view)
-  post('/location-data/subjects/location-search', subjectLocationController.search)
+  get('/location-data/subject/location-search', crimeMappingController.view)
+  post('/location-data/subject/location-search', subjectController.search)
 
   return router
 }

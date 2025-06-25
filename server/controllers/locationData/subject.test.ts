@@ -3,8 +3,8 @@ import Logger from 'bunyan'
 import createMockLogger from '../../testutils/createMockLogger'
 import createMockRequest from '../../testutils/createMockRequest'
 import createMockResponse from '../../testutils/createMockResponse'
-import SubjectLocationService from '../../services/subjectLocation/subjectLocations'
-import SubjectLocationController from './subjectLocations'
+import SubjectService from '../../services/locationData/subject'
+import SubjectController from './subject'
 
 jest.mock('@ministryofjustice/hmpps-rest-client')
 
@@ -56,8 +56,8 @@ describe('SubjectLocationController', () => {
       })
       const res = createMockResponse()
       const next = jest.fn()
-      const service = new SubjectLocationService(mockRestClient)
-      const controller = new SubjectLocationController(service)
+      const service = new SubjectService(mockRestClient)
+      const controller = new SubjectController(service)
 
       mockRestClient.post.mockResolvedValue({
         queryExecutionId: '1234',
@@ -78,7 +78,7 @@ describe('SubjectLocationController', () => {
         },
         undefined,
       )
-      expect(res.redirect).toHaveBeenCalledWith('/location-data/subjects/location-search?queryId=1234')
+      expect(res.redirect).toHaveBeenCalledWith('/location-data/subject/location-search?queryId=1234')
     })
   })
 })

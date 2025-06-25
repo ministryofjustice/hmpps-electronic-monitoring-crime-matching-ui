@@ -4,7 +4,7 @@ import CrimeMappingService from './crimeMapping'
 import CrimeBatchesService from './crimeMapping/crimeBatches'
 import MapService from './mapService'
 import SubjectsService from './locationData/subjects'
-import SubjectLocationService from './subjectLocation/subjectLocations'
+import SubjectService from './locationData/subject'
 
 export const services = () => {
   const { applicationInfo, hmppsAuditClient, crimeMatchingApiClient } = dataAccess()
@@ -14,7 +14,7 @@ export const services = () => {
   const crimeMappingService = new CrimeMappingService()
   const mapService = new MapService()
   const subjectsService = new SubjectsService(crimeMatchingApiClient)
-  const subjectLocationService = new SubjectLocationService(crimeMatchingApiClient)
+  const subjectService = new SubjectService(crimeMatchingApiClient)
 
   return {
     applicationInfo,
@@ -23,7 +23,7 @@ export const services = () => {
     crimeMappingService,
     mapService,
     subjectsService,
-    subjectLocationService,
+    subjectService,
   }
 }
 

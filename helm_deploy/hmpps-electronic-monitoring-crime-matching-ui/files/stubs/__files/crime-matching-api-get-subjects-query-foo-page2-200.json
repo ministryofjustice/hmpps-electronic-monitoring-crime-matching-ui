@@ -1,6 +1,7 @@
 {
   "data": [
     {
+      "personId": "11",
       "nomisId": "Nomis 11",
       "name": "John",
       "dateOfBirth": "2000-12-01T00:00:00.000Z",
@@ -12,6 +13,7 @@
       "tagPeriodEndDate": null
     },
     {
+      "personId": "12",
       "nomisId": "Nomis 12",
       "name": "John",
       "dateOfBirth": "2000-12-01T00:00:00.000Z",
@@ -23,6 +25,7 @@
       "tagPeriodEndDate": null
     },
     {
+      "personId": "13",
       "nomisId": "Nomis 13",
       "name": "John",
       "dateOfBirth": "2000-12-01T00:00:00.000Z",

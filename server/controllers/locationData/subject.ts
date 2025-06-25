@@ -1,8 +1,8 @@
 import { RequestHandler } from 'express'
-import SubjectLocationService from '../../services/subjectLocation/subjectLocations'
+import SubjectService from '../../services/locationData/subject'
 
-export default class SubjectLocationController {
-  constructor(private readonly service: SubjectLocationService) {}
+export default class SubjectController {
+  constructor(private readonly service: SubjectService) {}
 
   search: RequestHandler = async (req, res) => {
     const { token } = res.locals.user
@@ -11,9 +11,7 @@ export default class SubjectLocationController {
     const result = await this.service.createQuery(token, formData)
 
     if (result.ok) {
-      res.redirect(
-        `/location-data/subjects/location-search?queryId=${encodeURIComponent(result.data.queryExecutionId)}`,
-      )
+      res.redirect(`/location-data/subject/location-search?queryId=${encodeURIComponent(result.data.queryExecutionId)}`)
     } else {
       req.session.validationErrors = result.error
       res.redirect('/location-data/subjects')

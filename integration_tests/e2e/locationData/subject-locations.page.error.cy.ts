@@ -18,20 +18,25 @@ context('Location Data', () => {
       cy.stubGetSubjectsQuery({
         status: 200,
         query: '.*',
-        response: [
-          {
-            personId: '1',
-            nomisId: 'Nomis 1',
-            name: 'John',
-            dateOfBirth: '2000-12-01T00:00:00.000Z',
-            address: '123 Street',
-            orderStartDate: '2024-12-01T00:00:00.000Z',
-            orderEndDate: null,
-            deviceId: '123456',
-            tagPeriodStartDate: '2024-12-01T00:00:00.000Z',
-            tagPeriodEndDate: null,
-          },
-        ],
+        response: {
+          data: [
+            {
+              personId: '1',
+              nomisId: 'Nomis 1',
+              name: 'John',
+              dateOfBirth: '2000-12-01T00:00:00.000Z',
+              address: '123 Street',
+              orderStartDate: '2024-12-01T00:00:00.000Z',
+              orderEndDate: null,
+              deviceId: '123456',
+              tagPeriodStartDate: '2024-12-01T00:00:00.000Z',
+              tagPeriodEndDate: null,
+            },
+          ],
+          pageCount: 1,
+          pageNumber: 1,
+          pageSize: 10,
+        },
       })
 
       cy.visit(url)
@@ -59,20 +64,25 @@ context('Location Data', () => {
       cy.stubGetSubjectsQuery({
         status: 200,
         query: '.*',
-        response: [
-          {
-            personId: '1',
-            nomisId: 'Nomis 1',
-            name: 'John',
-            dateOfBirth: '2000-12-01T00:00:00.000Z',
-            address: '123 Street',
-            orderStartDate: now.toISOString(),
-            orderEndDate: null,
-            deviceId: '123456',
-            tagPeriodStartDate: '2024-12-01T00:00:00.000Z',
-            tagPeriodEndDate: null,
-          },
-        ],
+        response: {
+          data: [
+            {
+              personId: '1',
+              nomisId: 'Nomis 1',
+              name: 'John',
+              dateOfBirth: '2000-12-01T00:00:00.000Z',
+              address: '123 Street',
+              orderStartDate: now.toISOString(),
+              orderEndDate: null,
+              deviceId: '123456',
+              tagPeriodStartDate: '2024-12-01T00:00:00.000Z',
+              tagPeriodEndDate: null,
+            },
+          ],
+          pageCount: 1,
+          pageNumber: 1,
+          pageSize: 10,
+        },
       })
 
       cy.visit(url)
@@ -101,20 +111,25 @@ context('Location Data', () => {
       cy.stubGetSubjectsQuery({
         status: 200,
         query: '.*',
-        response: [
-          {
-            personId: '1',
-            nomisId: 'Nomis 1',
-            name: 'John',
-            dateOfBirth: '2000-12-01T00:00:00.000Z',
-            address: '123 Street',
-            orderStartDate: now.toISOString(),
-            orderEndDate: null,
-            deviceId: '123456',
-            tagPeriodStartDate: '2024-12-01T00:00:00.000Z',
-            tagPeriodEndDate: null,
-          },
-        ],
+        response: {
+          data: [
+            {
+              personId: '1',
+              nomisId: 'Nomis 1',
+              name: 'John',
+              dateOfBirth: '2000-12-01T00:00:00.000Z',
+              address: '123 Street',
+              orderStartDate: now.toISOString(),
+              orderEndDate: null,
+              deviceId: '123456',
+              tagPeriodStartDate: '2024-12-01T00:00:00.000Z',
+              tagPeriodEndDate: null,
+            },
+          ],
+          pageCount: 1,
+          pageNumber: 1,
+          pageSize: 10,
+        },
       })
 
       cy.visit(url)
@@ -143,20 +158,25 @@ context('Location Data', () => {
       cy.stubGetSubjectsQuery({
         status: 200,
         query: '.*',
-        response: [
-          {
-            personId: '1',
-            nomisId: 'Nomis 1',
-            name: 'John',
-            dateOfBirth: '2000-12-01T00:00:00.000Z',
-            address: '123 Street',
-            orderStartDate: now.toISOString(),
-            orderEndDate: null,
-            deviceId: '123456',
-            tagPeriodStartDate: '2024-12-01T00:00:00.000Z',
-            tagPeriodEndDate: null,
-          },
-        ],
+        response: {
+          data: [
+            {
+              personId: '1',
+              nomisId: 'Nomis 1',
+              name: 'John',
+              dateOfBirth: '2000-12-01T00:00:00.000Z',
+              address: '123 Street',
+              orderStartDate: now.toISOString(),
+              orderEndDate: null,
+              deviceId: '123456',
+              tagPeriodStartDate: '2024-12-01T00:00:00.000Z',
+              tagPeriodEndDate: null,
+            },
+          ],
+          pageCount: 1,
+          pageNumber: 1,
+          pageSize: 10,
+        },
       })
 
       cy.visit(url)
