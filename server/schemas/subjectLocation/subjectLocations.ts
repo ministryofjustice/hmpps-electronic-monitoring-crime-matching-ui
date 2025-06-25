@@ -1,4 +1,5 @@
 import { z } from 'zod/v4'
+import dayjs from 'dayjs'
 import DateTimeInputModel from '../formInput/dateTime'
 
 const VALID_PERSON = 'You must select a valid person ID'
@@ -20,49 +21,49 @@ const subjectLocationsFormDataSchema = z
     orderEndDate: z.string().nullable(),
   })
   .check(ctx => {
-    const fromDateTime = ctx.value.fromDate.toDate()
-    const toDateTime = ctx.value.toDate.toDate()
+    const fromDateTime = ctx.value.fromDate
+    const toDateTime = ctx.value.toDate
 
-    if (toDateTime < fromDateTime) {
+    if (toDateTime.isBefore(fromDateTime)) {
       ctx.issues.push({
         code: 'custom',
         input: ctx.value,
         message: TO_AFTER_FROM,
-        path: ['date'],
+        path: ['fromDate'],
       })
       return
     }
 
-    if (toDateTime.getTime() - fromDateTime.getTime() > maxDateRange) {
+    if (toDateTime.valueOf() - fromDateTime.valueOf() > maxDateRange) {
       ctx.issues.push({
         code: 'custom',
         input: ctx.value,
         message: DATE_RANGE,
-        path: ['date'],
+        path: ['fromDate'],
       })
       return
     }
 
-    const orderStartDate = new Date(ctx.value.orderStartDate)
+    const orderStartDateTime = dayjs(ctx.value.orderStartDate)
 
-    if (fromDateTime < orderStartDate || toDateTime < orderStartDate) {
+    if (fromDateTime.isBefore(orderStartDateTime) || toDateTime.isBefore(orderStartDateTime)) {
       ctx.issues.push({
         code: 'custom',
         input: ctx.value,
         message: DATE_BETWEEN_ORDER,
-        path: ['date'],
+        path: ['fromDate'],
       })
       return
     }
 
     if (ctx.value.orderEndDate) {
-      const orderEndDate = new Date(ctx.value.orderEndDate)
-      if (fromDateTime > orderEndDate || toDateTime > orderEndDate) {
+      const orderEndDateTime = dayjs(ctx.value.orderEndDate)
+      if (fromDateTime.isAfter(orderEndDateTime) || toDateTime.isAfter(orderEndDateTime)) {
         ctx.issues.push({
           code: 'custom',
           input: ctx.value,
           message: DATE_BETWEEN_ORDER,
-          path: ['date'],
+          path: ['fromDate'],
         })
       }
     }

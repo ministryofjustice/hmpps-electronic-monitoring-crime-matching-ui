@@ -10,7 +10,7 @@ type SubjectLocation = {
 type GetSubjectLocationsQueryResponseDto = Array<SubjectLocation>
 
 type CreateSubjectLocationsQueryRequestDto = {
-  personId?: string
+  personId: string
   fromDate: DateAndTimeInput
   toDate: DateAndTimeInput
   orderStartDate: string

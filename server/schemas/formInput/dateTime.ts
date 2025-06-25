@@ -20,7 +20,7 @@ const DateTimeInputModel = () => {
           code: 'custom',
           input: ctx.value,
           message: VALID_DATE,
-          path: ['date'],
+          path: [],
         })
         return
       }
@@ -32,7 +32,7 @@ const DateTimeInputModel = () => {
           code: 'custom',
           input: ctx.value,
           message: VALID_DATE,
-          path: ['date'],
+          path: [],
         })
       }
     })
@@ -42,7 +42,7 @@ const DateTimeInputModel = () => {
 }
 
 function formatDate(date: string, hour: string, minute: string, second: string) {
-  return dayjs(`${date} ${hour}:${minute}:${second}`, 'DD/MM/YYYY H:m:s', true)
+  return dayjs(`${date} ${hour}:${minute}:${second}`, 'D/M/YYYY H:m:s', true)
 }
 
 export default DateTimeInputModel
