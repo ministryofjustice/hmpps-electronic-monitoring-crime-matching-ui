@@ -2,11 +2,15 @@
 {% from "govuk/components/input/macro.njk" import govukInput %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "../../components/datatable/macro.njk" import dataTable %}
+{% from "govuk/components/pagination/macro.njk" import govukPagination %}
 {% from "../../components/date-time-picker/macro.njk" import dateTimePicker %}
 
 {% set pageTitle = applicationName + " - Subject Search" %}
 {% set mainClasses = "app-container govuk-body" %}
 {% set rows = [] %}
+{% set pageSize = 10 %}
+{% set currentPage = 1 %}
+{% set totalPages = (subjects.length / pageSize) | round(0, 'ceil') %}
 {% set activeLinkId = "location-data" %}
 
 {% for subject in subjects %}
@@ -93,7 +97,7 @@
         }}
       </form>
     </div>
-  
+
     <form action="/location-data/subjects/location-search" method="post" novalidate id="subject-location-form">
       <div class="govuk-grid-column-one-third">
         <h2>Location Data</h2>
@@ -161,7 +165,12 @@
                 text: "Tag Period End"
               }
             ],
-            rows: rows
+            rows: rows,
+            pagination: {
+              pageCount: pageCount,
+              currentPage: pageNumber,
+              hrefPrefix: '?queryId=' + queryId
+            }
           })
         }}
 

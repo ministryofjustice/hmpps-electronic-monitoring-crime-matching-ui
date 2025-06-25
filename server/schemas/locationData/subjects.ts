@@ -1,9 +1,14 @@
 import { z } from 'zod/v4'
+import { paginatedDtoSchema } from '../pagination'
 
 const MISSING_FORM_VALUE_ERROR = 'You must enter a value for either Name or NOMIS ID'
 
 const subjectsQueryParametersSchema = z.object({
   queryId: z.string().optional(),
+  page: z
+    .string()
+    .regex(/^\d{1,2}$/)
+    .optional(),
 })
 
 const subjectsFormDataSchema = z
@@ -26,20 +31,22 @@ const createSubjectsQueryDtoSchema = z.object({
   queryExecutionId: z.string(),
 })
 
-const getSubjectsQueryDtoSchema = z.array(
-  z.object({
-    personId: z.string(),
-    nomisId: z.string(),
-    name: z.string(),
-    dateOfBirth: z.string(),
-    address: z.string(),
-    orderStartDate: z.string(),
-    orderEndDate: z.string().nullable(),
-    deviceId: z.string(),
-    tagPeriodStartDate: z.string(),
-    tagPeriodEndDate: z.string().nullable(),
-  }),
-)
+const getSubjectsQueryDtoSchema = paginatedDtoSchema.extend({
+  data: z.array(
+    z.object({
+      personId: z.string(),
+      nomisId: z.string(),
+      name: z.string(),
+      dateOfBirth: z.string(),
+      address: z.string(),
+      orderStartDate: z.string(),
+      orderEndDate: z.string().nullable(),
+      deviceId: z.string(),
+      tagPeriodStartDate: z.string(),
+      tagPeriodEndDate: z.string().nullable(),
+    }),
+  ),
+})
 
 export {
   subjectsQueryParametersSchema,

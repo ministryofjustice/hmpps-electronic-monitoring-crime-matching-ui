@@ -1,3 +1,5 @@
+import { PaginatedResponse } from '../pagination'
+
 type Subject = {
   personId: string
   nomisId: string
@@ -11,7 +13,7 @@ type Subject = {
   tagPeriodEndDate: string | null
 }
 
-type GetSubjectsQueryResponseDto = Array<Subject>
+type GetSubjectsQueryResponseDto = PaginatedResponse<Subject>
 
 type CreateSubjectsQueryRequestDto = {
   name: string

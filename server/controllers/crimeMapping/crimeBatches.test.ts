@@ -1,5 +1,6 @@
 import { RestClient } from '@ministryofjustice/hmpps-rest-client'
 import Logger from 'bunyan'
+import { ZodError } from 'zod/v4'
 import createMockRequest from '../../testutils/createMockRequest'
 import createMockResponse from '../../testutils/createMockResponse'
 import CrimeBatchesController from './crimeBatches'
@@ -39,12 +40,11 @@ describe('CrimeBatchesController', () => {
 
       // Then
       expect(mockRestClient.get).not.toHaveBeenCalled()
-      expect(res.render).toHaveBeenCalledWith(
-        'pages/crime-mapping/crimeBatches',
-        expect.objectContaining({
-          crimeBatches: [],
-        }),
-      )
+      expect(res.render).toHaveBeenCalledWith('pages/crime-mapping/crimeBatches', {
+        crimeBatches: [],
+        pageCount: 1,
+        pageNumber: 1,
+      })
     })
 
     it('should render the view with no data if the api response is empty', async () => {
@@ -59,7 +59,12 @@ describe('CrimeBatchesController', () => {
       const service = new CrimeBatchesService(mockRestClient)
       const controller = new CrimeBatchesController(service)
 
-      mockRestClient.get.mockResolvedValue([])
+      mockRestClient.get.mockResolvedValue({
+        data: [],
+        pageCount: 1,
+        pageNumber: 1,
+        pageSize: 10,
+      })
 
       // When
       await controller.view(req, res, next)
@@ -67,16 +72,19 @@ describe('CrimeBatchesController', () => {
       // Then
       expect(mockRestClient.get).toHaveBeenCalledWith(
         {
-          path: '/crime-batches-query?id=1234',
+          path: '/crime-batches-query',
+          query: {
+            id: '1234',
+          },
         },
         undefined,
       )
-      expect(res.render).toHaveBeenCalledWith(
-        'pages/crime-mapping/crimeBatches',
-        expect.objectContaining({
-          crimeBatches: [],
-        }),
-      )
+      expect(res.render).toHaveBeenCalledWith('pages/crime-mapping/crimeBatches', {
+        crimeBatches: [],
+        pageCount: 1,
+        pageNumber: 1,
+        queryId: '1234',
+      })
     })
 
     it('should render the view with data if the api response has data', async () => {
@@ -91,19 +99,24 @@ describe('CrimeBatchesController', () => {
       const service = new CrimeBatchesService(mockRestClient)
       const controller = new CrimeBatchesController(service)
 
-      mockRestClient.get.mockResolvedValue([
-        {
-          policeForce: 'Police Force 1',
-          batch: '01234456789',
-          start: '2024-12-01T00:00:00.000Z',
-          end: '2024-12-01T23:59:59.000Z',
-          time: 10,
-          matches: 1,
-          ingestionDate: '2024-12-09:00:00.000Z',
-          caseloadMappingDate: '2024-12-01T00:00:00.000Z',
-          crimeMatchingAlgorithmVersion: 'v0.0.1',
-        },
-      ])
+      mockRestClient.get.mockResolvedValue({
+        data: [
+          {
+            policeForce: 'Police Force 1',
+            batch: '01234456789',
+            start: '2024-12-01T00:00:00.000Z',
+            end: '2024-12-01T23:59:59.000Z',
+            time: 10,
+            matches: 1,
+            ingestionDate: '2024-12-09:00:00.000Z',
+            caseloadMappingDate: '2024-12-01T00:00:00.000Z',
+            crimeMatchingAlgorithmVersion: 'v0.0.1',
+          },
+        ],
+        pageCount: 1,
+        pageNumber: 1,
+        pageSize: 10,
+      })
 
       // When
       await controller.view(req, res, next)
@@ -111,28 +124,115 @@ describe('CrimeBatchesController', () => {
       // Then
       expect(mockRestClient.get).toHaveBeenCalledWith(
         {
-          path: '/crime-batches-query?id=1234',
+          path: '/crime-batches-query',
+          query: {
+            id: '1234',
+          },
         },
         undefined,
       )
-      expect(res.render).toHaveBeenCalledWith(
-        'pages/crime-mapping/crimeBatches',
-        expect.objectContaining({
-          crimeBatches: [
-            {
-              policeForce: 'Police Force 1',
-              batch: '01234456789',
-              start: '2024-12-01T00:00:00.000Z',
-              end: '2024-12-01T23:59:59.000Z',
-              time: 10,
-              matches: 1,
-              ingestionDate: '2024-12-09:00:00.000Z',
-              caseloadMappingDate: '2024-12-01T00:00:00.000Z',
-              crimeMatchingAlgorithmVersion: 'v0.0.1',
-            },
-          ],
-        }),
+      expect(res.render).toHaveBeenCalledWith('pages/crime-mapping/crimeBatches', {
+        crimeBatches: [
+          {
+            policeForce: 'Police Force 1',
+            batch: '01234456789',
+            start: '2024-12-01T00:00:00.000Z',
+            end: '2024-12-01T23:59:59.000Z',
+            time: 10,
+            matches: 1,
+            ingestionDate: '2024-12-09:00:00.000Z',
+            caseloadMappingDate: '2024-12-01T00:00:00.000Z',
+            crimeMatchingAlgorithmVersion: 'v0.0.1',
+          },
+        ],
+        pageCount: 1,
+        pageNumber: 1,
+        queryId: '1234',
+      })
+    })
+
+    it('should pass pagination query parameters to the api if present', async () => {
+      // Given
+      const req = createMockRequest({
+        query: {
+          queryId: '1234',
+          page: '2',
+        },
+      })
+      const res = createMockResponse()
+      const next = jest.fn()
+      const service = new CrimeBatchesService(mockRestClient)
+      const controller = new CrimeBatchesController(service)
+
+      mockRestClient.get.mockResolvedValue({
+        data: [
+          {
+            policeForce: 'Police Force 1',
+            batch: '01234456789',
+            start: '2024-12-01T00:00:00.000Z',
+            end: '2024-12-01T23:59:59.000Z',
+            time: 10,
+            matches: 1,
+            ingestionDate: '2024-12-09:00:00.000Z',
+            caseloadMappingDate: '2024-12-01T00:00:00.000Z',
+            crimeMatchingAlgorithmVersion: 'v0.0.1',
+          },
+        ],
+        pageCount: 2,
+        pageNumber: 2,
+        pageSize: 10,
+      })
+
+      // When
+      await controller.view(req, res, next)
+
+      // Then
+      expect(mockRestClient.get).toHaveBeenCalledWith(
+        {
+          path: '/crime-batches-query',
+          query: {
+            id: '1234',
+            page: '2',
+          },
+        },
+        undefined,
       )
+      expect(res.render).toHaveBeenCalledWith('pages/crime-mapping/crimeBatches', {
+        crimeBatches: [
+          {
+            policeForce: 'Police Force 1',
+            batch: '01234456789',
+            start: '2024-12-01T00:00:00.000Z',
+            end: '2024-12-01T23:59:59.000Z',
+            time: 10,
+            matches: 1,
+            ingestionDate: '2024-12-09:00:00.000Z',
+            caseloadMappingDate: '2024-12-01T00:00:00.000Z',
+            crimeMatchingAlgorithmVersion: 'v0.0.1',
+          },
+        ],
+        pageCount: 2,
+        pageNumber: 2,
+        queryId: '1234',
+      })
+    })
+
+    it('should throw an error if the "page" query parameter if a non-numerical value', async () => {
+      // Given
+      const req = createMockRequest({
+        query: {
+          queryId: '1234',
+          page: 'abc',
+        },
+      })
+      const res = createMockResponse()
+      const next = jest.fn()
+      const service = new CrimeBatchesService(mockRestClient)
+      const controller = new CrimeBatchesController(service)
+
+      // When / Then
+      expect(controller.view(req, res, next)).rejects.toBeInstanceOf(ZodError)
+      expect(mockRestClient.get).not.toHaveBeenCalled()
     })
   })
 

@@ -1,5 +1,5 @@
 import { randomUUID } from 'crypto'
-import { Subject } from '../../server/types/subject/subjects'
+import { Subject } from '../../server/types/locationData/subjects'
 
 const getMockSubject = (): Subject => ({
   personId: randomUUID(),

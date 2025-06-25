@@ -4,17 +4,17 @@ import {
   CreateSubjectsQueryRequestDto,
   CreateSubjectsQueryResponseDto,
   GetSubjectsQueryResponseDto,
-} from '../../types/subject/subjects'
+} from '../../types/locationData/subjects'
 import Result from '../../types/result'
 import { ValidationResult, ValidationResultModel } from '../../models/ValidationResult'
 import {
   createSubjectsQueryDtoSchema,
   getSubjectsQueryDtoSchema,
   subjectsFormDataSchema,
-} from '../../schemas/subject/subjects'
+} from '../../schemas/locationData/subjects'
 import { convertZodErrorToValidationError } from '../../utils/errors'
 
-export default class SubjectService {
+export default class SubjectsService {
   constructor(private readonly crimeMatchingApiClient: RestClient) {}
 
   async createQuery(
@@ -55,14 +55,23 @@ export default class SubjectService {
     }
   }
 
-  async getQuery(userToken: string, queryId?: string): Promise<GetSubjectsQueryResponseDto> {
+  async getQuery(userToken: string, queryId?: string, page?: string): Promise<GetSubjectsQueryResponseDto> {
     if (queryId === undefined) {
-      return []
+      return {
+        data: [],
+        pageCount: 1,
+        pageNumber: 1,
+        pageSize: 10,
+      }
     }
 
     const res = await this.crimeMatchingApiClient.get(
       {
-        path: `/subjects-query?id=${queryId}`,
+        path: `/subjects-query`,
+        query: {
+          id: queryId,
+          page,
+        },
       },
       asUser(userToken),
     )

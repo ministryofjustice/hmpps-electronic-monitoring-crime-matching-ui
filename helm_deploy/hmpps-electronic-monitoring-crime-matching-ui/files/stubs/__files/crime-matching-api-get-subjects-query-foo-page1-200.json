@@ -1,0 +1,117 @@
+{
+  "data": [
+    {
+      "nomisId": "Nomis 1",
+      "name": "John",
+      "dateOfBirth": "2000-12-01T00:00:00.000Z",
+      "address": "123 Street",
+      "orderStartDate": "2024-12-01T00:00:00.000Z",
+      "orderEndDate": null,
+      "deviceId": "123456",
+      "tagPeriodStartDate": "2024-12-01T00:00:00.000Z",
+      "tagPeriodEndDate": null
+    },
+    {
+      "nomisId": "Nomis 2",
+      "name": "John",
+      "dateOfBirth": "2000-12-01T00:00:00.000Z",
+      "address": "123 Street",
+      "orderStartDate": "2024-12-01T00:00:00.000Z",
+      "orderEndDate": null,
+      "deviceId": "123456",
+      "tagPeriodStartDate": "2024-12-01T00:00:00.000Z",
+      "tagPeriodEndDate": null
+    },
+    {
+      "nomisId": "Nomis 3",
+      "name": "John",
+      "dateOfBirth": "2000-12-01T00:00:00.000Z",
+      "address": "123 Street",
+      "orderStartDate": "2024-12-01T00:00:00.000Z",
+      "orderEndDate": null,
+      "deviceId": "123456",
+      "tagPeriodStartDate": "2024-12-01T00:00:00.000Z",
+      "tagPeriodEndDate": null
+    },
+    {
+      "nomisId": "Nomis 4",
+      "name": "John",
+      "dateOfBirth": "2000-12-01T00:00:00.000Z",
+      "address": "123 Street",
+      "orderStartDate": "2024-12-01T00:00:00.000Z",
+      "orderEndDate": null,
+      "deviceId": "123456",
+      "tagPeriodStartDate": "2024-12-01T00:00:00.000Z",
+      "tagPeriodEndDate": null
+    },
+    {
+      "nomisId": "Nomis 5",
+      "name": "John",
+      "dateOfBirth": "2000-12-01T00:00:00.000Z",
+      "address": "123 Street",
+      "orderStartDate": "2024-12-01T00:00:00.000Z",
+      "orderEndDate": null,
+      "deviceId": "123456",
+      "tagPeriodStartDate": "2024-12-01T00:00:00.000Z",
+      "tagPeriodEndDate": null
+    },
+    {
+      "nomisId": "Nomis 6",
+      "name": "John",
+      "dateOfBirth": "2000-12-01T00:00:00.000Z",
+      "address": "123 Street",
+      "orderStartDate": "2024-12-01T00:00:00.000Z",
+      "orderEndDate": null,
+      "deviceId": "123456",
+      "tagPeriodStartDate": "2024-12-01T00:00:00.000Z",
+      "tagPeriodEndDate": null
+    },
+    {
+      "nomisId": "Nomis 7",
+      "name": "John",
+      "dateOfBirth": "2000-12-01T00:00:00.000Z",
+      "address": "123 Street",
+      "orderStartDate": "2024-12-01T00:00:00.000Z",
+      "orderEndDate": null,
+      "deviceId": "123456",
+      "tagPeriodStartDate": "2024-12-01T00:00:00.000Z",
+      "tagPeriodEndDate": null
+    },
+    {
+      "nomisId": "Nomis 8",
+      "name": "John",
+      "dateOfBirth": "2000-12-01T00:00:00.000Z",
+      "address": "123 Street",
+      "orderStartDate": "2024-12-01T00:00:00.000Z",
+      "orderEndDate": null,
+      "deviceId": "123456",
+      "tagPeriodStartDate": "2024-12-01T00:00:00.000Z",
+      "tagPeriodEndDate": null
+    },
+    {
+      "nomisId": "Nomis 9",
+      "name": "John",
+      "dateOfBirth": "2000-12-01T00:00:00.000Z",
+      "address": "123 Street",
+      "orderStartDate": "2024-12-01T00:00:00.000Z",
+      "orderEndDate": null,
+      "deviceId": "123456",
+      "tagPeriodStartDate": "2024-12-01T00:00:00.000Z",
+      "tagPeriodEndDate": null
+    },
+    {
+      "nomisId": "Nomis 10",
+      "name": "John",
+      "dateOfBirth": "2000-12-01T00:00:00.000Z",
+      "address": "123 Street",
+      "orderStartDate": "2024-12-01T00:00:00.000Z",
+      "orderEndDate": null,
+      "deviceId": "123456",
+      "tagPeriodStartDate": "2024-12-01T00:00:00.000Z",
+      "tagPeriodEndDate": null
+    }
+  ],
+  "pageCount": 2,
+  "pageNumber": 1,
+  "pageSize": 10
+}

@@ -3,7 +3,7 @@ import AuditService from './auditService'
 import CrimeMappingService from './crimeMapping'
 import CrimeBatchesService from './crimeMapping/crimeBatches'
 import MapService from './mapService'
-import SubjectService from './subject/subjects'
+import SubjectsService from './locationData/subjects'
 import SubjectLocationService from './subjectLocation/subjectLocations'
 
 export const services = () => {
@@ -13,7 +13,7 @@ export const services = () => {
   const crimeBatchesService = new CrimeBatchesService(crimeMatchingApiClient)
   const crimeMappingService = new CrimeMappingService()
   const mapService = new MapService()
-  const subjectService = new SubjectService(crimeMatchingApiClient)
+  const subjectsService = new SubjectsService(crimeMatchingApiClient)
   const subjectLocationService = new SubjectLocationService(crimeMatchingApiClient)
 
   return {
@@ -22,7 +22,7 @@ export const services = () => {
     crimeBatchesService,
     crimeMappingService,
     mapService,
-    subjectService,
+    subjectsService,
     subjectLocationService,
   }
 }
