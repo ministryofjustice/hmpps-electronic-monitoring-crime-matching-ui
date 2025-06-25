@@ -2,6 +2,7 @@ import { randomUUID } from 'crypto'
 import { Subject } from '../../server/types/locationData/subjects'
 
 const getMockSubject = (): Subject => ({
+  personId: randomUUID(),
   nomisId: randomUUID(),
   name: 'John',
   dateOfBirth: '2000-12-01T00:00:00.000Z',

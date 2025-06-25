@@ -1,6 +1,7 @@
 import { PaginatedResponse } from '../pagination'
 
 type Subject = {
+  personId: string
   nomisId: string
   name: string
   dateOfBirth: string

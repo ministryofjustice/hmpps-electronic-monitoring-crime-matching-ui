@@ -34,6 +34,7 @@ const createSubjectsQueryDtoSchema = z.object({
 const getSubjectsQueryDtoSchema = paginatedDtoSchema.extend({
   data: z.array(
     z.object({
+      personId: z.string(),
       nomisId: z.string(),
       name: z.string(),
       dateOfBirth: z.string(),

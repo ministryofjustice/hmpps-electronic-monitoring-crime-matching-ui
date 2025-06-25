@@ -24,13 +24,13 @@ export default class DataTableComponent {
   }
 
   get columns(): Cypress.Chainable<Array<string>> {
-    return this.element.get('table thead tr th').then(cells => {
+    return this.element.find('table thead tr th').then(cells => {
       return Cypress._.map(cells, 'innerText')
     })
   }
 
   get rows(): Cypress.Chainable<Array<Array<string>>> {
-    return this.element.get('table tbody tr').then(rows => {
+    return this.element.find('table tbody tr').then(rows => {
       const out = [] as Array<Array<string>>
 
       rows.each((_, el) => {
@@ -71,5 +71,9 @@ export default class DataTableComponent {
 
   shouldNotHavePagination(): void {
     this.pagination.shouldNotExist()
+  }
+
+  selectRow(id: string): void {
+    cy.get(`input[type=radio][value="${id}"]`).check()
   }
 }

@@ -1,6 +1,7 @@
 import ping from './ping'
 import { stubCreateCrimeBatchesQuery, stubGetCrimeBatchesQuery } from './crimeBatches'
-import { stubCreateSubjectsQuery, stubGetSubjectsQuery } from './subjects'
+import { stubCreateSubjectsQuery, stubGetSubjectsQuery } from '../locationData/subjects'
+import { stubCreateSubjectLocationsQuery } from '../locationData/subjectLocations'
 
 export default {
   stubCrimeMatchingPing: ping,
@@ -8,4 +9,5 @@ export default {
   stubGetCrimeBatchesQuery,
   stubCreateSubjectsQuery,
   stubGetSubjectsQuery,
+  stubCreateSubjectLocationsQuery,
 }

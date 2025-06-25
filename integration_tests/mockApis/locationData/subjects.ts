@@ -55,6 +55,7 @@ type StubGetSubjectsQuery200Options = {
   query: string
   response: {
     data: Array<{
+      personId: string
       nomisId: string
       name: string
       dateOfBirth: string
