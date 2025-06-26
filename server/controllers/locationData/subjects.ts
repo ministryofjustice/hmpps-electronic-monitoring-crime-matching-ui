@@ -28,6 +28,7 @@ export default class SubjectsController {
     req.session.formData = formData
 
     if (result.ok) {
+      req.session.queryId = result.data.queryExecutionId
       res.redirect(`/location-data/subjects?queryId=${encodeURIComponent(result.data.queryExecutionId)}`)
     } else {
       req.session.validationErrors = result.error
