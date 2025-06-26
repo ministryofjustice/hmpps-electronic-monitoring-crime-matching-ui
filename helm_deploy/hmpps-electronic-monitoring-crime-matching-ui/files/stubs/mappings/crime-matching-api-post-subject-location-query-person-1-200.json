@@ -1,0 +1,19 @@
+{
+  "request": {
+    "method": "POST",
+    "urlPath": "/crime-matching/subject/location-query",
+    "bodyPatterns": [
+      {
+        "matchesJsonPath": "$[?(@.personId == '1')]"
+      }
+    ]
+  },
+  "response": {
+    "status": 200,
+    "bodyFileName": "crime-matching-api-post-subject-location-query-person-1-200.json",
+    "headers": {
+      "Content-Type": "application/json;charset=UTF-8",
+      "Server": "wiremock"
+    }
+  }
+}

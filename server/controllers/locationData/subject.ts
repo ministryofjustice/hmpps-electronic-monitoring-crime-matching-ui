@@ -11,7 +11,7 @@ export default class SubjectController {
     const result = await this.service.createQuery(token, formData)
 
     if (result.ok) {
-      res.redirect(`/location-data/subject/location-search?queryId=${encodeURIComponent(result.data.queryExecutionId)}`)
+      res.redirect(`/location-data/subject?queryId=${encodeURIComponent(result.data.queryExecutionId)}`)
     } else {
       req.session.validationErrors = result.error
       res.redirect('/location-data/subjects')

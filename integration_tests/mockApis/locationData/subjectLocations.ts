@@ -41,7 +41,7 @@ const stubCreateSubjectLocationsQuery = (
   stubFor({
     request: {
       method: 'POST',
-      urlPattern: `${baseUrl}/subjects/locations-query`,
+      urlPattern: `${baseUrl}/subject/location-query`,
     },
     response: {
       status: options.status,
