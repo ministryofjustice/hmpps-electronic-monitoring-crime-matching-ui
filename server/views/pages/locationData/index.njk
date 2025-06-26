@@ -19,7 +19,7 @@
       [
         {
           html: '<div class="govuk-radios__item govuk-radios--small">
-                  <input type="radio" class="govuk-radios__input" name="personId" id="select-' + subject.personId + '" value="' + subject.personId + '" data-start="' + subject.orderStartDate + '" data-end="' + subject.orderEndDate + '" autocomplete="off" onChange="updateInputs(this)">
+                  <input type="radio" class="govuk-radios__input" name="personId" id="select-' + subject.personId + '" value="' + subject.personId + '" data-start="' + subject.orderStartDate + '" data-end="' + subject.orderEndDate + '" autocomplete="off">
                   <label class="govuk-label govuk-radios__label" for="' + subject.personId + '">
                   </label>
                 </div>'
@@ -178,11 +178,4 @@
         <input type="hidden" name="orderEndDate" id="subjectOrderEndDate">
       </form>
   </div>
-  <script>
-    function updateInputs(radio) {
-      document.getElementById('subjectOrderStartDate').value = radio.dataset.start
-      document.getElementById('subjectOrderEndDate').value = radio.dataset.end
-      document.getElementById('continue').disabled = false
-    }
-  </script>
 {% endblock %}
