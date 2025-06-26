@@ -38,11 +38,11 @@ const createGeoJsonData = (locations: Array<Location>): GeoJsonData => ({
     id: index.toString(),
     properties: {
       '@id': index.toString(),
-      confidence: location.confidence,
+      confidence: location.confidenceCircle,
     },
     geometry: {
       type: 'Point',
-      coordinates: [location.longitude, location.latitude],
+      coordinates: [location.point.longitude, location.point.latitude],
     },
   })),
   lines: locations.reduce((acc, location, index) => {
@@ -57,8 +57,8 @@ const createGeoJsonData = (locations: Array<Location>): GeoJsonData => ({
         geometry: {
           type: 'LineString',
           coordinates: [
-            [location.longitude, location.latitude],
-            [locations[index + 1].longitude, locations[index + 1].latitude],
+            [location.point.longitude, location.point.latitude],
+            [locations[index + 1].point.longitude, locations[index + 1].point.latitude],
           ],
         },
       })
