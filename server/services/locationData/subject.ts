@@ -4,12 +4,12 @@ import { ValidationResult, ValidationResultModel } from '../../models/Validation
 import {
   CreateSubjectLocationsQueryRequestDto,
   CreateSubjectLocationsQueryResponseDto,
-} from '../../types/locationData/subjectLocations'
+} from '../../types/locationData/subject'
 import Result from '../../types/result'
 import {
   createSubjectLocationsQueryDtoSchema,
   subjectLocationsFormDataSchema,
-} from '../../schemas/locationData/subjectLocations'
+} from '../../schemas/locationData/subject'
 import { convertZodErrorToValidationError } from '../../utils/errors'
 
 export default class SubjectService {
@@ -23,7 +23,7 @@ export default class SubjectService {
       const parsedFormData = subjectLocationsFormDataSchema.parse(input)
       const res = await this.crimeMatchingApiClient.post(
         {
-          path: `/subjects/locations-query`,
+          path: `/subject/location-query`,
           data: parsedFormData,
         },
         asUser(userToken),
