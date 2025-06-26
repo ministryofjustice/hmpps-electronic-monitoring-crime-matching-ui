@@ -21,3 +21,15 @@ function nodeListForEach(nodes, callback) {
 nodeListForEach($maps, $map => {
   new MapComponent($map).init()
 })
+
+function updateInputs(radio) {
+  document.getElementById('subjectOrderStartDate').value = radio.dataset.start
+  document.getElementById('subjectOrderEndDate').value = radio.dataset.end
+  document.getElementById('continue').disabled = false
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('input[type="radio"][name="personId"]').forEach(radio => {
+    radio.addEventListener('change', () => updateInputs(radio))
+  })
+})
