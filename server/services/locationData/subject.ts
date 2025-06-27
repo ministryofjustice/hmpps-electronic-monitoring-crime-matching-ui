@@ -4,10 +4,12 @@ import { ValidationResult, ValidationResultModel } from '../../models/Validation
 import {
   CreateSubjectLocationsQueryRequestDto,
   CreateSubjectLocationsQueryResponseDto,
+  GetSubjectLocationQueryResponseDto,
 } from '../../types/locationData/subject'
 import Result from '../../types/result'
 import {
   createSubjectLocationsQueryDtoSchema,
+  getSubjectLocationQueryDtoSchema,
   subjectLocationsFormDataSchema,
 } from '../../schemas/locationData/subject'
 import { convertZodErrorToValidationError } from '../../utils/errors'
@@ -51,5 +53,26 @@ export default class SubjectService {
       }
       throw error
     }
+  }
+
+  async getQuery(userToken: string, queryId?: string, page?: string): Promise<GetSubjectLocationQueryResponseDto> {
+    if (queryId === undefined) {
+      return {
+        locations: [],
+      }
+    }
+
+    const res = await this.crimeMatchingApiClient.get(
+      {
+        path: `/subject/location-query`,
+        query: {
+          id: queryId,
+          page,
+        },
+      },
+      asUser(userToken),
+    )
+
+    return getSubjectLocationQueryDtoSchema.parse(res)
   }
 }

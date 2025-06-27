@@ -80,4 +80,26 @@ const createSubjectLocationsQueryDtoSchema = z.object({
   queryExecutionId: z.string(),
 })
 
-export { subjectLocationsQueryParametersSchema, subjectLocationsFormDataSchema, createSubjectLocationsQueryDtoSchema }
+const getSubjectLocationQueryDtoSchema = z.object({
+  locations: z.array(
+    z.object({
+      locationRef: z.number(),
+      point: z.object({
+        latitude: z.number(),
+        longitude: z.number(),
+      }),
+      confidenceCircle: z.number(),
+      speed: z.number(),
+      direction: z.number(),
+      timestamp: z.string(),
+      geolocationMechanism: z.number(),
+    }),
+  ),
+})
+
+export {
+  subjectLocationsQueryParametersSchema,
+  subjectLocationsFormDataSchema,
+  createSubjectLocationsQueryDtoSchema,
+  getSubjectLocationQueryDtoSchema,
+}
