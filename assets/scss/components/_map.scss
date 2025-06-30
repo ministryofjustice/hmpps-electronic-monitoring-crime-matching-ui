@@ -1,11 +1,12 @@
 .app-map {
-  border: 1px solid $govuk-border-colour;
-  position: relative;
-  height: 600px;
+  display: grid;
+  grid-template-columns: 1fr 350px;
+  grid-template-rows: calc(100vh - 65px - 77px);
 }
 
-.app-map__viewport {
-  height: 600px;
+.app-map__sidebar {
+  border-left: 1px solid $govuk-border-colour;
+  padding: govuk-spacing(0) govuk-spacing(3);
 }
 
 .app-map__error {

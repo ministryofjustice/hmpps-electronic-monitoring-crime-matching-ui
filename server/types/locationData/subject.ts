@@ -1,3 +1,9 @@
+import Location from '../location'
+
+type GetSubjectDto = {
+  locations: Array<Location>
+}
+
 type CreateSubjectLocationsQueryRequestDto = {
   personId: string
   fromDate: DateAndTimeInput
@@ -17,4 +23,4 @@ type DateAndTimeInput = {
   second: string
 }
 
-export { CreateSubjectLocationsQueryRequestDto, CreateSubjectLocationsQueryResponseDto }
+export { CreateSubjectLocationsQueryRequestDto, CreateSubjectLocationsQueryResponseDto, GetSubjectDto }

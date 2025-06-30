@@ -1,0 +1,17 @@
+{% extends "../../partials/fullWidthLayout.njk" %}
+{% from "../../components/map/macro.njk" import appMap %}
+
+{% set pageTitle = applicationName + " - Home" %}
+{% set mainClasses = "app-container govuk-body" %}
+
+{% block content %}
+  {{
+    appMap({
+      geoData: {
+        points: points,
+        lines: lines
+      },
+      tileUrl: tileUrl
+    })
+  }}
+{% endblock %}
