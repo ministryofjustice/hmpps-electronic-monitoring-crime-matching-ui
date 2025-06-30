@@ -10,6 +10,7 @@ import VectorSource from 'ol/source/Vector'
 import XYZ from 'ol/source/XYZ'
 import { Circle as CircleStyle, Fill, Stroke, Style, Text } from 'ol/style'
 import { generateArrowFeatures, generateConfidenceCircleFeatures } from './featureHelpers'
+import addOverlayHandler from './overlayHelpers'
 
 function MapComponent($module) {
   this.cacheEls($module)
@@ -38,6 +39,7 @@ MapComponent.prototype = {
     this.lines = JSON.parse($module.getAttribute('data-lines'))
     this.apiKey = $module.getAttribute('data-api-key')
     this.tileUrl = $module.getAttribute('data-tile-url')
+    this.showOverlay = $module.getAttribute('data-show-overlay') === 'true'
 
     this.lineSource = new VectorSource()
     this.arrowSource = new VectorSource()
@@ -164,6 +166,10 @@ MapComponent.prototype = {
     this.$map.getView().on('change:resolution', () => {
       this.updateArrows(this.$map.getView().getZoom())
     })
+
+    if (this.showOverlay) {
+      addOverlayHandler(this.$module, this.$map)
+    }
   },
 
   updateArrows(mapZoom) {

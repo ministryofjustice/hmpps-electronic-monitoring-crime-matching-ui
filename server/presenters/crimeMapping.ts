@@ -20,6 +20,14 @@ type PointFeature = {
   id: string
   properties: {
     '@id': string
+    altitude?: number
+    speed?: number
+    direction?: number
+    mechanism?: string
+    recordedTime?: string
+    confidence: number
+    latitude: number
+    longitude: number
   }
   geometry: {
     type: 'Point'
@@ -38,7 +46,14 @@ const createGeoJsonData = (locations: Array<Location>): GeoJsonData => ({
     id: index.toString(),
     properties: {
       '@id': index.toString(),
+      altitude: location.altitude,
+      speed: location.speed,
+      direction: location.direction,
+      mechanism: location.mechanism,
+      recordedTime: location.recordedTime,
       confidence: location.confidenceCircle,
+      latitude: location.latitude,
+      longitude: location.longitude,
     },
     geometry: {
       type: 'Point',
