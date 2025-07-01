@@ -1,5 +1,5 @@
 import Overlay from 'ol/Overlay'
-import formatDisplayValue from './utils/utils'
+import { convertRadiansToDegrees, formatDisplayValue } from './utils/utils'
 
 function addOverlayHandler($module, $map) {
   const $overlay = $module.querySelector('.app-map__overlay')
@@ -27,12 +27,12 @@ function addOverlayHandler($module, $map) {
     const html = $overlayTemplate.innerHTML
       .replace('{{ altitude }}', formatDisplayValue(props.altitude, 'm', 'N/A'))
       .replace('{{ speed }}', formatDisplayValue(props.speed, ' km/h', 'N/A'))
-      .replace('{{ direction }}', formatDisplayValue(props.direction, '°', 'N/A'))
-      .replace('{{ mechanism }}', formatDisplayValue(props.mechanism, '', 'N/A'))
-      .replace('{{ recordedTime }}', formatDisplayValue(props.recordedTime, '', 'N/A'))
-      .replace('{{ confidence }}', formatDisplayValue(props.confidence, 'm', 'N/A'))
-      .replace('{{ latitude }}', formatDisplayValue(props.latitude, '', 'N/A'))
-      .replace('{{ longitude }}', formatDisplayValue(props.longitude, '', 'N/A'))
+      .replace('{{ direction }}', formatDisplayValue(convertRadiansToDegrees(props.direction), '°', 'N/A'))
+      .replace('{{ geolocationMechanism }}', formatDisplayValue(props.geolocationMechanism, '', 'N/A'))
+      .replace('{{ timestamp }}', formatDisplayValue(props.timestamp, '', 'N/A'))
+      .replace('{{ confidenceCircle }}', formatDisplayValue(props.confidenceCircle, 'm', 'N/A'))
+      .replace('{{ latitude }}', formatDisplayValue(props.point.latitude, '', 'N/A'))
+      .replace('{{ longitude }}', formatDisplayValue(props.point.longitude, '', 'N/A'))
 
     $overlay.innerHTML = html
 
