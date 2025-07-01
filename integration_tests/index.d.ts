@@ -1,6 +1,7 @@
 import { StubCreateCrimeBatchQueryOptions, StubGetCrimeBatchesOptions } from './mockApis/crimeMatching/crimeBatches'
 import { StubCreateSubjectsQueryOptions, StubGetSubjectsQueryOptions } from './mockApis/locationData/subjects'
 import { StubCreateSubjectLocationQueryOptions } from './mockApis/locationData/subjectLocations'
+import { StubGetSubjectOptions } from './mockApis/locationData/subject'
 
 declare global {
   namespace Cypress {
@@ -11,6 +12,15 @@ declare global {
        */
       getByLabel: (
         label: string | RegExp,
+        options?: Partial<Cypress.Loggable & Cypress.Timeoutable & Cypress.Withinable & Cypress.Shadow>,
+      ) => Chainable<JQuery>
+
+      /**
+       * Custom command to get a form fieldset by legend text. Options are passed to the command to get the actual fieldset element
+       * @example cy.getByLegend('Important fields')
+       */
+      getByLegend: (
+        legend: string | RegExp,
         options?: Partial<Cypress.Loggable & Cypress.Timeoutable & Cypress.Withinable & Cypress.Shadow>,
       ) => Chainable<JQuery>
 
@@ -44,6 +54,11 @@ declare global {
        * Stub a wiremock response for the crimeMatchingApi POST /locations-query
        */
       stubCreateSubjectLocationsQuery(options?: StubCreateSubjectLocationQueryOptions): Chainable<void>
+
+      /**
+       * Stub a wiremock response for the crimeMatchingApi GET /subject/:personId
+       */
+      stubGetSubject(options?: StubGetSubjectOptions): Chainable<void>
     }
   }
 }
