@@ -197,6 +197,7 @@ MapComponent.prototype = {
     )
 
     for (let i = 0; i < features.length; i += 1) {
+      features[i].set('type', 'location-point')
       this.pointSource.addFeature(features[i])
     }
 

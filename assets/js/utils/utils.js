@@ -14,4 +14,17 @@ function formatDisplayValue(value, unit = '', fallback = '') {
   return `${value}${unit}`
 }
 
-export default formatDisplayValue
+/**
+ * Converts an angle in radians to whole degrees, ensuring the result is between 0 and 360.
+ *
+ * @param radians - The angle in radians (can be negative, null, or undefined)
+ * @returns The angle in whole degrees between 0 and 360, or undefined if input is null/undefined
+ */
+function convertRadiansToDegrees(radians) {
+  if (radians == null) return undefined
+
+  const degrees = (radians * 180) / Math.PI
+  return Math.round((degrees + 360) % 360)
+}
+
+export { convertRadiansToDegrees, formatDisplayValue }

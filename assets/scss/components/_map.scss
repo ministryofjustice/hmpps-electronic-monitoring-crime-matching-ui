@@ -19,11 +19,11 @@
 
 .app-map__overlay {
   position: relative;
-  background-color: white;
-  border: 1px solid black;
+  background-color: govuk-colour("white");
+  border: 1px solid govuk-colour("black");
   min-width: 180px;
   z-index: 1;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 4px rgba(govuk-colour("black"), 0.1);
 }
 
 /* Arrow border */
@@ -35,7 +35,7 @@
   transform: translateX(-50%);
   border-width: 12px;
   border-style: solid;
-  border-color: black transparent transparent transparent;
+  border-color: govuk-colour("black") transparent transparent transparent;
   z-index: -1;
 }
 
@@ -48,16 +48,16 @@
   transform: translateX(-50%);
   border-width: 11px;
   border-style: solid;
-  border-color: white transparent transparent transparent;
+  border-color: govuk-colour("white") transparent transparent transparent;
   z-index: 1;
 }
 
 .app-map__overlay-header {
   display: flex;
   justify-content: flex-end;
-  background-color: #f3f2f1; /* GOV.UK light grey */
+  background-color: govuk-colour("light-grey");
   padding: 4px 8px;
-  border-bottom: 1px solid #ccc;
+  border-bottom: 1px solid $govuk-border-colour;
 }
 
 .app-map__overlay-close {
@@ -66,14 +66,15 @@
   font-size: 20px;
   line-height: 1;
   cursor: pointer;
-  color: #0b0c0c;
+  color: $govuk-text-colour;
 }
 
 .app-map__overlay-body {
   display: grid;
   grid-template-columns: auto 1fr;
   gap: 4px 12px;
-  padding: 10px 20px;
+  font-size: 16px;
+  padding: 10px;
 }
 
 .app-map__overlay-row {
@@ -89,7 +90,3 @@
   text-align: left;
   word-break: break-word;
 }
-
-
-
-

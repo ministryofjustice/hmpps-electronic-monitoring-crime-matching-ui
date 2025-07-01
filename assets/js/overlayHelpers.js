@@ -50,13 +50,11 @@ function addOverlayHandler($module, $map) {
     let selectedFeature = null
 
     $map.forEachFeatureAtPixel(evt.pixel, feature => {
-      const type = feature.get('type')
-      if (type === 'arrow' || type === 'confidence-circle') {
-        return false
+      if (feature.get('type') === 'location-point') {
+        selectedFeature = feature
+        return true
       }
-
-      selectedFeature = feature
-      return true
+      return false
     })
 
     if (!selectedFeature) {
