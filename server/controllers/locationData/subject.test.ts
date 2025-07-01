@@ -275,4 +275,145 @@ describe('SubjectController', () => {
       ])
     })
   })
+
+  describe('view', () => {
+    it('should display the subject view with no location data', async () => {
+      // Given
+      const personId = '1'
+      const from = '2025-01-01T00:00:00Z'
+      const to = '2025-01-02T00:00:00Z'
+      const req = createMockRequest({
+        params: {
+          personId,
+        },
+        query: {
+          from,
+          to,
+        },
+      })
+      const res = createMockResponse()
+      const next = jest.fn()
+      const service = new SubjectService(mockRestClient)
+      const controller = new SubjectController(service)
+
+      mockRestClient.get.mockResolvedValue({
+        locations: [],
+      })
+
+      // When
+      await controller.view(req, res, next)
+
+      // Then
+      expect(mockRestClient.get).toHaveBeenCalledWith(
+        {
+          path: `/subjects/${personId}`,
+          query: {
+            from,
+            to,
+          },
+        },
+        undefined,
+      )
+      expect(res.render).toHaveBeenCalledWith('pages/locationData/subject', {
+        points: '[]',
+        lines: '[]',
+        tileUrl: 'http://localhost:9090/maps',
+      })
+    })
+
+    it('should display the subject view with no location data', async () => {
+      // Given
+      const personId = '1'
+      const from = '2025-01-01T00:00:00Z'
+      const to = '2025-01-02T00:00:00Z'
+      const req = createMockRequest({
+        params: {
+          personId,
+        },
+        query: {
+          from,
+          to,
+        },
+      })
+      const res = createMockResponse()
+      const next = jest.fn()
+      const service = new SubjectService(mockRestClient)
+      const controller = new SubjectController(service)
+
+      mockRestClient.get.mockResolvedValue({
+        locations: [
+          {
+            locationRef: 1,
+            point: {
+              latitude: 123.123,
+              longitude: 123.123,
+            },
+            confidenceCircle: 10,
+            speed: 5,
+            direction: 180,
+            timestamp: '2025-01-01T00:00:00Z',
+            geolocationMechanism: 1,
+          },
+          {
+            locationRef: 2,
+            point: {
+              latitude: 456.123,
+              longitude: 456.123,
+            },
+            confidenceCircle: 20,
+            speed: 7,
+            direction: 210,
+            timestamp: '2025-01-01T00:01:00Z',
+            geolocationMechanism: 1,
+          },
+        ],
+      })
+
+      // When
+      await controller.view(req, res, next)
+
+      // Then
+      expect(mockRestClient.get).toHaveBeenCalledWith(
+        {
+          path: `/subjects/${personId}`,
+          query: {
+            from,
+            to,
+          },
+        },
+        undefined,
+      )
+      expect(res.render).toHaveBeenCalledWith('pages/locationData/subject', {
+        points: JSON.stringify([
+          {
+            type: 'Feature',
+            id: '0',
+            properties: { '@id': '0', confidence: 10 },
+            geometry: { type: 'Point', coordinates: [123.123, 123.123] },
+          },
+          {
+            type: 'Feature',
+            id: '1',
+            properties: { '@id': '1', confidence: 20 },
+            geometry: { type: 'Point', coordinates: [456.123, 456.123] },
+          },
+        ]),
+        lines: JSON.stringify([
+          {
+            type: 'Feature',
+            id: '0',
+            properties: { '@id': '0', direction: 180 },
+            geometry: {
+              type: 'LineString',
+              coordinates: [
+                [123.123, 123.123],
+                [456.123, 456.123],
+              ],
+            },
+          },
+        ]),
+        tileUrl: 'http://localhost:9090/maps',
+      })
+    })
+  })
 })
