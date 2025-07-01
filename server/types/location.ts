@@ -13,4 +13,4 @@ type Location = {
   geolocationMechanism: number
 }
 
-export default Location
+export { Location, Point }

@@ -1,4 +1,4 @@
-import Location from '../types/location'
+import { Location, Point } from '../types/location'
 
 type Coordinate = [number, number]
 
@@ -20,14 +20,12 @@ type PointFeature = {
   id: string
   properties: {
     '@id': string
-    altitude?: number
     speed?: number
     direction?: number
-    mechanism?: string
-    recordedTime?: string
+    geolocationMechanism?: number
+    timestamp?: string
     confidence: number
-    latitude: number
-    longitude: number
+    point: Point
   }
   geometry: {
     type: 'Point'
@@ -46,14 +44,12 @@ const createGeoJsonData = (locations: Array<Location>): GeoJsonData => ({
     id: index.toString(),
     properties: {
       '@id': index.toString(),
-      altitude: location.altitude,
       speed: location.speed,
       direction: location.direction,
-      mechanism: location.mechanism,
-      recordedTime: location.recordedTime,
+      geolocationMechanism: location.geolocationMechanism,
+      timestamp: location.timestamp,
       confidence: location.confidenceCircle,
-      latitude: location.latitude,
-      longitude: location.longitude,
+      point: location.point,
     },
     geometry: {
       type: 'Point',
