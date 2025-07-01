@@ -8,8 +8,9 @@ const DATE_BETWEEN_ORDER = 'Date and time search window should be within Order d
 const DATE_RANGE = 'Date and time search window should not exceed 48 hours'
 const maxDateRange = 48 * 60 * 60 * 1000
 
-const subjectLocationsQueryParametersSchema = z.object({
-  queryId: z.string().optional(),
+const subjectQueryParametersSchema = z.object({
+  from: z.string().optional(),
+  to: z.string().optional(),
 })
 
 const subjectLocationsFormDataSchema = z
@@ -80,4 +81,26 @@ const createSubjectLocationsQueryDtoSchema = z.object({
   queryExecutionId: z.string(),
 })
 
-export { subjectLocationsQueryParametersSchema, subjectLocationsFormDataSchema, createSubjectLocationsQueryDtoSchema }
+const getSubjectDtoSchema = z.object({
+  locations: z.array(
+    z.object({
+      locationRef: z.number(),
+      point: z.object({
+        latitude: z.number(),
+        longitude: z.number(),
+      }),
+      confidenceCircle: z.number(),
+      speed: z.number(),
+      direction: z.number(),
+      timestamp: z.string(),
+      geolocationMechanism: z.number(),
+    }),
+  ),
+})
+
+export {
+  subjectQueryParametersSchema,
+  subjectLocationsFormDataSchema,
+  createSubjectLocationsQueryDtoSchema,
+  getSubjectDtoSchema,
+}

@@ -101,81 +101,81 @@
     <form action="/location-data/subject" method="post" novalidate id="subject-location-form">
       <div class="govuk-grid-column-one-third">
         <h2>Location Data</h2>
-          <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
-          {{
-            dateTimePicker({
-              id: "from-date",
-              name: "fromDate",
-              text: "Date and time from",
-              label: "From",
-              errors: errors.fromDate
-            })
-          }}
-
-          {{
-            dateTimePicker({
-              id: "to-date",
-              name: "toDate",
-              text: "Date and time to",
-              label: "To",
-              errors: errors.toDate
-            })
-          }}
-
-          {{
-            govukButton({
-              text: "Continue",
-              id: "continue",
-              classes: "govuk-button--secondary",
-              disabled: true
-            })
-          }}
-      </div>
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
         {{
-          dataTable({
-            columns: [
-              {
-                text: ""
-              },
-              {
-                text: "NOMIS ID"
-              },
-              {
-                text: "Name"
-              },
-              {
-                text: "Date of Birth"
-              },
-              {
-                text: "Address"
-              },
-              {
-                text: "Order Start"
-              },
-              {
-                text: "Order End"
-              },
-              {
-                text: "Device ID"
-              },
-              {
-                text: "Tag Period Start"
-              },
-              {
-                text: "Tag Period End"
-              }
-            ],
-            rows: rows,
-            pagination: {
-              pageCount: pageCount,
-              currentPage: pageNumber,
-              hrefPrefix: '?queryId=' + queryId
-            }
+          dateTimePicker({
+            id: "from-date",
+            name: "fromDate",
+            text: "Date and time from",
+            label: "From",
+            errors: errors.fromDate
           })
         }}
 
-        <input type="hidden" name="orderStartDate" id="subjectOrderStartDate">
-        <input type="hidden" name="orderEndDate" id="subjectOrderEndDate">
-      </form>
+        {{
+          dateTimePicker({
+            id: "to-date",
+            name: "toDate",
+            text: "Date and time to",
+            label: "To",
+            errors: errors.toDate
+          })
+        }}
+
+        {{
+          govukButton({
+            text: "Continue",
+            id: "continue",
+            classes: "govuk-button--secondary",
+            disabled: true
+          })
+        }}
+      </div>
+      {{
+        dataTable({
+          columns: [
+            {
+              text: ""
+            },
+            {
+              text: "NOMIS ID"
+            },
+            {
+              text: "Name"
+            },
+            {
+              text: "Date of Birth"
+            },
+            {
+              text: "Address"
+            },
+            {
+              text: "Order Start"
+            },
+            {
+              text: "Order End"
+            },
+            {
+              text: "Device ID"
+            },
+            {
+              text: "Tag Period Start"
+            },
+            {
+              text: "Tag Period End"
+            }
+          ],
+          rows: rows,
+          pagination: {
+            pageCount: pageCount,
+            currentPage: pageNumber,
+            hrefPrefix: '?queryId=' + queryId
+          }
+        })
+      }}
+
+      <input type="hidden" name="orderStartDate" id="subjectOrderStartDate" />
+      <input type="hidden" name="orderEndDate" id="subjectOrderEndDate" />
+    </form>
   </div>
 {% endblock %}

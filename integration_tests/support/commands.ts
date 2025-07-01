@@ -22,3 +22,7 @@ Cypress.Commands.add('stubGetSubjectsQuery', options => {
 Cypress.Commands.add('stubCreateSubjectLocationsQuery', options => {
   cy.task('stubCreateSubjectLocationsQuery', options)
 })
+
+Cypress.Commands.add('stubGetSubject', options => {
+  cy.task('stubGetSubject', options)
+})
