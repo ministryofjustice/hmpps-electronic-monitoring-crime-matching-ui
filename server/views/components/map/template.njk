@@ -12,9 +12,7 @@
   <div class="app-map__sidebar">
     {% if params.alerts | length > 0 %}
       {% for alert in params.alerts %}
-        {{
-          mojAlert(alert)
-        }}
+        {{ mojAlert(alert) }}
       {% endfor %}
     {% else %}
       <h3 class="govuk-heading-m">Enhanced Analysis</h3>
