@@ -33,7 +33,6 @@ function generateArrowFeatures(mapZoom, lineSource) {
 
       const arrowFeature = new Feature({
         geometry: new Point(coord),
-        type: 'arrow',
       })
 
       arrowFeature.setStyle(
@@ -63,7 +62,6 @@ function generateConfidenceCircleFeatures(pointSource) {
 
     const circleFeature = new Feature({
       geometry: circle,
-      type: 'confidence-circle',
     })
 
     confidenceFeatures.push(circleFeature)
