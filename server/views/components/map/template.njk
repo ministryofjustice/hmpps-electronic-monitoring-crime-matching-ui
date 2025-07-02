@@ -1,4 +1,5 @@
 {% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
+{% from "moj/components/alert/macro.njk" import mojAlert %}
 
 <div
   class="app-map"
@@ -9,68 +10,76 @@
 >
   <div id="app-map" class="app-map__viewport" data-map-viewport></div>
   <div class="app-map__sidebar">
-    <h3>Enhanced Analysis</h3>
-    {{
-      govukCheckboxes({
-        id: "locations",
-        name: "locations",
-        fieldset: {
-          legend: {
-            text: "Show locations",
-            isPageHeading: true,
-            classes: "govuk-fieldset__legend--s"
-          }
-        },
-        items: [
-          {
-            value: "on",
-            text: "Toggled on",
-            checked: true
-          }
-        ]
-      })
-    }}
+    {% if params.alerts | length > 0 %}
+      {% for alert in params.alerts %}
+        {{
+          mojAlert(alert)
+        }}
+      {% endfor %}
+    {% else %}
+      <h3 class="govuk-heading-m">Enhanced Analysis</h3>
+      {{
+        govukCheckboxes({
+          id: "locations",
+          name: "locations",
+          fieldset: {
+            legend: {
+              text: "Show locations",
+              isPageHeading: true,
+              classes: "govuk-fieldset__legend--s"
+            }
+          },
+          items: [
+            {
+              value: "on",
+              text: "Toggled on",
+              checked: true
+            }
+          ]
+        })
+      }}
 
-    {{
-      govukCheckboxes({
-        id: "confidence",
-        name: "confidence",
-        fieldset: {
-          legend: {
-            text: "Show confidence circles",
-            isPageHeading: true,
-            classes: "govuk-fieldset__legend--s"
-          }
-        },
-        items: [
-          {
-            value: "on",
-            text: "Toggled on",
-            checked: false
-          }
-        ]
-      })
-    }}
+      {{
+        govukCheckboxes({
+          id: "confidence",
+          name: "confidence",
+          fieldset: {
+            legend: {
+              text: "Show confidence circles",
+              isPageHeading: true,
+              classes: "govuk-fieldset__legend--s"
+            }
+          },
+          items: [
+            {
+              value: "on",
+              text: "Toggled on",
+              checked: false
+            }
+          ]
+        })
+      }}
 
-    {{
-      govukCheckboxes({
-        id: "tracks",
-        name: "tracks",
-        fieldset: {
-          legend: {
-            text: "Show tracks",
-            isPageHeading: true,
-            classes: "govuk-fieldset__legend--s"
-          }
-        },
-        items: [
-          {
-            value: "on",
-            text: "Toggled on",
-            checked: false
-          }
-        ]
-      })
-    }}
+      {{
+        govukCheckboxes({
+          id: "tracks",
+          name: "tracks",
+          fieldset: {
+            legend: {
+              text: "Show tracks",
+              isPageHeading: true,
+              classes: "govuk-fieldset__legend--s"
+            }
+          },
+          items: [
+            {
+              value: "on",
+              text: "Toggled on",
+              checked: false
+            }
+          ]
+        })
+      }}
+    {% endif %}
   </div>
 </div>
