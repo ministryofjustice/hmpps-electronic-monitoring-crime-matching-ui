@@ -40,12 +40,13 @@ export default class SubjectController {
     const geoJsonData = createGeoJsonData(queryResults.locations)
 
     if (queryResults.locations.length === 0) {
-      alerts.push(createMojAlertWarning(
+      alerts.push(
+        createMojAlertWarning(
           'No locations were returned for the selected date range',
           'Try adjusting the date range to return location data',
-        ))
+        ),
+      )
     }
-
 
     res.render('pages/locationData/subject', {
       points: JSON.stringify(geoJsonData.points),
