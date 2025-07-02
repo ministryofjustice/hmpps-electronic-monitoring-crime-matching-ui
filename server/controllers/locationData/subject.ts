@@ -42,7 +42,7 @@ export default class SubjectController {
     if (queryResults.locations.length === 0) {
       alerts.push(
         createMojAlertWarning(
-          'No locations were returned for the selected date range',
+          'No GPS Data for Dates and Times Selected',
           'Try adjusting the date range to return location data',
         ),
       )
