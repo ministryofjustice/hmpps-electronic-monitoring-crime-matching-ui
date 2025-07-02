@@ -33,6 +33,7 @@ describe('SubjectController', () => {
 
   describe('search', () => {
     it('should redirect to the view containing results if successful response', async () => {
+      // Given
       const fromDateInput = {
         date: '1/2/2025',
         hour: '1',
@@ -67,8 +68,10 @@ describe('SubjectController', () => {
         queryExecutionId: '1234',
       })
 
+      // When
       await controller.search(req, res, next)
 
+      // Then
       expect(mockRestClient.post).toHaveBeenCalledWith(
         {
           data: {
@@ -84,6 +87,7 @@ describe('SubjectController', () => {
     })
 
     it('should redirect to a view containing a validation error message if no input dates provided', async () => {
+      // Given
       const emptyDateInput = {
         date: '',
         hour: '',
@@ -109,8 +113,10 @@ describe('SubjectController', () => {
         queryExecutionId: '1234',
       })
 
+      // When
       await controller.search(req, res, next)
 
+      // Then
       expect(mockRestClient.post).not.toHaveBeenCalled()
       expect(res.redirect).toHaveBeenCalledWith('/location-data/subjects')
       expect(req.session.validationErrors).toEqual([
@@ -126,6 +132,7 @@ describe('SubjectController', () => {
     })
 
     it('should redirect to a view containing a validation error message if to input date before from input date', async () => {
+      // Given
       const fromDateInput = {
         date: '2/2/2025',
         hour: '1',
@@ -158,8 +165,10 @@ describe('SubjectController', () => {
         queryExecutionId: '1234',
       })
 
+      // When
       await controller.search(req, res, next)
 
+      // Then
       expect(mockRestClient.post).not.toHaveBeenCalled()
       expect(res.redirect).toHaveBeenCalledWith('/location-data/subjects')
       expect(req.session.validationErrors).toEqual([
@@ -171,6 +180,7 @@ describe('SubjectController', () => {
     })
 
     it('should redirect to a view containing a validation error message if dates exceed maximum window', async () => {
+      // Given
       const fromDateInput = {
         date: '1/2/2025',
         hour: '1',
@@ -203,8 +213,10 @@ describe('SubjectController', () => {
         queryExecutionId: '1234',
       })
 
+      // When
       await controller.search(req, res, next)
 
+      // Then
       expect(mockRestClient.post).not.toHaveBeenCalled()
       expect(res.redirect).toHaveBeenCalledWith('/location-data/subjects')
       expect(req.session.validationErrors).toEqual([
@@ -216,6 +228,7 @@ describe('SubjectController', () => {
     })
 
     it('should redirect to a view containing a validation error message if input dates are outside of order date range', async () => {
+      // Given
       const fromDateInput = {
         date: '1/1/2025',
         hour: '1',
@@ -248,8 +261,10 @@ describe('SubjectController', () => {
         queryExecutionId: '1234',
       })
 
+      // When
       await controller.search(req, res, next)
 
+      // Then
       expect(mockRestClient.post).not.toHaveBeenCalled()
       expect(res.redirect).toHaveBeenCalledWith('/location-data/subjects')
       expect(req.session.validationErrors).toEqual([
@@ -263,26 +278,39 @@ describe('SubjectController', () => {
 
   describe('view', () => {
     it('should display the subject view with no location data', async () => {
+      // Given
       const personId = '1'
       const from = '2025-01-01T00:00:00Z'
       const to = '2025-01-02T00:00:00Z'
       const req = createMockRequest({
-        params: { personId },
-        query: { from, to },
+        params: {
+          personId,
+        },
+        query: {
+          from,
+          to,
+        },
       })
       const res = createMockResponse()
       const next = jest.fn()
       const service = new SubjectService(mockRestClient)
       const controller = new SubjectController(service)
 
-      mockRestClient.get.mockResolvedValue({ locations: [] })
+      mockRestClient.get.mockResolvedValue({
+        locations: [],
+      })
 
+      // When
       await controller.view(req, res, next)
 
+      // Then
       expect(mockRestClient.get).toHaveBeenCalledWith(
         {
           path: `/subjects/${personId}`,
-          query: { from, to },
+          query: {
+            from,
+            to,
+          },
         },
         undefined,
       )
@@ -293,13 +321,19 @@ describe('SubjectController', () => {
       })
     })
 
-    it('should display the subject view with location data', async () => {
+    it('should display the subject view with no location data', async () => {
+      // Given
       const personId = '1'
       const from = '2025-01-01T00:00:00Z'
       const to = '2025-01-02T00:00:00Z'
       const req = createMockRequest({
-        params: { personId },
-        query: { from, to },
+        params: {
+          personId,
+        },
+        query: {
+          from,
+          to,
+        },
       })
       const res = createMockResponse()
       const next = jest.fn()
@@ -310,16 +344,22 @@ describe('SubjectController', () => {
         locations: [
           {
             locationRef: 1,
-            point: { latitude: 123.123, longitude: 123.123 },
+            point: {
+              latitude: 123.123,
+              longitude: 123.123,
+            },
             confidenceCircle: 10,
             speed: 5,
             direction: 180,
-            timestamp: '2025-01-01T00:00:00Z', // ✅ Corrected
+            timestamp: '2025-01-01T00:00:00Z',
             geolocationMechanism: 1,
           },
           {
             locationRef: 2,
-            point: { latitude: 456.123, longitude: 456.123 },
+            point: {
+              latitude: 456.123,
+              longitude: 456.123,
+            },
             confidenceCircle: 20,
             speed: 7,
             direction: 210,
@@ -329,12 +369,17 @@ describe('SubjectController', () => {
         ],
       })
 
+      // When
       await controller.view(req, res, next)
 
+      // Then
       expect(mockRestClient.get).toHaveBeenCalledWith(
         {
           path: `/subjects/${personId}`,
-          query: { from, to },
+          query: {
+            from,
+            to,
+          },
         },
         undefined,
       )
