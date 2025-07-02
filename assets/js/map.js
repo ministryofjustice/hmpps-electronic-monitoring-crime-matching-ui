@@ -169,6 +169,10 @@ MapComponent.prototype = {
       }),
     })
 
+    this.$map.on('pointermove', evt => {
+      this.pointerMoveHandler(evt)
+    })
+
     this.$map.getView().on('change:resolution', () => {
       this.updateArrows(this.$map.getView().getZoom())
     })
@@ -294,6 +298,21 @@ MapComponent.prototype = {
       }),
       text: this.textStyle(feature),
     })
+  },
+
+  pointerMoveHandler(evt) {
+    const { pixel } = evt
+    let hovering = false
+
+    this.$map.forEachFeatureAtPixel(pixel, feature => {
+      if (feature.get('type') === 'location-point') {
+        hovering = true
+        return true
+      }
+      return false
+    })
+
+    this.$map.getTargetElement().style.cursor = hovering ? 'pointer' : ''
   },
 }
 
