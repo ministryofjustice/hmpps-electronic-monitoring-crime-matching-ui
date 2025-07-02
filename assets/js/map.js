@@ -10,7 +10,7 @@ import VectorSource from 'ol/source/Vector'
 import XYZ from 'ol/source/XYZ'
 import { Circle as CircleStyle, Fill, Stroke, Style, Text } from 'ol/style'
 import { generateArrowFeatures, generateConfidenceCircleFeatures } from './featureHelpers'
-import addOverlayHandler from './overlayHelpers'
+import createOverlay from './overlayHelpers'
 
 function MapComponent($module) {
   this.cacheEls($module)
@@ -69,7 +69,13 @@ MapComponent.prototype = {
   },
 
   togglePoints() {
-    this.$pointsLayer.setVisible(!this.$pointsLayer.getVisible())
+    const visible = !this.$pointsLayer.getVisible()
+    this.$pointsLayer.setVisible(visible)
+
+    // Hide overlay if points are being hidden
+    if (!visible && this.overlay) {
+      this.overlay.setPosition(undefined)
+    }
   },
 
   toggleConfidence() {
@@ -168,7 +174,7 @@ MapComponent.prototype = {
     })
 
     if (this.showOverlay) {
-      addOverlayHandler(this.$module, this.$map)
+      this.overlay = createOverlay(this.$module, this.$map)
     }
   },
 

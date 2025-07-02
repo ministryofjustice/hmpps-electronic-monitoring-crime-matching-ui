@@ -1,12 +1,11 @@
 import Overlay from 'ol/Overlay'
 import { convertRadiansToDegrees, formatDisplayValue } from './utils/utils'
 
-function addOverlayHandler($module, $map) {
+function createOverlay($module, $map) {
   const $overlay = $module.querySelector('.app-map__overlay')
-  if (!$overlay) return
-
   const $overlayTemplate = $module.querySelector('#map-overlay-template')
-  if (!$overlayTemplate) return
+
+  if (!$overlay || !$overlayTemplate) return null
 
   const overlay = new Overlay({
     element: $overlay,
@@ -73,6 +72,8 @@ function addOverlayHandler($module, $map) {
     const props = selectedFeature.getProperties()
     showOverlayAtCoordinate(coordinate, props)
   })
+
+  return overlay
 }
 
-export default addOverlayHandler
+export default createOverlay
