@@ -58,9 +58,17 @@ MapComponent.prototype = {
     this.confidenceToggle = document.querySelector('#confidence')
     this.linesToggle = document.querySelector('#tracks')
 
-    this.pointsToggle.onchange = () => this.togglePoints()
-    this.confidenceToggle.onchange = () => this.toggleConfidence()
-    this.linesToggle.onchange = () => this.toggleLines()
+    if (this.pointsToggle !== null) {
+      this.pointsToggle.onchange = () => this.togglePoints()
+    }
+
+    if (this.confidenceToggle !== null) {
+      this.confidenceToggle.onchange = () => this.toggleConfidence()
+    }
+
+    if (this.linesToggle !== null) {
+      this.linesToggle.onchange = () => this.toggleLines()
+    }
   },
 
   renderError() {

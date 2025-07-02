@@ -83,11 +83,32 @@ context('Location Data', () => {
 
       page.map.shouldExist()
       page.map.sidebar.shouldExist()
+      page.map.sidebar.shouldHaveControls()
+      page.map.sidebar.shouldNotHaveAlerts()
 
       // Initial state should be to show only the locations
       page.map.sidebar.showLocationToggle.shouldBeChecked()
       page.map.sidebar.showConfidenceCirclesToggle.shouldNotBeChecked()
       page.map.sidebar.showTracksToggle.shouldNotBeChecked()
+    })
+
+    it('should show an alert if no location data was returned from the api', () => {
+      cy.stubGetSubject({
+        status: 200,
+        personId,
+        query: '',
+        response: {
+          locations: [],
+        },
+      })
+      cy.visit(url)
+
+      const page = Page.verifyOnPage(SubjectPage)
+
+      page.map.shouldExist()
+      page.map.sidebar.shouldExist()
+      page.map.sidebar.shouldNotHaveControls()
+      page.map.sidebar.shouldHaveAlert('warning', 'No GPS Data for Dates and Times Selected')
     })
   })
 })

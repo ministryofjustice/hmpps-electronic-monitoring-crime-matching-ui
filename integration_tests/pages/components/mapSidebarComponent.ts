@@ -31,8 +31,23 @@ export default class MapSidebarComponent {
 
   shouldExist(): void {
     this.element.should('exist')
+  }
+
+  shouldHaveAlert(variant: string, title: string): void {
+    this.element.find(`[aria-label="${variant}: ${title}"]`).should('exist')
+  }
+
+  shouldNotHaveAlerts() {
+    return this.element.find('.moj-alert').should('have.length', 0)
+  }
+
+  shouldHaveControls() {
     this.showLocationToggle.shouldExist()
     this.showConfidenceCirclesToggle.shouldExist()
     this.showTracksToggle.shouldExist()
+  }
+
+  shouldNotHaveControls() {
+    this.element.find('input').should('have.length', 0)
   }
 }
