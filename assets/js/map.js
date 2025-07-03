@@ -34,6 +34,7 @@ MapComponent.prototype = {
   cacheEls($module) {
     this.$map = null
     this.$module = $module
+    this.$viewport = $module.querySelector('.app-map__viewport')
 
     this.points = JSON.parse($module.getAttribute('data-points'))
     this.lines = JSON.parse($module.getAttribute('data-lines'))
@@ -59,13 +60,21 @@ MapComponent.prototype = {
     this.confidenceToggle = document.querySelector('#confidence')
     this.linesToggle = document.querySelector('#tracks')
 
-    this.pointsToggle.onchange = () => this.togglePoints()
-    this.confidenceToggle.onchange = () => this.toggleConfidence()
-    this.linesToggle.onchange = () => this.toggleLines()
+    if (this.pointsToggle !== null) {
+      this.pointsToggle.onchange = () => this.togglePoints()
+    }
+
+    if (this.confidenceToggle !== null) {
+      this.confidenceToggle.onchange = () => this.toggleConfidence()
+    }
+
+    if (this.linesToggle !== null) {
+      this.linesToggle.onchange = () => this.toggleLines()
+    }
   },
 
   renderError() {
-    this.$module.innerHTML = '<p class="app-map__error">The map could not be loaded.</p>'
+    this.$viewport.innerHTML = '<p class="app-map__error">The map could not be loaded.</p>'
   },
 
   togglePoints() {

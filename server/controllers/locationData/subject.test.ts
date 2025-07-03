@@ -315,6 +315,15 @@ describe('SubjectController', () => {
         undefined,
       )
       expect(res.render).toHaveBeenCalledWith('pages/locationData/subject', {
+        alerts: [
+          {
+            dismissible: false,
+            showTitleAsHeading: true,
+            text: 'Try adjusting the date range to return location data',
+            title: 'No GPS Data for Dates and Times Selected',
+            variant: 'warning',
+          },
+        ],
         points: '[]',
         lines: '[]',
         tileUrl: 'http://localhost:9090/maps',
@@ -384,6 +393,7 @@ describe('SubjectController', () => {
         undefined,
       )
       expect(res.render).toHaveBeenCalledWith('pages/locationData/subject', {
+        alerts: [],
         points: JSON.stringify([
           {
             type: 'Feature',

@@ -15,7 +15,7 @@
   <div>
     {% block beforeContent %}{% endblock %}
     <main
-      class="govuk-main-wrapper {%- if mainClasses %}{{ mainClasses }}{% endif %}"
+      class="govuk-main-wrapper {% if mainClasses %}{{ mainClasses }}{% endif %}"
       id="main-content"
       {%- if mainLang %}lang="{{ mainLang }}"{% endif %}
     >
