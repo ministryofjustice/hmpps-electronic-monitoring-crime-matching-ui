@@ -10,6 +10,7 @@ import VectorSource from 'ol/source/Vector'
 import XYZ from 'ol/source/XYZ'
 import { Circle as CircleStyle, Fill, Stroke, Style, Text } from 'ol/style'
 import { generateArrowFeatures, generateConfidenceCircleFeatures } from './featureHelpers'
+import createOverlay from './overlayHelpers'
 
 function MapComponent($module) {
   this.cacheEls($module)
@@ -39,6 +40,7 @@ MapComponent.prototype = {
     this.lines = JSON.parse($module.getAttribute('data-lines'))
     this.apiKey = $module.getAttribute('data-api-key')
     this.tileUrl = $module.getAttribute('data-tile-url')
+    this.showOverlay = $module.getAttribute('data-show-overlay') === 'true'
 
     this.lineSource = new VectorSource()
     this.arrowSource = new VectorSource()
@@ -76,7 +78,13 @@ MapComponent.prototype = {
   },
 
   togglePoints() {
-    this.$pointsLayer.setVisible(!this.$pointsLayer.getVisible())
+    const visible = !this.$pointsLayer.getVisible()
+    this.$pointsLayer.setVisible(visible)
+
+    // Hide overlay if points are being hidden
+    if (!visible && this.overlay) {
+      this.overlay.setPosition(undefined)
+    }
   },
 
   toggleConfidence() {
@@ -170,9 +178,17 @@ MapComponent.prototype = {
       }),
     })
 
+    this.$map.on('pointermove', evt => {
+      this.pointerMoveHandler(evt)
+    })
+
     this.$map.getView().on('change:resolution', () => {
       this.updateArrows(this.$map.getView().getZoom())
     })
+
+    if (this.showOverlay) {
+      this.overlay = createOverlay(this.$module, this.$map)
+    }
   },
 
   updateArrows(mapZoom) {
@@ -200,6 +216,7 @@ MapComponent.prototype = {
     )
 
     for (let i = 0; i < features.length; i += 1) {
+      features[i].set('type', 'location-point')
       this.pointSource.addFeature(features[i])
     }
 
@@ -290,6 +307,21 @@ MapComponent.prototype = {
       }),
       text: this.textStyle(feature),
     })
+  },
+
+  pointerMoveHandler(evt) {
+    const { pixel } = evt
+    let hovering = false
+
+    this.$map.forEachFeatureAtPixel(pixel, feature => {
+      if (feature.get('type') === 'location-point') {
+        hovering = true
+        return true
+      }
+      return false
+    })
+
+    this.$map.getTargetElement().style.cursor = hovering ? 'pointer' : ''
   },
 }
 
