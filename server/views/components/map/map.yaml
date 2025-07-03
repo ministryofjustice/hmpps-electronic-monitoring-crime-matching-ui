@@ -32,6 +32,10 @@ params:
         type: string
         required: true
         description: The HTML to use in the alert. Any string can be used.
+  - name: showOverlay
+    type: boolean
+    required: false
+    description: Whether to show a feature overlay when clicking on a map point
 
 examples:
   - name: default

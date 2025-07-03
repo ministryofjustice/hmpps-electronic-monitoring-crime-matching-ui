@@ -7,6 +7,7 @@
   data-points="{{ params.geoData.points }}"
   data-lines="{{ params.geoData.lines }}"
   data-tile-url="{{ params.tileUrl }}"
+  data-show-overlay="{{ params.showOverlay }}"
 >
   <div id="app-map" class="app-map__viewport" data-map-viewport></div>
   <div class="app-map__sidebar">
@@ -78,6 +79,29 @@
           ]
         })
       }}
+    {% endif %}
+  </div>
+  <div class="app-map__overlay">
+    {% if params.showOverlay %}
+      {# The {{ }} placeholders are not processed by Nunjucks.
+         They are used as markers and replaced within assets/js files at runtime.
+         Implemented this way to avoid large Template Literals in the JavaScript file. #}
+      {% raw %}
+      <template id="map-overlay-template">
+        <div class="app-map__overlay-header">
+          <button type="button" class="app-map__overlay-close" aria-label="Close overlay">&times;</button>
+        </div>
+        <div class="app-map__overlay-body">
+          <div class="app-map__overlay-row"><strong>Speed:</strong><span>{{ speed }}</span></div>
+          <div class="app-map__overlay-row"><strong>Direction:</strong><span>{{ direction }}</span></div>
+          <div class="app-map__overlay-row"><strong>Geolocation Mechanism:</strong><span>{{ geolocationMechanism }}</span></div>
+          <div class="app-map__overlay-row"><strong>Recorded Date:</strong><span>{{ timestamp }}</span></div>
+          <div class="app-map__overlay-row"><strong>Confidence:</strong><span>{{ confidenceCircle }}</span></div>
+          <div class="app-map__overlay-row"><strong>Latitude:</strong><span>{{ latitude }}</span></div>
+          <div class="app-map__overlay-row"><strong>Longitude:</strong><span>{{ longitude }}</span></div>
+        </div>
+      </template>
+      {% endraw %}
     {% endif %}
   </div>
 </div>
