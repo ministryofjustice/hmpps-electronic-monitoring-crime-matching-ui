@@ -16,6 +16,10 @@ params:
         type: JSON
         required: false
         description: Points to display on the map
+  - name: showOverlay
+    type: boolean
+    required: false
+    description: Whether to show a feature overlay when clicking on a map point
 
 examples:
   - name: default

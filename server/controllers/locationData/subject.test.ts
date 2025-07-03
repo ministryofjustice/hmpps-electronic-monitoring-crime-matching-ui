@@ -388,14 +388,36 @@ describe('SubjectController', () => {
           {
             type: 'Feature',
             id: '0',
-            properties: { '@id': '0', confidence: 10 },
-            geometry: { type: 'Point', coordinates: [123.123, 123.123] },
+            properties: {
+              '@id': '0',
+              speed: 5,
+              direction: 180,
+              geolocationMechanism: 1,
+              timestamp: '2025-01-01T00:00:00Z',
+              confidence: 10,
+              point: { latitude: 123.123, longitude: 123.123 },
+            },
+            geometry: {
+              type: 'Point',
+              coordinates: [123.123, 123.123],
+            },
           },
           {
             type: 'Feature',
             id: '1',
-            properties: { '@id': '1', confidence: 20 },
-            geometry: { type: 'Point', coordinates: [456.123, 456.123] },
+            properties: {
+              '@id': '1',
+              speed: 7,
+              direction: 210,
+              geolocationMechanism: 1,
+              timestamp: '2025-01-01T00:01:00Z',
+              confidence: 20,
+              point: { latitude: 456.123, longitude: 456.123 },
+            },
+            geometry: {
+              type: 'Point',
+              coordinates: [456.123, 456.123],
+            },
           },
         ]),
         lines: JSON.stringify([
