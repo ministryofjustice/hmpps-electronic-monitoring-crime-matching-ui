@@ -178,15 +178,15 @@ MapComponent.prototype = {
       }),
     })
 
-    this.$map.on('pointermove', evt => {
-      this.pointerMoveHandler(evt)
-    })
-
     this.$map.getView().on('change:resolution', () => {
       this.updateArrows(this.$map.getView().getZoom())
     })
 
     if (this.showOverlay) {
+      this.$map.on('pointermove', evt => {
+        this.pointerMoveHandler(evt)
+      })
+
       this.overlay = createOverlay(this.$module, this.$map)
     }
   },
