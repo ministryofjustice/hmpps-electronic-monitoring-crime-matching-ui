@@ -11,6 +11,7 @@ import XYZ from 'ol/source/XYZ'
 import { Circle as CircleStyle, Fill, Stroke, Style, Text } from 'ol/style'
 import { Cluster } from 'ol/source'
 import { generateArrowFeatures, generateConfidenceCircleFeatures } from './featureHelpers'
+import createOverlay from './overlayHelpers'
 
 function MapComponent($module) {
   this.cacheEls($module)
@@ -34,11 +35,13 @@ MapComponent.prototype = {
   cacheEls($module) {
     this.$map = null
     this.$module = $module
+    this.$viewport = $module.querySelector('.app-map__viewport')
 
     this.points = JSON.parse($module.getAttribute('data-points'))
     this.lines = JSON.parse($module.getAttribute('data-lines'))
     this.apiKey = $module.getAttribute('data-api-key')
     this.tileUrl = $module.getAttribute('data-tile-url')
+    this.showOverlay = $module.getAttribute('data-show-overlay') === 'true'
 
     this.lineSource = new VectorSource()
     this.arrowSource = new VectorSource()
@@ -58,17 +61,31 @@ MapComponent.prototype = {
     this.confidenceToggle = document.querySelector('#confidence')
     this.linesToggle = document.querySelector('#tracks')
 
-    this.pointsToggle.onchange = () => this.togglePoints()
-    this.confidenceToggle.onchange = () => this.toggleConfidence()
-    this.linesToggle.onchange = () => this.toggleLines()
+    if (this.pointsToggle !== null) {
+      this.pointsToggle.onchange = () => this.togglePoints()
+    }
+
+    if (this.confidenceToggle !== null) {
+      this.confidenceToggle.onchange = () => this.toggleConfidence()
+    }
+
+    if (this.linesToggle !== null) {
+      this.linesToggle.onchange = () => this.toggleLines()
+    }
   },
 
   renderError() {
-    this.$module.innerHTML = '<p class="app-map__error">The map could not be loaded.</p>'
+    this.$viewport.innerHTML = '<p class="app-map__error">The map could not be loaded.</p>'
   },
 
   togglePoints() {
-    this.$clusterPointLayer.setVisible(!this.$clusterPointLayer.getVisible())
+    const visible = !this.$clusterPointLayer.getVisible()
+    this.$clusterPointLayer.setVisible(visible)
+
+    // Hide overlay if points are being hidden
+    if (!visible && this.overlay) {
+      this.overlay.setPosition(undefined)
+    }
   },
 
   toggleConfidence() {
@@ -168,9 +185,17 @@ MapComponent.prototype = {
       }),
     })
 
+    this.$map.on('pointermove', evt => {
+      this.pointerMoveHandler(evt)
+    })
+
     this.$map.getView().on('change:resolution', () => {
       this.updateArrows(this.$map.getView().getZoom())
     })
+
+    if (this.showOverlay) {
+      this.overlay = createOverlay(this.$module, this.$map)
+    }
 
     this.focusCluster()
   },
@@ -218,6 +243,7 @@ MapComponent.prototype = {
     )
 
     for (let i = 0; i < features.length; i += 1) {
+      features[i].set('type', 'location-point')
       this.pointSource.addFeature(features[i])
     }
 
@@ -308,6 +334,21 @@ MapComponent.prototype = {
       }),
       text: this.textStyle(feature),
     })
+  },
+
+  pointerMoveHandler(evt) {
+    const { pixel } = evt
+    let hovering = false
+
+    this.$map.forEachFeatureAtPixel(pixel, feature => {
+      if (feature.get('type') === 'location-point') {
+        hovering = true
+        return true
+      }
+      return false
+    })
+
+    this.$map.getTargetElement().style.cursor = hovering ? 'pointer' : ''
   },
 
   clusterStyle(feature) {

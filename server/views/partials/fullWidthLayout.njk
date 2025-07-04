@@ -1,0 +1,32 @@
+{% extends "govuk/template.njk" %}
+
+{% block head %}
+  <link href="{{ '/assets/css/app.css' | assetMap }}" rel="stylesheet" />
+{% endblock %}
+
+{% block pageTitle %}{{ pageTitle | default(applicationName) }}{% endblock %}
+
+{% block header %}
+  {% include "./header.njk" %}
+  {% include "./navigation.njk" %}
+{% endblock %}
+
+{% block main %}
+  <div>
+    {% block beforeContent %}{% endblock %}
+    <main
+      class="govuk-main-wrapper {% if mainClasses %}{{ mainClasses }}{% endif %}"
+      id="main-content"
+      {%- if mainLang %}lang="{{ mainLang }}"{% endif %}
+    >
+      {% block content %}{% endblock %}
+    </main>
+  </div>
+{% endblock %}
+
+{% block bodyStart %}
+{% endblock %}
+
+{% block bodyEnd %}
+  <script type="module" src="{{ '/assets/js/app.js' | assetMap }}"></script>
+{% endblock %}

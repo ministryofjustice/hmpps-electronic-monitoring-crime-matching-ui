@@ -1,5 +1,10 @@
 import { RequestHandler } from 'express'
 import SubjectService from '../../services/locationData/subject'
+import { subjectQueryParametersSchema } from '../../schemas/locationData/subject'
+import createGeoJsonData from '../../presenters/crimeMapping'
+import config from '../../config'
+import { createMojAlertWarning } from '../../utils/alerts'
+import { MojAlert } from '../../types/govUk/mojAlert'
 
 export default class SubjectController {
   constructor(private readonly service: SubjectService) {}
@@ -21,5 +26,33 @@ export default class SubjectController {
         res.redirect('/location-data/subjects')
       }
     }
+  }
+
+  view: RequestHandler = async (req, res) => {
+    const { token } = res.locals.user
+    const {
+      query,
+      params: { personId },
+    } = req
+    const { from, to } = subjectQueryParametersSchema.parse(query)
+    const queryResults = await this.service.getLocationData(token, personId, from, to)
+    const alerts: Array<MojAlert> = []
+    const geoJsonData = createGeoJsonData(queryResults.locations)
+
+    if (queryResults.locations.length === 0) {
+      alerts.push(
+        createMojAlertWarning(
+          'No GPS Data for Dates and Times Selected',
+          'Try adjusting the date range to return location data',
+        ),
+      )
+    }
+
+    res.render('pages/locationData/subject', {
+      points: JSON.stringify(geoJsonData.points),
+      lines: JSON.stringify(geoJsonData.lines),
+      tileUrl: config.maps.tileUrl,
+      alerts,
+    })
   }
 }

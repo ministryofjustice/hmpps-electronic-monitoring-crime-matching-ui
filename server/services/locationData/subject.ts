@@ -1,16 +1,18 @@
 import { asUser, RestClient, SanitisedError } from '@ministryofjustice/hmpps-rest-client'
 import { ZodError } from 'zod/v4'
-import { ValidationResult, ValidationResultModel } from '../../models/ValidationResult'
 import {
   CreateSubjectLocationsQueryRequestDto,
   CreateSubjectLocationsQueryResponseDto,
+  GetSubjectDto,
 } from '../../types/locationData/subject'
 import Result from '../../types/result'
 import {
   createSubjectLocationsQueryDtoSchema,
+  getSubjectDtoSchema,
   subjectLocationsFormDataSchema,
 } from '../../schemas/locationData/subject'
 import { convertZodErrorToValidationError } from '../../utils/errors'
+import { ValidationResult, ValidationResultModel } from '../../models/ValidationResult'
 
 export default class SubjectService {
   constructor(private readonly crimeMatchingApiClient: RestClient) {}
@@ -51,5 +53,26 @@ export default class SubjectService {
       }
       throw error
     }
+  }
+
+  async getLocationData(userToken: string, personId?: string, from?: string, to?: string): Promise<GetSubjectDto> {
+    if (personId === undefined) {
+      return {
+        locations: [],
+      }
+    }
+
+    const res = await this.crimeMatchingApiClient.get(
+      {
+        path: `/subjects/${personId}`,
+        query: {
+          from,
+          to,
+        },
+      },
+      asUser(userToken),
+    )
+
+    return getSubjectDtoSchema.parse(res)
   }
 }
