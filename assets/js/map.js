@@ -9,6 +9,7 @@ import { fromLonLat, transformExtent } from 'ol/proj'
 import VectorSource from 'ol/source/Vector'
 import XYZ from 'ol/source/XYZ'
 import { Circle as CircleStyle, Fill, Stroke, Style, Text } from 'ol/style'
+import { Cluster } from 'ol/source'
 import { generateArrowFeatures, generateConfidenceCircleFeatures } from './featureHelpers'
 
 function MapComponent($module) {
@@ -67,7 +68,7 @@ MapComponent.prototype = {
   },
 
   togglePoints() {
-    this.$pointsLayer.setVisible(!this.$pointsLayer.getVisible())
+    this.$clusterPointLayer.setVisible(!this.$clusterPointLayer.getVisible())
   },
 
   toggleConfidence() {
@@ -103,14 +104,20 @@ MapComponent.prototype = {
   },
 
   renderMap() {
-    this.$pointsLayer = new LayerGroup({
-      title: 'Points',
-      layers: [
-        new VectorLayer({
-          source: this.pointSource,
-          style: this.pointStyle.bind(this),
-        }),
-      ],
+    this.clusterPointSource = new Cluster({
+      distance: 30,
+      source: this.pointSource,
+    })
+
+    this.$clusters = new VectorLayer({
+      source: this.clusterPointSource,
+      style: this.clusterStyle.bind(this),
+    })
+
+    this.$clusterPointLayer = new LayerGroup({
+      title: 'Cluster',
+      visible: this.clustering,
+      layers: [this.$clusters],
     })
 
     this.$confidenceLayer = new LayerGroup({
@@ -148,8 +155,8 @@ MapComponent.prototype = {
           }),
         }),
         this.$linesLayer,
-        this.$pointsLayer,
         this.$confidenceLayer,
+        this.$clusterPointLayer,
       ],
       view: new View({
         projection: 'EPSG:3857',
@@ -163,6 +170,26 @@ MapComponent.prototype = {
 
     this.$map.getView().on('change:resolution', () => {
       this.updateArrows(this.$map.getView().getZoom())
+    })
+
+    this.focusCluster()
+  },
+
+  focusCluster() {
+    this.$map.on('click', e => {
+      this.$clusters.getFeatures(e.pixel).then(clickedFeatures => {
+        if (clickedFeatures.length) {
+          const features = clickedFeatures[0].get('features')
+          if (features.length > 1) {
+            const extent = boundingExtent(features.map(r => r.getGeometry().getCoordinates()))
+            this.$map.getView().fit(extent, {
+              duration: 500,
+              padding: [50, 50, 50, 50],
+              maxZoom: 16,
+            })
+          }
+        }
+      })
     })
   },
 
@@ -280,6 +307,22 @@ MapComponent.prototype = {
         stroke,
       }),
       text: this.textStyle(feature),
+    })
+  },
+
+  clusterStyle(feature) {
+    return new Style({
+      image: new CircleStyle({
+        radius: 10,
+        fill: new Fill({ color: 'red' }),
+        stroke: new Stroke({ color: '#505a5f', width: 2 }),
+      }),
+      text: new Text({
+        text: feature.get('features').length.toString(),
+        fill: new Fill({
+          color: '#fff',
+        }),
+      }),
     })
   },
 }
