@@ -49,9 +49,13 @@ function createOverlay($module, $map) {
     let selectedFeature = null
 
     $map.forEachFeatureAtPixel(evt.pixel, feature => {
-      if (feature.get('type') === 'location-point') {
-        selectedFeature = feature
-        return true
+      const features = feature.get('features')
+      if (features.length === 1) {
+        const singleFeature = features[0]
+        if (singleFeature.get('type') === 'location-point') {
+          selectedFeature = singleFeature
+          return true
+        }
       }
       return false
     })

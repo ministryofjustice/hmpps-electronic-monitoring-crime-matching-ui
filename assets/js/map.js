@@ -9,6 +9,7 @@ import { fromLonLat, transformExtent } from 'ol/proj'
 import VectorSource from 'ol/source/Vector'
 import XYZ from 'ol/source/XYZ'
 import { Circle as CircleStyle, Fill, Stroke, Style, Text } from 'ol/style'
+import { Cluster } from 'ol/source'
 import { generateArrowFeatures, generateConfidenceCircleFeatures } from './featureHelpers'
 import createOverlay from './overlayHelpers'
 
@@ -121,11 +122,14 @@ MapComponent.prototype = {
 
   renderMap() {
     this.$pointsLayer = new LayerGroup({
-      title: 'Points',
+      title: 'Cluster',
       layers: [
         new VectorLayer({
-          source: this.pointSource,
-          style: this.pointStyle.bind(this),
+          source: new Cluster({
+            distance: 30,
+            source: this.pointSource,
+          }),
+          style: this.clusterStyle.bind(this),
         }),
       ],
     })
@@ -189,6 +193,20 @@ MapComponent.prototype = {
     if (this.showOverlay) {
       this.overlay = createOverlay(this.$module, this.$map)
     }
+
+    this.focusCluster()
+  },
+
+  focusCluster() {
+    this.$map.on('click', e => {
+      const features = this.$map.getFeaturesAtPixel(e.pixel)
+      const extent = boundingExtent(features.map(r => r.getGeometry().getCoordinates()))
+      this.$map.getView().fit(extent, {
+        duration: 500,
+        padding: [50, 50, 50, 50],
+        maxZoom: 16,
+      })
+    })
   },
 
   updateArrows(mapZoom) {
@@ -271,6 +289,7 @@ MapComponent.prototype = {
     })
   },
 
+  // TODO Remove or update
   textStyle(feature) {
     return new Text({
       textAlign: 'left',
@@ -284,28 +303,32 @@ MapComponent.prototype = {
     })
   },
 
-  pointStyle(feature) {
-    let fill
-    let stroke
+  // TODO Pre merge increase the values
+  // move to helper file?
+  clusterStyle(feature) {
+    let style
+    const length = feature.get('features').length.toString()
+    let text = new Text({
+      text: length,
+      fill: new Fill({
+        color: '#fff',
+      }),
+    })
 
-    if (feature.get('isOrigin')) {
-      fill = new Fill({ color: 'red' })
-      stroke = new Stroke({ color: '#00703c', width: 2 })
-    } else if (feature.get('isFinalDestination')) {
-      fill = new Fill({ color: 'red' })
-      stroke = new Stroke({ color: '#f47738', width: 2 })
+    if (length > 4) {
+      style = clusterStyles.large
+    } else if (length > 2) {
+      style = clusterStyles.medium
+    } else if (length > 1) {
+      style = clusterStyles.small
     } else {
-      fill = new Fill({ color: 'red' })
-      stroke = new Stroke({ color: '#505a5f', width: 2 })
+      style = clusterStyles.default
+      text = null
     }
 
     return new Style({
-      image: new CircleStyle({
-        radius: 6,
-        fill,
-        stroke,
-      }),
-      text: this.textStyle(feature),
+      image: style,
+      text,
     })
   },
 
@@ -314,6 +337,15 @@ MapComponent.prototype = {
     let hovering = false
 
     this.$map.forEachFeatureAtPixel(pixel, feature => {
+      const features = feature.get('features')
+      if (features.length) {
+        if (features.some(f => f.get('type') === 'location-point')) {
+          hovering = true
+          return true
+        }
+        return false
+        // TODO Unsure if below if is possible in current setup, ie will features always be present due to cluster setup?
+      }
       if (feature.get('type') === 'location-point') {
         hovering = true
         return true
@@ -323,6 +355,29 @@ MapComponent.prototype = {
 
     this.$map.getTargetElement().style.cursor = hovering ? 'pointer' : ''
   },
+}
+
+const clusterStyles = {
+  large: new CircleStyle({
+    radius: 10,
+    fill: new Fill({ color: 'rgba(255, 0, 0, 0.71)' }),
+    stroke: new Stroke({ color: 'rgba(255, 0, 0, 0.34)', width: 7 }),
+  }),
+  medium: new CircleStyle({
+    radius: 10,
+    fill: new Fill({ color: 'rgba(255, 166, 0, 0.77)' }),
+    stroke: new Stroke({ color: 'rgba(255, 166, 0, 0.32)', width: 7 }),
+  }),
+  small: new CircleStyle({
+    radius: 10,
+    fill: new Fill({ color: 'rgba(16, 196, 3, 0.8)' }),
+    stroke: new Stroke({ color: 'rgba(14, 183, 1, 0.32)', width: 7 }),
+  }),
+  default: new CircleStyle({
+    radius: 6,
+    fill: new Fill({ color: 'red' }),
+    stroke: new Stroke({ color: '#505a5f', width: 1 }),
+  }),
 }
 
 export default MapComponent
