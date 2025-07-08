@@ -170,7 +170,7 @@ context('Location Data', () => {
       })
     })
 
-    it('should show overlay when a location-point feature is clicked', () => {
+    it('should show the overlay when a location-point feature is clicked', () => {
       page.map.element.should('have.attr', 'data-show-overlay', 'true')
 
       page.map.mapInstance.then(map => {
@@ -196,6 +196,108 @@ context('Location Data', () => {
 
           page.map.triggerPointerEventsAt(coordinate, map)
           page.map.shouldShowOverlay()
+        })
+      })
+    })
+
+    it('should hide the overlay when clicking on empty map space', () => {
+      page.map.mapInstance.then(map => {
+        const coordinate = [0, 0] // Will be empty here due to map padding
+
+        cy.mapPostRenderComplete(map, () => {
+          const pixel = map.getPixelFromCoordinate(coordinate)
+          expect(pixel, 'pixel should be valid').to.not.equal(null)
+
+          const featureAtPixel = map.forEachFeatureAtPixel(pixel, f => f)
+          expect(featureAtPixel, 'no feature should be at this pixel').to.equal(undefined)
+
+          page.map.triggerPointerEventsAt(coordinate, map)
+          page.map.shouldNotShowOverlay()
+        })
+      })
+    })
+
+    it('should hide the overlay when map is clicked outside a feature', () => {
+      page.map.mapInstance.then(map => {
+        const pointsLayerGroup = map
+          .getLayers()
+          .getArray()
+          .find((l: BaseLayer) => l.get('title') === 'Points')
+
+        const pointsLayer = pointsLayerGroup
+          .get('layers')
+          .getArray()
+          .find((l: BaseLayer) => l.get('title') === 'pointsLayer')
+
+        const feature = pointsLayer.getSource().getFeatures()[0]
+        const coordinate = feature.getGeometry().getCoordinates()
+
+        cy.mapPostRenderComplete(map, () => {
+          page.map.triggerPointerEventsAt(coordinate, map)
+          page.map.shouldShowOverlay()
+
+          const emptyCoordinate = [0, 0] // Will be empty here due to map padding
+          page.map.triggerPointerEventsAt(emptyCoordinate, map)
+          page.map.shouldNotShowOverlay()
+        })
+      })
+    })
+
+    it('should hide the overlay when the close button is clicked', () => {
+      page.map.mapInstance.then(map => {
+        const pointsLayerGroup = map
+          .getLayers()
+          .getArray()
+          .find((l: BaseLayer) => l.get('title') === 'Points')
+
+        const pointsLayer = pointsLayerGroup
+          .get('layers')
+          .getArray()
+          .find((l: BaseLayer) => l.get('title') === 'pointsLayer')
+
+        const feature = pointsLayer.getSource().getFeatures()[0]
+        const coordinate = feature.getGeometry().getCoordinates()
+
+        cy.mapPostRenderComplete(map, () => {
+          page.map.triggerPointerEventsAt(coordinate, map)
+          page.map.shouldShowOverlay()
+
+          // Click the close button inside the overlay
+          cy.get('.app-map__overlay-close').click()
+          page.map.shouldNotShowOverlay()
+        })
+      })
+    })
+
+    it('should hide overlay when location toggle is turned off and stay hidden when turned back on', () => {
+      page.map.mapInstance.then(map => {
+        const pointsLayerGroup = map
+          .getLayers()
+          .getArray()
+          .find((l: BaseLayer) => l.get('title') === 'Points')
+
+        const pointsLayer = pointsLayerGroup
+          .get('layers')
+          .getArray()
+          .find((l: BaseLayer) => l.get('title') === 'pointsLayer')
+
+        const feature = pointsLayer.getSource().getFeatures()[0]
+        const coordinate = feature.getGeometry().getCoordinates()
+
+        cy.mapPostRenderComplete(map, () => {
+          page.map.triggerPointerEventsAt(coordinate, map)
+          page.map.shouldShowOverlay()
+
+          // Turn off location points
+          page.map.sidebar.showLocationToggle.click()
+          page.map.shouldNotShowOverlay()
+
+          // Turn them back on
+          page.map.sidebar.showLocationToggle.click()
+          page.map.sidebar.showLocationToggle.shouldBeChecked()
+
+          // Overlay should still NOT be visible
+          page.map.shouldNotShowOverlay()
         })
       })
     })

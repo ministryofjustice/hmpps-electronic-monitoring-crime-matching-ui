@@ -51,46 +51,24 @@ export default class MapComponent {
 
   // HELPERS
 
-  /**
-   * Assert that the map and sidebar exist
-   * @example page.map.shouldExist()
-   */
   shouldExist(): void {
     this.element.should('exist')
     this.viewport.should('exist')
     this.sidebar.shouldExist()
   }
 
-  /**
-   * Assert that the OpenLayers overlay is visible (e.g. after a feature is clicked)
-   * @example page.map.shouldShowOverlay()
-   */
   shouldShowOverlay(): void {
     cy.get('.ol-overlay-container').should('be.visible')
   }
 
-  /**
-   * Assert that the OpenLayers overlay is not visible
-   * @example page.map.shouldNotShowOverlay()
-   */
   shouldNotShowOverlay(): void {
     cy.get('.ol-overlay-container').should('not.be.visible')
   }
 
-  /**
-   * Asserts that the given OpenLayers map layer exists.
-   * @example page.map.shouldHaveMapLayer(confidenceLayer, 'Confidence');
-   */
   shouldHaveMapLayer(layer: BaseLayer | undefined, name: string): void {
     expect(layer, `${name} layer should exist`).to.not.equal(undefined)
   }
 
-  /**
-   * Dispatch pointer events to simulate a user clicking on a given coordinate on the map
-   * @param coordinate - map coordinate array [x, y]
-   * @param map - OpenLayers map instance
-   * @example page.map.triggerPointerEventsAt([0, 0], map)
-   */
   triggerPointerEventsAt(coordinate: number[], map: Map): void {
     cy.window().then(win => {
       const canvas = map.getViewport().querySelector('canvas')
