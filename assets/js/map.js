@@ -11,7 +11,6 @@ import XYZ from 'ol/source/XYZ'
 import { Circle as CircleStyle, Fill, Stroke, Style, Text } from 'ol/style'
 import { generateArrowFeatures, generateConfidenceCircleFeatures } from './featureHelpers'
 import createOverlay from './overlayHelpers'
-import exposeMapToTest from './testHelpers'
 
 function MapComponent($module) {
   this.cacheEls($module)
@@ -138,7 +137,7 @@ MapComponent.prototype = {
       layers: [
         new VectorLayer({
           source: this.confidenceSource,
-          style: this.confidenceCircleStyle.bind(),
+          style: this.confidenceCircleStyle.bind(this),
           title: 'confidenceLayer',
         }),
       ],
@@ -195,7 +194,8 @@ MapComponent.prototype = {
       this.overlay = createOverlay(this.$module, this.$map)
     }
 
-    exposeMapToTest(this.$module, this.$map)
+    // Add the map to the module for Cypress tests
+    this.exposeMapToCypress()
   },
 
   updateArrows(mapZoom) {
@@ -329,6 +329,19 @@ MapComponent.prototype = {
     })
 
     this.$map.getTargetElement().style.cursor = hovering ? 'pointer' : ''
+  },
+
+  exposeMapToCypress() {
+    const isTestEnv = typeof window !== 'undefined' && !!window.Cypress
+
+    if (isTestEnv) {
+      this.$module.olMapForCypress = this.$map
+      this.$module.dispatchEvent(
+        new CustomEvent('olMap:ready', {
+          detail: { mapInstance: this.$map },
+        }),
+      )
+    }
   },
 }
 
