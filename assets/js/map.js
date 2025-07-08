@@ -11,6 +11,7 @@ import XYZ from 'ol/source/XYZ'
 import { Circle as CircleStyle, Fill, Stroke, Style, Text } from 'ol/style'
 import { generateArrowFeatures, generateConfidenceCircleFeatures } from './featureHelpers'
 import createOverlay from './overlayHelpers'
+import exposeMapToTest from './testHelpers'
 
 function MapComponent($module) {
   this.cacheEls($module)
@@ -126,6 +127,7 @@ MapComponent.prototype = {
         new VectorLayer({
           source: this.pointSource,
           style: this.pointStyle.bind(this),
+          title: 'pointsLayer',
         }),
       ],
     })
@@ -137,6 +139,7 @@ MapComponent.prototype = {
         new VectorLayer({
           source: this.confidenceSource,
           style: this.confidenceCircleStyle.bind(),
+          title: 'confidenceLayer',
         }),
       ],
     })
@@ -148,9 +151,11 @@ MapComponent.prototype = {
         new VectorLayer({
           source: this.lineSource,
           style: this.lineStyle.bind(this),
+          title: 'linesLayer',
         }),
         new VectorLayer({
           source: this.arrowSource,
+          title: 'arrowsLayer',
         }),
       ],
     })
@@ -189,6 +194,8 @@ MapComponent.prototype = {
 
       this.overlay = createOverlay(this.$module, this.$map)
     }
+
+    exposeMapToTest(this.$module, this.$map)
   },
 
   updateArrows(mapZoom) {
