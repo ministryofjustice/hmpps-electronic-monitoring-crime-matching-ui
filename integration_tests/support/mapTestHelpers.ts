@@ -13,7 +13,7 @@ export function attachExposeHookToMapElement(): void {
       return
     }
 
-    el.exposeMapToCypress = function (map: Map): void {
+    el.exposeMapToCypress = function exposeMapToCypress(map: Map): void {
       this.olMapForCypress = map
       this.dispatchEvent(new CustomEvent('olMap:ready', { detail: { mapInstance: map } }))
     }
