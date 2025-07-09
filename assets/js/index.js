@@ -1,9 +1,11 @@
 import * as govukFrontend from 'govuk-frontend'
 import * as mojFrontend from '@ministryofjustice/frontend'
 import MapComponent from './map'
+import initSubjectSelect from './subjectSelect'
 
 govukFrontend.initAll()
 mojFrontend.initAll()
+initSubjectSelect()
 
 const $maps = document.querySelectorAll('[data-module="app-map"]')
 

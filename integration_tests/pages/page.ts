@@ -1,16 +1,19 @@
 export type PageElement = Cypress.Chainable<JQuery>
 
 export default abstract class Page {
-  static verifyOnPage<T>(constructor: new () => T): T {
-    return new constructor()
+  static verifyOnPage<T extends Page, Args extends unknown[]>(constructor: new (...args: Args) => T, ...args: Args): T {
+    return new constructor(...args)
   }
 
-  protected constructor(private readonly title: string) {
+  protected constructor(private readonly title: string | null) {
     this.checkOnPage()
   }
 
   checkOnPage(): void {
-    cy.get('h1').contains(this.title)
+    // Map pages don't have an h1
+    if (this.title !== null) {
+      cy.get('h1').contains(this.title)
+    }
   }
 
   signOut = (): PageElement => cy.get('[data-qa=signOut]')

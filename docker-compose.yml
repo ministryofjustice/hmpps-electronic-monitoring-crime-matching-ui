@@ -42,6 +42,22 @@ services:
       - TOKEN_VERIFICATION_ENABLED=false
       - INGRESS_URL=http://localhost:3000
       - NO_HTTPS=true
+      - OS_MAPS_AUTH_URL=UNASSIGNED
+      - OS_MAPS_TILE_URL=UNASSIGNED
+      - OS_MAPS_API_KEY=UNASSIGNED
+      - OS_MAPS_API_SECRET=UNASSIGNED
+      - EM_CRIME_MATCHING_API_URL=http://hmpps-electronic-monitoring-crime-matching-api:8081/crime-matching
+
+  api:
+    image: wiremock/wiremock
+    networks:
+      - hmpps
+    container_name: hmpps-electronic-monitoring-crime-matching-api
+    ports:
+      - "9091:8081"
+    volumes:
+      - $PWD/helm_deploy/hmpps-electronic-monitoring-crime-matching-ui/files/stubs:/home/wiremock
+    command: --verbose --global-response-templating --port=8081
 
 networks:
   hmpps:

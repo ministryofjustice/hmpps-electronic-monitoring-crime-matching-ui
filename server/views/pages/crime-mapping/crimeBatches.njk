@@ -1,0 +1,118 @@
+{% extends "../../partials/layout.njk" %}
+{% from "../../components/datatable/macro.njk" import dataTable %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+
+{% set pageTitle = applicationName + " - Home" %}
+{% set mainClasses = "app-container govuk-body" %}
+{% set activeLinkId = "crime-mapping" %}
+{% set rows = [] %}
+
+{% for crimeBatch in crimeBatches %}
+  {%
+    set rows = (rows.push(
+      [
+        {
+          text: crimeBatch.policeForce
+        },
+        {
+          text: crimeBatch.batch
+        },
+        {
+          text: crimeBatch.start | formatDate
+        },
+        {
+          text: crimeBatch.end | formatDate
+        },
+        {
+          text: crimeBatch.time,
+          format: "numeric"
+        },
+        {
+          text: crimeBatch.matches,
+          format: "numeric"
+        },
+        {
+          text: crimeBatch.ingestionDate | formatDate
+        },
+        {
+          text: crimeBatch.caseloadMappingDate | formatDate
+        },
+        {
+          text: crimeBatch.crimeMatchingAlgorithmVersion
+        }
+      ]
+    ), rows)
+  %}
+{% endfor %}
+
+{% block content %}
+  <h1>Crime Batches</h1>
+  <form method="post" novalidate id="crime-batches-search-form">
+    <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+    {{
+      govukInput({
+        label: {
+          text: "Search",
+          classes: "govuk-label--s"
+        },
+        hint: {
+          text: "You can search by police force or ingestion date"
+        },
+        classes: "govuk-!-width-two-thirds",
+        id: "searchTerm",
+        name: "searchTerm",
+        value: formData.searchTerm,
+        errorMessage: errors.searchTerm
+      })
+    }}
+
+    {{
+      govukButton({
+        text: "Search"
+      })
+    }}
+  </form>
+
+  {{
+    dataTable({
+      columns: [
+        {
+          text: "Police Force"
+        },
+        {
+          text: "Batch"
+        },
+        {
+          text: "Start"
+        },
+        {
+          text: "End"
+        },
+        {
+          text: "Time (Mins)",
+          format: "numeric"
+        },
+        {
+          text: "Matches",
+          format: "numeric"
+        },
+        {
+          text: "AC Ingestion Date"
+        },
+        {
+          text: "AC Caseload Mapping Date"
+        },
+        {
+          text: "Algorithm Version"
+        }
+      ],
+      rows: rows,
+      pagination: {
+        pageCount: pageCount,
+        currentPage: pageNumber,
+        hrefPrefix: '?queryId=' + queryId
+      }
+    })
+  }}
+{% endblock %}

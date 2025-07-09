@@ -1,4 +1,4 @@
-import Location from '../types/location'
+import { Location, Point } from '../types/location'
 
 type Coordinate = [number, number]
 
@@ -7,6 +7,7 @@ type LineFeature = {
   id: string
   properties: {
     '@id': string
+    direction: number
   }
   geometry: {
     type: 'LineString'
@@ -19,6 +20,12 @@ type PointFeature = {
   id: string
   properties: {
     '@id': string
+    speed?: number
+    direction?: number
+    geolocationMechanism?: number
+    timestamp?: string
+    confidence: number
+    point: Point
   }
   geometry: {
     type: 'Point'
@@ -37,10 +44,16 @@ const createGeoJsonData = (locations: Array<Location>): GeoJsonData => ({
     id: index.toString(),
     properties: {
       '@id': index.toString(),
+      speed: location.speed,
+      direction: location.direction,
+      geolocationMechanism: location.geolocationMechanism,
+      timestamp: location.timestamp,
+      confidence: location.confidenceCircle,
+      point: location.point,
     },
     geometry: {
       type: 'Point',
-      coordinates: [location.longitude, location.latitude],
+      coordinates: [location.point.longitude, location.point.latitude],
     },
   })),
   lines: locations.reduce((acc, location, index) => {
@@ -50,12 +63,13 @@ const createGeoJsonData = (locations: Array<Location>): GeoJsonData => ({
         id: index.toString(),
         properties: {
           '@id': index.toString(),
+          direction: location.direction,
         },
         geometry: {
           type: 'LineString',
           coordinates: [
-            [location.longitude, location.latitude],
-            [locations[index + 1].longitude, locations[index + 1].latitude],
+            [location.point.longitude, location.point.latitude],
+            [locations[index + 1].point.longitude, locations[index + 1].point.latitude],
           ],
         },
       })

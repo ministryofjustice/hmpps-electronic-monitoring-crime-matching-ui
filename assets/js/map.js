@@ -9,6 +9,8 @@ import { fromLonLat, transformExtent } from 'ol/proj'
 import VectorSource from 'ol/source/Vector'
 import XYZ from 'ol/source/XYZ'
 import { Circle as CircleStyle, Fill, Stroke, Style, Text } from 'ol/style'
+import { generateArrowFeatures, generateConfidenceCircleFeatures } from './featureHelpers'
+import createOverlay from './overlayHelpers'
 
 function MapComponent($module) {
   this.cacheEls($module)
@@ -32,36 +34,61 @@ MapComponent.prototype = {
   cacheEls($module) {
     this.$map = null
     this.$module = $module
+    this.$viewport = $module.querySelector('.app-map__viewport')
 
     this.points = JSON.parse($module.getAttribute('data-points'))
     this.lines = JSON.parse($module.getAttribute('data-lines'))
     this.apiKey = $module.getAttribute('data-api-key')
     this.tileUrl = $module.getAttribute('data-tile-url')
+    this.showOverlay = $module.getAttribute('data-show-overlay') === 'true'
 
     this.lineSource = new VectorSource()
+    this.arrowSource = new VectorSource()
     this.pointSource = new VectorSource()
+    this.confidenceSource = new VectorSource()
   },
 
   render() {
     this.renderMap()
     this.appendPoints()
     this.appendLines()
+    this.appendConfidenceCircles()
   },
 
   createControls() {
     this.pointsToggle = document.querySelector('#locations')
+    this.confidenceToggle = document.querySelector('#confidence')
     this.linesToggle = document.querySelector('#tracks')
 
-    this.pointsToggle.onchange = () => this.togglePoints()
-    this.linesToggle.onchange = () => this.toggleLines()
+    if (this.pointsToggle !== null) {
+      this.pointsToggle.onchange = () => this.togglePoints()
+    }
+
+    if (this.confidenceToggle !== null) {
+      this.confidenceToggle.onchange = () => this.toggleConfidence()
+    }
+
+    if (this.linesToggle !== null) {
+      this.linesToggle.onchange = () => this.toggleLines()
+    }
   },
 
   renderError() {
-    this.$module.innerHTML = '<p class="app-map__error">The map could not be loaded.</p>'
+    this.$viewport.innerHTML = '<p class="app-map__error">The map could not be loaded.</p>'
   },
 
   togglePoints() {
-    this.$pointsLayer.setVisible(!this.$pointsLayer.getVisible())
+    const visible = !this.$pointsLayer.getVisible()
+    this.$pointsLayer.setVisible(visible)
+
+    // Hide overlay if points are being hidden
+    if (!visible && this.overlay) {
+      this.overlay.setPosition(undefined)
+    }
+  },
+
+  toggleConfidence() {
+    this.$confidenceLayer.setVisible(!this.$confidenceLayer.getVisible())
   },
 
   toggleLines() {
@@ -103,12 +130,27 @@ MapComponent.prototype = {
       ],
     })
 
+    this.$confidenceLayer = new LayerGroup({
+      title: 'Confidence',
+      visible: false,
+      layers: [
+        new VectorLayer({
+          source: this.confidenceSource,
+          style: this.confidenceCircleStyle.bind(),
+        }),
+      ],
+    })
+
     this.$linesLayer = new LayerGroup({
       title: 'Lines',
+      visible: false,
       layers: [
         new VectorLayer({
           source: this.lineSource,
           style: this.lineStyle.bind(this),
+        }),
+        new VectorLayer({
+          source: this.arrowSource,
         }),
       ],
     })
@@ -124,6 +166,7 @@ MapComponent.prototype = {
         }),
         this.$linesLayer,
         this.$pointsLayer,
+        this.$confidenceLayer,
       ],
       view: new View({
         projection: 'EPSG:3857',
@@ -136,6 +179,29 @@ MapComponent.prototype = {
     })
 
     this.$map.on('rendercomplete', () => window.dispatchEvent(new Event('map:render:complete')))
+
+    this.$map.on('pointermove', evt => {
+      this.pointerMoveHandler(evt)
+    })
+
+    this.$map.getView().on('change:resolution', () => {
+      this.updateArrows(this.$map.getView().getZoom())
+    })
+
+    if (this.showOverlay) {
+      this.overlay = createOverlay(this.$module, this.$map)
+    }
+  },
+
+  updateArrows(mapZoom) {
+    this.arrowSource.clear()
+    const arrowFeatures = generateArrowFeatures(mapZoom, this.lineSource)
+    this.arrowSource.addFeatures(arrowFeatures)
+  },
+
+  appendConfidenceCircles() {
+    const confidenceFeatures = generateConfidenceCircleFeatures(this.pointSource)
+    this.confidenceSource.addFeatures(confidenceFeatures)
   },
 
   appendPoints() {
@@ -152,6 +218,7 @@ MapComponent.prototype = {
     )
 
     for (let i = 0; i < features.length; i += 1) {
+      features[i].set('type', 'location-point')
       this.pointSource.addFeature(features[i])
     }
 
@@ -181,6 +248,8 @@ MapComponent.prototype = {
     for (let i = 0; i < features.length; i += 1) {
       this.lineSource.addFeature(features[i])
     }
+
+    this.updateArrows(this.$map.getView().getZoom())
   },
 
   lineStyle() {
@@ -188,6 +257,18 @@ MapComponent.prototype = {
       stroke: new Stroke({
         width: 2,
         color: 'black',
+      }),
+    })
+  },
+
+  confidenceCircleStyle() {
+    return new Style({
+      stroke: new Stroke({
+        color: 'orange',
+        width: 2,
+      }),
+      fill: new Fill({
+        color: 'rgba(255, 165, 0, 0.1)',
       }),
     })
   },
@@ -228,6 +309,21 @@ MapComponent.prototype = {
       }),
       text: this.textStyle(feature),
     })
+  },
+
+  pointerMoveHandler(evt) {
+    const { pixel } = evt
+    let hovering = false
+
+    this.$map.forEachFeatureAtPixel(pixel, feature => {
+      if (feature.get('type') === 'location-point') {
+        hovering = true
+        return true
+      }
+      return false
+    })
+
+    this.$map.getTargetElement().style.cursor = hovering ? 'pointer' : ''
   },
 }
 

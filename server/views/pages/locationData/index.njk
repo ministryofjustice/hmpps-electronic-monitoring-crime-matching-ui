@@ -1,0 +1,181 @@
+{% extends "../../partials/layout.njk" %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "../../components/datatable/macro.njk" import dataTable %}
+{% from "govuk/components/pagination/macro.njk" import govukPagination %}
+{% from "../../components/date-time-picker/macro.njk" import dateTimePicker %}
+
+{% set pageTitle = applicationName + " - Subject Search" %}
+{% set mainClasses = "app-container govuk-body" %}
+{% set rows = [] %}
+{% set pageSize = 10 %}
+{% set currentPage = 1 %}
+{% set totalPages = (subjects.length / pageSize) | round(0, 'ceil') %}
+{% set activeLinkId = "location-data" %}
+
+{% for subject in subjects %}
+  {%
+    set rows = (rows.push(
+      [
+        {
+          html: '<div class="govuk-radios__item govuk-radios--small">
+                  <input type="radio" class="govuk-radios__input" name="personId" id="select-' + subject.personId + '" value="' + subject.personId + '" data-start="' + subject.orderStartDate + '" data-end="' + subject.orderEndDate + '" autocomplete="off">
+                  <label class="govuk-label govuk-radios__label" for="' + subject.personId + '">
+                  </label>
+                </div>'
+        },
+        {
+          text: subject.nomisId
+        },
+        {
+          text: subject.name
+        },
+        {
+          text: subject.dateOfBirth | formatDate
+        },
+        {
+          text: subject.address
+        },
+        {
+          text: subject.orderStartDate | formatDate
+        },
+        {
+          text: subject.orderEndDate | formatDate
+        },
+        {
+          text: subject.deviceId
+        },
+        {
+          text: subject.tagPeriodStartDate | formatDate
+        },
+        {
+          text: subject.tagPeriodEndDate | formatDate
+        }
+      ]
+    ), rows)
+  %}
+{% endfor %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds govuk-!-static-padding-0">
+      <h1>Subject Search</h1>
+      <form method="post" novalidate id="subject-search-form">
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+        {{
+          govukInput({
+            label: {
+              text: "Name",
+              classes: "govuk-label--s"
+            },
+            classes: "govuk-!-width-two-thirds",
+            id: "name",
+            name: "name",
+            value: name.value,
+            errorMessage: errors.name
+          })
+        }}
+
+        {{
+          govukInput({
+            label: {
+              text: "NOMIS ID",
+              classes: "govuk-label--s"
+            },
+            classes: "govuk-!-width-two-thirds",
+            id: "nomis-id",
+            name: "nomisId",
+            value: nomisId.value
+          })
+        }}
+
+        {{
+          govukButton({
+            text: "Search",
+            name: "action"
+          })
+        }}
+      </form>
+    </div>
+
+    <form action="/location-data/subject" method="post" novalidate id="subject-location-form">
+      <div class="govuk-grid-column-one-third">
+        <h2>Location Data</h2>
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+        {{
+          dateTimePicker({
+            id: "from-date",
+            name: "fromDate",
+            text: "Date and time from",
+            label: "From",
+            errors: errors.fromDate
+          })
+        }}
+
+        {{
+          dateTimePicker({
+            id: "to-date",
+            name: "toDate",
+            text: "Date and time to",
+            label: "To",
+            errors: errors.toDate
+          })
+        }}
+
+        {{
+          govukButton({
+            text: "Continue",
+            id: "continue",
+            classes: "govuk-button--secondary",
+            disabled: true
+          })
+        }}
+      </div>
+      {{
+        dataTable({
+          columns: [
+            {
+              text: ""
+            },
+            {
+              text: "NOMIS ID"
+            },
+            {
+              text: "Name"
+            },
+            {
+              text: "Date of Birth"
+            },
+            {
+              text: "Address"
+            },
+            {
+              text: "Order Start"
+            },
+            {
+              text: "Order End"
+            },
+            {
+              text: "Device ID"
+            },
+            {
+              text: "Tag Period Start"
+            },
+            {
+              text: "Tag Period End"
+            }
+          ],
+          rows: rows,
+          pagination: {
+            pageCount: pageCount,
+            currentPage: pageNumber,
+            hrefPrefix: '?queryId=' + queryId
+          }
+        })
+      }}
+
+      <input type="hidden" name="orderStartDate" id="subjectOrderStartDate" />
+      <input type="hidden" name="orderEndDate" id="subjectOrderEndDate" />
+    </form>
+  </div>
+{% endblock %}

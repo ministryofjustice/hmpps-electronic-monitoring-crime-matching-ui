@@ -27,7 +27,9 @@ export default function setUpWebSecurity(): Router {
           // page by an attacker.
           connectSrc: ["'self'", 'api.os.uk'],
           imgSrc: ["'self'", 'api.os.uk', 'data: blob:'],
+          // @ts-expect-error mismatch response
           scriptSrc: ["'self'", (_req: Request, res: Response) => `'nonce-${res.locals.cspNonce}'`],
+          // @ts-expect-error mismatch response
           styleSrc: ["'self'", (_req: Request, res: Response) => `'nonce-${res.locals.cspNonce}'`],
           fontSrc: ["'self'"],
           formAction: [`'self' ${config.apis.hmppsAuth.externalUrl}`],

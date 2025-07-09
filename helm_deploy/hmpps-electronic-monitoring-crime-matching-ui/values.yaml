@@ -46,7 +46,7 @@ generic-service:
       CLIENT_CREDS_CLIENT_SECRET: 'CLIENT_CREDS_CLIENT_SECRET'
     hmpps-electronic-monitoring-crime-matching-ui-auth-code:
       AUTH_CODE_CLIENT_ID: 'AUTH_CODE_CLIENT_ID'
-      AUTH_CODE_CLIENT_SECRET: 'AUTH_CODE_CLIENT_SECRET'    
+      AUTH_CODE_CLIENT_SECRET: 'AUTH_CODE_CLIENT_SECRET'
     hmpps-electronic-monitoring-crime-matching-ui-session-secret:
       SESSION_SECRET: 'SESSION_SECRET'
     hmpps-electronic-monitoring-crime-matching-ui-elasticache-redis:
@@ -68,3 +68,9 @@ generic-service:
 
 generic-prometheus-alerts:
   targetApplication: hmpps-electronic-monitoring-crime-matching-ui
+
+# Whether to deploy the stubs
+# Override in values-dev.yaml
+# Also update the environment variables to point the application to the mocked services (on port 80)
+deploy_stubs: false
+

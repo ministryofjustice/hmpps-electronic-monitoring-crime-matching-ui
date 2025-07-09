@@ -1,6 +1,16 @@
-type Location = {
+type Point = {
   latitude: number
   longitude: number
 }
 
-export default Location
+type Location = {
+  locationRef: number
+  point: Point
+  confidenceCircle: number
+  speed: number
+  direction: number
+  timestamp: string
+  geolocationMechanism: number
+}
+
+export { Location, Point }
