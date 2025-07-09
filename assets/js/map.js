@@ -194,8 +194,9 @@ MapComponent.prototype = {
       this.overlay = createOverlay(this.$module, this.$map)
     }
 
-    // Add the map to the module for Cypress tests
-    this.exposeMapToCypress()
+    this.$map.on('rendercomplete', () => {
+      this.exposeMapToCypress()
+    })
   },
 
   updateArrows(mapZoom) {
@@ -337,7 +338,7 @@ MapComponent.prototype = {
     if (isTestEnv) {
       this.$module.olMapForCypress = this.$map
       this.$module.dispatchEvent(
-        new CustomEvent('olMap:ready', {
+        new CustomEvent('map:render:complete', {
           detail: { mapInstance: this.$map },
         }),
       )

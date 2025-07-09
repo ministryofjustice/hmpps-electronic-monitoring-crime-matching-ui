@@ -10,6 +10,15 @@ Cypress.Commands.add('mapPostRenderComplete', (map, callback) => {
         const result = callback()
         resolve(result)
       })
+
+      /**
+       * Manually trigger a re-render to ensure the 'rendercomplete' event fires,
+       * which in turn dispatches our custom 'map:render:complete' event.
+       *
+       * Without this, the map may remain in a stable state and not re-render naturally,
+       * causing Cypress tests waiting on the event to hang indefinitely.
+       */
+      map.render()
     }),
     { log: false },
   )

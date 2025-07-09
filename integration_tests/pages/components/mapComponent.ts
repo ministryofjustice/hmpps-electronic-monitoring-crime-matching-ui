@@ -40,11 +40,11 @@ export default class MapComponent {
         }
 
         const handler = (e: CustomEvent<{ mapInstance: Map }>) => {
-          el.removeEventListener('olMap:ready', handler)
+          el.removeEventListener('map:render:complete', handler)
           resolve(e.detail.mapInstance)
         }
 
-        el.addEventListener('olMap:ready', handler)
+        el.addEventListener('map:render:complete', handler)
       })
     })
   }
