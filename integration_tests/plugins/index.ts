@@ -3,6 +3,7 @@ import configureScreenshotResolution from './configureScreenshotResolution'
 import { resetStubs } from '../mockApis/wiremock'
 import auth from '../mockApis/auth'
 import tokenVerification from '../mockApis/tokenVerification'
+import crimeMatching from '../mockApis/crimeMatching'
 
 const setupNodeEvents = (on: Cypress.PluginEvents): void => {
   configureScreenshotResolution(on)
@@ -12,6 +13,7 @@ const setupNodeEvents = (on: Cypress.PluginEvents): void => {
     reset: resetStubs,
     ...auth,
     ...tokenVerification,
+    ...crimeMatching,
   })
 }
 
