@@ -222,7 +222,10 @@ To facilitate demos / development whilst waiting for reliable data feeds from th
 The configuration for the stubs is located in `helm_deploy/hmpps-electronic-monitoring-crime-matching-ui/files/stubs`. Changes to this directory do not trigger a redeployment of the wiremock pod and wiremock does not automatically recognise changes to its file mappings. To resolve this, the wiremock admin api exposes a route that will trigger a reload of the current mappings. The following snippet can be used to invoke that route.
 
 ```shell
-kubectl -n hmpps-electronic-monitoring-crime-matching-dev exec -it hmpps-electronic-monitoring-crime-matching-api-stubs-7b695jcpv4 -- curl -X POST http://localhost:8080/__admin/mappings/reset
+kubectl \
+  -n hmpps-electronic-monitoring-crime-matching-dev \
+  exec -it hmpps-electronic-monitoring-crime-matching-api-stubs-7b695jcpv4 \
+  -- curl -X POST http://localhost:8080/__admin/mappings/reset
 ```
 
 ## Change log
