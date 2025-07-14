@@ -3,6 +3,7 @@ import { resetStubs } from './integration_tests/mockApis/wiremock'
 import auth from './integration_tests/mockApis/auth'
 import tokenVerification from './integration_tests/mockApis/tokenVerification'
 import crimeMatching from './integration_tests/mockApis/crimeMatching'
+import map from './integration_tests/mockApis/map'
 
 export default defineConfig({
   chromeWebSecurity: false,
@@ -21,6 +22,7 @@ export default defineConfig({
         ...auth,
         ...tokenVerification,
         ...crimeMatching,
+        ...map,
       })
     },
     baseUrl: 'http://localhost:3007',

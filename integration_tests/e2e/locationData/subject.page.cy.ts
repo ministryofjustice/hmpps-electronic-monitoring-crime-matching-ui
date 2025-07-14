@@ -1,3 +1,4 @@
+import BaseLayer from 'ol/layer/Base'
 import SubjectPage from '../../pages/locationData/subject'
 import Page from '../../pages/page'
 
@@ -109,6 +110,196 @@ context('Location Data', () => {
       page.map.sidebar.shouldExist()
       page.map.sidebar.shouldNotHaveControls()
       page.map.sidebar.shouldHaveAlert('warning', 'No GPS Data for Dates and Times Selected')
+    })
+  })
+
+  context('Interacting with the map', () => {
+    let page: SubjectPage
+
+    beforeEach(() => {
+      cy.task('reset')
+      cy.task('stubSignIn')
+      cy.signIn()
+      cy.stubMapToken()
+      cy.stubMapTiles()
+      cy.stubGetSubject({ status: 200, personId, query: '', response: data })
+
+      cy.visit(url)
+
+      page = Page.verifyOnPage(SubjectPage)
+      page.map.shouldExist()
+    })
+
+    it('should display the map with the correct layers and features', () => {
+      page.map.mapInstance.then(map => {
+        const confidenceLayerGroup = map
+          .getLayers()
+          .getArray()
+          .find((l: BaseLayer) => l.get('title') === 'Confidence')
+        const confidenceLayer = confidenceLayerGroup
+          .get('layers')
+          .getArray()
+          .find((l: BaseLayer) => l.get('title') === 'confidenceLayer')
+        const linesLayerGroup = map
+          .getLayers()
+          .getArray()
+          .find((l: BaseLayer) => l.get('title') === 'Lines')
+        const arrowsLayer = linesLayerGroup
+          .get('layers')
+          .getArray()
+          .find((l: BaseLayer) => l.get('title') === 'arrowsLayer')
+        const linesLayer = linesLayerGroup
+          .get('layers')
+          .getArray()
+          .find((l: BaseLayer) => l.get('title') === 'linesLayer')
+        const pointsLayerGroup = map
+          .getLayers()
+          .getArray()
+          .find((l: BaseLayer) => l.get('title') === 'Points')
+        const pointsLayer = pointsLayerGroup
+          .get('layers')
+          .getArray()
+          .find((l: BaseLayer) => l.get('title') === 'pointsLayer')
+
+        page.map.shouldHaveMapLayer(confidenceLayer, 'Confidence')
+        page.map.shouldHaveMapLayer(arrowsLayer, 'Arrows')
+        page.map.shouldHaveMapLayer(linesLayer, 'Lines')
+        page.map.shouldHaveMapLayer(pointsLayer, 'Points')
+
+        expect(pointsLayer.getSource().getFeatures().length).to.equal(data.locations.length)
+      })
+    })
+
+    it('should show the overlay when a location-point feature is clicked', () => {
+      page.map.element.should('have.attr', 'data-show-overlay', 'true')
+
+      page.map.mapInstance.then(map => {
+        const pointsLayerGroup = map
+          .getLayers()
+          .getArray()
+          .find((l: BaseLayer) => l.get('title') === 'Points')
+        const pointsLayer = pointsLayerGroup
+          .get('layers')
+          .getArray()
+          .find((l: BaseLayer) => l.get('title') === 'pointsLayer')
+        const feature = pointsLayer.getSource().getFeatures()[0]
+        expect(feature.get('type')).to.equal('location-point')
+
+        const coordinate = feature.getGeometry().getCoordinates()
+
+        cy.mapPostRenderComplete(map, () => {
+          const pixel = map.getPixelFromCoordinate(coordinate)
+          expect(pixel, 'pixel should be a valid coordinate').to.not.equal(null)
+
+          const featureAtPixel = map.forEachFeatureAtPixel(pixel, f => f)
+          expect(featureAtPixel, 'a feature should exist at the given pixel').to.not.equal(undefined)
+
+          page.map.triggerPointerEventsAt(coordinate, map)
+          page.map.shouldShowOverlay()
+        })
+      })
+    })
+
+    it('should hide the overlay when clicking on empty map space', () => {
+      page.map.mapInstance.then(map => {
+        const coordinate = [0, 0] // Will be empty here due to map padding
+
+        cy.mapPostRenderComplete(map, () => {
+          const pixel = map.getPixelFromCoordinate(coordinate)
+          expect(pixel, 'pixel should be valid').to.not.equal(null)
+
+          const featureAtPixel = map.forEachFeatureAtPixel(pixel, f => f)
+          expect(featureAtPixel, 'no feature should be at this pixel').to.equal(undefined)
+
+          page.map.triggerPointerEventsAt(coordinate, map)
+          page.map.shouldNotShowOverlay()
+        })
+      })
+    })
+
+    it('should hide the overlay when map is clicked outside a feature', () => {
+      page.map.mapInstance.then(map => {
+        const pointsLayerGroup = map
+          .getLayers()
+          .getArray()
+          .find((l: BaseLayer) => l.get('title') === 'Points')
+
+        const pointsLayer = pointsLayerGroup
+          .get('layers')
+          .getArray()
+          .find((l: BaseLayer) => l.get('title') === 'pointsLayer')
+
+        const feature = pointsLayer.getSource().getFeatures()[0]
+        const coordinate = feature.getGeometry().getCoordinates()
+
+        cy.mapPostRenderComplete(map, () => {
+          page.map.triggerPointerEventsAt(coordinate, map)
+          page.map.shouldShowOverlay()
+
+          const emptyCoordinate = [0, 0] // Will be empty here due to map padding
+          page.map.triggerPointerEventsAt(emptyCoordinate, map)
+          page.map.shouldNotShowOverlay()
+        })
+      })
+    })
+
+    it('should hide the overlay when the close button is clicked', () => {
+      page.map.mapInstance.then(map => {
+        const pointsLayerGroup = map
+          .getLayers()
+          .getArray()
+          .find((l: BaseLayer) => l.get('title') === 'Points')
+
+        const pointsLayer = pointsLayerGroup
+          .get('layers')
+          .getArray()
+          .find((l: BaseLayer) => l.get('title') === 'pointsLayer')
+
+        const feature = pointsLayer.getSource().getFeatures()[0]
+        const coordinate = feature.getGeometry().getCoordinates()
+
+        cy.mapPostRenderComplete(map, () => {
+          page.map.triggerPointerEventsAt(coordinate, map)
+          page.map.shouldShowOverlay()
+
+          // Click the close button inside the overlay
+          cy.get('.app-map__overlay-close').click()
+          page.map.shouldNotShowOverlay()
+        })
+      })
+    })
+
+    it('should hide overlay when location toggle is turned off and stay hidden when turned back on', () => {
+      page.map.mapInstance.then(map => {
+        const pointsLayerGroup = map
+          .getLayers()
+          .getArray()
+          .find((l: BaseLayer) => l.get('title') === 'Points')
+
+        const pointsLayer = pointsLayerGroup
+          .get('layers')
+          .getArray()
+          .find((l: BaseLayer) => l.get('title') === 'pointsLayer')
+
+        const feature = pointsLayer.getSource().getFeatures()[0]
+        const coordinate = feature.getGeometry().getCoordinates()
+
+        cy.mapPostRenderComplete(map, () => {
+          page.map.triggerPointerEventsAt(coordinate, map)
+          page.map.shouldShowOverlay()
+
+          // Turn off location points
+          page.map.sidebar.showLocationToggle.click()
+          page.map.shouldNotShowOverlay()
+
+          // Turn them back on
+          page.map.sidebar.showLocationToggle.click()
+          page.map.sidebar.showLocationToggle.shouldBeChecked()
+
+          // Overlay should still NOT be visible
+          page.map.shouldNotShowOverlay()
+        })
+      })
     })
   })
 })

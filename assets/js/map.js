@@ -126,6 +126,7 @@ MapComponent.prototype = {
         new VectorLayer({
           source: this.pointSource,
           style: this.pointStyle.bind(this),
+          title: 'pointsLayer',
         }),
       ],
     })
@@ -136,7 +137,8 @@ MapComponent.prototype = {
       layers: [
         new VectorLayer({
           source: this.confidenceSource,
-          style: this.confidenceCircleStyle.bind(),
+          style: this.confidenceCircleStyle.bind(this),
+          title: 'confidenceLayer',
         }),
       ],
     })
@@ -148,9 +150,11 @@ MapComponent.prototype = {
         new VectorLayer({
           source: this.lineSource,
           style: this.lineStyle.bind(this),
+          title: 'linesLayer',
         }),
         new VectorLayer({
           source: this.arrowSource,
+          title: 'arrowsLayer',
         }),
       ],
     })
@@ -178,17 +182,21 @@ MapComponent.prototype = {
       }),
     })
 
-    this.$map.on('pointermove', evt => {
-      this.pointerMoveHandler(evt)
-    })
-
     this.$map.getView().on('change:resolution', () => {
       this.updateArrows(this.$map.getView().getZoom())
     })
 
     if (this.showOverlay) {
+      this.$map.on('pointermove', evt => {
+        this.pointerMoveHandler(evt)
+      })
+
       this.overlay = createOverlay(this.$module, this.$map)
     }
+
+    this.$map.on('rendercomplete', () => {
+      this.exposeMapToCypress()
+    })
   },
 
   updateArrows(mapZoom) {
@@ -322,6 +330,19 @@ MapComponent.prototype = {
     })
 
     this.$map.getTargetElement().style.cursor = hovering ? 'pointer' : ''
+  },
+
+  exposeMapToCypress() {
+    const isTestEnv = typeof window !== 'undefined' && !!window.Cypress
+
+    if (isTestEnv) {
+      this.$module.olMapForCypress = this.$map
+      this.$module.dispatchEvent(
+        new CustomEvent('map:render:complete', {
+          detail: { mapInstance: this.$map },
+        }),
+      )
+    }
   },
 }
 
