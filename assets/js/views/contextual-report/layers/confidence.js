@@ -44,7 +44,7 @@ const createConfidenceSource = points => {
 class ConfidenceLayer extends VectorLayer {
   constructor(points) {
     super({
-      // visible: false,
+      visible: false,
       source: createConfidenceSource(points),
       style: confidenceCircleStyle,
       properties: {

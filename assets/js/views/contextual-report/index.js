@@ -3,6 +3,7 @@ import ElectronicMonitoringMap from '../../map/index'
 import LocationsLayer from './layers/locations'
 import TracksLayer from './layers/tracks'
 import ConfidenceLayer from './layers/confidence'
+import createLayerVisibilityToggle from './controls/layerVisibilityToggle'
 
 const getToken = () => {
   return axios.get('/map/token').then(response => response.data.access_token)
@@ -32,6 +33,10 @@ const initialiseContextualReportView = async () => {
     padding: [30, 30, 30, 30],
     size: map.map.getSize(),
   })
+
+  createLayerVisibilityToggle('#locations', locationsLayer)
+  createLayerVisibilityToggle('#tracks', tracksLayer)
+  createLayerVisibilityToggle('#confidence', confidenceLayer)
 }
 
 export default initialiseContextualReportView
