@@ -1,13 +1,13 @@
 import { Map } from 'ol'
 import OrdnanceSurveyTileLayer from './tiles'
-import buildView from './view'
+import DefaultView from './view'
 
 // The map class is not responsible for creating the access token
 class ElectronicMonitoringMap {
   constructor(target, tileUrl, token) {
     this.target = target
     this.layers = [new OrdnanceSurveyTileLayer(tileUrl, token)]
-    this.view = buildView()
+    this.view = new DefaultView()
   }
 
   addLayer(layer) {
