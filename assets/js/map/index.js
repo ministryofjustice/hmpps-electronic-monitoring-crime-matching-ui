@@ -15,7 +15,7 @@ class ElectronicMonitoringMap {
   }
 
   render() {
-    this.map = new Map({
+    this.olMap = new Map({
       target: this.target,
       layers: this.layers,
       view: this.view,

@@ -11,7 +11,7 @@ const locationStyle = new Style({
   }),
 })
 
-const createPointsSource = points => {
+const createLocationsSource = points => {
   const formatter = new GeoJSON()
   const features = formatter.readFeatures(
     {
@@ -32,7 +32,7 @@ const createPointsSource = points => {
 class LocationsLayer extends VectorLayer {
   constructor(points) {
     super({
-      source: createPointsSource(points),
+      source: createLocationsSource(points),
       style: locationStyle,
       properties: {
         title: 'pointsLayer',
