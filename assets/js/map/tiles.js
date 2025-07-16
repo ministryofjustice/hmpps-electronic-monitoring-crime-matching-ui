@@ -23,8 +23,7 @@ const ordnanceSurveyTileLoader = token => (tile, src) => {
       }
     })
 
-    .catch(e => {
-      console.log(e)
+    .catch(() => {
       tile.setState(TileState.ERROR)
     })
 }

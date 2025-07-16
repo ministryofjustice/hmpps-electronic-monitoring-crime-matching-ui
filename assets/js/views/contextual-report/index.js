@@ -3,9 +3,9 @@ import ElectronicMonitoringMap from '../../map/index'
 import LocationsLayer from './layers/locations'
 import TracksLayer from './layers/tracks'
 import ConfidenceLayer from './layers/confidence'
-import createLayerVisibilityToggle from './controls/layerVisibilityToggle'
 import LocationPointerInteraction from './interactions/locationPointer'
 import LocationMetadataOverlay from './overlays/locationMetadata'
+import createLayerVisibilityToggle from './controls/layerVisibilityToggle'
 
 const getAccessToken = () => {
   return axios.get('/map/token').then(response => response.data.access_token)
@@ -30,20 +30,12 @@ const initialiseContextualReportView = async () => {
   const locationMetadataOverlay = new LocationMetadataOverlay(overlay, overlayTemplate)
 
   const map = new ElectronicMonitoringMap({
-    target: 'app-map', 
-    osMapsTileUrl: tileUrl, 
+    target: 'app-map',
+    osMapsTileUrl: tileUrl,
     osMapsAccessToken: token,
-    layers: [
-      locationsLayer,
-      tracksLayer,
-      confidenceLayer
-    ],
-    overlays: [
-      locationMetadataOverlay
-    ],
-    interactions: [
-      new LocationPointerInteraction(locationMetadataOverlay)
-    ]
+    layers: [locationsLayer, tracksLayer, confidenceLayer],
+    overlays: [locationMetadataOverlay],
+    interactions: [new LocationPointerInteraction(locationMetadataOverlay)],
   })
 
   // Focus on geolocation data

@@ -1,9 +1,10 @@
 import { fromLonLat, transformExtent } from 'ol/proj'
 
-// The EPSG:4326 projected bounds of the United Kingdom
-// https://epsg.io/27700
+// Sourced from https://epsg.io/27700
 const ukProjectedBounds = [-9.01, 49.75, 2.01, 61.01]
-// https://en.wikipedia.org/wiki/Centre_points_of_the_United_Kingdom
+
+// Sourced from https://en.wikipedia.org/wiki/Centre_points_of_the_United_Kingdom
+// (Whitendale Hanging Stones)
 const ukCenter = [-2.547855, 54.00366]
 
 const config = {
@@ -20,7 +21,7 @@ const config = {
   },
   tiles: {
     zoom: {
-      min: 7, // OS Maps API only supports ESPG:8357 tile sets with a min zoom of 7 and max of 20
+      min: 7,
       max: 20,
     },
   },
