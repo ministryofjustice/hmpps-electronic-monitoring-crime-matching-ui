@@ -1,4 +1,5 @@
 import { Map } from 'ol'
+import { defaults as defaultInteractions } from 'ol/interaction/defaults.js'
 import OrdnanceSurveyTileLayer from './tiles'
 import DefaultView from './view'
 
@@ -8,7 +9,7 @@ class ElectronicMonitoringMap extends Map {
       target,
       layers: [new OrdnanceSurveyTileLayer(osMapsTileUrl, osMapsAccessToken), ...layers],
       overlays,
-      interactions,
+      interactions: defaultInteractions().extend(interactions),
       view: new DefaultView(),
     })
   }

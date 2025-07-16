@@ -37,11 +37,11 @@ class LocationPointerInteraction extends PointerInteraction {
 
     if (location && coordinate) {
       this.overlay.showAtCoordinate(coordinate, properties)
-    } else {
-      this.overlay.close()
+      return true
     }
+    this.overlay.close()
 
-    return true
+    return false
   }
 }
 
