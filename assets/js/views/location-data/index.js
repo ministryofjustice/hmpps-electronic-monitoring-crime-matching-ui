@@ -11,7 +11,7 @@ const getAccessToken = () => {
   return axios.get('/map/token').then(response => response.data.access_token)
 }
 
-const initialiseContextualReportView = async () => {
+const initialiseLocationDataView = async () => {
   const el = document.querySelector('[data-module="app-map"]')
   const overlay = el.querySelector('.app-map__overlay')
   const overlayTemplate = el.querySelector('#map-overlay-template')
@@ -51,4 +51,4 @@ const initialiseContextualReportView = async () => {
   createLayerVisibilityToggle('#confidence', confidenceLayer)
 }
 
-export default initialiseContextualReportView
+export default initialiseLocationDataView
