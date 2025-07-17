@@ -15,6 +15,7 @@ const data = {
       locationRef: 1,
       speed: 1,
       timestamp: '',
+      sequenceNumber: 1,
     },
     {
       point: { latitude: 51.574153, longitude: 0.058536 },
@@ -24,6 +25,7 @@ const data = {
       locationRef: 2,
       speed: 10,
       timestamp: '',
+      sequenceNumber: 2,
     },
     {
       point: { latitude: 51.573248244162706, longitude: 0.05111371418603764 },
@@ -33,6 +35,7 @@ const data = {
       locationRef: 3,
       speed: 0,
       timestamp: '',
+      sequenceNumber: 3,
     },
     {
       point: { latitude: 51.574622, longitude: 0.048643 },
@@ -42,6 +45,7 @@ const data = {
       locationRef: 4,
       speed: 2,
       timestamp: '',
+      sequenceNumber: 4,
     },
     {
       point: { latitude: 51.57610341773559, longitude: 0.048391168020475 },
@@ -51,6 +55,7 @@ const data = {
       locationRef: 5,
       speed: 5,
       timestamp: '',
+      sequenceNumber: 5,
     },
     {
       point: { latitude: 51.576400900843375, longitude: 0.045439341454295505 },
@@ -60,6 +65,7 @@ const data = {
       locationRef: 6,
       speed: 6,
       timestamp: '',
+      sequenceNumber: 6,
     },
   ],
 }

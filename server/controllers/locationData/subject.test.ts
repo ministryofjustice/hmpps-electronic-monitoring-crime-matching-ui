@@ -330,7 +330,7 @@ describe('SubjectController', () => {
       })
     })
 
-    it('should display the subject view with no location data', async () => {
+    it('should display the subject view with location data', async () => {
       // Given
       const personId = '1'
       const from = '2025-01-01T00:00:00Z'
@@ -362,6 +362,7 @@ describe('SubjectController', () => {
             direction: 180,
             timestamp: '2025-01-01T00:00:00Z',
             geolocationMechanism: 1,
+            sequenceNumber: 1,
           },
           {
             locationRef: 2,
@@ -374,6 +375,7 @@ describe('SubjectController', () => {
             direction: 210,
             timestamp: '2025-01-01T00:01:00Z',
             geolocationMechanism: 1,
+            sequenceNumber: 2,
           },
         ],
       })
@@ -407,6 +409,7 @@ describe('SubjectController', () => {
               confidence: 10,
               point: { latitude: 123.123, longitude: 123.123 },
               type: 'location-point',
+              sequenceNumber: 1,
             },
             geometry: {
               type: 'Point',
@@ -425,6 +428,7 @@ describe('SubjectController', () => {
               confidence: 20,
               point: { latitude: 456.123, longitude: 456.123 },
               type: 'location-point',
+              sequenceNumber: 2,
             },
             geometry: {
               type: 'Point',
