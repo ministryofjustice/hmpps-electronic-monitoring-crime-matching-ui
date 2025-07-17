@@ -11,11 +11,8 @@
 }
 
 .app-map__error {
-  @include govuk-font($size: 19, $weight: bold);
-  border-left: 5px solid $govuk-error-colour;
-  color: $govuk-error-colour;
-  padding: govuk-spacing(2) govuk-spacing(3);
-  margin: govuk-spacing(5);
+  position: absolute;
+  margin: 5px 60px;
 }
 
 .app-map__overlay {

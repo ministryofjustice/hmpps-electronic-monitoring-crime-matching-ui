@@ -11,76 +11,75 @@
   data-show-overlay="{{ params.showOverlay }}"
 >
   <div id="app-map" class="app-map__viewport" data-map-viewport></div>
+  <div class="app-map__error">
+    {% for alert in params.alerts %}
+      {{ mojAlert(alert) }}
+    {% endfor %}
+  </div>
   <div class="app-map__sidebar">
-    {% if params.alerts | length > 0 %}
-      {% for alert in params.alerts %}
-        {{ mojAlert(alert) }}
-      {% endfor %}
-    {% else %}
-      <h3 class="govuk-heading-m">Enhanced Analysis</h3>
-      {{
-        govukCheckboxes({
-          id: "locations",
-          name: "locations",
-          fieldset: {
-            legend: {
-              text: "Show locations",
-              isPageHeading: true,
-              classes: "govuk-fieldset__legend--s"
-            }
-          },
-          items: [
-            {
-              value: "on",
-              text: "Toggled on",
-              checked: true
-            }
-          ]
-        })
-      }}
+    <h3 class="govuk-heading-m">Enhanced Analysis</h3>
+    {{
+      govukCheckboxes({
+        id: "locations",
+        name: "locations",
+        fieldset: {
+          legend: {
+            text: "Show locations",
+            isPageHeading: true,
+            classes: "govuk-fieldset__legend--s"
+          }
+        },
+        items: [
+          {
+            value: "on",
+            text: "Toggled on",
+            checked: true
+          }
+        ]
+      })
+    }}
 
-      {{
-        govukCheckboxes({
-          id: "confidence",
-          name: "confidence",
-          fieldset: {
-            legend: {
-              text: "Show confidence circles",
-              isPageHeading: true,
-              classes: "govuk-fieldset__legend--s"
-            }
-          },
-          items: [
-            {
-              value: "on",
-              text: "Toggled on",
-              checked: false
-            }
-          ]
-        })
-      }}
+    {{
+      govukCheckboxes({
+        id: "confidence",
+        name: "confidence",
+        fieldset: {
+          legend: {
+            text: "Show confidence circles",
+            isPageHeading: true,
+            classes: "govuk-fieldset__legend--s"
+          }
+        },
+        items: [
+          {
+            value: "on",
+            text: "Toggled on",
+            checked: false
+          }
+        ]
+      })
+    }}
 
-      {{
-        govukCheckboxes({
-          id: "tracks",
-          name: "tracks",
-          fieldset: {
-            legend: {
-              text: "Show tracks",
-              isPageHeading: true,
-              classes: "govuk-fieldset__legend--s"
-            }
-          },
-          items: [
-            {
-              value: "on",
-              text: "Toggled on",
-              checked: false
-            }
-          ]
-        })
-      }}
-    {% endif %}
+    {{
+      govukCheckboxes({
+        id: "tracks",
+        name: "tracks",
+        fieldset: {
+          legend: {
+            text: "Show tracks",
+            isPageHeading: true,
+            classes: "govuk-fieldset__legend--s"
+          }
+        },
+        items: [
+          {
+            value: "on",
+            text: "Toggled on",
+            checked: false
+          }
+        ]
+      })
+    }}
   </div>
   <div class="app-map__overlay">
     {% if params.showOverlay %}
@@ -88,20 +87,22 @@
          They are used as markers and replaced within assets/js files at runtime.
          Implemented this way to avoid large Template Literals in the JavaScript file. #}
       {% raw %}
-      <template id="map-overlay-template">
-        <div class="app-map__overlay-header">
-          <button type="button" class="app-map__overlay-close" aria-label="Close overlay">&times;</button>
-        </div>
-        <div class="app-map__overlay-body">
-          <div class="app-map__overlay-row"><strong>Speed:</strong><span>{{ speed }}</span></div>
-          <div class="app-map__overlay-row"><strong>Direction:</strong><span>{{ direction }}</span></div>
-          <div class="app-map__overlay-row"><strong>Geolocation Mechanism:</strong><span>{{ geolocationMechanism }}</span></div>
-          <div class="app-map__overlay-row"><strong>Recorded Date:</strong><span>{{ timestamp }}</span></div>
-          <div class="app-map__overlay-row"><strong>Confidence:</strong><span>{{ confidenceCircle }}</span></div>
-          <div class="app-map__overlay-row"><strong>Latitude:</strong><span>{{ latitude }}</span></div>
-          <div class="app-map__overlay-row"><strong>Longitude:</strong><span>{{ longitude }}</span></div>
-        </div>
-      </template>
+        <template id="map-overlay-template">
+          <div class="app-map__overlay-header">
+            <button type="button" class="app-map__overlay-close" aria-label="Close overlay">&times;</button>
+          </div>
+          <div class="app-map__overlay-body">
+            <div class="app-map__overlay-row"><strong>Speed:</strong><span>{{ speed }}</span></div>
+            <div class="app-map__overlay-row"><strong>Direction:</strong><span>{{ direction }}</span></div>
+            <div class="app-map__overlay-row">
+              <strong>Geolocation Mechanism:</strong><span>{{ geolocationMechanism }}</span>
+            </div>
+            <div class="app-map__overlay-row"><strong>Recorded Date:</strong><span>{{ timestamp }}</span></div>
+            <div class="app-map__overlay-row"><strong>Confidence:</strong><span>{{ confidenceCircle }}</span></div>
+            <div class="app-map__overlay-row"><strong>Latitude:</strong><span>{{ latitude }}</span></div>
+            <div class="app-map__overlay-row"><strong>Longitude:</strong><span>{{ longitude }}</span></div>
+          </div>
+        </template>
       {% endraw %}
     {% endif %}
   </div>

@@ -319,7 +319,7 @@ describe('SubjectController', () => {
           {
             dismissible: false,
             showTitleAsHeading: true,
-            text: 'Try adjusting the date range to return location data',
+            text: '',
             title: 'No GPS Data for Dates and Times Selected',
             variant: 'warning',
           },
@@ -406,6 +406,7 @@ describe('SubjectController', () => {
               timestamp: '2025-01-01T00:00:00Z',
               confidence: 10,
               point: { latitude: 123.123, longitude: 123.123 },
+              type: 'location-point',
             },
             geometry: {
               type: 'Point',
@@ -423,6 +424,7 @@ describe('SubjectController', () => {
               timestamp: '2025-01-01T00:01:00Z',
               confidence: 20,
               point: { latitude: 456.123, longitude: 456.123 },
+              type: 'location-point',
             },
             geometry: {
               type: 'Point',
