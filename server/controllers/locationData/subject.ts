@@ -40,12 +40,7 @@ export default class SubjectController {
     const geoJsonData = createGeoJsonData(queryResults.locations)
 
     if (queryResults.locations.length === 0) {
-      alerts.push(
-        createMojAlertWarning(
-          'No GPS Data for Dates and Times Selected',
-          'Try adjusting the date range to return location data',
-        ),
-      )
+      alerts.push(createMojAlertWarning('No GPS Data for Dates and Times Selected'))
     }
 
     res.render('pages/locationData/subject', {

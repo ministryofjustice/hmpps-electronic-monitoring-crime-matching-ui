@@ -11,12 +11,12 @@
   data-show-overlay="{{ params.showOverlay }}"
 >
   <div id="app-map" class="app-map__viewport" data-map-viewport></div>
-  <div class="app-map__sidebar">
-    {% if params.alerts | length > 0 %}
-      {% for alert in params.alerts %}
+  <div class="app-map__error">
+{% for alert in params.alerts %}
         {{ mojAlert(alert) }}
       {% endfor %}
-    {% else %}
+    </div>
+  <div class="app-map__sidebar">
       <h3 class="govuk-heading-m">Enhanced Analysis</h3>
       {{
         govukCheckboxes({
@@ -80,7 +80,6 @@
           ]
         })
       }}
-    {% endif %}
   </div>
   <div class="app-map__overlay">
     {% if params.showOverlay %}

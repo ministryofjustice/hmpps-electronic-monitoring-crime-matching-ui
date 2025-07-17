@@ -83,9 +83,9 @@ context('Location Data', () => {
       const page = Page.verifyOnPage(SubjectPage)
 
       page.map.shouldExist()
+      page.map.shouldNotHaveAlerts()
       page.map.sidebar.shouldExist()
       page.map.sidebar.shouldHaveControls()
-      page.map.sidebar.shouldNotHaveAlerts()
 
       // Initial state should be to show only the locations
       page.map.sidebar.showLocationToggle.shouldBeChecked()
@@ -107,9 +107,9 @@ context('Location Data', () => {
       const page = Page.verifyOnPage(SubjectPage)
 
       page.map.shouldExist()
+      page.map.shouldHaveAlert('warning', 'No GPS Data for Dates and Times Selected')
       page.map.sidebar.shouldExist()
-      page.map.sidebar.shouldNotHaveControls()
-      page.map.sidebar.shouldHaveAlert('warning', 'No GPS Data for Dates and Times Selected')
+      page.map.sidebar.shouldHaveControls()
     })
   })
 
