@@ -46,7 +46,7 @@ const initialiseLocationDataView = async () => {
   })
 
   // Add controls
-  createLayerVisibilityToggle('#locations', locationsLayer)
+  createLayerVisibilityToggle('#locations', locationsLayer, locationMetadataOverlay)
   createLayerVisibilityToggle('#tracks', tracksLayer)
   createLayerVisibilityToggle('#confidence', confidenceLayer)
 
