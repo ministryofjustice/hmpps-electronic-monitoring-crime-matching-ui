@@ -1,12 +1,18 @@
-const toggleVisibility = layer => () => {
-  layer.setVisible(!layer.getVisible())
+const toggleVisibility = (layer, overlay) => () => {
+  const visible = layer.getVisible()
+
+  if (visible && overlay) {
+    overlay.setPosition(null)
+  }
+
+  layer.setVisible(!visible)
 }
 
-const createLayerVisibilityToggle = (selector, layer) => {
+const createLayerVisibilityToggle = (selector, layer, overlay) => {
   const element = document.querySelector(selector)
 
   if (element !== null) {
-    element.onchange = toggleVisibility(layer)
+    element.onchange = toggleVisibility(layer, overlay)
   }
 }
 
