@@ -94,6 +94,7 @@ const getSubjectDtoSchema = z.object({
       direction: z.number(),
       timestamp: z.string(),
       geolocationMechanism: z.number(),
+      sequenceNumber: z.number(),
     }),
   ),
 })

@@ -80,6 +80,27 @@
           ]
         })
       }}
+
+      {{
+        govukCheckboxes({
+          id: "numbering",
+          name: "numbering",
+          fieldset: {
+            legend: {
+              text: "Show location numbering",
+              isPageHeading: true,
+              classes: "govuk-fieldset__legend--s"
+            }
+          },
+          items: [
+            {
+              value: "on",
+              text: "Toggled on",
+              checked: false
+            }
+          ]
+        })
+      }}
     {% endif %}
   </div>
   <div class="app-map__overlay">
