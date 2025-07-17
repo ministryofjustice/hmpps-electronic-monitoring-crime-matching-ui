@@ -26,6 +26,7 @@ type PointFeature = {
     timestamp?: string
     confidence: number
     point: Point
+    type: string
     sequenceNumber: number
   }
   geometry: {
@@ -51,6 +52,7 @@ const createGeoJsonData = (locations: Array<Location>): GeoJsonData => ({
       timestamp: location.timestamp,
       confidence: location.confidenceCircle,
       point: location.point,
+      type: 'location-point',
       sequenceNumber: location.sequenceNumber,
     },
     geometry: {

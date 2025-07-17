@@ -1,4 +1,5 @@
 import BaseLayer from 'ol/layer/Base'
+import VectorLayer from 'ol/layer/Vector'
 import SubjectPage from '../../pages/locationData/subject'
 import Page from '../../pages/page'
 
@@ -83,9 +84,9 @@ context('Location Data', () => {
       const page = Page.verifyOnPage(SubjectPage)
 
       page.map.shouldExist()
+      page.map.shouldNotHaveAlerts()
       page.map.sidebar.shouldExist()
       page.map.sidebar.shouldHaveControls()
-      page.map.sidebar.shouldNotHaveAlerts()
 
       // Initial state should be to show only the locations
       page.map.sidebar.showLocationToggle.shouldBeChecked()
@@ -107,9 +108,9 @@ context('Location Data', () => {
       const page = Page.verifyOnPage(SubjectPage)
 
       page.map.shouldExist()
+      page.map.shouldHaveAlert('warning', 'No GPS Data for Dates and Times Selected')
       page.map.sidebar.shouldExist()
-      page.map.sidebar.shouldNotHaveControls()
-      page.map.sidebar.shouldHaveAlert('warning', 'No GPS Data for Dates and Times Selected')
+      page.map.sidebar.shouldHaveControls()
     })
   })
 
@@ -132,34 +133,26 @@ context('Location Data', () => {
 
     it('should display the map with the correct layers and features', () => {
       page.map.mapInstance.then(map => {
-        const confidenceLayerGroup = map
+        const confidenceLayer = map
           .getLayers()
-          .getArray()
-          .find((l: BaseLayer) => l.get('title') === 'Confidence')
-        const confidenceLayer = confidenceLayerGroup
-          .get('layers')
           .getArray()
           .find((l: BaseLayer) => l.get('title') === 'confidenceLayer')
-        const linesLayerGroup = map
+        const tracksLayerGroup = map
           .getLayers()
           .getArray()
-          .find((l: BaseLayer) => l.get('title') === 'Lines')
-        const arrowsLayer = linesLayerGroup
+          .find((l: BaseLayer) => l.get('title') === 'tracksLayer')
+        const arrowsLayer = tracksLayerGroup
           .get('layers')
           .getArray()
           .find((l: BaseLayer) => l.get('title') === 'arrowsLayer')
-        const linesLayer = linesLayerGroup
+        const linesLayer = tracksLayerGroup
           .get('layers')
           .getArray()
           .find((l: BaseLayer) => l.get('title') === 'linesLayer')
-        const pointsLayerGroup = map
+        const pointsLayer = map
           .getLayers()
           .getArray()
-          .find((l: BaseLayer) => l.get('title') === 'Points')
-        const pointsLayer = pointsLayerGroup
-          .get('layers')
-          .getArray()
-          .find((l: BaseLayer) => l.get('title') === 'pointsLayer')
+          .find((l: BaseLayer) => l.get('title') === 'pointsLayer') as VectorLayer
 
         page.map.shouldHaveMapLayer(confidenceLayer, 'Confidence')
         page.map.shouldHaveMapLayer(arrowsLayer, 'Arrows')
@@ -174,14 +167,11 @@ context('Location Data', () => {
       page.map.element.should('have.attr', 'data-show-overlay', 'true')
 
       page.map.mapInstance.then(map => {
-        const pointsLayerGroup = map
+        const pointsLayer = map
           .getLayers()
           .getArray()
-          .find((l: BaseLayer) => l.get('title') === 'Points')
-        const pointsLayer = pointsLayerGroup
-          .get('layers')
-          .getArray()
-          .find((l: BaseLayer) => l.get('title') === 'pointsLayer')
+          .find((l: BaseLayer) => l.get('title') === 'pointsLayer') as VectorLayer
+
         const feature = pointsLayer.getSource().getFeatures()[0]
         expect(feature.get('type')).to.equal('location-point')
 
@@ -219,15 +209,10 @@ context('Location Data', () => {
 
     it('should hide the overlay when map is clicked outside a feature', () => {
       page.map.mapInstance.then(map => {
-        const pointsLayerGroup = map
+        const pointsLayer = map
           .getLayers()
           .getArray()
-          .find((l: BaseLayer) => l.get('title') === 'Points')
-
-        const pointsLayer = pointsLayerGroup
-          .get('layers')
-          .getArray()
-          .find((l: BaseLayer) => l.get('title') === 'pointsLayer')
+          .find((l: BaseLayer) => l.get('title') === 'pointsLayer') as VectorLayer
 
         const feature = pointsLayer.getSource().getFeatures()[0]
         const coordinate = feature.getGeometry().getCoordinates()
@@ -245,15 +230,10 @@ context('Location Data', () => {
 
     it('should hide the overlay when the close button is clicked', () => {
       page.map.mapInstance.then(map => {
-        const pointsLayerGroup = map
+        const pointsLayer = map
           .getLayers()
           .getArray()
-          .find((l: BaseLayer) => l.get('title') === 'Points')
-
-        const pointsLayer = pointsLayerGroup
-          .get('layers')
-          .getArray()
-          .find((l: BaseLayer) => l.get('title') === 'pointsLayer')
+          .find((l: BaseLayer) => l.get('title') === 'pointsLayer') as VectorLayer
 
         const feature = pointsLayer.getSource().getFeatures()[0]
         const coordinate = feature.getGeometry().getCoordinates()
@@ -271,15 +251,10 @@ context('Location Data', () => {
 
     it('should hide overlay when location toggle is turned off and stay hidden when turned back on', () => {
       page.map.mapInstance.then(map => {
-        const pointsLayerGroup = map
+        const pointsLayer = map
           .getLayers()
           .getArray()
-          .find((l: BaseLayer) => l.get('title') === 'Points')
-
-        const pointsLayer = pointsLayerGroup
-          .get('layers')
-          .getArray()
-          .find((l: BaseLayer) => l.get('title') === 'pointsLayer')
+          .find((l: BaseLayer) => l.get('title') === 'pointsLayer') as VectorLayer
 
         const feature = pointsLayer.getSource().getFeatures()[0]
         const coordinate = feature.getGeometry().getCoordinates()

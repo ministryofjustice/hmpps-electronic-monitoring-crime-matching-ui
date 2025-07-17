@@ -48,10 +48,24 @@ const initialiseLocationDataView = async () => {
   })
 
   // Add controls
-  createLayerVisibilityToggle('#locations', locationsLayer)
+  createLayerVisibilityToggle('#locations', locationsLayer, locationMetadataOverlay)
   createLayerVisibilityToggle('#tracks', tracksLayer)
   createLayerVisibilityToggle('#confidence', confidenceLayer)
   createLayerVisibilityToggle('#numbering', locationNumberingLayer)
+
+  // Expose map to Cypress for testing
+  const testEnv = typeof window !== 'undefined' && !!window.Cypress
+
+  if (testEnv) {
+    map.on('rendercomplete', () => {
+      el.olMapForCypress = map
+      el.dispatchEvent(
+        new CustomEvent('map:render:complete', {
+          detail: { mapInstance: map },
+        }),
+      )
+    })
+  }
 }
 
 export default initialiseLocationDataView

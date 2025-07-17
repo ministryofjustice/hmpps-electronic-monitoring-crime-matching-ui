@@ -7,6 +7,9 @@ class TracksLayer extends LayerGroup {
     super({
       visible: false,
       layers: [new LinesLayer(lines), new ArrowsLayer(lines)],
+      properties: {
+        title: 'tracksLayer',
+      },
     })
   }
 }
