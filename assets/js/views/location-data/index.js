@@ -3,6 +3,7 @@ import ElectronicMonitoringMap from '../../map/index'
 import LocationsLayer from './layers/locations'
 import TracksLayer from './layers/tracks'
 import ConfidenceLayer from './layers/confidence'
+import NumberingLayer from './layers/numbering'
 import LocationPointerInteraction from './interactions/locationPointer'
 import LocationMetadataOverlay from './overlays/locationMetadata'
 import createLayerVisibilityToggle from './controls/layerVisibilityToggle'
@@ -28,12 +29,13 @@ const initialiseLocationDataView = async () => {
   const tracksLayer = new TracksLayer(lines)
   const confidenceLayer = new ConfidenceLayer(points)
   const locationMetadataOverlay = new LocationMetadataOverlay(overlay, overlayTemplate)
+  const locationNumberingLayer = new NumberingLayer(points)
 
   const map = new ElectronicMonitoringMap({
     target: 'app-map',
     osMapsTileUrl: tileUrl,
     osMapsAccessToken: token,
-    layers: [locationsLayer, tracksLayer, confidenceLayer],
+    layers: [locationsLayer, tracksLayer, confidenceLayer, locationNumberingLayer],
     overlays: [locationMetadataOverlay],
     interactions: [new LocationPointerInteraction(locationMetadataOverlay)],
   })
@@ -49,6 +51,7 @@ const initialiseLocationDataView = async () => {
   createLayerVisibilityToggle('#locations', locationsLayer, locationMetadataOverlay)
   createLayerVisibilityToggle('#tracks', tracksLayer)
   createLayerVisibilityToggle('#confidence', confidenceLayer)
+  createLayerVisibilityToggle('#numbering', locationNumberingLayer)
 
   // Expose map to Cypress for testing
   const testEnv = typeof window !== 'undefined' && !!window.Cypress

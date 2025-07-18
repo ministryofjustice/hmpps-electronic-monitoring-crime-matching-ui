@@ -11,6 +11,7 @@ type Location = {
   direction: number
   timestamp: string
   geolocationMechanism: number
+  sequenceNumber: number
 }
 
 export { Location, Point }

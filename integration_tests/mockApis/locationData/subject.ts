@@ -15,6 +15,7 @@ type StubGetSubject200Options = {
       direction: number
       timestamp: string
       geolocationMechanism: number
+      sequenceNumber: number
     }>
   }
 }
