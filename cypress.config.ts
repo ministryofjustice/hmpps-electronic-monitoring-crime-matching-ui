@@ -1,9 +1,5 @@
 import { defineConfig } from 'cypress'
-import { resetStubs } from './integration_tests/mockApis/wiremock'
-import auth from './integration_tests/mockApis/auth'
-import tokenVerification from './integration_tests/mockApis/tokenVerification'
-import crimeMatching from './integration_tests/mockApis/crimeMatching'
-import map from './integration_tests/mockApis/map'
+import setupNodeEvents from './integration_tests/plugins'
 
 export default defineConfig({
   chromeWebSecurity: false,
@@ -20,15 +16,7 @@ export default defineConfig({
     env: {
       visualRegressionType: 'regression',
     },
-    setupNodeEvents(on) {
-      on('task', {
-        reset: resetStubs,
-        ...auth,
-        ...tokenVerification,
-        ...crimeMatching,
-        ...map,
-      })
-    },
+    setupNodeEvents,
     baseUrl: 'http://localhost:3007',
     excludeSpecPattern: '**/!(*.cy).ts',
     specPattern: 'integration_tests/e2e/**/*.cy.{js,jsx,ts,tsx}',
