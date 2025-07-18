@@ -14,6 +14,6 @@ const createMojAlertInformation = (title: string, text: string) => createMojAler
 
 const createMojAlertSuccess = (title: string, text: string) => createMojAlert('success', title, text)
 
-const createMojAlertWarning = (title: string, text: string) => createMojAlert('warning', title, text)
+const createMojAlertWarning = (title: string, text: string = '') => createMojAlert('warning', title, text)
 
 export { createMojAlert, createMojAlertError, createMojAlertInformation, createMojAlertSuccess, createMojAlertWarning }

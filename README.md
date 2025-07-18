@@ -215,6 +215,19 @@ Or run tests with the cypress UI:
 
 `npm run int-test-ui`
 
+## Development Environment
+
+To facilitate demos / development whilst waiting for reliable data feeds from the Electronic Monitoring suppliers, we have deployed a wiremock instance to the `hmpps-electronic-monitoring-crime-matching-dev` namespace that stubs responses from the crime matching API. 
+
+The configuration for the stubs is located in `helm_deploy/hmpps-electronic-monitoring-crime-matching-ui/files/stubs`. Changes to this directory do not trigger a redeployment of the wiremock pod and wiremock does not automatically recognise changes to its file mappings. To resolve this, the wiremock admin api exposes a route that will trigger a reload of the current mappings. The following snippet can be used to invoke that route.
+
+```shell
+kubectl \
+  -n hmpps-electronic-monitoring-crime-matching-dev \
+  exec -it hmpps-electronic-monitoring-crime-matching-api-stubs-7b695jcpv4 \
+  -- curl -X POST http://localhost:8080/__admin/mappings/reset
+```
+
 ## Change log
 
 A changelog for the service is available [here](./CHANGELOG.md)

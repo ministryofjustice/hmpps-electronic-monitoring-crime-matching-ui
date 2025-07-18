@@ -1,7 +1,9 @@
+import Map from 'ol/Map'
 import { StubCreateCrimeBatchQueryOptions, StubGetCrimeBatchesOptions } from './mockApis/crimeMatching/crimeBatches'
 import { StubCreateSubjectsQueryOptions, StubGetSubjectsQueryOptions } from './mockApis/locationData/subjects'
 import { StubCreateSubjectLocationQueryOptions } from './mockApis/locationData/subjectLocations'
 import { StubGetSubjectOptions } from './mockApis/locationData/subject'
+import { StubMapTokenOptions } from './mockApis/map'
 
 declare global {
   namespace Cypress {
@@ -29,6 +31,14 @@ declare global {
        * @example cy.signIn({ failOnStatusCode: boolean })
        */
       signIn(options?: { failOnStatusCode: boolean }): Chainable<AUTWindow>
+
+      /**
+       * Custom command to run a callback after the OpenLayers map triggers a 'postrender' event.
+       * Ensures the map is fully rendered before running any logic such as pixel-to-coordinate interaction.
+       * Useful when testing pointer/click behavior or other map interactions.
+       * @example cy.mapPostRenderComplete(map, () => { const pixel = map.getPixelFromCoordinate(coord) })
+       */
+      mapPostRenderComplete<T = void>(map: Map, callback: () => T): Chainable<T>
 
       /**
        * Stub a wiremock response for the crimeMatchingApi POST /crime-batches-query
@@ -59,6 +69,16 @@ declare global {
        * Stub a wiremock response for the crimeMatchingApi GET /subject/:personId
        */
       stubGetSubject(options?: StubGetSubjectOptions): Chainable<void>
+
+      /**
+       * Stub a wiremock response for GET /map/token
+       */
+      stubMapToken(options?: StubMapTokenOptions): Chainable<void>
+
+      /**
+       * Stub a wiremock response for GET map tile requests
+       */
+      stubMapTiles(options?: Record<string, unknown>): Chainable<void>
     }
   }
 }
