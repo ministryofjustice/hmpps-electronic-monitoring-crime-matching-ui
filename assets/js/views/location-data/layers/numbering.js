@@ -3,19 +3,20 @@ import VectorSource from 'ol/source/Vector'
 import { GeoJSON } from 'ol/format'
 import { Fill, Stroke, Text, Style } from 'ol/style'
 
-const textStyle = new Text({
-  textAlign: 'left',
-  textBaseline: 'middle',
-  font: 'bold 12px "Inter", system-ui, sans-serif',
-  fill: new Fill({ color: 'black' }),
-  stroke: new Stroke({ color: 'white', width: 2 }),
-  offsetX: 12,
-  offsetY: 1,
-})
-
-const numberingStyle = new Style({
-  text: textStyle,
-})
+const createNumberingStyle = value => {
+  return new Style({
+    text: new Text({
+      textAlign: 'left',
+      textBaseline: 'middle',
+      font: 'bold 12px "Inter", system-ui, sans-serif',
+      fill: new Fill({ color: 'black' }),
+      stroke: new Stroke({ color: 'white', width: 2 }),
+      text: value,
+      offsetX: 12,
+      offsetY: 1,
+    }),
+  })
+}
 
 const createNumberingSource = points => {
   const formatter = new GeoJSON()
@@ -40,10 +41,7 @@ class NumberingLayer extends VectorLayer {
     super({
       visible: false,
       source: createNumberingSource(points),
-      style: feature => {
-        textStyle.setText(feature.get('sequenceNumber'))
-        return numberingStyle
-      },
+      style: feature => createNumberingStyle(feature.get('sequenceNumber')),
       properties: {
         title: 'numberingLayer',
       },
