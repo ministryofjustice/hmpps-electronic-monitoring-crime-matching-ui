@@ -51,11 +51,11 @@ jobs:
         nohup npm run start-feature &
         sleep 5
         npm run int-test
-      env:
-        OS_MAPS_AUTH_URL: ${{ secrets.OS_MAPS_AUTH_URL }}
-        OS_MAPS_TILE_URL: ${{ secrets.OS_MAPS_TILE_URL }}
-        OS_MAPS_API_KEY: ${{ secrets.OS_MAPS_API_KEY }}
-        OS_MAPS_API_SECRET: ${{ secrets.OS_MAPS_API_SECRET }}
+      # env:
+      #   OS_MAPS_AUTH_URL: ${{ secrets.OS_MAPS_AUTH_URL }}
+      #   OS_MAPS_TILE_URL: ${{ secrets.OS_MAPS_TILE_URL }}
+      #   OS_MAPS_API_KEY: ${{ secrets.OS_MAPS_API_KEY }}
+      #   OS_MAPS_API_SECRET: ${{ secrets.OS_MAPS_API_SECRET }}
     - name: upload results
       if: always()
       uses: actions/upload-artifact@v4
