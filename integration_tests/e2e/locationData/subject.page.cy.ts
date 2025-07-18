@@ -98,6 +98,7 @@ context('Location Data', () => {
       page.map.sidebar.showLocationToggle.shouldBeChecked()
       page.map.sidebar.showConfidenceCirclesToggle.shouldNotBeChecked()
       page.map.sidebar.showTracksToggle.shouldNotBeChecked()
+      page.map.sidebar.showLocationNumberingToggle.shouldNotBeChecked()
     })
 
     it('should show an alert if no location data was returned from the api', () => {
@@ -159,11 +160,16 @@ context('Location Data', () => {
           .getLayers()
           .getArray()
           .find((l: BaseLayer) => l.get('title') === 'pointsLayer') as VectorLayer
+        const numberingLayer = map
+          .getLayers()
+          .getArray()
+          .find((l: BaseLayer) => l.get('title') === 'numberingLayer')
 
         page.map.shouldHaveMapLayer(confidenceLayer, 'Confidence')
         page.map.shouldHaveMapLayer(arrowsLayer, 'Arrows')
         page.map.shouldHaveMapLayer(linesLayer, 'Lines')
         page.map.shouldHaveMapLayer(pointsLayer, 'Points')
+        page.map.shouldHaveMapLayer(numberingLayer, 'Numbers')
 
         expect(pointsLayer.getSource().getFeatures().length).to.equal(data.locations.length)
       })

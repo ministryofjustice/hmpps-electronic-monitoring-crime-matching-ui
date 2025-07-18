@@ -27,6 +27,10 @@ export default class MapSidebarComponent {
     return new FormCheckboxComponent(this.element, 'Show tracks')
   }
 
+  get showLocationNumberingToggle(): FormCheckboxComponent {
+    return new FormCheckboxComponent(this.element, 'Show location numbering')
+  }
+
   // HELPERS
 
   shouldExist(): void {
@@ -37,6 +41,7 @@ export default class MapSidebarComponent {
     this.showLocationToggle.shouldExist()
     this.showConfidenceCirclesToggle.shouldExist()
     this.showTracksToggle.shouldExist()
+    this.showLocationNumberingToggle.shouldExist()
   }
 
   shouldNotHaveControls() {
