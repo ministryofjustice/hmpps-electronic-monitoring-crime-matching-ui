@@ -14,7 +14,7 @@ export default defineConfig({
   viewportWidth: 1920,
   e2e: {
     env: {
-      visualRegressionType: 'regression',
+      visualRegressionType: 'base',
     },
     setupNodeEvents,
     baseUrl: 'http://localhost:3007',
