@@ -22,7 +22,7 @@ const updateSubjectSelectInputs = (radio: HTMLElement) => {
 
 const initSubjectSelect = () => {
   document.addEventListener('DOMContentLoaded', () => {
-    const personSelectors = querySelectorAllHtmlElement('input[type="radio"][nam="personId"]')
+    const personSelectors = querySelectorAllHtmlElement('input[type="radio"][name="personId"]')
 
     personSelectors.forEach(radio => {
       radio.addEventListener('change', () => updateSubjectSelectInputs(radio))
