@@ -1,10 +1,11 @@
 import { getLength } from 'ol/sphere'
 import { Feature } from 'ol'
 import { Fill, Style, RegularShape } from 'ol/style'
-import { Point, Circle as CircleGeom } from 'ol/geom'
+import { Point, LineString } from 'ol/geom'
+import VectorSource from 'ol/source/Vector'
 
-function generateArrowFeatures(mapZoom, lineSource) {
-  const arrowFeatures = []
+function generateArrowFeatures(mapZoom: number, lineSource: VectorSource<Feature<LineString>>) {
+  const arrowFeatures: Array<Feature<Point>> = []
   const zoomFactor = 1.3
   const baseZoom = 13
   const maxArrows = 10
@@ -16,7 +17,7 @@ function generateArrowFeatures(mapZoom, lineSource) {
   const arrowSize = (baseArrowSize / mapZoom) * zoomFactor
 
   lineSource.getFeatures().forEach(lineFeature => {
-    const geometry = lineFeature.getGeometry()
+    const geometry = lineFeature.getGeometry()!
     const lineLength = getLength(geometry)
 
     // Calculate arrow spacing based on zoom
@@ -52,21 +53,5 @@ function generateArrowFeatures(mapZoom, lineSource) {
   return arrowFeatures
 }
 
-function generateConfidenceCircleFeatures(pointSource) {
-  const confidenceFeatures = []
-
-  pointSource.getFeatures().forEach(pointFeature => {
-    const coords = pointFeature.getGeometry().getCoordinates()
-    const radius = pointFeature.get('confidence')
-    const circle = new CircleGeom(coords, radius)
-
-    const circleFeature = new Feature({
-      geometry: circle,
-    })
-
-    confidenceFeatures.push(circleFeature)
-  })
-  return confidenceFeatures
-}
-
-export { generateArrowFeatures, generateConfidenceCircleFeatures }
+// eslint-disable-next-line import/prefer-default-export
+export { generateArrowFeatures }
