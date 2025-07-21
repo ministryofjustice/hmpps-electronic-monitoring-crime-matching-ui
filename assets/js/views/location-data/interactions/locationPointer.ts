@@ -16,7 +16,7 @@ const isLocationProps = (props: { [k: string]: any } | undefined): props is Loca
     return false
   }
 
-  return 'confidenceCircle' in props && 'point' in props && 'type' in props
+  return 'confidence' in props && 'point' in props && 'type' in props
 }
 
 class LocationPointerInteraction extends PointerInteraction {
