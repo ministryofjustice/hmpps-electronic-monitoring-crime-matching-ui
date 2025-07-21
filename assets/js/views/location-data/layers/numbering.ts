@@ -3,7 +3,7 @@ import VectorSource from 'ol/source/Vector'
 import { GeoJSON } from 'ol/format'
 import { Fill, Stroke, Text, Style } from 'ol/style'
 
-const createNumberingStyle = value => {
+const createNumberingStyle = (value: string) => {
   return new Style({
     text: new Text({
       textAlign: 'left',
@@ -18,12 +18,12 @@ const createNumberingStyle = value => {
   })
 }
 
-const createNumberingSource = points => {
+const createNumberingSource = (points: string) => {
   const formatter = new GeoJSON()
   const features = formatter.readFeatures(
     {
       type: 'FeatureCollection',
-      features: points,
+      features: JSON.parse(points),
     },
     {
       dataProjection: 'EPSG:4326',
@@ -37,7 +37,7 @@ const createNumberingSource = points => {
 }
 
 class NumberingLayer extends VectorLayer {
-  constructor(points) {
+  constructor(points: string) {
     super({
       visible: false,
       source: createNumberingSource(points),

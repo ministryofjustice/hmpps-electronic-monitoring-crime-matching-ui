@@ -2,6 +2,8 @@ import VectorLayer from 'ol/layer/Vector'
 import VectorSource from 'ol/source/Vector'
 import { GeoJSON } from 'ol/format'
 import { Stroke, Style } from 'ol/style'
+import { Feature } from 'ol'
+import { LineString } from 'ol/geom'
 
 const lineStyle = new Style({
   stroke: new Stroke({
@@ -10,18 +12,18 @@ const lineStyle = new Style({
   }),
 })
 
-const createLinesSource = lines => {
+const createLinesSource = (lines: string) => {
   const formatter = new GeoJSON()
   const features = formatter.readFeatures(
     {
       type: 'FeatureCollection',
-      features: lines,
+      features: JSON.parse(lines),
     },
     {
       dataProjection: 'EPSG:4326',
       featureProjection: 'EPSG:3857',
     },
-  )
+  ) as Array<Feature<LineString>>
 
   return new VectorSource({
     features,
@@ -29,7 +31,7 @@ const createLinesSource = lines => {
 }
 
 class LinesLayer extends VectorLayer {
-  constructor(lines) {
+  constructor(lines: string) {
     super({
       source: createLinesSource(lines),
       style: lineStyle,

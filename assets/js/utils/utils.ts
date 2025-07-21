@@ -7,7 +7,7 @@
  * @param fallback - Optional fallback string to return when value is missing (default: '')
  * @returns A formatted string like "42 km/h", or the fallback value
  */
-function formatDisplayValue(value, unit = '', fallback = '') {
+function formatDisplayValue(value: string | number | null | undefined, unit: string = '', fallback: string = '') {
   if (value === null || value === undefined || value === '') {
     return fallback
   }
@@ -20,11 +20,33 @@ function formatDisplayValue(value, unit = '', fallback = '') {
  * @param radians - The angle in radians (can be negative, null, or undefined)
  * @returns The angle in whole degrees between 0 and 360, or undefined if input is null/undefined
  */
-function convertRadiansToDegrees(radians) {
-  if (radians == null) return undefined
+function convertRadiansToDegrees(radians: number | null | undefined) {
+  if (radians === null || radians === undefined) return undefined
 
   const degrees = (radians * 180) / Math.PI
   return Math.round((degrees + 360) % 360)
 }
 
-export { convertRadiansToDegrees, formatDisplayValue }
+const isElementSubType = <T extends typeof Element>(type: T, element: Element): element is InstanceType<T> => {
+  return element instanceof type
+}
+
+const queryElement = <T extends typeof Element>(
+  parent: Document | Element,
+  type: T,
+  selector: string,
+): InstanceType<T> => {
+  const el = parent.querySelector(selector)
+
+  if (!el) {
+    throw new Error(`Selector ${selector} did not match any elements.`)
+  }
+
+  if (!isElementSubType(type, el)) {
+    throw new Error(`Selector ${selector} matched ${el} which is not of type ${type}.`)
+  }
+
+  return el
+}
+
+export { convertRadiansToDegrees, formatDisplayValue, queryElement }

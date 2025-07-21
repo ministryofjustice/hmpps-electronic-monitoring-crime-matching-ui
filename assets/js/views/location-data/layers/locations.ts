@@ -2,6 +2,8 @@ import VectorLayer from 'ol/layer/Vector'
 import VectorSource from 'ol/source/Vector'
 import { GeoJSON } from 'ol/format'
 import { Circle as CircleStyle, Fill, Stroke, Style } from 'ol/style'
+import { Feature } from 'ol'
+import { Point } from 'ol/geom'
 
 const locationStyle = new Style({
   image: new CircleStyle({
@@ -11,18 +13,18 @@ const locationStyle = new Style({
   }),
 })
 
-const createLocationsSource = points => {
+const createLocationsSource = (points: string) => {
   const formatter = new GeoJSON()
   const features = formatter.readFeatures(
     {
       type: 'FeatureCollection',
-      features: points,
+      features: JSON.parse(points),
     },
     {
       dataProjection: 'EPSG:4326',
       featureProjection: 'EPSG:3857',
     },
-  )
+  ) as Array<Feature<Point>>
 
   return new VectorSource({
     features,
@@ -30,7 +32,7 @@ const createLocationsSource = points => {
 }
 
 class LocationsLayer extends VectorLayer {
-  constructor(points) {
+  constructor(points: string) {
     super({
       source: createLocationsSource(points),
       style: locationStyle,

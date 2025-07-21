@@ -1,8 +1,26 @@
 import { Overlay } from 'ol'
+import { Coordinate } from 'ol/coordinate'
 import { convertRadiansToDegrees, formatDisplayValue } from '../../../utils/utils'
 
+type LocationProperties = {
+  altitude?: number
+  speed?: number
+  direction?: number
+  geolocationMechanism?: number
+  timestamp?: string
+  confidenceCircle: number
+  point: {
+    latitude: number
+    longitude: number
+  }
+  type: string
+}
+
 class LocationMetadataOverlay extends Overlay {
-  constructor(element, template) {
+  constructor(
+    element: HTMLElement,
+    protected readonly template: HTMLElement,
+  ) {
     super({
       element,
       autoPan: {
@@ -13,16 +31,20 @@ class LocationMetadataOverlay extends Overlay {
       offset: [0, -22],
       positioning: 'bottom-center',
     })
-    this.template = template
   }
 
-  showAtCoordinate(coordinate, props) {
+  hasElement() {
+    return this.getElement() !== undefined
+  }
+
+  showAtCoordinate(coordinate: Coordinate, props: LocationProperties) {
     this.updateContent(props)
     this.bindCloseEvent()
     this.setPosition(coordinate)
   }
 
-  updateContent(props) {
+  updateContent(props: LocationProperties) {
+    const element = this.getElement()
     const html = this.template.innerHTML
       .replace('{{ altitude }}', formatDisplayValue(props.altitude, 'm', 'N/A'))
       .replace('{{ speed }}', formatDisplayValue(props.speed, ' km/h', 'N/A'))
@@ -33,16 +55,22 @@ class LocationMetadataOverlay extends Overlay {
       .replace('{{ latitude }}', formatDisplayValue(props.point.latitude, '', 'N/A'))
       .replace('{{ longitude }}', formatDisplayValue(props.point.longitude, '', 'N/A'))
 
-    this.getElement().innerHTML = html
+    if (element) {
+      element.innerHTML = html
+    }
   }
 
   bindCloseEvent() {
-    const closeButton = this.getElement().querySelector('.app-map__overlay-close')
+    const element = this.getElement()
 
-    if (closeButton) {
-      closeButton.addEventListener('click', () => {
-        this.close()
-      })
+    if (element) {
+      const closeButton = element.querySelector('.app-map__overlay-close')
+
+      if (closeButton) {
+        closeButton.addEventListener('click', () => {
+          this.close()
+        })
+      }
     }
   }
 
@@ -52,3 +80,5 @@ class LocationMetadataOverlay extends Overlay {
 }
 
 export default LocationMetadataOverlay
+
+export { LocationProperties }
