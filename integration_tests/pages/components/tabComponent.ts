@@ -16,6 +16,10 @@ export default class TabComponent {
 
   // HELPERS
 
+  click() {
+    this.element.click()
+  }
+
   shouldBeActive() {
     this.element.should('have.attr', 'aria-selected', 'true')
   }
@@ -26,9 +30,5 @@ export default class TabComponent {
 
   shouldNotBeActive() {
     this.element.should('have.attr', 'aria-selected', 'false')
-  }
-
-  click() {
-    this.element.click()
   }
 }

@@ -1,24 +1,23 @@
 .location-data {
-    padding: 0;
-    margin: 0;
+  padding: 0;
+  margin: 0;
 
-    .app-map__sidebar {
+  .app-map__sidebar {
+    .govuk-tabs {
+      margin-bottom: 0;
+    }
 
-  .govuk-tabs {
-    margin-bottom: 0;
+    .govuk-tabs__list {
+      padding: 0px 10px;
+    }
+
+    .govuk-tabs__list-item {
+      border-top: none;
+    }
+
+    .govuk-tabs__panel {
+      border-left: none;
+      border-bottom: none;
+    }
   }
-
-  .govuk-tabs__list {
-    padding: 0px 10px;
-  }
-
-  .govuk-tabs__list-item {
-    border-top: none;
-  }
-
-  .govuk-tabs__panel {
-    border-left: none;
-    border-bottom: none;
-  }
-}
 }
