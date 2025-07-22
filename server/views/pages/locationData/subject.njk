@@ -1,9 +1,192 @@
 {% extends "../../partials/fullWidthLayout.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+{% from "govuk/components/tabs/macro.njk" import govukTabs %}
 {% from "../../components/map/macro.njk" import appMap %}
+{% from "../../components/date-time-picker/macro.njk" import dateTimePicker %}
 
 {% set pageTitle = applicationName + " - Home" %}
 {% set mainClasses = "app-container govuk-body location-data" %}
 {% set activeLinkId = "location-data" %}
+
+
+{% set timeHtml %}
+  {{
+    dateTimePicker({
+      id: "from-date",
+      name: "fromDate",
+      text: "Date from",
+      errors: errors.fromDate
+    })
+  }}
+
+  {{
+    dateTimePicker({
+      id: "to-date",
+      name: "toDate",
+      text: "Date to",
+      errors: errors.toDate
+    })
+  }}
+
+  <div class="govuk-button-group">
+    {{
+      govukButton({
+        text: "Apply"
+      })
+    }}
+
+    {{
+      govukButton({
+        text: "Reset",
+        classes: "govuk-button--secondary"
+      })
+    }}
+  </div>
+
+  <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible" />
+
+  {{
+    govukRadios({
+      name: "exportOption",
+      fieldset: {
+        legend: {
+          text: "Export trail data",
+          isPageHeading: false,
+          classes: "govuk-fieldset__legend--s"
+        }
+      },
+      items: [
+        {
+          value: "condensed",
+          text: "Condensed report"
+        },
+        {
+          value: "full",
+          text: "Full report"
+        }
+      ]
+    })
+  }}
+
+  {{
+    govukButton({
+      text: "Export"
+    })
+  }}
+{% endset %}
+
+
+{% set analysisHtml %}
+  {{
+    govukCheckboxes({
+      id: "locations",
+      name: "locations",
+      fieldset: {
+        legend: {
+          text: "Show locations",
+          isPageHeading: true,
+          classes: "govuk-fieldset__legend--s"
+        }
+      },
+      items: [
+        {
+          value: "on",
+          text: "Toggled on",
+          checked: true
+        }
+      ]
+    })
+  }}
+
+  {{
+    govukCheckboxes({
+      id: "confidence",
+      name: "confidence",
+      fieldset: {
+        legend: {
+          text: "Show confidence circles",
+          isPageHeading: true,
+          classes: "govuk-fieldset__legend--s"
+        }
+      },
+      items: [
+        {
+          value: "on",
+          text: "Toggled on",
+          checked: false
+        }
+      ]
+    })
+  }}
+
+  {{
+    govukCheckboxes({
+      id: "tracks",
+      name: "tracks",
+      fieldset: {
+        legend: {
+          text: "Show tracks",
+          isPageHeading: true,
+          classes: "govuk-fieldset__legend--s"
+        }
+      },
+      items: [
+        {
+          value: "on",
+          text: "Toggled on",
+          checked: false
+        }
+      ]
+    })
+  }}
+
+  {{
+    govukCheckboxes({
+      id: "numbering",
+      name: "numbering",
+      fieldset: {
+        legend: {
+          text: "Show location numbering",
+          isPageHeading: true,
+          classes: "govuk-fieldset__legend--s"
+        }
+      },
+      items: [
+        {
+          value: "on",
+          text: "Toggled on",
+          checked: false
+        }
+      ]
+    })
+  }}
+{% endset %}
+
+
+{% set sidebarHtml %}
+  {{
+    govukTabs({
+      items: [
+        {
+          label: "Time",
+          id: "adjust-time-period",
+          panel: {
+            html: timeHtml
+          }
+        },
+        {
+          label: "Analysis",
+          id: "enhanced-analysis",
+          panel: {
+            html: analysisHtml
+          }
+        }
+      ]
+    })
+  }}
+{% endset %}
 
 {% block content %}
   {{
@@ -14,7 +197,8 @@
       },
       tileUrl: tileUrl,
       alerts: alerts,
-      showOverlay: true
+      showOverlay: true,
+      sidebarHtml: sidebarHtml
     })
   }}
 {% endblock %}

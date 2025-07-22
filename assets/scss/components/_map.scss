@@ -1,13 +1,12 @@
 .app-map {
   display: grid;
-  grid-template-columns: 1fr 350px;
+  grid-template-columns: 1fr 400px;
   grid-template-rows: calc(100vh - 65px - 77px);
-  margin-top: govuk-spacing(-7);
 }
 
 .app-map__sidebar {
   border-left: 1px solid $govuk-border-colour;
-  padding: govuk-spacing(4) govuk-spacing(3);
+  overflow-y: scroll;
 }
 
 .app-map__error {
