@@ -92,6 +92,9 @@ context('Location Data', () => {
       page.map.shouldExist()
       page.map.shouldNotHaveAlerts()
       page.map.sidebar.shouldExist()
+      page.map.sidebar.shouldHaveTabs()
+      page.map.sidebar.timeTab.shouldBeActive()
+      page.map.sidebar.analysisTab.shouldNotBeActive()
       page.map.sidebar.shouldHaveControls()
 
       // Initial state should be to show only the locations
@@ -117,7 +120,10 @@ context('Location Data', () => {
       page.map.shouldExist()
       page.map.shouldHaveAlert('warning', 'No GPS Data for Dates and Times Selected')
       page.map.sidebar.shouldExist()
+      page.map.sidebar.shouldHaveTabs()
       page.map.sidebar.shouldHaveControls()
+      page.map.sidebar.timeTab.shouldBeActive()
+      page.map.sidebar.analysisTab.shouldNotBeActive()
     })
   })
 
@@ -136,6 +142,8 @@ context('Location Data', () => {
 
       page = Page.verifyOnPage(SubjectPage)
       page.map.shouldExist()
+      page.map.sidebar.shouldExist()
+      page.map.sidebar.shouldHaveTabs()
     })
 
     it('should display the map with the correct layers and features', () => {
@@ -276,6 +284,8 @@ context('Location Data', () => {
           page.map.shouldShowOverlay()
 
           // Turn off location points
+          page.map.sidebar.analysisTab.click()
+          page.map.sidebar.analysisTab.shouldBeActive()
           page.map.sidebar.showLocationToggle.click()
           page.map.shouldNotShowOverlay()
 
