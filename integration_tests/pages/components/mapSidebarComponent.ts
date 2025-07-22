@@ -1,6 +1,7 @@
 import { v4 as uuidv4 } from 'uuid'
 import { PageElement } from '../page'
 import FormCheckboxComponent from './formCheckboxComponent'
+import TabComponent from './tabComponent'
 
 export default class MapSidebarComponent {
   private elementCacheId: string = uuidv4()
@@ -15,12 +16,12 @@ export default class MapSidebarComponent {
     return cy.get(`@${this.elementCacheId}-element`, { log: false })
   }
 
-  get analysisTab(): PageElement {
-    return this.element.find('#tab_analysis')
+  get analysisTab(): TabComponent {
+    return new TabComponent('#tab_analysis')
   }
 
-  get timeTab(): PageElement {
-    return this.element.find('#tab_time')
+  get timeTab(): TabComponent {
+    return new TabComponent('#tab_time')
   }
 
   get showLocationToggle(): FormCheckboxComponent {
@@ -53,7 +54,7 @@ export default class MapSidebarComponent {
   }
 
   shouldHaveTabs() {
-    this.analysisTab.should('exist')
-    this.timeTab.should('exist')
+    this.analysisTab.shouldExist()
+    this.timeTab.shouldExist()
   }
 }

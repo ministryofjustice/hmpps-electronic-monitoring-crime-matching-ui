@@ -93,6 +93,8 @@ context('Location Data', () => {
       page.map.shouldNotHaveAlerts()
       page.map.sidebar.shouldExist()
       page.map.sidebar.shouldHaveTabs()
+      page.map.sidebar.timeTab.shouldBeActive()
+      page.map.sidebar.analysisTab.shouldNotBeActive()
       page.map.sidebar.shouldHaveControls()
 
       // Initial state should be to show only the locations
@@ -120,6 +122,8 @@ context('Location Data', () => {
       page.map.sidebar.shouldExist()
       page.map.sidebar.shouldHaveTabs()
       page.map.sidebar.shouldHaveControls()
+      page.map.sidebar.timeTab.shouldBeActive()
+      page.map.sidebar.analysisTab.shouldNotBeActive()
     })
   })
 
@@ -281,6 +285,7 @@ context('Location Data', () => {
 
           // Turn off location points
           page.map.sidebar.analysisTab.click()
+          page.map.sidebar.analysisTab.shouldBeActive()
           page.map.sidebar.showLocationToggle.click()
           page.map.shouldNotShowOverlay()
 
