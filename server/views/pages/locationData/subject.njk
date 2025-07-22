@@ -10,7 +10,6 @@
 {% set mainClasses = "app-container govuk-body location-data" %}
 {% set activeLinkId = "location-data" %}
 
-
 {% set timeHtml %}
   {{
     dateTimePicker({
@@ -171,14 +170,14 @@
       items: [
         {
           label: "Time",
-          id: "adjust-time-period",
+          id: "time",
           panel: {
             html: timeHtml
           }
         },
         {
           label: "Analysis",
-          id: "enhanced-analysis",
+          id: "analysis",
           panel: {
             html: analysisHtml
           }

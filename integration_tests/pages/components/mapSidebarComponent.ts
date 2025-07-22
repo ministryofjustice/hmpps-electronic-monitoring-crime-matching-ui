@@ -15,6 +15,14 @@ export default class MapSidebarComponent {
     return cy.get(`@${this.elementCacheId}-element`, { log: false })
   }
 
+  get analysisTab(): PageElement {
+    return this.element.find('#tab_analysis')
+  }
+
+  get timeTab(): PageElement {
+    return this.element.find('#tab_time')
+  }
+
   get showLocationToggle(): FormCheckboxComponent {
     return new FormCheckboxComponent(this.element, 'Show locations')
   }
@@ -44,7 +52,8 @@ export default class MapSidebarComponent {
     this.showLocationNumberingToggle.shouldExist()
   }
 
-  shouldNotHaveControls() {
-    this.element.find('input').should('have.length', 0)
+  shouldHaveTabs() {
+    this.analysisTab.should('exist')
+    this.timeTab.should('exist')
   }
 }
