@@ -5,13 +5,12 @@ import LocationsLayer from './layers/locations'
 import TracksLayer from './layers/tracks'
 import ConfidenceLayer from './layers/confidence'
 import NumberingLayer from './layers/numbering'
-import LocationPointerInteraction from './interactions/locationPointer'
 import LocationMetadataOverlay from './overlays/locationMetadata'
 import createLayerVisibilityToggle from './controls/layerVisibilityToggle'
 import { queryElement } from '../../utils/utils'
 
 const initialiseLocationDataView = async () => {
-  const mojMap = queryElement(document, 'moj-map' as keyof HTMLElementTagNameMap) as MojMap
+  const mojMap = queryElement(document, 'moj-map') as MojMap
 
   await new Promise<void>(resolve => {
     mojMap.addEventListener('map:ready', () => resolve(), { once: true })
@@ -24,7 +23,6 @@ const initialiseLocationDataView = async () => {
   const locationSource = locationsLayer.getSource()
   const tracksLayer = new TracksLayer(lines)
   const confidenceLayer = new ConfidenceLayer(points)
-  // const locationMetadataOverlay = new LocationMetadataOverlay(overlay, overlayTemplate)
   const locationNumberingLayer = new NumberingLayer(points)
 
   mojMap.map.addLayer(locationsLayer)

@@ -1,15 +1,7 @@
 {% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
 {% from "moj/components/alert/macro.njk" import mojAlert %}
 
-<div
-  class="app-map"
-  data-module="app-map"
-  data-points="{{ params.geoData.points }}"
-  data-lines="{{ params.geoData.lines }}"
-  data-tile-url="{{ params.tileUrl }}"
-  data-show-overlay="{{ params.showOverlay }}"
-  data-show-overlay="{{ params.showOverlay }}"
->
+<div class="app-map">
   <div id="app-map" class="app-map__viewport" data-map-viewport></div>
   <div class="app-map__error">
     {% for alert in params.alerts %}
@@ -103,7 +95,7 @@
     }}
   </div>
   <div class="app-map__overlay">
-    {% if params.showOverlay %}
+    {% if params.usesInternalOverlays %}
       {# The {{ }} placeholders are not processed by Nunjucks.
          They are used as markers and replaced within assets/js files at runtime.
          Implemented this way to avoid large Template Literals in the JavaScript file. #}

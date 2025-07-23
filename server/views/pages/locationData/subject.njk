@@ -17,15 +17,21 @@
         points: points,
         lines: lines
       },
-      showOverlay: true,
+      usesInternalOverlays: true,
       templateId: 'map-overlay-template'
     }) }}
 
     {% raw %}
     <template id="map-overlay-template">
-      <div>
-        <strong>Speed:</strong> {{speed}} km/h
+      <div class="app-map__overlay-row"><strong>Speed:</strong><span>{{ speed }}</span></div>
+      <div class="app-map__overlay-row"><strong>Direction:</strong><span>{{ direction }}</span></div>
+      <div class="app-map__overlay-row">
+        <strong>Geolocation Mechanism:</strong><span>{{ geolocationMechanism }}</span>
       </div>
+      <div class="app-map__overlay-row"><strong>Recorded Date:</strong><span>{{ timestamp }}</span></div>
+      <div class="app-map__overlay-row"><strong>Confidence:</strong><span>{{ confidenceCircle }}</span></div>
+      <div class="app-map__overlay-row"><strong>Latitude:</strong><span>{{ latitude }}</span></div>
+      <div class="app-map__overlay-row"><strong>Longitude:</strong><span>{{ longitude }}</span></div>
     </template>
     {% endraw %}
 
