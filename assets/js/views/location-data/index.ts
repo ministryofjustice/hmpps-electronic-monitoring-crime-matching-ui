@@ -17,8 +17,8 @@ const initialiseLocationDataView = async () => {
     mojMap.addEventListener('map:ready', () => resolve(), { once: true })
   })
 
-  const points = mojMap.getAttribute('data-points') || '[]'
-  const lines = mojMap.getAttribute('data-lines') || '[]'
+  const { points } = mojMap
+  const { lines } = mojMap
 
   const locationsLayer = new LocationsLayer(points)
   const locationSource = locationsLayer.getSource()
@@ -32,11 +32,8 @@ const initialiseLocationDataView = async () => {
   mojMap.map.addLayer(confidenceLayer)
   mojMap.map.addLayer(locationNumberingLayer)
 
-  // Fit view to extent
-  const source = locationsLayer.getSource()
-
-  if (source) {
-    const extent = source.getExtent()
+  if (locationSource) {
+    const extent = locationSource.getExtent()
 
     if (isEmpty(extent) === false) {
       mojMap.map.getView().fit(extent, {

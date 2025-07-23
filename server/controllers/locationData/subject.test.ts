@@ -324,8 +324,8 @@ describe('SubjectController', () => {
             variant: 'warning',
           },
         ],
-        points: '[]',
-        lines: '[]',
+        points: [],
+        lines: [],
         tileUrl: 'http://localhost:9090/maps',
       })
     })
@@ -396,7 +396,7 @@ describe('SubjectController', () => {
       )
       expect(res.render).toHaveBeenCalledWith('pages/locationData/subject', {
         alerts: [],
-        points: JSON.stringify([
+        points: [
           {
             type: 'Feature',
             id: '0',
@@ -435,8 +435,8 @@ describe('SubjectController', () => {
               coordinates: [456.123, 456.123],
             },
           },
-        ]),
-        lines: JSON.stringify([
+        ],
+        lines: [
           {
             type: 'Feature',
             id: '0',
@@ -449,7 +449,7 @@ describe('SubjectController', () => {
               ],
             },
           },
-        ]),
+        ],
         tileUrl: 'http://localhost:9090/maps',
       })
     })

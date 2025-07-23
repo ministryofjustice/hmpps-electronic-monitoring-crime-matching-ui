@@ -13,7 +13,10 @@
       accessTokenUrl: '/map/token',
       cspNonce: cspNonce,
       tileUrl: 'https://api.os.uk/maps/raster/v1/zxy/Road_3857/{z}/{x}/{y}',
-      geojson: geojson,
+      geoData: {
+        points: points,
+        lines: lines
+      },
       showOverlay: true,
       templateId: 'map-overlay-template'
     }) }}
