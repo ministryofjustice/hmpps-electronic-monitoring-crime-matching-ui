@@ -27,26 +27,22 @@ function convertRadiansToDegrees(radians: number | null | undefined) {
   return Math.round((degrees + 360) % 360)
 }
 
-const isElementSubType = <T extends typeof Element>(type: T, element: Element): element is InstanceType<T> => {
-  return element instanceof type
-}
-
-const queryElement = <T extends typeof Element>(
+const queryElement = <K extends keyof HTMLElementTagNameMap>(
   parent: Document | Element,
-  type: T,
-  selector: string,
-): InstanceType<T> => {
+  selector: K,
+  expectedConstructor?: { new (): HTMLElementTagNameMap[K] },
+): HTMLElementTagNameMap[K] => {
   const el = parent.querySelector(selector)
 
   if (!el) {
     throw new Error(`Selector ${selector} did not match any elements.`)
   }
 
-  if (!isElementSubType(type, el)) {
-    throw new Error(`Selector ${selector} matched ${el} which is not of type ${type}.`)
+  if (expectedConstructor && !(el instanceof expectedConstructor)) {
+    throw new Error(`Element matched by "${selector}" is not an instance of ${expectedConstructor.name}.`)
   }
 
-  return el
+  return el as HTMLElementTagNameMap[K]
 }
 
 export { convertRadiansToDegrees, formatDisplayValue, queryElement }

@@ -1,20 +1,96 @@
 {% extends "../../partials/fullWidthLayout.njk" %}
-{% from "../../components/map/macro.njk" import appMap %}
+{% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
+{% from "moj/components/alert/macro.njk" import mojAlert %}
+{% from "components/moj-map/macro.njk" import mojMap %}
 
 {% set pageTitle = applicationName + " - Home" %}
 {% set mainClasses = "app-container govuk-body location-data" %}
 {% set activeLinkId = "location-data" %}
 
 {% block content %}
-  {{
-    appMap({
-      geoData: {
-        points: points,
-        lines: lines
-      },
-      tileUrl: tileUrl,
-      alerts: alerts,
-      showOverlay: true
-    })
-  }}
+  <div class="app-map">
+    {{ mojMap({
+      accessTokenUrl: '/map/token',
+      cspNonce: cspNonce,
+      tileUrl: 'https://api.os.uk/maps/raster/v1/zxy/Road_3857/{z}/{x}/{y}',
+      geojson: geojson,
+      showOverlay: true,
+      templateId: 'map-overlay-template'
+    }) }}
+
+    {% raw %}
+    <template id="map-overlay-template">
+      <div>
+        <strong>Speed:</strong> {{speed}} km/h
+      </div>
+    </template>
+    {% endraw %}
+
+    <aside class="app-map__sidebar">
+      {% if alerts | length > 0 %}
+        {% for alert in alerts %}
+          {{ mojAlert(alert) }}
+        {% endfor %}
+      {% else %}
+        <h3 class="govuk-heading-m">Enhanced Analysis</h3>
+
+        {{ govukCheckboxes({
+          id: "locations",
+          name: "locations",
+          fieldset: {
+            legend: {
+              text: "Show locations",
+              isPageHeading: true,
+              classes: "govuk-fieldset__legend--s"
+            }
+          },
+          items: [
+            {
+              value: "on",
+              text: "Toggled on",
+              checked: true
+            }
+          ]
+        }) }}
+
+        {{ govukCheckboxes({
+          id: "confidence",
+          name: "confidence",
+          fieldset: {
+            legend: {
+              text: "Show confidence circles",
+              isPageHeading: true,
+              classes: "govuk-fieldset__legend--s"
+            }
+          },
+          items: [
+            {
+              value: "on",
+              text: "Toggled on",
+              checked: false
+            }
+          ]
+        }) }}
+
+        {{ govukCheckboxes({
+          id: "tracks",
+          name: "tracks",
+          fieldset: {
+            legend: {
+              text: "Show tracks",
+              isPageHeading: true,
+              classes: "govuk-fieldset__legend--s"
+            }
+          },
+          items: [
+            {
+              value: "on",
+              text: "Toggled on",
+              checked: false
+            }
+          ]
+        }) }}
+      {% endif %}
+    </aside>
+  </div>
 {% endblock %}

@@ -1,7 +1,7 @@
 import express from 'express'
 
 import createError from 'http-errors'
-
+import { mojMapMiddleware } from 'hmpps-open-layers-map/tile-token-proxy'
 import nunjucksSetup from './utils/nunjucksSetup'
 import errorHandler from './errorHandler'
 import { appInsightsMiddleware } from './utils/azureAppInsights'
@@ -37,6 +37,7 @@ export default function createApp(services: Services): express.Application {
   app.use(authorisationMiddleware())
   app.use(setUpCsrf())
   app.use(setUpCurrentUser())
+  app.use('/map/token', mojMapMiddleware())
 
   app.use(routes(services))
 
