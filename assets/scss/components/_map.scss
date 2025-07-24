@@ -76,16 +76,13 @@ moj-map::part(app-map__overlay-body) {
   padding: 10px;
 }
 
-moj-map::part(app-map__overlay-body)  .app-map__overlay-row {
+moj-map::part(app-map__overlay-row) {
   display: contents;
-}
-
-moj-map::part(app-map__overlay-body)  .app-map__overlay-row strong {
-  text-align: right;
-  white-space: nowrap;
-}
-
-moj-map::part(app-map__overlay-body) .app-map__overlay-row span {
   text-align: left;
   word-break: break-word;
+}
+
+moj-map::part(app-map__overlay-strong) {
+  text-align: right;
+  white-space: nowrap;
 }

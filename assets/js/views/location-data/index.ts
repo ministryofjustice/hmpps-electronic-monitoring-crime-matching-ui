@@ -4,9 +4,8 @@ import LocationsLayer from './layers/locations'
 import TracksLayer from './layers/tracks'
 import ConfidenceLayer from './layers/confidence'
 import NumberingLayer from './layers/numbering'
-import LocationMetadataOverlay from './overlays/locationMetadata'
 import createLayerVisibilityToggle from './controls/layerVisibilityToggle'
-import { queryElement } from '../../utils/utils'
+import queryElement from '../../utils/utils'
 
 const initialiseLocationDataView = async () => {
   const mojMap = queryElement(document, 'moj-map') as MojMap
