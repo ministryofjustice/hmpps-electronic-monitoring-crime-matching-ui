@@ -1,5 +1,4 @@
-import 'hmpps-open-layers-map'
-import type { MojMap } from 'hmpps-open-layers-map'
+import { MojMap } from 'hmpps-open-layers-map'
 import { isEmpty } from 'ol/extent'
 import LocationsLayer from './layers/locations'
 import TracksLayer from './layers/tracks'
@@ -43,7 +42,7 @@ const initialiseLocationDataView = async () => {
   }
 
   // Add controls
-  createLayerVisibilityToggle('#locations', locationsLayer)
+  createLayerVisibilityToggle('#locations', locationsLayer, mojMap)
   createLayerVisibilityToggle('#tracks', tracksLayer)
   createLayerVisibilityToggle('#confidence', confidenceLayer)
   createLayerVisibilityToggle('#numbering', locationNumberingLayer)

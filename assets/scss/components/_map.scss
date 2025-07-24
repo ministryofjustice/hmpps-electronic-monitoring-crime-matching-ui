@@ -15,7 +15,8 @@
   margin: 5px 60px;
 }
 
-.app-map__overlay {
+/* Override map component overlay styles */
+moj-map::part(app-map__overlay) {
   position: relative;
   background-color: govuk-colour("white");
   border: 1px solid govuk-colour("black");
@@ -25,7 +26,7 @@
 }
 
 /* Arrow border */
-.app-map__overlay::before {
+moj-map::part(app-map__overlay)::before {
   content: "";
   position: absolute;
   left: 50%;
@@ -38,7 +39,7 @@
 }
 
 /* Arrow fill */
-.app-map__overlay::after {
+moj-map::part(app-map__overlay)::after {
   content: "";
   position: absolute;
   left: 50%;
@@ -50,7 +51,7 @@
   z-index: 1;
 }
 
-.app-map__overlay-header {
+moj-map::part(app-map__overlay-header) {
   display: flex;
   justify-content: flex-end;
   background-color: govuk-colour("light-grey");
@@ -58,7 +59,7 @@
   border-bottom: 1px solid $govuk-border-colour;
 }
 
-.app-map__overlay-close {
+moj-map::part(app-map__overlay-header) .app-map__overlay-close {
   background: none;
   border: none;
   font-size: 20px;
@@ -67,7 +68,7 @@
   color: $govuk-text-colour;
 }
 
-.app-map__overlay-body {
+moj-map::part(app-map__overlay-body) {
   display: grid;
   grid-template-columns: auto 1fr;
   gap: 4px 12px;
@@ -75,16 +76,16 @@
   padding: 10px;
 }
 
-.app-map__overlay-row {
+moj-map::part(app-map__overlay-body)  .app-map__overlay-row {
   display: contents;
 }
 
-.app-map__overlay-row strong {
+moj-map::part(app-map__overlay-body)  .app-map__overlay-row strong {
   text-align: right;
   white-space: nowrap;
 }
 
-.app-map__overlay-row span {
+moj-map::part(app-map__overlay-body) .app-map__overlay-row span {
   text-align: left;
   word-break: break-word;
 }
