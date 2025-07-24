@@ -1,5 +1,6 @@
 import { asUser, RestClient, SanitisedError } from '@ministryofjustice/hmpps-rest-client'
 import { ZodError } from 'zod/v4'
+import dayjs from 'dayjs'
 import {
   CreateSubjectLocationsQueryRequestDto,
   CreateSubjectLocationsQueryResponseDto,
@@ -55,24 +56,62 @@ export default class SubjectService {
     }
   }
 
-  async getLocationData(userToken: string, personId?: string, from?: string, to?: string): Promise<GetSubjectDto> {
-    if (personId === undefined) {
+  async getLocationData(
+    userToken: string,
+    personId: string,
+    from: string,
+    to: string,
+  ): Promise<Result<GetSubjectDto, ValidationResult>> {
+    const validationErrors: ValidationResult = []
+
+    if (!this.isValidDate(from)) {
+      validationErrors.push({
+        field: 'fromDate',
+        message: 'You must enter a valid value for date',
+      })
+    }
+
+    if (!this.isValidDate(to)) {
+      validationErrors.push({
+        field: 'toDate',
+        message: 'You must enter a valid value for date',
+      })
+    }
+
+    if (validationErrors.length > 0) {
       return {
-        locations: [],
+        ok: false,
+        error: validationErrors,
       }
     }
 
-    const res = await this.crimeMatchingApiClient.get(
-      {
-        path: `/subjects/${personId}`,
-        query: {
-          from,
-          to,
+    try {
+      const res = await this.crimeMatchingApiClient.get(
+        {
+          path: `/subjects/${personId}`,
+          query: {
+            from,
+            to,
+          },
         },
-      },
-      asUser(userToken),
-    )
+        asUser(userToken),
+      )
 
-    return getSubjectDtoSchema.parse(res)
+      return {
+        ok: true,
+        data: getSubjectDtoSchema.parse(res),
+      }
+    } catch {
+      return {
+        ok: true,
+        data: {
+          locations: [],
+        },
+      }
+    }
+  }
+
+  isValidDate(dateString: string) {
+    return dayjs(dateString, 'YYYY-MM-DDTHH:mm:ss[Z]', true).isValid()
   }
 }

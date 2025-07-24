@@ -1,7 +1,7 @@
 {
   "request": {
     "method": "GET",
-    "urlPattern": "/crime-matching/subjects/1\\?from=&to="
+    "urlPattern": "/crime-matching/subjects/1\\?from=\\S+&to=\\S+"
   },
   "response": {
     "status": 200,

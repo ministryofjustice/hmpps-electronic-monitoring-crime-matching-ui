@@ -102,12 +102,14 @@
       <div class="govuk-grid-column-one-third">
         <h2>Location Data</h2>
         <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+        <input type="hidden" name="origin" value="{{ origin }}"/>
         {{
           dateTimePicker({
             id: "from-date",
             name: "fromDate",
             text: "Date and time from",
             label: "From",
+            value: formData.fromDate,
             errors: errors.fromDate
           })
         }}
@@ -118,6 +120,7 @@
             name: "toDate",
             text: "Date and time to",
             label: "To",
+            value: formData.toDate,
             errors: errors.toDate
           })
         }}
