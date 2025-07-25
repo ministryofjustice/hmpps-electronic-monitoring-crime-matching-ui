@@ -1,117 +1,205 @@
 {% extends "../../partials/fullWidthLayout.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
-{% from "moj/components/alert/macro.njk" import mojAlert %}
-{% from "components/moj-map/macro.njk" import mojMap %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+{% from "govuk/components/tabs/macro.njk" import govukTabs %}
+{% from "../../components/map/macro.njk" import appMap %}
+{% from "../../components/date-time-picker/macro.njk" import dateTimePicker %}
 
 {% set pageTitle = applicationName + " - Home" %}
 {% set mainClasses = "app-container govuk-body location-data" %}
 {% set activeLinkId = "location-data" %}
 
+
+{% set timeHtml %}
+  {{
+    dateTimePicker({
+      id: "from-date",
+      name: "fromDate",
+      text: "Date from",
+      errors: errors.fromDate
+    })
+  }}
+
+  {{
+    dateTimePicker({
+      id: "to-date",
+      name: "toDate",
+      text: "Date to",
+      errors: errors.toDate
+    })
+  }}
+
+  <div class="govuk-button-group">
+    {{
+      govukButton({
+        text: "Apply"
+      })
+    }}
+
+    {{
+      govukButton({
+        text: "Reset",
+        classes: "govuk-button--secondary"
+      })
+    }}
+  </div>
+
+  <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible" />
+
+  {{
+    govukRadios({
+      name: "exportOption",
+      fieldset: {
+        legend: {
+          text: "Export trail data",
+          isPageHeading: false,
+          classes: "govuk-fieldset__legend--s"
+        }
+      },
+      items: [
+        {
+          value: "condensed",
+          text: "Condensed report"
+        },
+        {
+          value: "full",
+          text: "Full report"
+        }
+      ]
+    })
+  }}
+
+  {{
+    govukButton({
+      text: "Export"
+    })
+  }}
+{% endset %}
+
+
+{% set analysisHtml %}
+  {{
+    govukCheckboxes({
+      id: "locations",
+      name: "locations",
+      fieldset: {
+        legend: {
+          text: "Show locations",
+          isPageHeading: true,
+          classes: "govuk-fieldset__legend--s"
+        }
+      },
+      items: [
+        {
+          value: "on",
+          text: "Toggled on",
+          checked: true
+        }
+      ]
+    })
+  }}
+
+  {{
+    govukCheckboxes({
+      id: "confidence",
+      name: "confidence",
+      fieldset: {
+        legend: {
+          text: "Show confidence circles",
+          isPageHeading: true,
+          classes: "govuk-fieldset__legend--s"
+        }
+      },
+      items: [
+        {
+          value: "on",
+          text: "Toggled on",
+          checked: false
+        }
+      ]
+    })
+  }}
+
+  {{
+    govukCheckboxes({
+      id: "tracks",
+      name: "tracks",
+      fieldset: {
+        legend: {
+          text: "Show tracks",
+          isPageHeading: true,
+          classes: "govuk-fieldset__legend--s"
+        }
+      },
+      items: [
+        {
+          value: "on",
+          text: "Toggled on",
+          checked: false
+        }
+      ]
+    })
+  }}
+
+  {{
+    govukCheckboxes({
+      id: "numbering",
+      name: "numbering",
+      fieldset: {
+        legend: {
+          text: "Show location numbering",
+          isPageHeading: true,
+          classes: "govuk-fieldset__legend--s"
+        }
+      },
+      items: [
+        {
+          value: "on",
+          text: "Toggled on",
+          checked: false
+        }
+      ]
+    })
+  }}
+{% endset %}
+
+
+{% set sidebarHtml %}
+  {{
+    govukTabs({
+      items: [
+        {
+          label: "Time",
+          id: "time",
+          panel: {
+            html: timeHtml
+          }
+        },
+        {
+          label: "Analysis",
+          id: "analysis",
+          panel: {
+            html: analysisHtml
+          }
+        }
+      ]
+    })
+  }}
+{% endset %}
+
 {% block content %}
-  <div class="app-map">
-    {{ mojMap({
-      accessTokenUrl: '/map/token',
+  {{
+    appMap({
       cspNonce: cspNonce,
-      tileUrl: 'https://api.os.uk/maps/raster/v1/zxy/Road_3857/{z}/{x}/{y}',
       geoData: {
         points: points,
         lines: lines
       },
-      usesInternalOverlays: true,
-      templateId: 'map-overlay-template'
-    }) }}
-
-    {% raw %}
-    <template id="map-overlay-template">
-      <div part="app-map__overlay-row">
-        <strong part="app-map__overlay-strong">Speed: </strong><span>{{ displaySpeed }}</span>
-      </div>
-      <div part="app-map__overlay-row">
-        <strong part="app-map__overlay-strong">Direction: </strong><span>{{ displayDirection }}</span>
-      </div>
-      <div part="app-map__overlay-row">
-        <strong part="app-map__overlay-strong">Geolocation Mechanism: </strong><span>{{ displayGeolocationMechanism }}</span>
-      </div>
-      <div part="app-map__overlay-row">
-        <strong part="app-map__overlay-strong">Recorded Date: </strong><span>{{ displayTimestamp }}</span>
-      </div>
-      <div part="app-map__overlay-row">
-        <strong part="app-map__overlay-strong">Confidence: </strong><span>{{ displayConfidence }}</span>
-      </div>
-      <div part="app-map__overlay-row">
-        <strong part="app-map__overlay-strong">Latitude: </strong><span>{{ displayLatitude }}</span>
-      </div>
-      <div part="app-map__overlay-row">
-        <strong part="app-map__overlay-strong">Longitude: </strong><span>{{ displayLongitude }}</span>
-      </div>
-    </template>
-    {% endraw %}
-
-    <aside class="app-map__sidebar">
-      {% if alerts | length > 0 %}
-        {% for alert in alerts %}
-          {{ mojAlert(alert) }}
-        {% endfor %}
-      {% else %}
-        <h3 class="govuk-heading-m">Enhanced Analysis</h3>
-
-        {{ govukCheckboxes({
-          id: "locations",
-          name: "locations",
-          fieldset: {
-            legend: {
-              text: "Show locations",
-              isPageHeading: true,
-              classes: "govuk-fieldset__legend--s"
-            }
-          },
-          items: [
-            {
-              value: "on",
-              text: "Toggled on",
-              checked: true
-            }
-          ]
-        }) }}
-
-        {{ govukCheckboxes({
-          id: "confidence",
-          name: "confidence",
-          fieldset: {
-            legend: {
-              text: "Show confidence circles",
-              isPageHeading: true,
-              classes: "govuk-fieldset__legend--s"
-            }
-          },
-          items: [
-            {
-              value: "on",
-              text: "Toggled on",
-              checked: false
-            }
-          ]
-        }) }}
-
-        {{ govukCheckboxes({
-          id: "tracks",
-          name: "tracks",
-          fieldset: {
-            legend: {
-              text: "Show tracks",
-              isPageHeading: true,
-              classes: "govuk-fieldset__legend--s"
-            }
-          },
-          items: [
-            {
-              value: "on",
-              text: "Toggled on",
-              checked: false
-            }
-          ]
-        }) }}
-      {% endif %}
-    </aside>
-  </div>
+      tileUrl: tileUrl,
+      alerts: alerts,
+      showOverlay: true,
+      sidebarHtml: sidebarHtml
+    })
+  }}
 {% endblock %}
