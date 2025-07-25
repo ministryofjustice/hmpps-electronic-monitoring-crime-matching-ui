@@ -10,7 +10,6 @@
 {% set mainClasses = "app-container govuk-body location-data" %}
 {% set activeLinkId = "location-data" %}
 
-
 {% set timeHtml %}
   {{
     dateTimePicker({
@@ -198,7 +197,7 @@
       },
       tileUrl: tileUrl,
       alerts: alerts,
-      showOverlay: true,
+      usesInternalOverlays: true,
       sidebarHtml: sidebarHtml
     })
   }}

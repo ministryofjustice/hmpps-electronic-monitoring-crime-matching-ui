@@ -3,6 +3,10 @@ params:
     type: string
     required: true
     description: Tile URL for loading the map tiles
+  - name: cspNonce
+    type: string
+    required: false
+    description: A Content Security Policy nonce to include in inline scripts or styles
   - name: geoData
     type: object
     required: false

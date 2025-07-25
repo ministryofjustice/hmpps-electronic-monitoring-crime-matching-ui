@@ -7,15 +7,16 @@
       {{ mojAlert(alert) }}
     {% endfor %}
   </div>
+
   {{ mojMap({
     accessTokenUrl: '/map/token',
-    cspNonce: cspNonce,
+    cspNonce: params.cspNonce,
     tileUrl: 'https://api.os.uk/maps/raster/v1/zxy/Road_3857/{z}/{x}/{y}',
     geoData: {
-      points: points,
-      lines: lines
+      points: params.geoData.points,
+      lines: params.geoData.lines
     },
-    usesInternalOverlays: true,
+    usesInternalOverlays: params.usesInternalOverlays,
     templateId: 'map-overlay-template'
   }) }}
 
