@@ -25,7 +25,7 @@ export default class MapComponent {
     return new MapSidebarComponent(this.element)
   }
 
-  get viewport(): PageElement {
+  get mapComponent(): PageElement {
     return this.element.get('moj-map')
   }
 
@@ -53,7 +53,7 @@ export default class MapComponent {
 
   shouldExist(): void {
     this.element.should('exist')
-    this.viewport.should('exist')
+    this.mapComponent.should('exist')
     this.sidebar.shouldExist()
   }
 

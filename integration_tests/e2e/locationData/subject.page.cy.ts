@@ -184,7 +184,7 @@ context('Location Data', () => {
     })
 
     it('should show the overlay when a location-point feature is clicked', () => {
-      page.map.viewport.should('have.attr', 'uses-internal-overlays')
+      page.map.mapComponent.should('have.attr', 'uses-internal-overlays')
 
       page.map.mapInstance.then(map => {
         const pointsLayer = map
