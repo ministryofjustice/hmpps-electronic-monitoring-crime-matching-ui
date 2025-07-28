@@ -11,7 +11,7 @@
   {{ mojMap({
     accessTokenUrl: '/map/token',
     cspNonce: params.cspNonce,
-    tileUrl: 'https://api.os.uk/maps/raster/v1/zxy/Road_3857/{z}/{x}/{y}',
+    tileUrl: params.tileUrl,
     geoData: {
       points: params.geoData.points,
       lines: params.geoData.lines
