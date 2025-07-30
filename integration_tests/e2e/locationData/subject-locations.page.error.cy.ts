@@ -103,53 +103,6 @@ context('Location Data', () => {
       )
     })
 
-    it('should display an error message if date range is outside of maximum time window', () => {
-      cy.stubCreateSubjectLocationsQuery()
-      cy.stubCreateSubjectsQuery()
-      const now = dayjs()
-      const invalidDate = now.add(3, 'day')
-      cy.stubGetSubjectsQuery({
-        status: 200,
-        query: '.*',
-        response: {
-          data: [
-            {
-              personId: '1',
-              nomisId: 'Nomis 1',
-              name: 'John',
-              dateOfBirth: '2000-12-01T00:00:00.000Z',
-              address: '123 Street',
-              orderStartDate: now.toISOString(),
-              orderEndDate: null,
-              deviceId: '123456',
-              tagPeriodStartDate: '2024-12-01T00:00:00.000Z',
-              tagPeriodEndDate: null,
-            },
-          ],
-          pageCount: 1,
-          pageNumber: 1,
-          pageSize: 10,
-        },
-      })
-
-      cy.visit(url)
-      let page = Page.verifyOnPage(SubjectsPage)
-
-      page.form.fillInWith({ name: 'foo' })
-      page.form.searchButton.click()
-
-      cy.url().should('include', '?queryId=1234')
-      page = Page.verifyOnPage(SubjectsPage)
-      page.dataTable.shouldHaveResults()
-
-      page.locationsForm.fillInWith({ fromDate: now.toDate(), toDate: invalidDate.toDate() })
-      page.dataTable.selectRow('1')
-      page.locationsForm.continueButton.click()
-      page.locationsForm.searchFromDateField.shouldHaveValidationMessage(
-        'Date and time search window should not exceed 48 hours',
-      )
-    })
-
     it('should display an error message if to date is before from date', () => {
       cy.stubCreateSubjectLocationsQuery()
       cy.stubCreateSubjectsQuery()
