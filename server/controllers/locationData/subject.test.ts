@@ -179,6 +179,54 @@ describe('SubjectController', () => {
       ])
     })
 
+    it('should redirect to a view containing a validation error message if dates exceed maximum window', async () => {
+      // Given
+      const fromDateInput = {
+        date: '1/2/2025',
+        hour: '1',
+        minute: '1',
+        second: '1',
+      }
+
+      const toDateInput = {
+        date: '4/2/2025',
+        hour: '1',
+        minute: '1',
+        second: '1',
+      }
+
+      const req = createMockRequest({
+        body: {
+          personId: '1',
+          fromDate: fromDateInput,
+          toDate: toDateInput,
+          orderStartDate: '2025-01-01T02:00:00.000Z',
+          orderEndDate: null,
+        },
+      })
+      const res = createMockResponse()
+      const next = jest.fn()
+      const service = new SubjectService(mockRestClient)
+      const controller = new SubjectController(service)
+
+      mockRestClient.post.mockResolvedValue({
+        queryExecutionId: '1234',
+      })
+
+      // When
+      await controller.search(req, res, next)
+
+      // Then
+      expect(mockRestClient.post).not.toHaveBeenCalled()
+      expect(res.redirect).toHaveBeenCalledWith('/location-data/subjects')
+      expect(req.session.validationErrors).toEqual([
+        {
+          field: 'fromDate',
+          message: 'Date and time search window should not exceed 48 hours',
+        },
+      ])
+    })
+
     it('should redirect to a view containing a validation error message if input dates are outside of order date range', async () => {
       // Given
       const fromDateInput = {

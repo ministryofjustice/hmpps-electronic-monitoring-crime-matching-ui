@@ -5,6 +5,8 @@ import DateTimeInputModel from '../formInput/dateTime'
 const VALID_PERSON = 'You must select a valid person ID'
 const TO_AFTER_FROM = 'To date must be after From date'
 const DATE_BETWEEN_ORDER = 'Date and time search window should be within Order date range'
+const DATE_RANGE = 'Date and time search window should not exceed 48 hours'
+const maxDateRange = 48 * 60 * 60 * 1000
 
 const subjectQueryParametersSchema = z.object({
   from: z.string().optional(),
@@ -28,6 +30,16 @@ const subjectLocationsFormDataSchema = z
         code: 'custom',
         input: ctx.value,
         message: TO_AFTER_FROM,
+        path: ['fromDate'],
+      })
+      return
+    }
+
+    if (toDateTime.valueOf() - fromDateTime.valueOf() > maxDateRange) {
+      ctx.issues.push({
+        code: 'custom',
+        input: ctx.value,
+        message: DATE_RANGE,
         path: ['fromDate'],
       })
       return
