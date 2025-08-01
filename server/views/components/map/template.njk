@@ -17,39 +17,9 @@
       lines: params.geoData.lines
     },
     usesInternalOverlays: params.usesInternalOverlays,
-    templateId: 'map-overlay-template'
+    templateId: params.templateId
   }) }}
 
-  {% if params.usesInternalOverlays %}
-    {# The {{ }} placeholders are not processed by Nunjucks.
-        They are used as markers and replaced within assets/js files at runtime.
-        Implemented this way to avoid large Template Literals in the JavaScript file. #}
-    {% raw %}
-    <template id="map-overlay-template">
-      <div part="app-map__overlay-row">
-        <strong part="app-map__overlay-strong">Speed: </strong><span>{{ displaySpeed }}</span>
-      </div>
-      <div part="app-map__overlay-row">
-        <strong part="app-map__overlay-strong">Direction: </strong><span>{{ displayDirection }}</span>
-      </div>
-      <div part="app-map__overlay-row">
-        <strong part="app-map__overlay-strong">Geolocation Mechanism: </strong><span>{{ displayGeolocationMechanism }}</span>
-      </div>
-      <div part="app-map__overlay-row">
-        <strong part="app-map__overlay-strong">Recorded Date: </strong><span>{{ displayTimestamp }}</span>
-      </div>
-      <div part="app-map__overlay-row">
-        <strong part="app-map__overlay-strong">Confidence: </strong><span>{{ displayConfidence }}</span>
-      </div>
-      <div part="app-map__overlay-row">
-        <strong part="app-map__overlay-strong">Latitude: </strong><span>{{ displayLatitude }}</span>
-      </div>
-      <div part="app-map__overlay-row">
-        <strong part="app-map__overlay-strong">Longitude: </strong><span>{{ displayLongitude }}</span>
-      </div>
-    </template>
-    {% endraw %}
-  {% endif %}
   <div class="app-map__sidebar">
     {% if params.sidebarHtml %}
       {{ params.sidebarHtml | safe | trim | indent(2) }}
