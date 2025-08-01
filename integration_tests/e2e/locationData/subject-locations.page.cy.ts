@@ -50,7 +50,7 @@ context('Location Data', () => {
       page.dataTable.shouldHaveResults()
 
       page.locationsForm.continueButton.should('be.disabled')
-      const now = dayjs()
+      const now = dayjs('2025-08-01T09:00:00Z')
       const toDate = now.add(1, 'day')
       page.locationsForm.fillInWith({ fromDate: now.toDate(), toDate: toDate.toDate() })
       page.dataTable.selectRow('1')

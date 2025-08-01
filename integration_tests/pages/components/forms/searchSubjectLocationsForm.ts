@@ -59,14 +59,14 @@ export default class SearchSubjectLocationsFormComponent extends FormComponent {
   fillInWith = (data: SearchSubjectLocationsFormData): undefined => {
     if (data.fromDate) {
       this.searchFromDateField.set(
-        `${data.fromDate.getDate()}/${data.fromDate.getMonth()}/${data.fromDate.getFullYear()}`,
+        `${data.fromDate.getDate()}/${data.fromDate.getMonth() + 1}/${data.fromDate.getFullYear()}`,
       )
       this.searchFromHourField.set(data.fromDate.getHours())
       this.searchFromMinuteField.set(data.fromDate.getMinutes())
       this.searchFromSecondField.set(data.fromDate.getSeconds())
     }
     if (data.toDate) {
-      this.searchToDateField.set(`${data.toDate.getDate()}/${data.toDate.getMonth()}/${data.toDate.getFullYear()}`)
+      this.searchToDateField.set(`${data.toDate.getDate()}/${data.toDate.getMonth() + 1}/${data.toDate.getFullYear()}`)
       this.searchToHourField.set(data.toDate.getHours())
       this.searchToMinuteField.set(data.toDate.getMinutes())
       this.searchToSecondField.set(data.toDate.getSeconds())
