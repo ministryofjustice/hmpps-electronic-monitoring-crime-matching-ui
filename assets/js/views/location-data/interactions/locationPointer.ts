@@ -22,7 +22,7 @@ class LocationPointerInteraction extends PointerInteraction {
     return map
       .getFeaturesAtPixel(pixel)
       .filter(isPointFeature)
-      .find(feature => feature.get('type') === 'location-point')
+      .find(feature => feature.get('type') === 'pop-location')
   }
 
   handleMoveEvent(event: MapBrowserEvent) {

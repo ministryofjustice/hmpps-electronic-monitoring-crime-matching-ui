@@ -183,7 +183,7 @@ context('Location Data', () => {
       })
     })
 
-    it('should show the overlay when a location-point feature is clicked', () => {
+    it('should show the overlay when a pop-location feature is clicked', () => {
       page.map.mapComponent.should('have.attr', 'uses-internal-overlays')
 
       page.map.mapInstance.then(map => {
@@ -193,7 +193,7 @@ context('Location Data', () => {
           .find((l: BaseLayer) => l.get('title') === 'pointsLayer') as VectorLayer
 
         const feature = pointsLayer.getSource().getFeatures()[0]
-        expect(feature.get('type')).to.equal('location-point')
+        expect(feature.get('type')).to.equal('pop-location')
 
         const coordinate = feature.getGeometry().getCoordinates()
 

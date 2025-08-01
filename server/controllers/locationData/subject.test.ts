@@ -408,7 +408,8 @@ describe('SubjectController', () => {
               timestamp: '2025-01-01T00:00:00Z',
               confidence: 10,
               point: { latitude: 123.123, longitude: 123.123 },
-              type: 'location-point',
+              type: 'pop-location',
+              overlayTemplateId: 'overlay-template-pop-location',
               sequenceNumber: 1,
 
               displaySpeed: '5 km/h',
@@ -435,7 +436,8 @@ describe('SubjectController', () => {
               timestamp: '2025-01-01T00:01:00Z',
               confidence: 20,
               point: { latitude: 456.123, longitude: 456.123 },
-              type: 'location-point',
+              type: 'pop-location',
+              overlayTemplateId: 'overlay-template-pop-location',
               sequenceNumber: 2,
 
               displaySpeed: '7 km/h',

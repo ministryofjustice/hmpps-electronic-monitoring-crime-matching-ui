@@ -27,6 +27,7 @@ export type PointFeature = {
     confidence: number
     point: Point
     type: string
+    overlayTemplateId?: string
     sequenceNumber: number
 
     displaySpeed?: string

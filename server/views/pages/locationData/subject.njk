@@ -198,8 +198,7 @@
       tileUrl: tileUrl,
       alerts: alerts,
       usesInternalOverlays: true,
-      sidebarHtml: sidebarHtml,
-      templateId: "subject-overlay-template"
+      sidebarHtml: sidebarHtml
     })
   }}
 
@@ -207,7 +206,7 @@
       They are used as markers and replaced within assets/js files at runtime.
       Implemented this way to avoid large Template Literals in the JavaScript file. #}
   {% raw %}
-  <template id="subject-overlay-template">
+  <template id="overlay-template-pop-location">
     <div part="app-map__overlay-row">
       <strong part="app-map__overlay-strong">Speed: </strong><span>{{ displaySpeed }}</span>
     </div>

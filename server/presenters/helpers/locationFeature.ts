@@ -15,7 +15,8 @@ export default function presentLocationFeature(location: Location, index: number
       timestamp: location.timestamp,
       confidence: location.confidenceCircle,
       point: location.point,
-      type: 'location-point',
+      type: 'pop-location',
+      overlayTemplateId: 'overlay-template-pop-location',
       sequenceNumber: location.sequenceNumber,
 
       // Display values used by the overlay template
