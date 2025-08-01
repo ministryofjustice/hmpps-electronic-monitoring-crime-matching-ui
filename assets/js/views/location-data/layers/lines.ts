@@ -17,7 +17,7 @@ const createLinesSource = (lines: string) => {
   const features = formatter.readFeatures(
     {
       type: 'FeatureCollection',
-      features: JSON.parse(lines),
+      features: lines,
     },
     {
       dataProjection: 'EPSG:4326',

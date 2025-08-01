@@ -2,7 +2,7 @@ import { Map } from 'ol'
 
 declare global {
   interface Element {
-    olMapForCypress?: Map
+    map?: Map
   }
 
   interface Window {

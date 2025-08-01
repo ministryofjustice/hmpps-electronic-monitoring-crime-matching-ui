@@ -5,7 +5,7 @@ import { PageElement } from '../page'
 import MapSidebarComponent from './mapSidebarComponent'
 
 interface TestMapElement extends HTMLElement {
-  olMapForCypress?: Map
+  map?: Map
 }
 
 export default class MapComponent {
@@ -25,17 +25,17 @@ export default class MapComponent {
     return new MapSidebarComponent(this.element)
   }
 
-  get viewport(): PageElement {
-    return this.element.get('.app-map__viewport')
+  get mapComponent(): PageElement {
+    return this.element.get('moj-map')
   }
 
   get mapInstance(): Cypress.Chainable<Map> {
-    return cy.get('.app-map').then($el => {
+    return cy.get('moj-map').then($el => {
       const el = $el[0] as TestMapElement
 
       return new Cypress.Promise<Map>(resolve => {
-        if (el.olMapForCypress) {
-          resolve(el.olMapForCypress)
+        if (el.map) {
+          resolve(el.map)
           return
         }
 
@@ -53,7 +53,7 @@ export default class MapComponent {
 
   shouldExist(): void {
     this.element.should('exist')
-    this.viewport.should('exist')
+    this.mapComponent.should('exist')
     this.sidebar.shouldExist()
   }
 
@@ -66,11 +66,11 @@ export default class MapComponent {
   }
 
   shouldShowOverlay(): void {
-    cy.get('.ol-overlay-container').should('be.visible')
+    cy.get('moj-map').shadow().find('.ol-overlay-container').should('be.visible')
   }
 
   shouldNotShowOverlay(): void {
-    cy.get('.ol-overlay-container').should('not.be.visible')
+    cy.get('moj-map').shadow().find('.ol-overlay-container').should('not.be.visible')
   }
 
   shouldHaveMapLayer(layer: BaseLayer | undefined, name: string): void {

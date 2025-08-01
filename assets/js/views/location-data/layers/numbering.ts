@@ -23,7 +23,7 @@ const createNumberingSource = (points: string) => {
   const features = formatter.readFeatures(
     {
       type: 'FeatureCollection',
-      features: JSON.parse(points),
+      features: points,
     },
     {
       dataProjection: 'EPSG:4326',
