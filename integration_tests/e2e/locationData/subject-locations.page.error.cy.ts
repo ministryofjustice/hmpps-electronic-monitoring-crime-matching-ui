@@ -59,7 +59,7 @@ context('Location Data', () => {
     it('should display an error message if date range is outside order date range', () => {
       cy.stubCreateSubjectLocationsQuery()
       cy.stubCreateSubjectsQuery()
-      const now = dayjs()
+      const now = dayjs('2025-08-01T09:00:00Z')
       const invalidDate = now.subtract(1, 'day')
       cy.stubGetSubjectsQuery({
         status: 200,
@@ -106,7 +106,7 @@ context('Location Data', () => {
     it('should display an error message if date range is outside of maximum time window', () => {
       cy.stubCreateSubjectLocationsQuery()
       cy.stubCreateSubjectsQuery()
-      const now = dayjs()
+      const now = dayjs('2025-08-01T09:00:00Z')
       const invalidDate = now.add(3, 'day')
       cy.stubGetSubjectsQuery({
         status: 200,
@@ -153,7 +153,7 @@ context('Location Data', () => {
     it('should display an error message if to date is before from date', () => {
       cy.stubCreateSubjectLocationsQuery()
       cy.stubCreateSubjectsQuery()
-      const now = dayjs()
+      const now = dayjs('2025-08-01T09:00:00Z')
       const invalidDate = now.subtract(1, 'day')
       cy.stubGetSubjectsQuery({
         status: 200,
