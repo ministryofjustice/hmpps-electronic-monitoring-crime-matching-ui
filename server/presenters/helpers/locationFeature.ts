@@ -16,10 +16,10 @@ export default function presentLocationFeature(location: Location, index: number
       confidence: location.confidenceCircle,
       point: location.point,
       type: 'pop-location',
-      overlayTemplateId: 'overlay-template-pop-location',
       sequenceNumber: location.sequenceNumber,
 
       // Display values used by the overlay template
+      overlayTemplateId: 'overlay-template-pop-location',
       displaySpeed: formatDisplayValue(location.speed, ' km/h', 'N/A'),
       displayDirection: formatDisplayValue(convertRadiansToDegrees(location.direction), '°', 'N/A'),
       displayGeolocationMechanism: formatDisplayValue(location.geolocationMechanism, '', 'N/A'),
