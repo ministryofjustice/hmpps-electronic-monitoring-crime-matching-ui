@@ -14,8 +14,7 @@ context('Location Data', () => {
 
     it('should display the location results on map if the search query is valid', () => {
       cy.stubCreateSubjectLocationsQuery()
-      cy.stubCreateSubjectsQuery()
-      cy.stubGetSubjectsQuery({
+      cy.stubGetPersons({
         status: 200,
         query: '.*',
         response: {
@@ -26,11 +25,15 @@ context('Location Data', () => {
               name: 'John',
               dateOfBirth: '2000-12-01T00:00:00.000Z',
               address: '123 Street',
-              orderStartDate: '2024-12-01T00:00:00.000Z',
-              orderEndDate: null,
-              deviceId: '123456',
-              tagPeriodStartDate: '2024-12-01T00:00:00.000Z',
-              tagPeriodEndDate: null,
+              deviceActivations: [
+                {
+                  deviceActivationId: 123456,
+                  deviceId: 123456,
+                  personId: 123456,
+                  deviceActivationDate: '2024-12-01T00:00:00.000Z',
+                  deviceDeactivationDate: null,
+                },
+              ],
             },
           ],
           pageCount: 1,
@@ -45,7 +48,7 @@ context('Location Data', () => {
       page.form.fillInWith({ name: 'foo' })
       page.form.searchButton.click()
 
-      cy.url().should('include', '?queryId=1234')
+      cy.url().should('include', '?name=foo&nomisId=')
       page = Page.verifyOnPage(SubjectsPage)
       page.dataTable.shouldHaveResults()
 

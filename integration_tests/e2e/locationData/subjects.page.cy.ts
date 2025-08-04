@@ -32,6 +32,8 @@ context('Location Data', () => {
       page = Page.verifyOnPage(SubjectsPage)
       page.dataTable.shouldNotHaveResults()
       page.dataTable.shouldNotHavePagination()
+      page.form.searchNameField.shouldHaveValue('')
+      page.form.searchNomisIdField.shouldHaveValue('foo')
     })
 
     it('should display the query results if the query returned results', () => {
@@ -104,6 +106,8 @@ context('Location Data', () => {
         ['', 'Nomis 2', 'Lee', '01/12/2000 00:00', '456 Avenue', '654321', '01/12/2024 00:00', '01/12/2024 00:00'],
       ])
       page.dataTable.shouldNotHavePagination()
+      page.form.searchNameField.shouldHaveValue('foo')
+      page.form.searchNomisIdField.shouldHaveValue('')
     })
 
     it('should display the second page of results if the user clicks the next page button', () => {
