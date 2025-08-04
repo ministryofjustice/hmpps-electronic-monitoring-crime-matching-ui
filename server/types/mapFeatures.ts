@@ -20,12 +20,7 @@ export type PointFeature = {
   id: string
   properties: {
     '@id': string
-    speed?: number
-    direction?: number
-    geolocationMechanism?: number
-    timestamp?: string
     confidence: number
-    point: Point
     type: string
     sequenceNumber: number
 

@@ -8,13 +8,7 @@ export default function presentLocationFeature(location: Location, index: number
     id: index.toString(),
     properties: {
       '@id': index.toString(),
-
-      speed: location.speed,
-      direction: location.direction,
-      geolocationMechanism: location.geolocationMechanism,
-      timestamp: location.timestamp,
       confidence: location.confidenceCircle,
-      point: location.point,
       type: 'pop-location',
       sequenceNumber: location.sequenceNumber,
 
