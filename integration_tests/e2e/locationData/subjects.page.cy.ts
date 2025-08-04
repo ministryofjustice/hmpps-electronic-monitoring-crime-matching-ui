@@ -20,8 +20,7 @@ context('Location Data', () => {
     })
 
     it('should display the no result message if the query returns no results', () => {
-      cy.stubCreateSubjectsQuery()
-      cy.stubGetSubjectsQuery()
+      cy.stubGetPersons()
 
       cy.visit(url)
       let page = Page.verifyOnPage(SubjectsPage)
@@ -29,15 +28,14 @@ context('Location Data', () => {
       page.form.fillInWith({ nomisId: 'foo' })
       page.form.searchButton.click()
 
-      cy.url().should('include', '?queryId=1234')
+      cy.url().should('include', '?name=&nomisId=foo')
       page = Page.verifyOnPage(SubjectsPage)
       page.dataTable.shouldNotHaveResults()
       page.dataTable.shouldNotHavePagination()
     })
 
     it('should display the query results if the query returned results', () => {
-      cy.stubCreateSubjectsQuery()
-      cy.stubGetSubjectsQuery({
+      cy.stubGetPersons({
         status: 200,
         query: '.*',
         response: {
@@ -48,11 +46,15 @@ context('Location Data', () => {
               name: 'John',
               dateOfBirth: '2000-12-01T00:00:00.000Z',
               address: '123 Street',
-              orderStartDate: '2024-12-01T00:00:00.000Z',
-              orderEndDate: null,
-              deviceId: '123456',
-              tagPeriodStartDate: '2024-12-01T00:00:00.000Z',
-              tagPeriodEndDate: null,
+              deviceActivations: [
+                {
+                  deviceActivationId: 123456,
+                  deviceId: 123456,
+                  personId: 123456,
+                  deviceActivationDate: '2024-12-01T00:00:00.000Z',
+                  deviceDeactivationDate: null,
+                },
+              ],
             },
             {
               personId: '2',
@@ -60,11 +62,15 @@ context('Location Data', () => {
               name: 'Lee',
               dateOfBirth: '2000-12-01T00:00:00.000Z',
               address: '456 Avenue',
-              orderStartDate: '2024-12-01T00:00:00.000Z',
-              orderEndDate: '2024-12-01T00:00:00.000Z',
-              deviceId: '654321',
-              tagPeriodStartDate: '2024-12-01T00:00:00.000Z',
-              tagPeriodEndDate: '2024-12-01T00:00:00.000Z',
+              deviceActivations: [
+                {
+                  deviceActivationId: 123456,
+                  deviceId: 654321,
+                  personId: 123456,
+                  deviceActivationDate: '2024-12-01T00:00:00.000Z',
+                  deviceDeactivationDate: '2024-12-01T00:00:00.000Z',
+                },
+              ],
             },
           ],
           pageCount: 1,
@@ -79,7 +85,7 @@ context('Location Data', () => {
       page.form.fillInWith({ name: 'foo' })
       page.form.searchButton.click()
 
-      cy.url().should('include', '?queryId=1234')
+      cy.url().should('include', '?name=foo&nomisId=')
       page = Page.verifyOnPage(SubjectsPage)
       page.dataTable.shouldHaveResults()
       page.dataTable.shouldHaveColumns([
@@ -88,49 +94,23 @@ context('Location Data', () => {
         'Name',
         'Date of Birth',
         'Address',
-        'Order Start',
-        'Order End',
         'Device ID',
         'Tag Period Start',
         'Tag Period End',
       ])
 
       page.dataTable.shouldHaveRows([
-        [
-          '',
-          'Nomis 1',
-          'John',
-          '01/12/2000 00:00',
-          '123 Street',
-          '01/12/2024 00:00',
-          '',
-          '123456',
-          '01/12/2024 00:00',
-          '',
-        ],
-        [
-          '',
-          'Nomis 2',
-          'Lee',
-          '01/12/2000 00:00',
-          '456 Avenue',
-          '01/12/2024 00:00',
-          '01/12/2024 00:00',
-          '654321',
-          '01/12/2024 00:00',
-          '01/12/2024 00:00',
-        ],
+        ['', 'Nomis 1', 'John', '01/12/2000 00:00', '123 Street', '123456', '01/12/2024 00:00', ''],
+        ['', 'Nomis 2', 'Lee', '01/12/2000 00:00', '456 Avenue', '654321', '01/12/2024 00:00', '01/12/2024 00:00'],
       ])
       page.dataTable.shouldNotHavePagination()
     })
 
     it('should display the second page of results if the user clicks the next page button', () => {
-      // Stub the api to simulate a query being successfully created
-      cy.stubCreateSubjectsQuery()
       // Stub the api to simulate the query returning the first page results
-      cy.stubGetSubjectsQuery({
+      cy.stubGetPersons({
         status: 200,
-        query: '\\?id=1234',
+        query: '\\?name=foo&nomisId=&include_device_activations=true&page=1',
         response: {
           data: [
             {
@@ -139,11 +119,15 @@ context('Location Data', () => {
               name: 'John',
               dateOfBirth: '2000-12-01T00:00:00.000Z',
               address: '123 Street',
-              orderStartDate: '2024-12-01T00:00:00.000Z',
-              orderEndDate: null,
-              deviceId: '123456',
-              tagPeriodStartDate: '2024-12-01T00:00:00.000Z',
-              tagPeriodEndDate: null,
+              deviceActivations: [
+                {
+                  deviceActivationId: 123456,
+                  deviceId: 123456,
+                  personId: 123456,
+                  deviceActivationDate: '2024-12-01T00:00:00.000Z',
+                  deviceDeactivationDate: null,
+                },
+              ],
             },
           ],
           pageCount: 2,
@@ -152,9 +136,9 @@ context('Location Data', () => {
         },
       })
       // Stub the api to simulate the query returning the second page results
-      cy.stubGetSubjectsQuery({
+      cy.stubGetPersons({
         status: 200,
-        query: '\\?id=1234&page=2',
+        query: '\\?name=foo&nomisId=&include_device_activations=true&page=2',
         response: {
           data: [
             {
@@ -163,11 +147,15 @@ context('Location Data', () => {
               name: 'Lee',
               dateOfBirth: '2000-12-01T00:00:00.000Z',
               address: '456 Avenue',
-              orderStartDate: '2024-12-01T00:00:00.000Z',
-              orderEndDate: '2024-12-01T00:00:00.000Z',
-              deviceId: '654321',
-              tagPeriodStartDate: '2024-12-01T00:00:00.000Z',
-              tagPeriodEndDate: '2024-12-01T00:00:00.000Z',
+              deviceActivations: [
+                {
+                  deviceActivationId: 123456,
+                  deviceId: 654321,
+                  personId: 123456,
+                  deviceActivationDate: '2024-12-01T00:00:00.000Z',
+                  deviceDeactivationDate: '2024-12-01T00:00:00.000Z',
+                },
+              ],
             },
           ],
           pageCount: 2,
@@ -184,7 +172,7 @@ context('Location Data', () => {
       page.form.searchButton.click()
 
       // User should be shown the results
-      cy.url().should('include', '?queryId=1234')
+      cy.url().should('include', '?name=foo&nomisId=')
       page = Page.verifyOnPage(SubjectsPage)
       page.dataTable.shouldHaveResults()
       page.dataTable.shouldHaveColumns([
@@ -193,25 +181,12 @@ context('Location Data', () => {
         'Name',
         'Date of Birth',
         'Address',
-        'Order Start',
-        'Order End',
         'Device ID',
         'Tag Period Start',
         'Tag Period End',
       ])
       page.dataTable.shouldHaveRows([
-        [
-          '',
-          'Nomis 1',
-          'John',
-          '01/12/2000 00:00',
-          '123 Street',
-          '01/12/2024 00:00',
-          '',
-          '123456',
-          '01/12/2024 00:00',
-          '',
-        ],
+        ['', 'Nomis 1', 'John', '01/12/2000 00:00', '123 Street', '123456', '01/12/2024 00:00', ''],
       ])
       page.dataTable.shouldHavePagination()
       page.dataTable.pagination.shouldHaveCurrentPage('1')
@@ -222,22 +197,11 @@ context('Location Data', () => {
       page.dataTable.pagination.next.click()
 
       // User should be shown the second page of results
-      cy.url().should('include', '?queryId=1234&page=2')
+      cy.url().should('include', '?name=foo&nomisId=&page=2')
       page = Page.verifyOnPage(SubjectsPage)
       page.dataTable.shouldHaveResults()
       page.dataTable.shouldHaveRows([
-        [
-          '',
-          'Nomis 2',
-          'Lee',
-          '01/12/2000 00:00',
-          '456 Avenue',
-          '01/12/2024 00:00',
-          '01/12/2024 00:00',
-          '654321',
-          '01/12/2024 00:00',
-          '01/12/2024 00:00',
-        ],
+        ['', 'Nomis 2', 'Lee', '01/12/2000 00:00', '456 Avenue', '654321', '01/12/2024 00:00', '01/12/2024 00:00'],
       ])
       page.dataTable.shouldHavePagination()
       page.dataTable.pagination.shouldHaveCurrentPage('2')
