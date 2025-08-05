@@ -4,11 +4,12 @@ import { paginatedDtoSchema } from '../pagination'
 const MISSING_FORM_VALUE_ERROR = 'You must enter a value for either Name or NOMIS ID'
 
 const subjectsQueryParametersSchema = z.object({
-  queryId: z.string().optional(),
+  name: z.string().default(''),
+  nomisId: z.string().default(''),
   page: z
     .string()
     .regex(/^\d{1,2}$/)
-    .optional(),
+    .default('1'),
 })
 
 const subjectsFormDataSchema = z

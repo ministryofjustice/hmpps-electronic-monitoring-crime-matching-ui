@@ -32,12 +32,8 @@ Cypress.Commands.add('stubGetCrimeBatchesQuery', options => {
   cy.task('stubGetCrimeBatchesQuery', options)
 })
 
-Cypress.Commands.add('stubCreateSubjectsQuery', options => {
-  cy.task('stubCreateSubjectsQuery', options)
-})
-
-Cypress.Commands.add('stubGetSubjectsQuery', options => {
-  cy.task('stubGetSubjectsQuery', options)
+Cypress.Commands.add('stubGetPersons', options => {
+  cy.task('stubGetPersons', options)
 })
 
 Cypress.Commands.add('stubCreateSubjectLocationsQuery', options => {

@@ -1,37 +1,34 @@
 import { RequestHandler } from 'express'
-import { subjectsQueryParametersSchema } from '../../schemas/locationData/subjects'
-import SubjectsService from '../../services/locationData/subjects'
+import { subjectsFormDataSchema, subjectsQueryParametersSchema } from '../../schemas/locationData/subjects'
+import PersonsService from '../../services/personsService'
+import { convertZodErrorToValidationError } from '../../utils/errors'
 
 export default class SubjectsController {
-  constructor(private readonly service: SubjectsService) {}
+  constructor(private readonly service: PersonsService) {}
 
   view: RequestHandler = async (req, res) => {
     const { query } = req
     const { token } = res.locals.user
     const parsedQuery = subjectsQueryParametersSchema.parse(query)
-    const queryResults = await this.service.getQuery(token, parsedQuery.queryId, parsedQuery.page)
+    const queryResults = await this.service.getPersons(token, parsedQuery.name, parsedQuery.nomisId, parsedQuery.page)
 
     res.render('pages/locationData/index', {
-      subjects: queryResults.data,
+      name: parsedQuery.name,
+      nomisId: parsedQuery.nomisId,
+      persons: queryResults.data,
       pageCount: queryResults.pageCount,
       pageNumber: queryResults.pageNumber,
-      queryId: parsedQuery.queryId,
     })
   }
 
   search: RequestHandler = async (req, res) => {
-    const { token } = res.locals.user
-    const formData = req.body
+    const formData = subjectsFormDataSchema.safeParse(req.body)
 
-    const result = await this.service.createQuery(token, formData)
-
-    req.session.formData = formData
-
-    if (result.ok) {
-      req.session.queryId = result.data.queryExecutionId
-      res.redirect(`/location-data/subjects?queryId=${encodeURIComponent(result.data.queryExecutionId)}`)
+    if (formData.success) {
+      const params = new URLSearchParams(formData.data)
+      res.redirect(`/location-data/subjects?${params.toString()}`)
     } else {
-      req.session.validationErrors = result.error
+      req.session.validationErrors = convertZodErrorToValidationError(formData.error)
       res.redirect('/location-data/subjects')
     }
   }
