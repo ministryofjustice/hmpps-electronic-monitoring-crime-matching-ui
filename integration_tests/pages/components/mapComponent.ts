@@ -4,10 +4,6 @@ import BaseLayer from 'ol/layer/Base'
 import { PageElement } from '../page'
 import MapSidebarComponent from './mapSidebarComponent'
 
-interface TestMapElement extends HTMLElement {
-  olMapForCypress?: Map
-}
-
 export default class MapComponent {
   private elementCacheId: string = uuidv4()
 
@@ -25,26 +21,30 @@ export default class MapComponent {
     return new MapSidebarComponent(this.element)
   }
 
-  get viewport(): PageElement {
-    return this.element.get('.app-map__viewport')
+  get mapComponent(): PageElement {
+    return this.element.get('moj-map')
   }
 
   get mapInstance(): Cypress.Chainable<Map> {
-    return cy.get('.app-map').then($el => {
-      const el = $el[0] as TestMapElement
+    return cy.get('moj-map').then($el => {
+      const el = $el[0] as HTMLElement & { map?: Map }
 
       return new Cypress.Promise<Map>(resolve => {
-        if (el.olMapForCypress) {
-          resolve(el.olMapForCypress)
-          return
+        const handler = () => {
+          if (el.map) {
+            resolve(el.map)
+          } else {
+            el.addEventListener(
+              'map:render:complete',
+              (e: CustomEvent<{ mapInstance: Map }>) => {
+                resolve(e.detail.mapInstance)
+              },
+              { once: true },
+            )
+          }
         }
 
-        const handler = (e: CustomEvent<{ mapInstance: Map }>) => {
-          el.removeEventListener('map:render:complete', handler)
-          resolve(e.detail.mapInstance)
-        }
-
-        el.addEventListener('map:render:complete', handler)
+        el.addEventListener('app:map:layers:ready', handler, { once: true })
       })
     })
   }
@@ -53,7 +53,7 @@ export default class MapComponent {
 
   shouldExist(): void {
     this.element.should('exist')
-    this.viewport.should('exist')
+    this.mapComponent.should('exist')
     this.sidebar.shouldExist()
   }
 
@@ -66,11 +66,11 @@ export default class MapComponent {
   }
 
   shouldShowOverlay(): void {
-    cy.get('.ol-overlay-container').should('be.visible')
+    cy.get('moj-map').shadow().find('.ol-overlay-container').should('be.visible')
   }
 
   shouldNotShowOverlay(): void {
-    cy.get('.ol-overlay-container').should('not.be.visible')
+    cy.get('moj-map').shadow().find('.ol-overlay-container').should('not.be.visible')
   }
 
   shouldHaveMapLayer(layer: BaseLayer | undefined, name: string): void {

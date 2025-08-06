@@ -104,8 +104,9 @@ export default {
     },
   },
   maps: {
-    authUrl: get('OS_MAPS_AUTH_URL', 'http://localhost:9090/maps', requiredInProduction),
-    tileUrl: get('OS_MAPS_TILE_URL', 'http://localhost:9090/maps', requiredInProduction),
+    authUrl: get('OS_MAPS_AUTH_URL', 'http://localhost:9091/map/token', requiredInProduction),
+    tileUrl: get('OS_MAPS_TILE_URL', 'http://localhost:9091/map-tiles/Road_3857/{z}/{x}/{y}', requiredInProduction),
+    vectorUrl: get('OS_MAPS_VECTOR_URL', 'http://localhost:9091/map-tiles', requiredInProduction),
     apiKey: get('OS_MAPS_API_KEY', 'apikey', requiredInProduction),
     apiSecret: get('OS_MAPS_API_SECRET', 'apisecret', requiredInProduction),
   },

@@ -44,9 +44,11 @@ export default class SubjectController {
     }
 
     res.render('pages/locationData/subject', {
-      points: JSON.stringify(geoJsonData.points),
-      lines: JSON.stringify(geoJsonData.lines),
+      points: geoJsonData.points,
+      lines: geoJsonData.lines,
+      apiKey: config.maps.apiKey,
       tileUrl: config.maps.tileUrl,
+      vectorUrl: config.maps.vectorUrl,
       alerts,
     })
   }
