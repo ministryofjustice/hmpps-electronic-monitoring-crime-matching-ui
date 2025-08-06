@@ -4,10 +4,6 @@ import BaseLayer from 'ol/layer/Base'
 import { PageElement } from '../page'
 import MapSidebarComponent from './mapSidebarComponent'
 
-interface TestMapElement extends HTMLElement {
-  map?: Map
-}
-
 export default class MapComponent {
   private elementCacheId: string = uuidv4()
 

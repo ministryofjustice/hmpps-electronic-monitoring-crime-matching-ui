@@ -1,5 +1,3 @@
-import { Point } from './location'
-
 export type Coordinate = [number, number]
 
 export type LineFeature = {
