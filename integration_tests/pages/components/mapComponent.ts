@@ -31,20 +31,24 @@ export default class MapComponent {
 
   get mapInstance(): Cypress.Chainable<Map> {
     return cy.get('moj-map').then($el => {
-      const el = $el[0] as TestMapElement
+      const el = $el[0] as HTMLElement & { map?: Map }
 
       return new Cypress.Promise<Map>(resolve => {
-        if (el.map) {
-          resolve(el.map)
-          return
+        const handler = () => {
+          if (el.map) {
+            resolve(el.map)
+          } else {
+            el.addEventListener(
+              'map:render:complete',
+              (e: CustomEvent<{ mapInstance: Map }>) => {
+                resolve(e.detail.mapInstance)
+              },
+              { once: true },
+            )
+          }
         }
 
-        const handler = (e: CustomEvent<{ mapInstance: Map }>) => {
-          el.removeEventListener('map:render:complete', handler)
-          resolve(e.detail.mapInstance)
-        }
-
-        el.addEventListener('map:render:complete', handler)
+        el.addEventListener('app:map:layers:ready', handler, { once: true })
       })
     })
   }

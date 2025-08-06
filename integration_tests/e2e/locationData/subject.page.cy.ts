@@ -134,6 +134,8 @@ context('Location Data', () => {
       cy.task('reset')
       cy.task('stubSignIn')
       cy.signIn()
+      cy.stubMapVectorStyle()
+      cy.stubVectorTiles()
       cy.stubMapToken()
       cy.stubMapTiles()
       cy.stubGetSubject({ status: 200, personId, query: '', response: data })

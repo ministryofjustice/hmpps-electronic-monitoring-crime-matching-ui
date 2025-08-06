@@ -326,7 +326,9 @@ describe('SubjectController', () => {
         ],
         points: [],
         lines: [],
-        tileUrl: 'http://localhost:9090/maps',
+        apiKey: 'apikey',
+        tileUrl: 'http://localhost:9091/map-tiles/Road_3857/{z}/{x}/{y}',
+        vectorUrl: 'http://localhost:9091/map-tiles',
       })
     })
 
@@ -458,7 +460,9 @@ describe('SubjectController', () => {
             },
           },
         ],
-        tileUrl: 'http://localhost:9090/maps',
+        apiKey: 'apikey',
+        tileUrl: 'http://localhost:9091/map-tiles/Road_3857/{z}/{x}/{y}',
+        vectorUrl: 'http://localhost:9091/map-tiles',
       })
     })
   })

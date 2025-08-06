@@ -28,6 +28,14 @@ const initialiseLocationDataView = async () => {
   mojMap.map.addLayer(confidenceLayer)
   mojMap.map.addLayer(locationNumberingLayer)
 
+  mojMap.dispatchEvent(
+    new CustomEvent('app:map:layers:ready', {
+      bubbles: true,
+      composed: true,
+      detail: { message: 'All custom layers added' },
+    }),
+  )
+
   if (locationSource) {
     const extent = locationSource.getExtent()
 

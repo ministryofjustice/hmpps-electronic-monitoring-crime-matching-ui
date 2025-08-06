@@ -9,9 +9,10 @@
   </div>
 
   {{ mojMap({
-    accessTokenUrl: '/map/token',
-    cspNonce: params.cspNonce,
+    apiKey: params.apiKey,
     tileUrl: params.tileUrl,
+    vectorUrl: params.vectorUrl,
+    cspNonce: params.cspNonce,
     geoData: {
       points: params.geoData.points,
       lines: params.geoData.lines

@@ -44,21 +44,71 @@ const stubMapTiles = () =>
   stubFor({
     request: {
       method: 'GET',
-      urlPattern: '/map-tiles/.*',
+      urlPattern: '/map-tiles/Road_3857/.*',
     },
     response: {
       status: 200,
       headers: {
         'Content-Type': 'image/png',
       },
-      base64Body: '', // Placeholder for actual tile data
+      base64Body: '',
     },
   })
 
-export { stubMapToken, stubMapTiles, StubMapTokenOptions }
+const stubMapVectorStyle = () =>
+  stubFor({
+    request: {
+      method: 'GET',
+      urlPathPattern: '/maps/vector/v1/vts.*',
+    },
+    response: {
+      status: 200,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      jsonBody: {
+        version: 8,
+        name: 'Stub Vector Style',
+        sources: {
+          ordnance: {
+            type: 'vector',
+            url: 'http://localhost:9091/map-tiles/resources/tilejson.json',
+          },
+        },
+        layers: [
+          {
+            id: 'dummy-layer',
+            type: 'background',
+            paint: {
+              'background-color': '#ffffff',
+            },
+          },
+        ],
+      },
+    },
+  })
+
+const stubVectorTiles = () =>
+  stubFor({
+    request: {
+      method: 'GET',
+      urlPattern: '/map-tiles/.*\\.pbf',
+    },
+    response: {
+      status: 200,
+      headers: {
+        'Content-Type': 'application/x-protobuf',
+      },
+      base64Body: '',
+    },
+  })
+
+export { stubMapToken, stubMapTiles, stubMapVectorStyle, stubVectorTiles, StubMapTokenOptions }
 
 // Default export for task registration in cypress.config.ts
 export default {
   stubMapToken,
   stubMapTiles,
+  stubMapVectorStyle,
+  stubVectorTiles,
 }

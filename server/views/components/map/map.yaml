@@ -1,27 +1,36 @@
 params:
-  - name: tileUrl
+  - name: apiKey
     type: string
     required: true
-    description: Tile URL for loading the map tiles
+    description: The API key for the map service
+  - name: tileUrl
+    type: string
+    required: false
+    description: The URL for raster tiles
+  - name: vectorUrl
+    type: string
+    required: false
+    description: The URL for the vector tile service
   - name: cspNonce
     type: string
     required: false
-    description: A Content Security Policy nonce to include in inline scripts or styles
+    description: A Content Security Policy nonce to include in inline styles
   - name: geoData
     type: object
     required: false
-    description: GEO JSON data to load onto the map component
+    description: GeoJSON data to load onto the map component
     params:
-      - name: lines
-        type: JSON
-        required: false
-        description: Lines to display on the map
       - name: points
         type: JSON
         required: false
         description: Points to display on the map
+      - name: lines
+        type: JSON
+        required: false
+        description: Lines to display on the map
   - name: alerts
     type: array
+    required: false
     description: Alerts to display to the user
     params:
       - name: variant
@@ -36,11 +45,14 @@ params:
         type: string
         required: true
         description: The HTML to use in the alert. Any string can be used.
-  - name: showOverlay
+  - name: usesInternalOverlays
     type: boolean
     required: false
-    description: Whether to show a feature overlay when clicking on a map point
-
+    description: Whether to enable internal overlays triggered by feature clicks
+  - name: sidebarHtml
+    type: string
+    required: false
+    description: Optional HTML content to be rendered in the map sidebar
 examples:
   - name: default
     data:
