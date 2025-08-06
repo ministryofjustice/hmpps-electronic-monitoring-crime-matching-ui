@@ -12,7 +12,8 @@
     errorMessage: params.errors,
     hint: {
       text: "For example, 17/5/2024."
-    }
+    },
+    value: params.value.date
   })
 }}
 
@@ -27,7 +28,8 @@
           },
           classes: "govuk-date-input__input govuk-input--width-2",
           id: params.id + "-hour",
-          name: params.name + "[hour]"
+          name: params.name + "[hour]",
+          value: params.value.hour
         })
       }}
     </div>
@@ -43,7 +45,8 @@
           },
           classes: "govuk-date-input__input govuk-input--width-2",
           id: params.id + "-minute",
-          name: params.name + "[minute]"
+          name: params.name + "[minute]",
+          value: params.value.minute
         })
       }}
     </div>
@@ -59,7 +62,8 @@
           },
           classes: "govuk-date-input__input govuk-input--width-2",
           id: params.id + "-second",
-          name: params.name + "[second]"
+          name: params.name + "[second]",
+          value: params.value.second
         })
       }}
     </div>

@@ -13,47 +13,43 @@
 {% set totalPages = (subjects.length / pageSize) | round(0, 'ceil') %}
 {% set activeLinkId = "location-data" %}
 
-{% for subject in subjects %}
-  {%
-    set rows = (rows.push(
-      [
-        {
-          html: '<div class="govuk-radios__item govuk-radios--small">
-                  <input type="radio" class="govuk-radios__input" name="personId" id="select-' + subject.personId + '" value="' + subject.personId + '" data-start="' + subject.orderStartDate + '" data-end="' + subject.orderEndDate + '" autocomplete="off">
-                  <label class="govuk-label govuk-radios__label" for="' + subject.personId + '">
-                  </label>
-                </div>'
-        },
-        {
-          text: subject.nomisId
-        },
-        {
-          text: subject.name
-        },
-        {
-          text: subject.dateOfBirth | formatDate
-        },
-        {
-          text: subject.address
-        },
-        {
-          text: subject.orderStartDate | formatDate
-        },
-        {
-          text: subject.orderEndDate | formatDate
-        },
-        {
-          text: subject.deviceId
-        },
-        {
-          text: subject.tagPeriodStartDate | formatDate
-        },
-        {
-          text: subject.tagPeriodEndDate | formatDate
-        }
-      ]
-    ), rows)
-  %}
+{% for person in persons %}
+  {% for deviceActivation in person.deviceActivations %}
+    {%
+      set rows = (rows.push(
+        [
+          {
+            html: '<div class="govuk-radios__item govuk-radios--small">
+                    <input type="radio" class="govuk-radios__input" name="personId" id="select-' + person.personId + '" value="' + person.personId + '" data-start="' + deviceActivation.deviceActivationDate + '" data-end="' + deviceActivation.deviceDeactivationDate + '" autocomplete="off">
+                    <label class="govuk-label govuk-radios__label" for="' + person.personId + '">
+                    </label>
+                  </div>'
+          },
+          {
+            text: person.nomisId
+          },
+          {
+            text: person.name
+          },
+          {
+            text: person.dateOfBirth | formatDate
+          },
+          {
+            text: person.address
+          },
+          {
+            text: deviceActivation.deviceId
+          },
+          {
+            text: deviceActivation.deviceActivationDate | formatDate
+          },
+          {
+            text: deviceActivation.deviceDeactivationDate | formatDate
+          }
+        ]
+      ), rows)
+    %}
+  {% endfor %}
 {% endfor %}
 
 {% block content %}
@@ -71,7 +67,7 @@
             classes: "govuk-!-width-two-thirds",
             id: "name",
             name: "name",
-            value: name.value,
+            value: name,
             errorMessage: errors.name
           })
         }}
@@ -85,7 +81,8 @@
             classes: "govuk-!-width-two-thirds",
             id: "nomis-id",
             name: "nomisId",
-            value: nomisId.value
+            value: nomisId,
+            errorMessage: error.nomisId
           })
         }}
 
@@ -150,12 +147,6 @@
               text: "Address"
             },
             {
-              text: "Order Start"
-            },
-            {
-              text: "Order End"
-            },
-            {
               text: "Device ID"
             },
             {
@@ -169,7 +160,7 @@
           pagination: {
             pageCount: pageCount,
             currentPage: pageNumber,
-            hrefPrefix: '?queryId=' + queryId
+            hrefPrefix: '?name=' + name + "&nomisId=" + nomisId
           }
         })
       }}

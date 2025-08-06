@@ -1,11 +1,11 @@
 {
   "request": {
     "method": "GET",
-    "urlPattern": "/crime-matching/subjects-query\\?id=5678"
+    "urlPattern": "/crime-matching/persons\\?name=foo&nomisId=&include_device_activations=true&page=1"
   },
   "response": {
     "status": 200,
-    "bodyFileName": "crime-matching-api-get-subjects-query-no-results-page1-200.json",
+    "bodyFileName": "crime-matching-api-get-persons-name-foo-page1-200.json",
     "headers": {
       "Content-Type": "application/json;charset=UTF-8",
       "Server": "wiremock"

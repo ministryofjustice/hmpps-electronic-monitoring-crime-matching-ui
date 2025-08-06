@@ -1,0 +1,167 @@
+{
+  "data": [
+    {
+      "personId": "1",
+      "nomisId": "Nomis 1",
+      "name": "John",
+      "dateOfBirth": "2000-12-01T00:00:00.000Z",
+      "address": "123 Street",
+      "deviceActivations": [
+        {
+          "deviceActivationId": 123456,
+          "deviceId": 123456,
+          "personId": 1,
+          "deviceActivationDate": "2024-12-01T00:00:00.000Z",
+          "deviceDeactivationDate": null
+        }
+      ]
+    },
+    {
+      "personId": "2",
+      "nomisId": "Nomis 2",
+      "name": "John",
+      "dateOfBirth": "2000-12-01T00:00:00.000Z",
+      "address": "123 Street",
+      "deviceActivations": [
+        {
+          "deviceActivationId": 123456,
+          "deviceId": 123456,
+          "personId": 2,
+          "deviceActivationDate": "2024-12-01T00:00:00.000Z",
+          "deviceDeactivationDate": null
+        }
+      ]
+    },
+    {
+      "personId": "3",
+      "nomisId": "Nomis 3",
+      "name": "John",
+      "dateOfBirth": "2000-12-01T00:00:00.000Z",
+      "address": "123 Street",
+      "deviceActivations": [
+        {
+          "deviceActivationId": 123456,
+          "deviceId": 123456,
+          "personId": 3,
+          "deviceActivationDate": "2024-12-01T00:00:00.000Z",
+          "deviceDeactivationDate": null
+        }
+      ]
+    },
+    {
+      "personId": "4",
+      "nomisId": "Nomis 4",
+      "name": "John",
+      "dateOfBirth": "2000-12-01T00:00:00.000Z",
+      "address": "123 Street",
+      "deviceActivations": [
+        {
+          "deviceActivationId": 123456,
+          "deviceId": 123456,
+          "personId": 4,
+          "deviceActivationDate": "2024-12-01T00:00:00.000Z",
+          "deviceDeactivationDate": null
+        }
+      ]
+    },
+    {
+      "personId": "5",
+      "nomisId": "Nomis 5",
+      "name": "John",
+      "dateOfBirth": "2000-12-01T00:00:00.000Z",
+      "address": "123 Street",
+      "deviceActivations": [
+        {
+          "deviceActivationId": 123456,
+          "deviceId": 123456,
+          "personId": 5,
+          "deviceActivationDate": "2024-12-01T00:00:00.000Z",
+          "deviceDeactivationDate": null
+        }
+      ]
+    },
+    {
+      "personId": "6",
+      "nomisId": "Nomis 6",
+      "name": "John",
+      "dateOfBirth": "2000-12-01T00:00:00.000Z",
+      "address": "123 Street",
+      "deviceActivations": [
+        {
+          "deviceActivationId": 123456,
+          "deviceId": 123456,
+          "personId": 6,
+          "deviceActivationDate": "2024-12-01T00:00:00.000Z",
+          "deviceDeactivationDate": null
+        }
+      ]
+    },
+    {
+      "personId": "7",
+      "nomisId": "Nomis 7",
+      "name": "John",
+      "dateOfBirth": "2000-12-01T00:00:00.000Z",
+      "address": "123 Street",
+      "deviceActivations": [
+        {
+          "deviceActivationId": 123456,
+          "deviceId": 123456,
+          "personId": 7,
+          "deviceActivationDate": "2024-12-01T00:00:00.000Z",
+          "deviceDeactivationDate": null
+        }
+      ]
+    },
+    {
+      "personId": "8",
+      "nomisId": "Nomis 8",
+      "name": "John",
+      "dateOfBirth": "2000-12-01T00:00:00.000Z",
+      "address": "123 Street",
+      "deviceActivations": [
+        {
+          "deviceActivationId": 123456,
+          "deviceId": 123456,
+          "personId": 8,
+          "deviceActivationDate": "2024-12-01T00:00:00.000Z",
+          "deviceDeactivationDate": null
+        }
+      ]
+    },
+    {
+      "personId": "9",
+      "nomisId": "Nomis 9",
+      "name": "John",
+      "dateOfBirth": "2000-12-01T00:00:00.000Z",
+      "address": "123 Street",
+      "deviceActivations": [
+        {
+          "deviceActivationId": 123456,
+          "deviceId": 123456,
+          "personId": 9,
+          "deviceActivationDate": "2024-12-01T00:00:00.000Z",
+          "deviceDeactivationDate": null
+        }
+      ]
+    },
+    {
+      "personId": "10",
+      "nomisId": "Nomis 10",
+      "name": "John",
+      "dateOfBirth": "2000-12-01T00:00:00.000Z",
+      "address": "123 Street",
+      "deviceActivations": [
+        {
+          "deviceActivationId": 123456,
+          "deviceId": 123456,
+          "personId": 10,
+          "deviceActivationDate": "2024-12-01T00:00:00.000Z",
+          "deviceDeactivationDate": null
+        }
+      ]
+    }
+  ],
+  "pageCount": 2,
+  "pageNumber": 1,
+  "pageSize": 10
+}

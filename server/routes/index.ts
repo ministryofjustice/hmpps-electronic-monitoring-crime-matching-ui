@@ -17,7 +17,7 @@ export default function routes({
   crimeBatchesService,
   crimeMappingService,
   mapService,
-  subjectsService,
+  personsService,
   subjectService,
 }: Services): Router {
   const router = Router()
@@ -35,7 +35,7 @@ export default function routes({
   const helpController = new HelpController()
   const legalController = new LegalController()
   const mapController = new MapController(mapService)
-  const subjectsController = new SubjectsController(subjectsService)
+  const subjectsController = new SubjectsController(personsService)
   const subjectController = new SubjectController(subjectService)
 
   router.use(populateSessionData)
