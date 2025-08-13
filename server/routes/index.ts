@@ -10,12 +10,14 @@ import LegalController from '../controllers/legal'
 import HelpController from '../controllers/help'
 import SubjectsController from '../controllers/locationData/subjects'
 import populateSessionData from '../middleware/populateSessionData'
+import populateDeviceActivation from '../middleware/populateDeviceActivation'
 import SubjectController from '../controllers/locationData/subject'
 
 export default function routes({
   auditService,
   crimeBatchesService,
   crimeMappingService,
+  deviceActivationsService,
   mapService,
   personsService,
   subjectService,
@@ -39,6 +41,7 @@ export default function routes({
   const subjectController = new SubjectController(subjectService)
 
   router.use(populateSessionData)
+  router.param('deviceActivationId', populateDeviceActivation(deviceActivationsService))
 
   get('/crime-mapping', crimeMappingController.view)
 
@@ -52,7 +55,7 @@ export default function routes({
   get('/location-data/subjects', subjectsController.view)
   post('/location-data/subjects', subjectsController.search)
 
-  get('/location-data/:personId', subjectController.view)
+  get('/location-data/:personId/device-activations/:deviceActivationId', subjectController.view)
   post('/location-data/subject', subjectController.search)
 
   return router
