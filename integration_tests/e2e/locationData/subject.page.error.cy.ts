@@ -6,6 +6,12 @@ const url = `/location-data/device-activations/${deviceActivationId}`
 
 context('Location Data', () => {
   context('Viewing a device activation - Error States', () => {
+    beforeEach(() => {
+      cy.task('reset')
+      cy.task('stubSignIn')
+      cy.signIn()
+    })
+    
     it('should display validation errors if no dates in url', () => {
       cy.stubGetDeviceActivation()
       cy.visit(url)
