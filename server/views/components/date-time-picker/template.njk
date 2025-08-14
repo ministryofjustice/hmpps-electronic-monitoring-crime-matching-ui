@@ -1,71 +1,73 @@
 {% from "moj/components/date-picker/macro.njk" import mojDatePicker %}
 {% from "govuk/components/input/macro.njk" import govukInput %}
 
-{{
-  mojDatePicker({
-    id: params.id,
-    name: params.name + "[date]",
-    label: {
-      text: params.text,
-      classes: "govuk-label--s"
-    },
-    errorMessage: params.errors,
-    hint: {
-      text: "For example, 17/5/2024."
-    },
-    value: params.value.date
-  })
-}}
+<div id="{{ params.id }}">
+  {{
+    mojDatePicker({
+      id: params.id + "-date",
+      name: params.name + "[date]",
+      label: {
+        text: params.text,
+        classes: "govuk-label--s"
+      },
+      errorMessage: params.errors,
+      hint: {
+        text: "For example, 17/5/2024."
+      },
+      value: params.value.date
+    })
+  }}
 
-<div class="govuk-date-input">
-  <div class="govuk-date-input__item">
-    <div class="govuk-form-group">
-      {{
-        govukInput({
-          label: {
-            text: "Hour",
-            classes: "govuk-label--s"
-          },
-          classes: "govuk-date-input__input govuk-input--width-2",
-          id: params.id + "-hour",
-          name: params.name + "[hour]",
-          value: params.value.hour
-        })
-      }}
+  <div class="govuk-date-input">
+    <div class="govuk-date-input__item">
+      <div class="govuk-form-group">
+        {{
+          govukInput({
+            label: {
+              text: "Hour",
+              classes: "govuk-label--s"
+            },
+            classes: "govuk-date-input__input govuk-input--width-2",
+            id: params.id + "-hour",
+            name: params.name + "[hour]",
+            value: params.value.hour
+          })
+        }}
+      </div>
     </div>
-  </div>
 
-  <div class="govuk-date-input__item">
-    <div class="govuk-form-group">
-      {{
-        govukInput({
-          label: {
-            text: "Minute",
-            classes: "govuk-label--s"
-          },
-          classes: "govuk-date-input__input govuk-input--width-2",
-          id: params.id + "-minute",
-          name: params.name + "[minute]",
-          value: params.value.minute
-        })
-      }}
+    <div class="govuk-date-input__item">
+      <div class="govuk-form-group">
+        {{
+          govukInput({
+            label: {
+              text: "Minute",
+              classes: "govuk-label--s"
+            },
+            classes: "govuk-date-input__input govuk-input--width-2",
+            id: params.id + "-minute",
+            name: params.name + "[minute]",
+            value: params.value.minute
+          })
+        }}
+      </div>
     </div>
-  </div>
 
-  <div class="govuk-date-input__item">
-    <div class="govuk-form-group">
-      {{
-        govukInput({
-          label: {
-            text: "Second",
-            classes: "govuk-label--s"
-          },
-          classes: "govuk-date-input__input govuk-input--width-2",
-          id: params.id + "-second",
-          name: params.name + "[second]",
-          value: params.value.second
-        })
-      }}
+    <div class="govuk-date-input__item">
+      <div class="govuk-form-group">
+        {{
+          govukInput({
+            label: {
+              text: "Second",
+              classes: "govuk-label--s"
+            },
+            classes: "govuk-date-input__input govuk-input--width-2",
+            id: params.id + "-second",
+            name: params.name + "[second]",
+            value: params.value.second
+          })
+        }}
+      </div>
     </div>
   </div>
 </div>

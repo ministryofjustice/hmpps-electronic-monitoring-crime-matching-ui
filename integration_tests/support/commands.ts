@@ -32,6 +32,10 @@ Cypress.Commands.add('stubGetCrimeBatchesQuery', options => {
   cy.task('stubGetCrimeBatchesQuery', options)
 })
 
+Cypress.Commands.add('stubGetDeviceActivation', options => {
+  cy.task('stubGetDeviceActivation', options)
+})
+
 Cypress.Commands.add('stubGetPersons', options => {
   cy.task('stubGetPersons', options)
 })
