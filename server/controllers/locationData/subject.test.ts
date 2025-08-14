@@ -8,6 +8,7 @@ import createMockRequest from '../../testutils/createMockRequest'
 import createMockResponse from '../../testutils/createMockResponse'
 import SubjectService from '../../services/locationData/subject'
 import SubjectController from './subject'
+import DeviceActivationsService from '../../services/deviceActivationsService'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
@@ -62,7 +63,8 @@ describe('SubjectController', () => {
       const res = createMockResponse()
       const next = jest.fn()
       const service = new SubjectService(mockRestClient)
-      const controller = new SubjectController(service)
+      const deviceActivationsService = new DeviceActivationsService(mockRestClient)
+      const controller = new SubjectController(service, deviceActivationsService)
 
       mockRestClient.post.mockResolvedValue({
         queryExecutionId: '1234',
@@ -107,7 +109,8 @@ describe('SubjectController', () => {
       const res = createMockResponse()
       const next = jest.fn()
       const service = new SubjectService(mockRestClient)
-      const controller = new SubjectController(service)
+      const deviceActivationsService = new DeviceActivationsService(mockRestClient)
+      const controller = new SubjectController(service, deviceActivationsService)
 
       mockRestClient.post.mockResolvedValue({
         queryExecutionId: '1234',
@@ -159,7 +162,8 @@ describe('SubjectController', () => {
       const res = createMockResponse()
       const next = jest.fn()
       const service = new SubjectService(mockRestClient)
-      const controller = new SubjectController(service)
+      const deviceActivationsService = new DeviceActivationsService(mockRestClient)
+      const controller = new SubjectController(service, deviceActivationsService)
 
       mockRestClient.post.mockResolvedValue({
         queryExecutionId: '1234',
@@ -207,7 +211,8 @@ describe('SubjectController', () => {
       const res = createMockResponse()
       const next = jest.fn()
       const service = new SubjectService(mockRestClient)
-      const controller = new SubjectController(service)
+      const deviceActivationsService = new DeviceActivationsService(mockRestClient)
+      const controller = new SubjectController(service, deviceActivationsService)
 
       mockRestClient.post.mockResolvedValue({
         queryExecutionId: '1234',
@@ -255,7 +260,8 @@ describe('SubjectController', () => {
       const res = createMockResponse()
       const next = jest.fn()
       const service = new SubjectService(mockRestClient)
-      const controller = new SubjectController(service)
+      const deviceActivationsService = new DeviceActivationsService(mockRestClient)
+      const controller = new SubjectController(service, deviceActivationsService)
 
       mockRestClient.post.mockResolvedValue({
         queryExecutionId: '1234',
@@ -294,7 +300,8 @@ describe('SubjectController', () => {
       const res = createMockResponse()
       const next = jest.fn()
       const service = new SubjectService(mockRestClient)
-      const controller = new SubjectController(service)
+      const deviceActivationsService = new DeviceActivationsService(mockRestClient)
+      const controller = new SubjectController(service, deviceActivationsService)
 
       mockRestClient.get.mockResolvedValue({
         locations: [],
@@ -347,7 +354,8 @@ describe('SubjectController', () => {
       const res = createMockResponse()
       const next = jest.fn()
       const service = new SubjectService(mockRestClient)
-      const controller = new SubjectController(service)
+      const deviceActivationsService = new DeviceActivationsService(mockRestClient)
+      const controller = new SubjectController(service, deviceActivationsService)
 
       mockRestClient.get.mockResolvedValue({
         locations: [

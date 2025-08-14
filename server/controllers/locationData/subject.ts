@@ -34,21 +34,9 @@ export default class SubjectController {
     }
   }
 
-  // The view must have a deviceactivationid - request parameters
-  // If from date and to date are missing show validation message, no query
-  // If from date and to date > 48 hours, show validation message, no query
-  // If from date and to date outside activation, show validation message, no query
-  // Else do the query
-
-  // At the same time, handle the form data / validation errors - maybe next PR
-
   view: RequestHandler = async (req, res) => {
     const { token } = res.locals.user
-    const {
-      query,
-      params: { personId },
-      deviceActivation,
-    } = req
+    const { query, deviceActivation } = req
     const { from, to } = subjectQueryParametersSchema.parse(query)
     const fromDate = parseISODate(from)
     const toDate = parseISODate(to)
@@ -118,8 +106,6 @@ export default class SubjectController {
       alerts.push(createMojAlertWarning('No GPS Data for Dates and Times Selected'))
     }
 
-    console.log(geoJsonData)
-
     res.render('pages/locationData/subject', {
       points: JSON.stringify(geoJsonData.points),
       lines: JSON.stringify(geoJsonData.lines),
@@ -130,14 +116,3 @@ export default class SubjectController {
     })
   }
 }
-
-// View model
-// geospatial
-// tileurl
-// alerts
-// formData
-// validationErrors
-
-// Steps
-// Parse query parameters
-// Validate query parameters
