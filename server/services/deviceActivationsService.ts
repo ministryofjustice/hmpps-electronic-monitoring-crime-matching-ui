@@ -21,13 +21,13 @@ class DeviceActivationsService {
 
   async getDeviceActivationPositions(
     token: string,
-    deviceActivationId: string,
+    deviceActivation: DeviceActivation,
     fromDate: Dayjs,
     toDate: Dayjs,
   ): Promise<Array<Location>> {
     const response = await this.crimeMatchingApiClient.get(
       {
-        path: `/device-activations/${deviceActivationId}/positions`,
+        path: `/device-activations/${deviceActivation.deviceActivationId}/positions`,
         query: {
           from: fromDate.toISOString(),
           to: toDate.toISOString(),
@@ -40,15 +40,13 @@ class DeviceActivationsService {
   }
 
   async isDateRangeWithinDeviceActivation(
-    token: string,
-    deviceActivationId: string,
+    deviceActivation: DeviceActivation,
     fromDate: Dayjs,
     toDate: Dayjs,
   ): Promise<boolean> {
-    const activation = await this.getDeviceActivation(token, deviceActivationId)
-    const deviceActivationDate = parseISODate(activation.deviceActivationDate)
+    const deviceActivationDate = parseISODate(deviceActivation.deviceActivationDate)
     const deviceDeactivationDate =
-      activation.deviceDeactivationDate === null ? dayjs() : parseISODate(activation.deviceDeactivationDate)
+      deviceActivation.deviceDeactivationDate === null ? dayjs() : parseISODate(deviceActivation.deviceDeactivationDate)
 
     return (
       fromDate.isAfter(deviceActivationDate) &&

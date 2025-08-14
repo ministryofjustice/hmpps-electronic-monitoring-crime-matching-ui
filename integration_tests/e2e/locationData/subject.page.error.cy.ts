@@ -11,7 +11,7 @@ context('Location Data', () => {
       cy.task('stubSignIn')
       cy.signIn()
     })
-    
+
     it('should display validation errors if no dates in url', () => {
       cy.stubGetDeviceActivation()
       cy.visit(url)
@@ -69,9 +69,16 @@ context('Location Data', () => {
       page.map.sidebar.shouldHaveControls()
 
       page.map.sidebar.form.checkHasForm()
+      page.map.sidebar.form.fromDateField.shouldHaveValue({
+        date: '01/01/2025',
+        hour: '00',
+        minute: '00',
+        second: '00',
+      })
       page.map.sidebar.form.fromDateField.shouldHaveValidationMessage(
         'Date and time search window should not exceed 48 hours',
       )
+      page.map.sidebar.form.toDateField.shouldHaveValue({ date: '05/01/2025', hour: '00', minute: '00', second: '00' })
     })
 
     it('should display validation errors if dates in url exceed device activation dates', () => {
@@ -86,7 +93,7 @@ context('Location Data', () => {
             deviceId: 123456789,
             personId: 123456789,
             deviceActivationDate: '2025-01-01T00:00:00.000Z',
-            deviceDeactivationDate: '2025-03-01T00:00:00.000Z',
+            deviceDeactivationDate: '2025-01-02T00:00:00.000Z',
           },
         },
       })
@@ -103,9 +110,16 @@ context('Location Data', () => {
       page.map.sidebar.shouldHaveControls()
 
       page.map.sidebar.form.checkHasForm()
+      page.map.sidebar.form.fromDateField.shouldHaveValue({
+        date: '01/02/2025',
+        hour: '00',
+        minute: '00',
+        second: '00',
+      })
       page.map.sidebar.form.fromDateField.shouldHaveValidationMessage(
         'Date and time search window should be within device activation date range',
       )
+      page.map.sidebar.form.toDateField.shouldHaveValue({ date: '02/02/2025', hour: '00', minute: '00', second: '00' })
     })
   })
 })

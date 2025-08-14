@@ -46,7 +46,11 @@ const defaultGetDeviceActivationPositionsOptions: StubGetDeviceActivationPositio
 const stubGetDeviceActivationPositions = (
   options: StubGetDeviceActivationPositionsOptions = defaultGetDeviceActivationPositionsOptions,
 ) => {
-  const urlPattern = `${baseUrl}/device-activations/${options.deviceActivationId}/positions`
+  let urlPattern = `${baseUrl}/device-activations/${options.deviceActivationId}/positions`
+
+  if (options.query.length > 0) {
+    urlPattern += `\\?${options.query.split(':').join('%3A')}`
+  }
 
   return stubFor({
     request: {

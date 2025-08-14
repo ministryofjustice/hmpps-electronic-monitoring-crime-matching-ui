@@ -12,16 +12,10 @@ import SubjectsController from '../controllers/locationData/subjects'
 import populateSessionData from '../middleware/populateSessionData'
 import populateDeviceActivation from '../middleware/populateDeviceActivation'
 import SubjectController from '../controllers/locationData/subject'
+import locationDataRoutes from './location-data'
 
-export default function routes({
-  auditService,
-  crimeBatchesService,
-  crimeMappingService,
-  deviceActivationsService,
-  mapService,
-  personsService,
-  subjectService,
-}: Services): Router {
+export default function routes(services: Services): Router {
+  const { auditService, crimeBatchesService, crimeMappingService, mapService, personsService } = services
   const router = Router()
   const get = (path: string | string[], handler: RequestHandler) => router.get(path, asyncMiddleware(handler))
   const post = (path: string | string[], handler: RequestHandler) => router.post(path, asyncMiddleware(handler))
@@ -38,10 +32,8 @@ export default function routes({
   const legalController = new LegalController()
   const mapController = new MapController(mapService)
   const subjectsController = new SubjectsController(personsService)
-  const subjectController = new SubjectController(subjectService)
 
   router.use(populateSessionData)
-  router.param('deviceActivationId', populateDeviceActivation(deviceActivationsService))
 
   get('/crime-mapping', crimeMappingController.view)
 
@@ -55,8 +47,7 @@ export default function routes({
   get('/location-data/subjects', subjectsController.view)
   post('/location-data/subjects', subjectsController.search)
 
-  get('/location-data/:personId/device-activations/:deviceActivationId', subjectController.view)
-  post('/location-data/subject', subjectController.search)
+  router.use('/location-data', locationDataRoutes(services))
 
   return router
 }

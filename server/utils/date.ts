@@ -12,11 +12,20 @@ const isValidISODate = (dateString: string) => {
 const getDateComponents = (dateString: string) => {
   const d = parseISODate(dateString)
 
+  if (d.isValid()) {
+    return {
+      date: d.format('DD/MM/YYYY'),
+      hour: d.hour().toString().padStart(2, '0'),
+      minute: d.minute().toString().padStart(2, '0'),
+      second: d.second().toString().padStart(2, '0'),
+    }
+  }
+
   return {
-    date: d.format('DD/MM/YYYY'),
-    hour: d.hour().toString().padStart(2, '0'),
-    minute: d.minute().toString().padStart(2, '0'),
-    second: d.second().toString().padStart(2, '0'),
+    date: 'Invalid date',
+    hour: '',
+    minute: '',
+    second: '',
   }
 }
 

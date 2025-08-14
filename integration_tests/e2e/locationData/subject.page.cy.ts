@@ -4,7 +4,8 @@ import SubjectPage from '../../pages/locationData/subject'
 import Page from '../../pages/page'
 
 const deviceActivationId = '1'
-const url = `/location-data/device-activations/${deviceActivationId}?from=2025-01-01T01:20:03.000Z&2025-01-02T02:04:50.000Z`
+const query = 'from=2025-01-01T01:20:03.000Z&to=2025-01-02T02:04:50.000Z'
+const url = `/location-data/device-activations/${deviceActivationId}?${query}`
 const data = {
   data: [
     {
@@ -83,7 +84,7 @@ context('Location Data', () => {
       cy.stubGetDeviceActivationPositions({
         status: 200,
         deviceActivationId,
-        query: '',
+        query,
         response: data,
       })
       cy.visit(url)
@@ -100,12 +101,12 @@ context('Location Data', () => {
 
       // Ensure the form is populated from query params if no form data
       page.map.sidebar.form.fromDateField.shouldHaveValue({
-        date: '2025-01-01',
+        date: '01/01/2025',
         hour: '01',
         minute: '20',
         second: '03',
       })
-      page.map.sidebar.form.toDateField.shouldHaveValue({ date: '2025-01-02', hour: '02', minute: '04', second: '50' })
+      page.map.sidebar.form.toDateField.shouldHaveValue({ date: '02/01/2025', hour: '02', minute: '04', second: '50' })
 
       // Initial state should be to show only the locations
       page.map.sidebar.showLocationToggle.shouldBeChecked()
@@ -119,7 +120,7 @@ context('Location Data', () => {
       cy.stubGetDeviceActivationPositions({
         status: 200,
         deviceActivationId,
-        query: '',
+        query,
         response: {
           data: [],
         },
@@ -138,12 +139,12 @@ context('Location Data', () => {
 
       // Ensure the form is populated from query params if no form data
       page.map.sidebar.form.fromDateField.shouldHaveValue({
-        date: '2025-01-01',
+        date: '01/01/2025',
         hour: '01',
         minute: '20',
         second: '03',
       })
-      page.map.sidebar.form.toDateField.shouldHaveValue({ date: '2025-01-02', hour: '02', minute: '04', second: '50' })
+      page.map.sidebar.form.toDateField.shouldHaveValue({ date: '02/01/2025', hour: '02', minute: '04', second: '50' })
     })
   })
 
@@ -160,7 +161,7 @@ context('Location Data', () => {
       cy.stubGetDeviceActivationPositions({
         status: 200,
         deviceActivationId,
-        query: '',
+        query,
         response: data,
       })
 

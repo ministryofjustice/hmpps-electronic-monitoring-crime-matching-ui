@@ -2,6 +2,7 @@ import { v4 as uuidv4 } from 'uuid'
 
 import { PageElement } from '../page'
 import FormInputComponent from './formInputComponent'
+import FormDateComponent from './formDateComponent'
 
 export type FormDateTimeData = {
   date: string
@@ -28,8 +29,8 @@ export default class FormDateTimeComponent {
     return cy.get(`@${this.elementCacheId}-element`, { log: true })
   }
 
-  get dateComponent(): FormInputComponent {
-    return new FormInputComponent(this.element, this.label)
+  get dateComponent(): FormDateComponent {
+    return new FormDateComponent(this.element, this.label)
   }
 
   get hourComponent(): FormInputComponent {
