@@ -1,6 +1,7 @@
 import Map from 'ol/Map'
 import { StubCreateCrimeBatchQueryOptions, StubGetCrimeBatchesOptions } from './mockApis/crimeMatching/crimeBatches'
 import { StubGetDeviceActivationOptions } from './mockApis/locationData/deviceActivation'
+import { StubGetDeviceActivationPositionsOptions } from './mockApis/locationData/deviceActivationPositions'
 import { StubGetPersonsOptions } from './mockApis/locationData/subjects'
 import { StubCreateSubjectLocationQueryOptions } from './mockApis/locationData/subjectLocations'
 import { StubGetSubjectOptions } from './mockApis/locationData/subject'
@@ -55,6 +56,11 @@ declare global {
        * Stub a wiremock response for the crimeMatchingApi GET /device-activations/{deviceActivationId}
        */
       stubGetDeviceActivation(options?: StubGetDeviceActivationOptions): Chainable<void>
+
+      /**
+       * Stub a wiremock response for the crimeMatchingApi GET /device-activations/{deviceActivationId}/positions
+       */
+      stubGetDeviceActivationPositions(options?: StubGetDeviceActivationPositionsOptions): Chainable<void>
 
       /**
        * Stub a wiremock response for the crimeMatchingApi GET /subjects-query
