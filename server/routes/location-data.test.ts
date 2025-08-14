@@ -1,4 +1,3 @@
-import type { Express } from 'express'
 import request from 'supertest'
 import { RestClient } from '@ministryofjustice/hmpps-rest-client'
 import { appWithAllRoutes, user } from './testutils/appSetup'

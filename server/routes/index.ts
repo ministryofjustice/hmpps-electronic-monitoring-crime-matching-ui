@@ -10,8 +10,6 @@ import LegalController from '../controllers/legal'
 import HelpController from '../controllers/help'
 import SubjectsController from '../controllers/locationData/subjects'
 import populateSessionData from '../middleware/populateSessionData'
-import populateDeviceActivation from '../middleware/populateDeviceActivation'
-import SubjectController from '../controllers/locationData/subject'
 import locationDataRoutes from './location-data'
 
 export default function routes(services: Services): Router {

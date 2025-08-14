@@ -106,7 +106,7 @@ export default class SubjectController {
       alerts.push(createMojAlertWarning('No GPS Data for Dates and Times Selected'))
     }
 
-    res.render('pages/locationData/subject', {
+    return res.render('pages/locationData/subject', {
       points: JSON.stringify(geoJsonData.points),
       lines: JSON.stringify(geoJsonData.lines),
       tileUrl: config.maps.tileUrl,
