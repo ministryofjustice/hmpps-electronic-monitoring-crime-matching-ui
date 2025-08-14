@@ -49,10 +49,10 @@ class DeviceActivationsService {
       deviceActivation.deviceDeactivationDate === null ? dayjs() : parseISODate(deviceActivation.deviceDeactivationDate)
 
     return (
-      fromDate.isAfter(deviceActivationDate) &&
-      toDate.isBefore(deviceDeactivationDate) &&
-      fromDate.isAfter(deviceActivationDate) &&
-      toDate.isBefore(deviceDeactivationDate)
+      fromDate.isSameOrAfter(deviceActivationDate) &&
+      toDate.isSameOrBefore(deviceDeactivationDate) &&
+      fromDate.isSameOrAfter(deviceActivationDate) &&
+      toDate.isSameOrBefore(deviceDeactivationDate)
     )
   }
 }

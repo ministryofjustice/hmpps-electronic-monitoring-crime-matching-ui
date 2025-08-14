@@ -14,6 +14,7 @@ const createMockResponse = (): Response => {
         userRoles: ['fakeRole'],
         staffId: 123,
       },
+      errors: {},
     },
     redirect: jest.fn(),
     render: jest.fn(),

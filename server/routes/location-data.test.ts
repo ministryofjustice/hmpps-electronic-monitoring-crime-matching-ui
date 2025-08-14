@@ -41,7 +41,8 @@ describe('/location-data', () => {
         .expect('Content-Type', /html/)
         .expect(res => {
           expect(res.status).toEqual(404)
-          expect(res.text).toContain('Not Found')
+          expect(res.text).toContain('<title>HMPPS Electronic Monitoring Crime Matching - Error</title>')
+          expect(res.text).toContain('<h1>Not Found</h1>')
         })
     })
 
@@ -66,7 +67,8 @@ describe('/location-data', () => {
         .expect('Content-Type', /html/)
         .expect(res => {
           expect(res.status).toEqual(404)
-          expect(res.text).toContain('Not Found')
+          expect(res.text).toContain('<title>HMPPS Electronic Monitoring Crime Matching - Error</title>')
+          expect(res.text).toContain('<h1>Not Found</h1>')
         })
     })
 
@@ -94,7 +96,7 @@ describe('/location-data', () => {
         .expect('Content-Type', /html/)
         .expect(res => {
           expect(res.status).toEqual(200)
-          expect(res.text).toContain('Not Found')
+          expect(res.text).toContain('<title>HMPPS Electronic Monitoring Crime Matching - Home</title>')
         })
     })
   })

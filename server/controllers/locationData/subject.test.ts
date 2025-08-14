@@ -1,6 +1,8 @@
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
 import timezone from 'dayjs/plugin/timezone'
+import isSameOrAfter from 'dayjs/plugin/isSameOrAfter'
+import isSameOrBefore from 'dayjs/plugin/isSameOrBefore'
 import { RestClient } from '@ministryofjustice/hmpps-rest-client'
 import Logger from 'bunyan'
 import createMockLogger from '../../testutils/createMockLogger'
@@ -12,6 +14,8 @@ import DeviceActivationsService from '../../services/deviceActivationsService'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
+dayjs.extend(isSameOrAfter)
+dayjs.extend(isSameOrBefore)
 
 jest.mock('@ministryofjustice/hmpps-rest-client')
 
@@ -285,16 +289,23 @@ describe('SubjectController', () => {
   describe('view', () => {
     it('should display the subject view with no location data', async () => {
       // Given
-      const personId = '1'
-      const from = '2025-01-01T00:00:00Z'
-      const to = '2025-01-02T00:00:00Z'
+      const deviceActivationId = '1'
+      const from = '2025-01-01T00:00:00.000Z'
+      const to = '2025-01-02T00:00:00.000Z'
       const req = createMockRequest({
         params: {
-          personId,
+          deviceActivationId,
         },
         query: {
           from,
           to,
+        },
+        deviceActivation: {
+          deviceActivationId: 1,
+          deviceId: 123456789,
+          personId: 123456789,
+          deviceActivationDate: '2025-01-01T00:00:00.000Z',
+          deviceDeactivationDate: null,
         },
       })
       const res = createMockResponse()
@@ -303,8 +314,9 @@ describe('SubjectController', () => {
       const deviceActivationsService = new DeviceActivationsService(mockRestClient)
       const controller = new SubjectController(service, deviceActivationsService)
 
+      // GET /device-activations/1/positions
       mockRestClient.get.mockResolvedValue({
-        locations: [],
+        data: [],
       })
 
       // When
@@ -313,7 +325,7 @@ describe('SubjectController', () => {
       // Then
       expect(mockRestClient.get).toHaveBeenCalledWith(
         {
-          path: `/subjects/${personId}`,
+          path: `/device-activations/${deviceActivationId}/positions`,
           query: {
             from,
             to,
@@ -334,21 +346,40 @@ describe('SubjectController', () => {
         points: '[]',
         lines: '[]',
         tileUrl: 'http://localhost:9090/maps',
+        fromDate: {
+          date: '01/01/2025',
+          hour: '00',
+          minute: '00',
+          second: '00',
+        },
+        toDate: {
+          date: '02/01/2025',
+          hour: '00',
+          minute: '00',
+          second: '00',
+        },
       })
     })
 
     it('should display the subject view with location data', async () => {
       // Given
-      const personId = '1'
-      const from = '2025-01-01T00:00:00Z'
-      const to = '2025-01-02T00:00:00Z'
+      const deviceActivationId = '1'
+      const from = '2025-01-01T00:00:00.000Z'
+      const to = '2025-01-02T00:00:00.000Z'
       const req = createMockRequest({
         params: {
-          personId,
+          deviceActivationId,
         },
         query: {
           from,
           to,
+        },
+        deviceActivation: {
+          deviceActivationId: 1,
+          deviceId: 123456789,
+          personId: 123456789,
+          deviceActivationDate: '2025-01-01T00:00:00.000Z',
+          deviceDeactivationDate: null,
         },
       })
       const res = createMockResponse()
@@ -357,8 +388,9 @@ describe('SubjectController', () => {
       const deviceActivationsService = new DeviceActivationsService(mockRestClient)
       const controller = new SubjectController(service, deviceActivationsService)
 
+      // GET /device-activations/1/positions
       mockRestClient.get.mockResolvedValue({
-        locations: [
+        data: [
           {
             locationRef: 1,
             point: {
@@ -394,7 +426,7 @@ describe('SubjectController', () => {
       // Then
       expect(mockRestClient.get).toHaveBeenCalledWith(
         {
-          path: `/subjects/${personId}`,
+          path: `/device-activations/${deviceActivationId}/positions`,
           query: {
             from,
             to,
@@ -459,6 +491,18 @@ describe('SubjectController', () => {
           },
         ]),
         tileUrl: 'http://localhost:9090/maps',
+        fromDate: {
+          date: '01/01/2025',
+          hour: '00',
+          minute: '00',
+          second: '00',
+        },
+        toDate: {
+          date: '02/01/2025',
+          hour: '00',
+          minute: '00',
+          second: '00',
+        },
       })
     })
   })
