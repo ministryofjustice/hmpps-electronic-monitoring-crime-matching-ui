@@ -9,8 +9,8 @@ const DATE_RANGE = 'Date and time search window should not exceed 48 hours'
 const maxDateRange = 48 * 60 * 60 * 1000
 
 const subjectQueryParametersSchema = z.object({
-  from: z.string().optional(),
-  to: z.string().optional(),
+  from: z.string().default(''),
+  to: z.string().default(''),
 })
 
 const subjectLocationsFormDataSchema = z

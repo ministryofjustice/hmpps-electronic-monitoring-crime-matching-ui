@@ -12,38 +12,42 @@
 
 
 {% set timeHtml %}
-  {{
-    dateTimePicker({
-      id: "from-date",
-      name: "fromDate",
-      text: "Date from",
-      errors: errors.fromDate
-    })
-  }}
-
-  {{
-    dateTimePicker({
-      id: "to-date",
-      name: "toDate",
-      text: "Date to",
-      errors: errors.toDate
-    })
-  }}
-
-  <div class="govuk-button-group">
+  <form>
     {{
-      govukButton({
-        text: "Apply"
+      dateTimePicker({
+        id: "from-date",
+        name: "fromDate",
+        text: "Date from",
+        value: fromDate,
+        errors: errors.fromDate
       })
     }}
 
     {{
-      govukButton({
-        text: "Reset",
-        classes: "govuk-button--secondary"
+      dateTimePicker({
+        id: "to-date",
+        name: "toDate",
+        text: "Date to",
+        value: toDate,
+        errors: errors.toDate
       })
     }}
-  </div>
+
+    <div class="govuk-button-group">
+      {{
+        govukButton({
+          text: "Apply"
+        })
+      }}
+
+      {{
+        govukButton({
+          text: "Reset",
+          classes: "govuk-button--secondary"
+        })
+      }}
+    </div>
+  </form>
 
   <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible" />
 
