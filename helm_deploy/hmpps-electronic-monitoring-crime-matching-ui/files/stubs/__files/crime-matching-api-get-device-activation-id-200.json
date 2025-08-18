@@ -1,9 +1,0 @@
-{
-  "data": {
-    "deviceActivationId": 1,
-    "deviceId": 123456,
-    "personId": 1,
-    "deviceActivationDate": "2024-12-01T00:00:00.000Z",
-    "deviceDeactivationDate": null
-  }
-}
