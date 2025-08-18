@@ -1,5 +1,5 @@
 {
-  "locations": [
+  "data": [
     {
       "point": { "latitude": 51.574865, "longitude": 0.060977 },
       "confidenceCircle": 100,
