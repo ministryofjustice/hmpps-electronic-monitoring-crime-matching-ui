@@ -43,7 +43,7 @@ const initialiseLocationDataView = async () => {
   })
 
   // Focus on geolocation data
-  if (locationSource) {
+  if (locationSource && locationSource.getFeatures().length > 0) {
     map.getView().fit(locationSource.getExtent(), {
       maxZoom: 16,
       padding: [30, 30, 30, 30],
