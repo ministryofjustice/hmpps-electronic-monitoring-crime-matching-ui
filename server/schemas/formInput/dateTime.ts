@@ -1,5 +1,5 @@
 import { z } from 'zod/v4'
-import dayjs from 'dayjs'
+import { parseDateTimeFromComponents } from '../../utils/date'
 
 const VALID_DATE = 'You must enter a valid value for date'
 
@@ -21,7 +21,12 @@ const DateTimeInputModel = z
       return
     }
 
-    const formattedDateTime = formatDate(ctx.value.date, ctx.value.hour, ctx.value.minute, ctx.value.second)
+    const formattedDateTime = parseDateTimeFromComponents(
+      ctx.value.date,
+      ctx.value.hour,
+      ctx.value.minute,
+      ctx.value.second,
+    )
 
     if (!formattedDateTime.isValid()) {
       ctx.issues.push({
@@ -33,11 +38,7 @@ const DateTimeInputModel = z
     }
   })
   .transform(value => {
-    return formatDate(value.date, value.hour, value.minute, value.second)
+    return parseDateTimeFromComponents(value.date, value.hour, value.minute, value.second)
   })
-
-function formatDate(date: string, hour: string, minute: string, second: string) {
-  return dayjs(`${date} ${hour}:${minute}:${second}`, ['D/M/YYYY H:m:s', 'DD/MM/YYYY H:m:s'], true).tz('Europe/London')
-}
 
 export default DateTimeInputModel
