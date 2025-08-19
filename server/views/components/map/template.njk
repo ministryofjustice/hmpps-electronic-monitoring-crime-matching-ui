@@ -9,7 +9,6 @@
   </div>
 
   {{ mojMap({
-    apiKey: params.apiKey,
     tileUrl: params.tileUrl,
     vectorUrl: params.vectorUrl,
     cspNonce: params.cspNonce,
@@ -17,7 +16,13 @@
       points: params.geoData.points,
       lines: params.geoData.lines
     },
-    usesInternalOverlays: params.usesInternalOverlays
+    usesInternalOverlays: params.usesInternalOverlays,
+    controls: {
+      scaleControl: 'bar',
+      locationDisplay: 'dms',
+      rotateControl: 'true',
+      zoomSlider: true
+    }
   }) }}
 
   <div class="app-map__sidebar">

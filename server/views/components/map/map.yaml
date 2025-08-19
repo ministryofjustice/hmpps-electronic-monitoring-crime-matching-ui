@@ -1,8 +1,8 @@
 params:
-  - name: apiKey
+  - name: tileType
     type: string
-    required: true
-    description: The API key for the map service
+    required: false
+    description: Set as 'raster' or 'vector' to specify the type of map tiles to use
   - name: tileUrl
     type: string
     required: false
@@ -10,7 +10,7 @@ params:
   - name: vectorUrl
     type: string
     required: false
-    description: The URL for the vector tile service
+    description: The URL for the vector tile service (e.g. OS Vector Tile API style/tiles base)
   - name: cspNonce
     type: string
     required: false
@@ -23,11 +23,11 @@ params:
       - name: points
         type: JSON
         required: false
-        description: Points to display on the map
+        description: Points (GeoJSON FeatureCollection or array) to display on the map
       - name: lines
         type: JSON
         required: false
-        description: Lines to display on the map
+        description: LineStrings/Polylines (GeoJSON FeatureCollection or array) to display on the map
   - name: alerts
     type: array
     required: false
@@ -49,6 +49,27 @@ params:
     type: boolean
     required: false
     description: Whether to enable internal overlays triggered by feature clicks
+  - name: controls
+    type: object
+    required: false
+    description: Optional map controls configuration
+    params:
+      - name: scaleControl
+        type: string
+        required: false
+        description: Set to 'bar' for a scale bar, 'line' for a simple scale line, or 'none' to disable. Default is 'none'.
+      - name: locationDisplay
+        type: string
+        required: false
+        description: "Coordinate readout format: 'dms', 'latlon', or 'none'. Default is 'none'."
+      - name: rotateControl
+        type: string
+        required: false
+        description: "Rotate control mode: 'true' (always show), 'false' (hide), or 'auto-hide'. Default is 'true'."
+      - name: zoomSlider
+        type: boolean
+        required: false
+        description: Show a zoom slider control. Default is false.
   - name: sidebarHtml
     type: string
     required: false
