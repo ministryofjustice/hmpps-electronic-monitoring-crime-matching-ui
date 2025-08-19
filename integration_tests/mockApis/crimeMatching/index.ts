@@ -3,11 +3,15 @@ import { stubCreateCrimeBatchesQuery, stubGetCrimeBatchesQuery } from './crimeBa
 import { stubGetPersons } from '../locationData/subjects'
 import { stubCreateSubjectLocationsQuery } from '../locationData/subjectLocations'
 import { stubGetSubject } from '../locationData/subject'
+import { stubGetDeviceActivation } from '../locationData/deviceActivation'
+import { stubGetDeviceActivationPositions } from '../locationData/deviceActivationPositions'
 
 export default {
   stubCrimeMatchingPing: ping,
   stubCreateCrimeBatchesQuery,
   stubGetCrimeBatchesQuery,
+  stubGetDeviceActivation,
+  stubGetDeviceActivationPositions,
   stubGetPersons,
   stubCreateSubjectLocationsQuery,
   stubGetSubject,

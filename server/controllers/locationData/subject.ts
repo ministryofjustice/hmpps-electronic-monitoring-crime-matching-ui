@@ -5,9 +5,17 @@ import createGeoJsonData from '../../presenters/crimeMapping'
 import config from '../../config'
 import { createMojAlertWarning } from '../../utils/alerts'
 import { MojAlert } from '../../types/govUk/mojAlert'
+import DeviceActivationsService from '../../services/deviceActivationsService'
+import { getDateComponents, parseISODate } from '../../utils/date'
+import { flattenErrorsToMap } from '../../utils/errors'
+import ValidationService from '../../services/locationData/validationService'
 
 export default class SubjectController {
-  constructor(private readonly service: SubjectService) {}
+  constructor(
+    private readonly service: SubjectService,
+    private readonly deviceActivationsService: DeviceActivationsService,
+    private readonly validationService: ValidationService,
+  ) {}
 
   search: RequestHandler = async (req, res) => {
     const { token } = res.locals.user
@@ -30,24 +38,51 @@ export default class SubjectController {
 
   view: RequestHandler = async (req, res) => {
     const { token } = res.locals.user
-    const {
-      query,
-      params: { personId },
-    } = req
+    const { query, deviceActivation } = req
     const { from, to } = subjectQueryParametersSchema.parse(query)
-    const queryResults = await this.service.getLocationData(token, personId, from, to)
-    const alerts: Array<MojAlert> = []
-    const geoJsonData = createGeoJsonData(queryResults.locations)
+    const fromDate = parseISODate(from)
+    const toDate = parseISODate(to)
+    const validationResult = this.validationService.validateDeviceActivationPositionsRequest(
+      deviceActivation!,
+      fromDate,
+      toDate,
+    )
 
-    if (queryResults.locations.length === 0) {
-      alerts.push(createMojAlertWarning('No GPS Data for Dates and Times Selected'))
+    if (validationResult.success) {
+      const positions = await this.deviceActivationsService.getDeviceActivationPositions(
+        token,
+        deviceActivation!,
+        fromDate,
+        toDate,
+      )
+      const geoJsonData = createGeoJsonData(positions)
+      const alerts: Array<MojAlert> = []
+
+      if (positions.length === 0) {
+        alerts.push(createMojAlertWarning('No GPS Data for Dates and Times Selected'))
+      }
+
+      res.render('pages/locationData/subject', {
+        points: JSON.stringify(geoJsonData.points),
+        lines: JSON.stringify(geoJsonData.lines),
+        tileUrl: config.maps.tileUrl,
+        alerts,
+        fromDate: getDateComponents(fromDate),
+        toDate: getDateComponents(toDate),
+      })
+    } else {
+      res.render('pages/locationData/subject', {
+        points: JSON.stringify([]),
+        lines: JSON.stringify([]),
+        tileUrl: config.maps.tileUrl,
+        alerts: [],
+        fromDate: getDateComponents(fromDate),
+        toDate: getDateComponents(toDate),
+        errors: {
+          ...res.locals.errors,
+          ...flattenErrorsToMap(validationResult.errors),
+        },
+      })
     }
-
-    res.render('pages/locationData/subject', {
-      points: JSON.stringify(geoJsonData.points),
-      lines: JSON.stringify(geoJsonData.lines),
-      tileUrl: config.maps.tileUrl,
-      alerts,
-    })
   }
 }

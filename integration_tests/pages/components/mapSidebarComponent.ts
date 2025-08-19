@@ -2,6 +2,7 @@ import { v4 as uuidv4 } from 'uuid'
 import { PageElement } from '../page'
 import FormCheckboxComponent from './formCheckboxComponent'
 import TabComponent from './tabComponent'
+import SearchDeviceActivationPositionsFormComponent from './forms/searchDeviceActivationPositions'
 
 export default class MapSidebarComponent {
   private elementCacheId: string = uuidv4()
@@ -38,6 +39,10 @@ export default class MapSidebarComponent {
 
   get showLocationNumberingToggle(): FormCheckboxComponent {
     return new FormCheckboxComponent(this.element, 'Show location numbering')
+  }
+
+  get form(): SearchDeviceActivationPositionsFormComponent {
+    return new SearchDeviceActivationPositionsFormComponent()
   }
 
   // HELPERS

@@ -3,10 +3,11 @@ import VectorLayer from 'ol/layer/Vector'
 import SubjectPage from '../../pages/locationData/subject'
 import Page from '../../pages/page'
 
-const personId = '1'
-const url = `/location-data/${personId}`
+const deviceActivationId = '1'
+const query = 'from=2025-01-01T01:20:03.000Z&to=2025-01-02T02:04:50.000Z'
+const url = `/location-data/device-activations/${deviceActivationId}?${query}`
 const data = {
-  locations: [
+  data: [
     {
       point: { latitude: 51.574865, longitude: 0.060977 },
       confidenceCircle: 100,
@@ -71,7 +72,7 @@ const data = {
 }
 
 context('Location Data', () => {
-  context('Viewing a subject', () => {
+  context('Viewing a device activation', () => {
     beforeEach(() => {
       cy.task('reset')
       cy.task('stubSignIn')
@@ -79,10 +80,11 @@ context('Location Data', () => {
     })
 
     it('should display a map showing the subjects locations', () => {
-      cy.stubGetSubject({
+      cy.stubGetDeviceActivation()
+      cy.stubGetDeviceActivationPositions({
         status: 200,
-        personId,
-        query: '',
+        deviceActivationId,
+        query,
         response: data,
       })
       cy.visit(url)
@@ -97,6 +99,15 @@ context('Location Data', () => {
       page.map.sidebar.analysisTab.shouldNotBeActive()
       page.map.sidebar.shouldHaveControls()
 
+      // Ensure the form is populated from query params if no form data
+      page.map.sidebar.form.fromDateField.shouldHaveValue({
+        date: '01/01/2025',
+        hour: '01',
+        minute: '20',
+        second: '03',
+      })
+      page.map.sidebar.form.toDateField.shouldHaveValue({ date: '02/01/2025', hour: '02', minute: '04', second: '50' })
+
       // Initial state should be to show only the locations
       page.map.sidebar.showLocationToggle.shouldBeChecked()
       page.map.sidebar.showConfidenceCirclesToggle.shouldNotBeChecked()
@@ -105,12 +116,13 @@ context('Location Data', () => {
     })
 
     it('should show an alert if no location data was returned from the api', () => {
-      cy.stubGetSubject({
+      cy.stubGetDeviceActivation()
+      cy.stubGetDeviceActivationPositions({
         status: 200,
-        personId,
-        query: '',
+        deviceActivationId,
+        query,
         response: {
-          locations: [],
+          data: [],
         },
       })
       cy.visit(url)
@@ -124,6 +136,15 @@ context('Location Data', () => {
       page.map.sidebar.shouldHaveControls()
       page.map.sidebar.timeTab.shouldBeActive()
       page.map.sidebar.analysisTab.shouldNotBeActive()
+
+      // Ensure the form is populated from query params if no form data
+      page.map.sidebar.form.fromDateField.shouldHaveValue({
+        date: '01/01/2025',
+        hour: '01',
+        minute: '20',
+        second: '03',
+      })
+      page.map.sidebar.form.toDateField.shouldHaveValue({ date: '02/01/2025', hour: '02', minute: '04', second: '50' })
     })
   })
 
@@ -136,7 +157,13 @@ context('Location Data', () => {
       cy.signIn()
       cy.stubMapToken()
       cy.stubMapTiles()
-      cy.stubGetSubject({ status: 200, personId, query: '', response: data })
+      cy.stubGetDeviceActivation()
+      cy.stubGetDeviceActivationPositions({
+        status: 200,
+        deviceActivationId,
+        query,
+        response: data,
+      })
 
       cy.visit(url)
 
@@ -179,7 +206,7 @@ context('Location Data', () => {
         page.map.shouldHaveMapLayer(pointsLayer, 'Points')
         page.map.shouldHaveMapLayer(numberingLayer, 'Numbers')
 
-        expect(pointsLayer.getSource().getFeatures().length).to.equal(data.locations.length)
+        expect(pointsLayer.getSource().getFeatures().length).to.equal(data.data.length)
       })
     })
 

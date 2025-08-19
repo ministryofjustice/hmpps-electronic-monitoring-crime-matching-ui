@@ -41,12 +41,12 @@ export default class SearchSubjectLocationsFormComponent extends FormComponent {
   }
 
   get searchFromDateField(): DateTimeInputComponent {
-    const id = 'from-date'
+    const id = 'from-date-date'
     return new DateTimeInputComponent(this.form, id)
   }
 
   get searchToDateField(): DateTimeInputComponent {
-    const id = 'to-date'
+    const id = 'to-date-date'
     return new DateTimeInputComponent(this.form, id)
   }
 
