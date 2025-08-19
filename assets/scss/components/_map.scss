@@ -12,6 +12,7 @@
 .app-map__error {
   position: absolute;
   margin: 5px 60px;
+  z-index: 1;
 }
 
 /* Override map component overlay styles */
