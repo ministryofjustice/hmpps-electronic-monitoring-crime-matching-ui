@@ -16,8 +16,8 @@ const subjectQueryParametersSchema = z.object({
 const subjectLocationsFormDataSchema = z
   .object({
     personId: z.string().min(1, VALID_PERSON),
-    fromDate: DateTimeInputModel(),
-    toDate: DateTimeInputModel(),
+    fromDate: DateTimeInputModel,
+    toDate: DateTimeInputModel,
     orderStartDate: z.string(),
     orderEndDate: z.string().nullable(),
   })
