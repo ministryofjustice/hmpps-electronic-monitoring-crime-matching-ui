@@ -326,8 +326,8 @@ describe('SubjectController', () => {
         ],
         points: [],
         lines: [],
-        tileUrl: 'http://localhost:9091/map-tiles/Road_3857/{z}/{x}/{y}',
-        vectorUrl: 'http://localhost:9091/map-tiles',
+        tileUrl: '',
+        vectorUrl: '',
       })
     })
 
@@ -459,8 +459,8 @@ describe('SubjectController', () => {
             },
           },
         ],
-        tileUrl: 'http://localhost:9091/map-tiles/Road_3857/{z}/{x}/{y}',
-        vectorUrl: 'http://localhost:9091/map-tiles',
+        tileUrl: '',
+        vectorUrl: '',
       })
     })
   })
