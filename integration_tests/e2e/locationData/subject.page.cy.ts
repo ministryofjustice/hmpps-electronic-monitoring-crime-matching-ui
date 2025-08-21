@@ -155,6 +155,8 @@ context('Location Data', () => {
       cy.task('reset')
       cy.task('stubSignIn')
       cy.signIn()
+      cy.stubMapVectorStyle()
+      cy.stubVectorTiles()
       cy.stubMapToken()
       cy.stubMapTiles()
       cy.stubGetDeviceActivation()
@@ -210,8 +212,8 @@ context('Location Data', () => {
       })
     })
 
-    it('should show the overlay when a location-point feature is clicked', () => {
-      page.map.element.should('have.attr', 'data-show-overlay', 'true')
+    it('should show the overlay when a pop-location feature is clicked', () => {
+      page.map.mapComponent.should('have.attr', 'uses-internal-overlays')
 
       page.map.mapInstance.then(map => {
         const pointsLayer = map
@@ -220,7 +222,7 @@ context('Location Data', () => {
           .find((l: BaseLayer) => l.get('title') === 'pointsLayer') as VectorLayer
 
         const feature = pointsLayer.getSource().getFeatures()[0]
-        expect(feature.get('type')).to.equal('location-point')
+        expect(feature.get('type')).to.equal('pop-location')
 
         const coordinate = feature.getGeometry().getCoordinates()
 
@@ -290,7 +292,7 @@ context('Location Data', () => {
           page.map.shouldShowOverlay()
 
           // Click the close button inside the overlay
-          cy.get('.app-map__overlay-close').click()
+          cy.get('moj-map').shadow().find('.app-map__overlay-close').click()
           page.map.shouldNotShowOverlay()
         })
       })

@@ -1,7 +1,6 @@
 import express from 'express'
 
 import createError from 'http-errors'
-
 import nunjucksSetup from './utils/nunjucksSetup'
 import errorHandler from './errorHandler'
 import { appInsightsMiddleware } from './utils/azureAppInsights'

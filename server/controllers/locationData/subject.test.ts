@@ -352,9 +352,10 @@ describe('SubjectController', () => {
             variant: 'warning',
           },
         ],
-        points: '[]',
-        lines: '[]',
-        tileUrl: 'http://localhost:9090/maps',
+        points: [],
+        lines: [],
+        tileUrl: '',
+        vectorUrl: '',
         fromDate: {
           date: '01/01/2025',
           hour: '00',
@@ -409,7 +410,7 @@ describe('SubjectController', () => {
             },
             confidenceCircle: 10,
             speed: 5,
-            direction: 180,
+            direction: 3.14159,
             timestamp: '2025-01-01T00:00:00Z',
             geolocationMechanism: 1,
             sequenceNumber: 1,
@@ -422,7 +423,7 @@ describe('SubjectController', () => {
             },
             confidenceCircle: 20,
             speed: 7,
-            direction: 210,
+            direction: 3.66519,
             timestamp: '2025-01-01T00:01:00Z',
             geolocationMechanism: 1,
             sequenceNumber: 2,
@@ -446,20 +447,24 @@ describe('SubjectController', () => {
       )
       expect(res.render).toHaveBeenCalledWith('pages/locationData/subject', {
         alerts: [],
-        points: JSON.stringify([
+        points: [
           {
             type: 'Feature',
             id: '0',
             properties: {
               '@id': '0',
-              speed: 5,
-              direction: 180,
-              geolocationMechanism: 1,
-              timestamp: '2025-01-01T00:00:00Z',
               confidence: 10,
-              point: { latitude: 123.123, longitude: 123.123 },
-              type: 'location-point',
+              type: 'pop-location',
               sequenceNumber: 1,
+
+              overlayTemplateId: 'overlay-template-pop-location',
+              displaySpeed: '5 km/h',
+              displayDirection: '180°',
+              displayGeolocationMechanism: '1',
+              displayTimestamp: '2025-01-01T00:00:00Z',
+              displayConfidence: '10m',
+              displayLatitude: '123.123',
+              displayLongitude: '123.123',
             },
             geometry: {
               type: 'Point',
@@ -471,26 +476,30 @@ describe('SubjectController', () => {
             id: '1',
             properties: {
               '@id': '1',
-              speed: 7,
-              direction: 210,
-              geolocationMechanism: 1,
-              timestamp: '2025-01-01T00:01:00Z',
               confidence: 20,
-              point: { latitude: 456.123, longitude: 456.123 },
-              type: 'location-point',
+              type: 'pop-location',
               sequenceNumber: 2,
+
+              overlayTemplateId: 'overlay-template-pop-location',
+              displaySpeed: '7 km/h',
+              displayDirection: '210°',
+              displayGeolocationMechanism: '1',
+              displayTimestamp: '2025-01-01T00:01:00Z',
+              displayConfidence: '20m',
+              displayLatitude: '456.123',
+              displayLongitude: '456.123',
             },
             geometry: {
               type: 'Point',
               coordinates: [456.123, 456.123],
             },
           },
-        ]),
-        lines: JSON.stringify([
+        ],
+        lines: [
           {
             type: 'Feature',
             id: '0',
-            properties: { '@id': '0', direction: 180 },
+            properties: { '@id': '0', direction: 3.14159 },
             geometry: {
               type: 'LineString',
               coordinates: [
@@ -499,8 +508,9 @@ describe('SubjectController', () => {
               ],
             },
           },
-        ]),
-        tileUrl: 'http://localhost:9090/maps',
+        ],
+        tileUrl: '',
+        vectorUrl: '',
         fromDate: {
           date: '01/01/2025',
           hour: '00',

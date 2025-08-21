@@ -59,3 +59,11 @@ Cypress.Commands.add('stubMapToken', options => {
 Cypress.Commands.add('stubMapTiles', options => {
   cy.task('stubMapTiles', options)
 })
+
+Cypress.Commands.add('stubMapVectorStyle', () => {
+  cy.task('stubMapVectorStyle')
+})
+
+Cypress.Commands.add('stubVectorTiles', () => {
+  cy.task('stubVectorTiles')
+})

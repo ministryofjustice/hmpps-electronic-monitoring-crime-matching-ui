@@ -10,7 +10,6 @@
 {% set mainClasses = "app-container govuk-body location-data" %}
 {% set activeLinkId = "location-data" %}
 
-
 {% set timeHtml %}
   <form>
     {{
@@ -195,14 +194,45 @@
 {% block content %}
   {{
     appMap({
+      cspNonce: cspNonce,
       geoData: {
         points: points,
         lines: lines
       },
       tileUrl: tileUrl,
+      vectorUrl: vectorUrl,
       alerts: alerts,
-      showOverlay: true,
+      usesInternalOverlays: true,
       sidebarHtml: sidebarHtml
     })
   }}
+
+  {# The {{ }} placeholders are not processed by Nunjucks.
+      They are used as markers and replaced within assets/js files at runtime.
+      Implemented this way to avoid large Template Literals in the JavaScript file. #}
+  {% raw %}
+  <template id="overlay-template-pop-location">
+    <div part="app-map__overlay-row">
+      <strong part="app-map__overlay-strong">Speed: </strong><span>{{ displaySpeed }}</span>
+    </div>
+    <div part="app-map__overlay-row">
+      <strong part="app-map__overlay-strong">Direction: </strong><span>{{ displayDirection }}</span>
+    </div>
+    <div part="app-map__overlay-row">
+      <strong part="app-map__overlay-strong">Geolocation Mechanism: </strong><span>{{ displayGeolocationMechanism }}</span>
+    </div>
+    <div part="app-map__overlay-row">
+      <strong part="app-map__overlay-strong">Recorded Date: </strong><span>{{ displayTimestamp }}</span>
+    </div>
+    <div part="app-map__overlay-row">
+      <strong part="app-map__overlay-strong">Confidence: </strong><span>{{ displayConfidence }}</span>
+    </div>
+    <div part="app-map__overlay-row">
+      <strong part="app-map__overlay-strong">Latitude: </strong><span>{{ displayLatitude }}</span>
+    </div>
+    <div part="app-map__overlay-row">
+      <strong part="app-map__overlay-strong">Longitude: </strong><span>{{ displayLongitude }}</span>
+    </div>
+  </template>
+  {% endraw %}
 {% endblock %}

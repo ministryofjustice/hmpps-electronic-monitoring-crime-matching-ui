@@ -30,8 +30,10 @@ export default function setUpWebSecurity(): Router {
           // @ts-expect-error mismatch response
           scriptSrc: ["'self'", (_req: Request, res: Response) => `'nonce-${res.locals.cspNonce}'`],
           // @ts-expect-error mismatch response
-          styleSrc: ["'self'", (_req: Request, res: Response) => `'nonce-${res.locals.cspNonce}'`],
-          fontSrc: ["'self'"],
+          styleSrc: ["'self'", 'cdn.jsdelivr.net', (_req: Request, res: Response) => `'nonce-${res.locals.cspNonce}'`],
+          // Allow inline style ATTRIBUTES only (needed by Open Layers controls):
+          styleSrcAttr: ["'unsafe-inline'"],
+          fontSrc: ["'self'", 'cdn.jsdelivr.net'],
           formAction: [`'self' ${config.apis.hmppsAuth.externalUrl}`],
         },
       },

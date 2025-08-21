@@ -86,6 +86,16 @@ declare global {
        * Stub a wiremock response for GET map tile requests
        */
       stubMapTiles(options?: Record<string, unknown>): Chainable<void>
+
+      /**
+       * Stub a wiremock response for GET /maps/vector/v1/vts
+       */
+      stubMapVectorStyle(options?: Record<string, unknown>): Chainable<void>
+
+      /**
+       * Stub a wiremock response for GET .pbf vector tiles
+       */
+      stubVectorTiles(options?: Record<string, unknown>): Chainable<void>
     }
   }
 }

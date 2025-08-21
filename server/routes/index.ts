@@ -4,7 +4,6 @@ import asyncMiddleware from '../middleware/asyncMiddleware'
 import type { Services } from '../services'
 import { Page } from '../services/auditService'
 import CrimeMappingController from '../controllers/crimeMapping'
-import MapController from '../controllers/map'
 import CrimeBatchesController from '../controllers/crimeMapping/crimeBatches'
 import LegalController from '../controllers/legal'
 import HelpController from '../controllers/help'
@@ -13,7 +12,7 @@ import populateSessionData from '../middleware/populateSessionData'
 import locationDataRoutes from './location-data'
 
 export default function routes(services: Services): Router {
-  const { auditService, crimeBatchesService, crimeMappingService, mapService, personsService } = services
+  const { auditService, crimeBatchesService, crimeMappingService, personsService } = services
   const router = Router()
   const get = (path: string | string[], handler: RequestHandler) => router.get(path, asyncMiddleware(handler))
   const post = (path: string | string[], handler: RequestHandler) => router.post(path, asyncMiddleware(handler))
@@ -28,7 +27,6 @@ export default function routes(services: Services): Router {
   const crimeBatchesController = new CrimeBatchesController(crimeBatchesService)
   const helpController = new HelpController()
   const legalController = new LegalController()
-  const mapController = new MapController(mapService)
   const subjectsController = new SubjectsController(personsService)
 
   router.use(populateSessionData)
@@ -37,7 +35,6 @@ export default function routes(services: Services): Router {
 
   get('/help', helpController.view)
   get('/legal', legalController.view)
-  get('/map/token', mapController.token)
 
   get('/crime-mapping/crime-batches', crimeBatchesController.view)
   post('/crime-mapping/crime-batches', crimeBatchesController.search)
