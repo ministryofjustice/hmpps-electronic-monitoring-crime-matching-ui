@@ -1,7 +1,12 @@
 import express, { Express } from 'express'
 import { NotFound } from 'http-errors'
-
 import { randomUUID } from 'crypto'
+import dayjs from 'dayjs'
+import utc from 'dayjs/plugin/utc'
+import timezone from 'dayjs/plugin/timezone'
+import isSameOrAfter from 'dayjs/plugin/isSameOrAfter'
+import isSameOrBefore from 'dayjs/plugin/isSameOrBefore'
+
 import routes from '../index'
 import nunjucksSetup from '../../utils/nunjucksSetup'
 import errorHandler from '../../errorHandler'
@@ -13,6 +18,11 @@ import HmppsAuditClient from '../../data/hmppsAuditClient'
 
 jest.mock('../../services/auditService')
 jest.mock('../../data/hmppsAuditClient')
+
+dayjs.extend(utc)
+dayjs.extend(timezone)
+dayjs.extend(isSameOrAfter)
+dayjs.extend(isSameOrBefore)
 
 export const user: HmppsUser = {
   name: 'FIRST LAST',

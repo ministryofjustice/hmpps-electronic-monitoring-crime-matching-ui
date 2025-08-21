@@ -1,6 +1,9 @@
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
 import timezone from 'dayjs/plugin/timezone'
+import customParseFormat from 'dayjs/plugin/customParseFormat'
+import isSameOrAfter from 'dayjs/plugin/isSameOrAfter'
+import isSameOrBefore from 'dayjs/plugin/isSameOrBefore'
 import { RestClient } from '@ministryofjustice/hmpps-rest-client'
 import Logger from 'bunyan'
 import createMockLogger from '../../testutils/createMockLogger'
@@ -8,9 +11,14 @@ import createMockRequest from '../../testutils/createMockRequest'
 import createMockResponse from '../../testutils/createMockResponse'
 import SubjectService from '../../services/locationData/subject'
 import SubjectController from './subject'
+import DeviceActivationsService from '../../services/deviceActivationsService'
+import ValidationService from '../../services/locationData/validationService'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
+dayjs.extend(customParseFormat)
+dayjs.extend(isSameOrAfter)
+dayjs.extend(isSameOrBefore)
 
 jest.mock('@ministryofjustice/hmpps-rest-client')
 
@@ -62,7 +70,9 @@ describe('SubjectController', () => {
       const res = createMockResponse()
       const next = jest.fn()
       const service = new SubjectService(mockRestClient)
-      const controller = new SubjectController(service)
+      const deviceActivationsService = new DeviceActivationsService(mockRestClient)
+      const validationService = new ValidationService(deviceActivationsService)
+      const controller = new SubjectController(service, deviceActivationsService, validationService)
 
       mockRestClient.post.mockResolvedValue({
         queryExecutionId: '1234',
@@ -107,7 +117,9 @@ describe('SubjectController', () => {
       const res = createMockResponse()
       const next = jest.fn()
       const service = new SubjectService(mockRestClient)
-      const controller = new SubjectController(service)
+      const deviceActivationsService = new DeviceActivationsService(mockRestClient)
+      const validationService = new ValidationService(deviceActivationsService)
+      const controller = new SubjectController(service, deviceActivationsService, validationService)
 
       mockRestClient.post.mockResolvedValue({
         queryExecutionId: '1234',
@@ -159,7 +171,9 @@ describe('SubjectController', () => {
       const res = createMockResponse()
       const next = jest.fn()
       const service = new SubjectService(mockRestClient)
-      const controller = new SubjectController(service)
+      const deviceActivationsService = new DeviceActivationsService(mockRestClient)
+      const validationService = new ValidationService(deviceActivationsService)
+      const controller = new SubjectController(service, deviceActivationsService, validationService)
 
       mockRestClient.post.mockResolvedValue({
         queryExecutionId: '1234',
@@ -207,7 +221,9 @@ describe('SubjectController', () => {
       const res = createMockResponse()
       const next = jest.fn()
       const service = new SubjectService(mockRestClient)
-      const controller = new SubjectController(service)
+      const deviceActivationsService = new DeviceActivationsService(mockRestClient)
+      const validationService = new ValidationService(deviceActivationsService)
+      const controller = new SubjectController(service, deviceActivationsService, validationService)
 
       mockRestClient.post.mockResolvedValue({
         queryExecutionId: '1234',
@@ -255,7 +271,9 @@ describe('SubjectController', () => {
       const res = createMockResponse()
       const next = jest.fn()
       const service = new SubjectService(mockRestClient)
-      const controller = new SubjectController(service)
+      const deviceActivationsService = new DeviceActivationsService(mockRestClient)
+      const validationService = new ValidationService(deviceActivationsService)
+      const controller = new SubjectController(service, deviceActivationsService, validationService)
 
       mockRestClient.post.mockResolvedValue({
         queryExecutionId: '1234',
@@ -279,25 +297,35 @@ describe('SubjectController', () => {
   describe('view', () => {
     it('should display the subject view with no location data', async () => {
       // Given
-      const personId = '1'
-      const from = '2025-01-01T00:00:00Z'
-      const to = '2025-01-02T00:00:00Z'
+      const deviceActivationId = '1'
+      const from = '2025-01-01T00:00:00.000Z'
+      const to = '2025-01-02T00:00:00.000Z'
       const req = createMockRequest({
         params: {
-          personId,
+          deviceActivationId,
         },
         query: {
           from,
           to,
         },
+        deviceActivation: {
+          deviceActivationId: 1,
+          deviceId: 123456789,
+          personId: 123456789,
+          deviceActivationDate: '2025-01-01T00:00:00.000Z',
+          deviceDeactivationDate: null,
+        },
       })
       const res = createMockResponse()
       const next = jest.fn()
       const service = new SubjectService(mockRestClient)
-      const controller = new SubjectController(service)
+      const deviceActivationsService = new DeviceActivationsService(mockRestClient)
+      const validationService = new ValidationService(deviceActivationsService)
+      const controller = new SubjectController(service, deviceActivationsService, validationService)
 
+      // GET /device-activations/1/positions
       mockRestClient.get.mockResolvedValue({
-        locations: [],
+        data: [],
       })
 
       // When
@@ -306,7 +334,7 @@ describe('SubjectController', () => {
       // Then
       expect(mockRestClient.get).toHaveBeenCalledWith(
         {
-          path: `/subjects/${personId}`,
+          path: `/device-activations/${deviceActivationId}/positions`,
           query: {
             from,
             to,
@@ -328,30 +356,52 @@ describe('SubjectController', () => {
         lines: [],
         tileUrl: '',
         vectorUrl: '',
+        fromDate: {
+          date: '01/01/2025',
+          hour: '00',
+          minute: '00',
+          second: '00',
+        },
+        toDate: {
+          date: '02/01/2025',
+          hour: '00',
+          minute: '00',
+          second: '00',
+        },
       })
     })
 
     it('should display the subject view with location data', async () => {
       // Given
-      const personId = '1'
-      const from = '2025-01-01T00:00:00Z'
-      const to = '2025-01-02T00:00:00Z'
+      const deviceActivationId = '1'
+      const from = '2025-01-01T00:00:00.000Z'
+      const to = '2025-01-02T00:00:00.000Z'
       const req = createMockRequest({
         params: {
-          personId,
+          deviceActivationId,
         },
         query: {
           from,
           to,
         },
+        deviceActivation: {
+          deviceActivationId: 1,
+          deviceId: 123456789,
+          personId: 123456789,
+          deviceActivationDate: '2025-01-01T00:00:00.000Z',
+          deviceDeactivationDate: null,
+        },
       })
       const res = createMockResponse()
       const next = jest.fn()
       const service = new SubjectService(mockRestClient)
-      const controller = new SubjectController(service)
+      const deviceActivationsService = new DeviceActivationsService(mockRestClient)
+      const validationService = new ValidationService(deviceActivationsService)
+      const controller = new SubjectController(service, deviceActivationsService, validationService)
 
+      // GET /device-activations/1/positions
       mockRestClient.get.mockResolvedValue({
-        locations: [
+        data: [
           {
             locationRef: 1,
             point: {
@@ -387,7 +437,7 @@ describe('SubjectController', () => {
       // Then
       expect(mockRestClient.get).toHaveBeenCalledWith(
         {
-          path: `/subjects/${personId}`,
+          path: `/device-activations/${deviceActivationId}/positions`,
           query: {
             from,
             to,
@@ -461,6 +511,18 @@ describe('SubjectController', () => {
         ],
         tileUrl: '',
         vectorUrl: '',
+        fromDate: {
+          date: '01/01/2025',
+          hour: '00',
+          minute: '00',
+          second: '00',
+        },
+        toDate: {
+          date: '02/01/2025',
+          hour: '00',
+          minute: '00',
+          second: '00',
+        },
       })
     })
   })

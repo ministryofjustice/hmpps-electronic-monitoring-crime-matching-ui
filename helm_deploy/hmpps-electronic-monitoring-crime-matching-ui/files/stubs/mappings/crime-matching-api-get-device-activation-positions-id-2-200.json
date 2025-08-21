@@ -1,0 +1,14 @@
+{
+  "request": {
+    "method": "GET",
+    "urlPattern": "/crime-matching/device-activations/2/positions\\?from=\\S+&to=\\S+"
+  },
+  "response": {
+    "status": 200,
+    "bodyFileName": "crime-matching-api-get-device-activation-positions-id-2-200.json",
+    "headers": {
+      "Content-Type": "application/json;charset=UTF-8",
+      "Server": "wiremock"
+    }
+  }
+}
