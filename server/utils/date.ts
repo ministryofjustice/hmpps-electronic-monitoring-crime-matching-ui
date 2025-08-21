@@ -2,7 +2,7 @@ import dayjs, { Dayjs } from 'dayjs'
 
 const parseDateTimeFromComponents = (date: string, hour: string, minute: string, second: string) => {
   const dateTimeString = `${date} ${hour}:${minute}:${second}`
-  const formats = ['D/M/YYYY H:m:s', 'DD/MM/YYYY H:m:s']
+  const formats = ['D/M/YYYY H:m:s', 'DD/MM/YYYY H:m:s', 'D/M/YYYY HH:mm:ss', 'DD/MM/YYYY HH:mm:ss']
 
   const validationDate = dayjs(dateTimeString, formats, true)
 
