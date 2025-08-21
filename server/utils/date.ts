@@ -1,6 +1,19 @@
 import dayjs, { Dayjs } from 'dayjs'
 
-const parseISODate = (dateString: string) => {
+const parseDateTimeFromComponents = (date: string, hour: string, minute: string, second: string) => {
+  const dateTimeString = `${date} ${hour}:${minute}:${second}`
+  const formats = ['D/M/YYYY H:m:s', 'DD/MM/YYYY H:m:s']
+
+  const validationDate = dayjs(dateTimeString, formats, true)
+
+  if (!validationDate.isValid()) {
+    return dayjs(null)
+  }
+
+  return dayjs.tz(dateTimeString, 'D/M/YYYY H:m:s', 'Europe/London')
+}
+
+const parseDateTimeFromISOString = (dateString: string) => {
   return dayjs(dateString, ['YYYY-MM-DDTHH:mm:ss[Z]', 'YYYY-MM-DDTHH:mm:ss.SSS[Z]'], true)
 }
 
@@ -22,4 +35,4 @@ const getDateComponents = (date: Dayjs) => {
   }
 }
 
-export { getDateComponents, parseISODate }
+export { parseDateTimeFromComponents, parseDateTimeFromISOString, getDateComponents }

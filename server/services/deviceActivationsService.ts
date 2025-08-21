@@ -1,6 +1,6 @@
 import { asUser, RestClient } from '@ministryofjustice/hmpps-rest-client'
 import dayjs, { Dayjs } from 'dayjs'
-import { parseISODate } from '../utils/date'
+import { parseDateTimeFromISOString } from '../utils/date'
 import { Location } from '../types/location'
 import { getDeviceActivationDtoSchema, getDeviceActivationPositionsDtoSchema } from '../schemas/dtos/deviceActivation'
 import DeviceActivation from '../types/entities/deviceActivation'
@@ -40,9 +40,11 @@ class DeviceActivationsService {
   }
 
   isDateRangeWithinDeviceActivation(deviceActivation: DeviceActivation, fromDate: Dayjs, toDate: Dayjs): boolean {
-    const deviceActivationDate = parseISODate(deviceActivation.deviceActivationDate)
+    const deviceActivationDate = parseDateTimeFromISOString(deviceActivation.deviceActivationDate)
     const deviceDeactivationDate =
-      deviceActivation.deviceDeactivationDate === null ? dayjs() : parseISODate(deviceActivation.deviceDeactivationDate)
+      deviceActivation.deviceDeactivationDate === null
+        ? dayjs()
+        : parseDateTimeFromISOString(deviceActivation.deviceDeactivationDate)
 
     return (
       fromDate.isSameOrAfter(deviceActivationDate) &&

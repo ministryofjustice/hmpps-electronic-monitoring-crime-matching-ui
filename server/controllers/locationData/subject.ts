@@ -6,7 +6,7 @@ import config from '../../config'
 import { createMojAlertWarning } from '../../utils/alerts'
 import { MojAlert } from '../../types/govUk/mojAlert'
 import DeviceActivationsService from '../../services/deviceActivationsService'
-import { getDateComponents, parseISODate } from '../../utils/date'
+import { getDateComponents, parseDateTimeFromISOString } from '../../utils/date'
 import { flattenErrorsToMap } from '../../utils/errors'
 import ValidationService from '../../services/locationData/validationService'
 
@@ -40,8 +40,8 @@ export default class SubjectController {
     const { token } = res.locals.user
     const { query, deviceActivation } = req
     const { from, to } = subjectQueryParametersSchema.parse(query)
-    const fromDate = parseISODate(from)
-    const toDate = parseISODate(to)
+    const fromDate = parseDateTimeFromISOString(from)
+    const toDate = parseDateTimeFromISOString(to)
     const validationResult = this.validationService.validateDeviceActivationPositionsRequest(
       deviceActivation!,
       fromDate,
