@@ -19,7 +19,7 @@ export default class SearchDeviceActivationPositionsFormComponent extends FormCo
   }
 
   get continueButton(): PageElement {
-    return this.form.contains('button', 'Continue')
+    return this.form.contains('button', 'Apply')
   }
 
   // HELPERS

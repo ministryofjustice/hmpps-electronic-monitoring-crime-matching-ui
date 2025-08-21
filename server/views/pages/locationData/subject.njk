@@ -11,13 +11,14 @@
 {% set activeLinkId = "location-data" %}
 
 {% set timeHtml %}
-  <form>
+  <form method="POST">
+    <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
     {{
       dateTimePicker({
         id: "from-date",
         name: "fromDate",
         text: "Date from",
-        value: fromDate,
+        value: formData.fromDate,
         errors: errors.fromDate
       })
     }}
@@ -27,7 +28,7 @@
         id: "to-date",
         name: "toDate",
         text: "Date to",
-        value: toDate,
+        value: formData.toDate,
         errors: errors.toDate
       })
     }}
