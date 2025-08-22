@@ -20,8 +20,8 @@
         [
           {
             html: '<div class="govuk-radios__item govuk-radios--small">
-                    <input type="radio" class="govuk-radios__input" name="personId" id="select-' + person.personId + '" value="' + person.personId + '" data-start="' + deviceActivation.deviceActivationDate + '" data-end="' + deviceActivation.deviceDeactivationDate + '" autocomplete="off">
-                    <label class="govuk-label govuk-radios__label" for="' + person.personId + '">
+                    <input type="radio" class="govuk-radios__input" name="deviceActivationId" id="' + deviceActivation.deviceActivationId + '" value="' + deviceActivation.deviceActivationId + '" autocomplete="off">
+                    <label class="govuk-label govuk-radios__label" for="' + deviceActivation.deviceActivationId + '">
                     </label>
                   </div>'
           },
@@ -95,45 +95,42 @@
       </form>
     </div>
 
-    
-      
-      {{
-        dataTable({
-          columns: [
-            {
-              text: ""
-            },
-            {
-              text: "NOMIS ID"
-            },
-            {
-              text: "Name"
-            },
-            {
-              text: "Date of Birth"
-            },
-            {
-              text: "Address"
-            },
-            {
-              text: "Device ID"
-            },
-            {
-              text: "Tag Period Start"
-            },
-            {
-              text: "Tag Period End"
-            }
-          ],
-          rows: rows,
-          pagination: {
-            pageCount: pageCount,
-            currentPage: pageNumber,
-            hrefPrefix: '?name=' + name + "&nomisId=" + nomisId
+    {{
+      dataTable({
+        columns: [
+          {
+            text: ""
+          },
+          {
+            text: "NOMIS ID"
+          },
+          {
+            text: "Name"
+          },
+          {
+            text: "Date of Birth"
+          },
+          {
+            text: "Address"
+          },
+          {
+            text: "Device ID"
+          },
+          {
+            text: "Tag Period Start"
+          },
+          {
+            text: "Tag Period End"
           }
-        })
-      }}
-
+        ],
+        rows: rows,
+        pagination: {
+          pageCount: pageCount,
+          currentPage: pageNumber,
+          hrefPrefix: '?name=' + name + "&nomisId=" + nomisId
+        }
+      })
+    }}
     {% include "./partials/dateFilterForm.njk" %}
   </div>
 {% endblock %}

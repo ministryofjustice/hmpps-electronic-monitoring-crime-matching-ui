@@ -1,8 +1,9 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "../../../components/date-time-picker/macro.njk" import dateTimePicker %}
 
-<form method="POST">
+<form id="dateFilterForm" method="POST">
   <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+  <input type="hidden" name="origin" value="{{ origin }}" />
   {{
     dateTimePicker({
       id: "from-date",
@@ -26,7 +27,9 @@
   <div class="govuk-button-group">
     {{
       govukButton({
-        text: "Apply"
+        id: "continue",
+        text: "Apply",
+        disabled: true
       })
     }}
 

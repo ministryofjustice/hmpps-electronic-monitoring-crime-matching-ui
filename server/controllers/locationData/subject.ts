@@ -38,12 +38,12 @@ export default class SubjectController {
       } else {
         req.session.formData = req.body
         req.session.validationErrors = validationResult.errors
-        res.redirect(req.originalUrl)
+        res.redirect(req.body.origin)
       }
     } else {
       req.session.formData = req.body
       req.session.validationErrors = convertZodErrorToValidationError(formData.error)
-      res.redirect(req.originalUrl)
+      res.redirect(req.body.origin)
     }
   }
 
@@ -74,6 +74,7 @@ export default class SubjectController {
       }
 
       res.render('pages/locationData/subject', {
+        origin: req.originalUrl,
         points: geoJsonData.points,
         lines: geoJsonData.lines,
         tileUrl: config.maps.tileUrl,
@@ -87,6 +88,7 @@ export default class SubjectController {
       })
     } else {
       res.render('pages/locationData/subject', {
+        origin: req.originalUrl,
         points: JSON.stringify([]),
         lines: JSON.stringify([]),
         tileUrl: config.maps.tileUrl,

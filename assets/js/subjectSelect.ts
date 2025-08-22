@@ -2,30 +2,26 @@ const querySelectorAllHtmlElement = (selector: string) => {
   return Array.from(document.querySelectorAll(selector)).filter(node => node instanceof HTMLElement)
 }
 
-const updateSubjectSelectInputs = (radio: HTMLElement) => {
-  const startDate = document.getElementById('subjectOrderStartDate') as HTMLInputElement
-  const endDate = document.getElementById('subjectOrderEndDate') as HTMLInputElement
+const updateFormState = (radio: HTMLElement) => {
+  const deviceActivationId = radio.getAttribute('value')
+  const form = document.getElementById('dateFilterForm')
   const continueButton = document.getElementById('continue') as HTMLButtonElement
-
-  if (startDate) {
-    startDate.value = radio.dataset.start || ''
-  }
-
-  if (endDate) {
-    endDate.value = radio.dataset.end || ''
-  }
 
   if (continueButton) {
     continueButton.disabled = false
+  }
+
+  if (form) {
+    form.setAttribute('action', `/location-data/device-activations/${deviceActivationId}`)
   }
 }
 
 const initSubjectSelect = () => {
   document.addEventListener('DOMContentLoaded', () => {
-    const personSelectors = querySelectorAllHtmlElement('input[type="radio"][name="personId"]')
+    const radios = querySelectorAllHtmlElement('input[type="radio"][name="deviceActivationId"]')
 
-    personSelectors.forEach(radio => {
-      radio.addEventListener('change', () => updateSubjectSelectInputs(radio))
+    radios.forEach(radio => {
+      radio.addEventListener('change', () => updateFormState(radio))
     })
   })
 }
