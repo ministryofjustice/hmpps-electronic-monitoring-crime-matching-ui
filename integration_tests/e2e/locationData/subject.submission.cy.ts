@@ -229,7 +229,7 @@ context('Location Data', () => {
             deviceId: 123456789,
             personId: 123456789,
             deviceActivationDate: '2025-01-01T00:00:00.000Z',
-            deviceDeactivationDate: '2025-01-02T00:00:00.000Z',
+            deviceDeactivationDate: '2025-01-03T00:00:00.000Z',
           },
         },
       })
@@ -247,13 +247,13 @@ context('Location Data', () => {
 
       page.map.sidebar.form.fillInWith({
         fromDate: {
-          date: '01/02/2025',
+          date: '02/02/2025',
           hour: '1',
           minute: '2',
           second: '3',
         },
         toDate: {
-          date: '02/02/2025',
+          date: '03/02/2025',
           hour: '4',
           minute: '5',
           second: '6',
@@ -268,7 +268,7 @@ context('Location Data', () => {
 
       // The view should display the incorrect form data + validation messages
       page.map.sidebar.form.fromDateField.shouldHaveValue({
-        date: '01/02/2025',
+        date: '02/02/2025',
         hour: '1',
         minute: '2',
         second: '3',
@@ -277,7 +277,7 @@ context('Location Data', () => {
         'Date and time search window should be within device activation date range',
       )
       page.map.sidebar.form.toDateField.shouldHaveValue({
-        date: '02/02/2025',
+        date: '03/02/2025',
         hour: '4',
         minute: '5',
         second: '6',
