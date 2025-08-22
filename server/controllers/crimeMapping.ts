@@ -14,6 +14,7 @@ export default class CrimeMappingController {
       points: JSON.stringify(geoJsonData.points),
       lines: JSON.stringify(geoJsonData.lines),
       tileUrl: config.maps.tileUrl,
+      vectorUrl: config.maps.vectorUrl,
     })
   }
 }
