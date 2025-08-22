@@ -325,18 +325,18 @@ describe('SubjectController', () => {
         tileUrl: '',
         vectorUrl: '',
         formData: {
-        fromDate: {
-          date: '01/01/2025',
-          hour: '00',
-          minute: '00',
-          second: '00',
-        },
-        toDate: {
-          date: '02/01/2025',
-          hour: '00',
-          minute: '00',
-          second: '00',
-        }
+          fromDate: {
+            date: '01/01/2025',
+            hour: '00',
+            minute: '00',
+            second: '00',
+          },
+          toDate: {
+            date: '02/01/2025',
+            hour: '00',
+            minute: '00',
+            second: '00',
+          },
         },
       })
     })
@@ -481,21 +481,21 @@ describe('SubjectController', () => {
         ],
         tileUrl: '',
         vectorUrl: '',
-         formData: {
-        fromDate: {
-          date: '01/01/2025',
-          hour: '00',
-          minute: '00',
-          second: '00',
+        formData: {
+          fromDate: {
+            date: '01/01/2025',
+            hour: '00',
+            minute: '00',
+            second: '00',
+          },
+
+          toDate: {
+            date: '02/01/2025',
+            hour: '00',
+            minute: '00',
+            second: '00',
+          },
         },
-       
-        toDate: {
-          date: '02/01/2025',
-          hour: '00',
-          minute: '00',
-          second: '00',
-        },
-      }
       })
     })
   })
