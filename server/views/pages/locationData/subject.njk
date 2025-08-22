@@ -11,43 +11,7 @@
 {% set activeLinkId = "location-data" %}
 
 {% set timeHtml %}
-  <form method="POST">
-    <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
-    {{
-      dateTimePicker({
-        id: "from-date",
-        name: "fromDate",
-        text: "Date from",
-        value: formData.fromDate,
-        errors: errors.fromDate
-      })
-    }}
-
-    {{
-      dateTimePicker({
-        id: "to-date",
-        name: "toDate",
-        text: "Date to",
-        value: formData.toDate,
-        errors: errors.toDate
-      })
-    }}
-
-    <div class="govuk-button-group">
-      {{
-        govukButton({
-          text: "Apply"
-        })
-      }}
-
-      {{
-        govukButton({
-          text: "Reset",
-          classes: "govuk-button--secondary"
-        })
-      }}
-    </div>
-  </form>
+  {% include "./partials/dateFilterForm.njk" %}
 
   <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible" />
 
