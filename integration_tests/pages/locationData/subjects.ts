@@ -1,6 +1,6 @@
 import AppPage from '../appPage'
 import DataTableComponent from '../components/dataTableComponent'
-import SearchSubjectLocationsFormComponent from '../components/forms/searchSubjectLocationsForm'
+import SearchDeviceActivationPositionsFormComponent from '../components/forms/searchDeviceActivationPositions'
 import SearchSubjectsFormComponent from '../components/forms/searchSubjectsForm'
 
 export default class SubjectsPage extends AppPage {
@@ -16,8 +16,8 @@ export default class SubjectsPage extends AppPage {
     return new SearchSubjectsFormComponent()
   }
 
-  get locationsForm(): SearchSubjectLocationsFormComponent {
-    return new SearchSubjectLocationsFormComponent()
+  get locationsForm(): SearchDeviceActivationPositionsFormComponent {
+    return new SearchDeviceActivationPositionsFormComponent()
   }
 
   checkOnPage(): void {

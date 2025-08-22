@@ -1,4 +1,3 @@
-import dayjs from 'dayjs'
 import SubjectsPage from '../../pages/locationData/subjects'
 import Page from '../../pages/page'
 
@@ -13,7 +12,7 @@ context('Location Data', () => {
     })
 
     it('should display an error message on date fields if invalid dates submitted', () => {
-      cy.stubCreateSubjectLocationsQuery()
+      cy.stubGetDeviceActivation()
       cy.stubGetPersons({
         status: 200,
         query: '.*',
@@ -27,7 +26,7 @@ context('Location Data', () => {
               address: '123 Street',
               deviceActivations: [
                 {
-                  deviceActivationId: 123456,
+                  deviceActivationId: 1,
                   deviceId: 123456,
                   personId: 123456,
                   deviceActivationDate: '2024-12-01T00:00:00.000Z',
@@ -55,14 +54,24 @@ context('Location Data', () => {
       page.locationsForm.fillInWith({ fromDate: undefined, toDate: undefined })
       page.dataTable.selectRow('1')
       page.locationsForm.continueButton.click()
-      page.locationsForm.searchFromDateField.shouldHaveValidationMessage('You must enter a valid value for date')
-      page.locationsForm.searchToDateField.shouldHaveValidationMessage('You must enter a valid value for date')
+      page.locationsForm.fromDateField.shouldHaveValidationMessage('You must enter a valid value for date')
+      page.locationsForm.toDateField.shouldHaveValidationMessage('You must enter a valid value for date')
     })
 
-    it('should display an error message if date range is outside order date range', () => {
-      cy.stubCreateSubjectLocationsQuery()
-      const now = dayjs('2025-08-01T09:00:00Z')
-      const invalidDate = now.subtract(1, 'day')
+    it('should display an error message if date range is outside device activation date range', () => {
+      cy.stubGetDeviceActivation({
+        deviceActivationId: '1',
+        status: 200,
+        response: {
+          data: {
+            deviceActivationId: 1,
+            deviceId: 123456,
+            personId: 123456,
+            deviceActivationDate: '2024-12-01T00:00:00.000Z',
+            deviceDeactivationDate: '2024-12-02T00:00:00.000Z',
+          },
+        },
+      })
       cy.stubGetPersons({
         status: 200,
         query: '.*',
@@ -76,7 +85,7 @@ context('Location Data', () => {
               address: '123 Street',
               deviceActivations: [
                 {
-                  deviceActivationId: 123456,
+                  deviceActivationId: 1,
                   deviceId: 123456,
                   personId: 123456,
                   deviceActivationDate: '2024-12-01T00:00:00.000Z',
@@ -91,6 +100,9 @@ context('Location Data', () => {
         },
       })
 
+      const fromDate = { date: '01/08/2025', hour: '09', minute: '00', second: '00' }
+      const toDate = { date: '02/08/2025', hour: '09', minute: '00', second: '00' }
+
       cy.visit(url)
       let page = Page.verifyOnPage(SubjectsPage)
 
@@ -101,18 +113,16 @@ context('Location Data', () => {
       page = Page.verifyOnPage(SubjectsPage)
       page.dataTable.shouldHaveResults()
 
-      page.locationsForm.fillInWith({ fromDate: invalidDate.toDate(), toDate: now.toDate() })
+      page.locationsForm.fillInWith({ fromDate, toDate })
       page.dataTable.selectRow('1')
       page.locationsForm.continueButton.click()
-      page.locationsForm.searchFromDateField.shouldHaveValidationMessage(
-        'Date and time search window should be within Order date range',
+      page.locationsForm.fromDateField.shouldHaveValidationMessage(
+        'Date and time search window should be within device activation date range',
       )
     })
 
     it('should display an error message if date range is outside of maximum time window', () => {
-      cy.stubCreateSubjectLocationsQuery()
-      const now = dayjs('2025-08-01T09:00:00Z')
-      const invalidDate = now.add(3, 'day')
+      cy.stubGetDeviceActivation()
       cy.stubGetPersons({
         status: 200,
         query: '.*',
@@ -126,7 +136,7 @@ context('Location Data', () => {
               address: '123 Street',
               deviceActivations: [
                 {
-                  deviceActivationId: 123456,
+                  deviceActivationId: 1,
                   deviceId: 123456,
                   personId: 123456,
                   deviceActivationDate: '2024-12-01T00:00:00.000Z',
@@ -141,6 +151,9 @@ context('Location Data', () => {
         },
       })
 
+      const fromDate = { date: '01/08/2025', hour: '09', minute: '00', second: '00' }
+      const toDate = { date: '04/08/2025', hour: '09', minute: '00', second: '00' }
+
       cy.visit(url)
       let page = Page.verifyOnPage(SubjectsPage)
 
@@ -151,18 +164,16 @@ context('Location Data', () => {
       page = Page.verifyOnPage(SubjectsPage)
       page.dataTable.shouldHaveResults()
 
-      page.locationsForm.fillInWith({ fromDate: now.toDate(), toDate: invalidDate.toDate() })
+      page.locationsForm.fillInWith({ fromDate, toDate })
       page.dataTable.selectRow('1')
       page.locationsForm.continueButton.click()
-      page.locationsForm.searchFromDateField.shouldHaveValidationMessage(
+      page.locationsForm.fromDateField.shouldHaveValidationMessage(
         'Date and time search window should not exceed 48 hours',
       )
     })
 
     it('should display an error message if to date is before from date', () => {
-      cy.stubCreateSubjectLocationsQuery()
-      const now = dayjs('2025-08-01T09:00:00Z')
-      const invalidDate = now.subtract(1, 'day')
+      cy.stubGetDeviceActivation()
       cy.stubGetPersons({
         status: 200,
         query: '.*',
@@ -176,7 +187,7 @@ context('Location Data', () => {
               address: '123 Street',
               deviceActivations: [
                 {
-                  deviceActivationId: 123456,
+                  deviceActivationId: 1,
                   deviceId: 123456,
                   personId: 123456,
                   deviceActivationDate: '2024-12-01T00:00:00.000Z',
@@ -191,6 +202,9 @@ context('Location Data', () => {
         },
       })
 
+      const fromDate = { date: '01/08/2025', hour: '09', minute: '00', second: '00' }
+      const toDate = { date: '31/07/2025', hour: '09', minute: '00', second: '00' }
+
       cy.visit(url)
       let page = Page.verifyOnPage(SubjectsPage)
 
@@ -201,10 +215,10 @@ context('Location Data', () => {
       page = Page.verifyOnPage(SubjectsPage)
       page.dataTable.shouldHaveResults()
 
-      page.locationsForm.fillInWith({ fromDate: now.toDate(), toDate: invalidDate.toDate() })
+      page.locationsForm.fillInWith({ fromDate, toDate })
       page.dataTable.selectRow('1')
       page.locationsForm.continueButton.click()
-      page.locationsForm.searchFromDateField.shouldHaveValidationMessage('To date must be after From date')
+      page.locationsForm.toDateField.shouldHaveValidationMessage('To date must be after From date')
     })
   })
 })

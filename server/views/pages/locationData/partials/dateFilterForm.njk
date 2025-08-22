@@ -1,0 +1,43 @@
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "../../../components/date-time-picker/macro.njk" import dateTimePicker %}
+
+<form id="dateFilterForm" method="POST">
+  <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+  <input type="hidden" name="origin" value="{{ origin }}" />
+  {{
+    dateTimePicker({
+      id: "from-date",
+      name: "fromDate",
+      text: "Date from",
+      value: formData.fromDate,
+      errors: errors.fromDate
+    })
+  }}
+
+  {{
+    dateTimePicker({
+      id: "to-date",
+      name: "toDate",
+      text: "Date to",
+      value: formData.toDate,
+      errors: errors.toDate
+    })
+  }}
+
+  <div class="govuk-button-group">
+    {{
+      govukButton({
+        id: "continue",
+        text: "Apply",
+        disabled: true
+      })
+    }}
+
+    {{
+      govukButton({
+        text: "Reset",
+        classes: "govuk-button--secondary"
+      })
+    }}
+  </div>
+</form>

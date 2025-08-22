@@ -13,6 +13,7 @@ export default class SubjectsController {
     const queryResults = await this.service.getPersons(token, parsedQuery.name, parsedQuery.nomisId, parsedQuery.page)
 
     res.render('pages/locationData/index', {
+      origin: req.originalUrl,
       name: parsedQuery.name,
       nomisId: parsedQuery.nomisId,
       persons: queryResults.data,

@@ -56,15 +56,17 @@ describe('SubjectController', () => {
         second: '1',
       }
 
-      const orderStartDate = '2025-01-01T02:00:00.000Z'
-
       const req = createMockRequest({
         body: {
-          personId: '1',
           fromDate: fromDateInput,
           toDate: toDateInput,
-          orderStartDate,
-          orderEndDate: null,
+        },
+        deviceActivation: {
+          deviceActivationId: 1,
+          deviceId: 123456,
+          personId: 1,
+          deviceActivationDate: '2024-12-01T00:00:00.000Z',
+          deviceDeactivationDate: null,
         },
       })
       const res = createMockResponse()
@@ -74,29 +76,16 @@ describe('SubjectController', () => {
       const validationService = new ValidationService(deviceActivationsService)
       const controller = new SubjectController(service, deviceActivationsService, validationService)
 
-      mockRestClient.post.mockResolvedValue({
-        queryExecutionId: '1234',
-      })
-
       // When
       await controller.search(req, res, next)
 
       // Then
-      expect(mockRestClient.post).toHaveBeenCalledWith(
-        {
-          data: {
-            personId: '1',
-            fromDate: '2025-02-01T01:01:01.000Z',
-            toDate: '2025-02-02T01:01:01.000Z',
-          },
-          path: '/subject/location-query',
-        },
-        undefined,
+      expect(res.redirect).toHaveBeenCalledWith(
+        '/location-data/device-activations/1?from=2025-02-01T01:01:01.000Z&to=2025-02-02T01:01:01.000Z',
       )
-      expect(res.redirect).toHaveBeenCalledWith('/location-data/subject?queryId=1234')
     })
 
-    it('should redirect to a view containing a validation error message if no input dates provided', async () => {
+    it('should redirect to the device activation search containing a validation error message if no input dates provided', async () => {
       // Given
       const emptyDateInput = {
         date: '',
@@ -107,11 +96,9 @@ describe('SubjectController', () => {
 
       const req = createMockRequest({
         body: {
-          personId: '1',
+          origin: '/location-data/subjects?name=foo&nomisId=',
           fromDate: emptyDateInput,
           toDate: emptyDateInput,
-          orderStartDate: '2025-01-01T02:00:00.000Z',
-          orderEndDate: null,
         },
       })
       const res = createMockResponse()
@@ -121,16 +108,11 @@ describe('SubjectController', () => {
       const validationService = new ValidationService(deviceActivationsService)
       const controller = new SubjectController(service, deviceActivationsService, validationService)
 
-      mockRestClient.post.mockResolvedValue({
-        queryExecutionId: '1234',
-      })
-
       // When
       await controller.search(req, res, next)
 
       // Then
-      expect(mockRestClient.post).not.toHaveBeenCalled()
-      expect(res.redirect).toHaveBeenCalledWith('/location-data/subjects')
+      expect(res.redirect).toHaveBeenCalledWith('/location-data/subjects?name=foo&nomisId=')
       expect(req.session.validationErrors).toEqual([
         {
           field: 'fromDate',
@@ -143,7 +125,7 @@ describe('SubjectController', () => {
       ])
     })
 
-    it('should redirect to a view containing a validation error message if to input date before from input date', async () => {
+    it('should redirect to the position view containing a validation error message if to input date before from input date', async () => {
       // Given
       const fromDateInput = {
         date: '2/2/2025',
@@ -161,11 +143,9 @@ describe('SubjectController', () => {
 
       const req = createMockRequest({
         body: {
-          personId: '1',
+          origin: '/location-data/device-activations/1',
           fromDate: fromDateInput,
           toDate: toDateInput,
-          orderStartDate: '2025-01-01T02:00:00.000Z',
-          orderEndDate: null,
         },
       })
       const res = createMockResponse()
@@ -175,19 +155,14 @@ describe('SubjectController', () => {
       const validationService = new ValidationService(deviceActivationsService)
       const controller = new SubjectController(service, deviceActivationsService, validationService)
 
-      mockRestClient.post.mockResolvedValue({
-        queryExecutionId: '1234',
-      })
-
       // When
       await controller.search(req, res, next)
 
       // Then
-      expect(mockRestClient.post).not.toHaveBeenCalled()
-      expect(res.redirect).toHaveBeenCalledWith('/location-data/subjects')
+      expect(res.redirect).toHaveBeenCalledWith('/location-data/device-activations/1')
       expect(req.session.validationErrors).toEqual([
         {
-          field: 'fromDate',
+          field: 'toDate',
           message: 'To date must be after From date',
         },
       ])
@@ -211,11 +186,9 @@ describe('SubjectController', () => {
 
       const req = createMockRequest({
         body: {
-          personId: '1',
+          origin: '/location-data/device-activations/1',
           fromDate: fromDateInput,
           toDate: toDateInput,
-          orderStartDate: '2025-01-01T02:00:00.000Z',
-          orderEndDate: null,
         },
       })
       const res = createMockResponse()
@@ -225,16 +198,11 @@ describe('SubjectController', () => {
       const validationService = new ValidationService(deviceActivationsService)
       const controller = new SubjectController(service, deviceActivationsService, validationService)
 
-      mockRestClient.post.mockResolvedValue({
-        queryExecutionId: '1234',
-      })
-
       // When
       await controller.search(req, res, next)
 
       // Then
-      expect(mockRestClient.post).not.toHaveBeenCalled()
-      expect(res.redirect).toHaveBeenCalledWith('/location-data/subjects')
+      expect(res.redirect).toHaveBeenCalledWith('/location-data/device-activations/1')
       expect(req.session.validationErrors).toEqual([
         {
           field: 'fromDate',
@@ -243,7 +211,7 @@ describe('SubjectController', () => {
       ])
     })
 
-    it('should redirect to a view containing a validation error message if input dates are outside of order date range', async () => {
+    it('should redirect to a view containing a validation error message if input dates are outside of device activation date range', async () => {
       // Given
       const fromDateInput = {
         date: '1/1/2025',
@@ -253,19 +221,24 @@ describe('SubjectController', () => {
       }
 
       const toDateInput = {
-        date: '1/1/2025',
+        date: '2/1/2025',
         hour: '1',
         minute: '1',
         second: '1',
       }
 
       const req = createMockRequest({
+        deviceActivation: {
+          deviceActivationId: 1,
+          deviceId: 123456,
+          personId: 1,
+          deviceActivationDate: '2024-12-01T00:00:00.000Z',
+          deviceDeactivationDate: '2024-12-02T00:00:00.000Z',
+        },
         body: {
-          personId: '1',
+          origin: '/location-data/device-activations/1',
           fromDate: fromDateInput,
           toDate: toDateInput,
-          orderStartDate: '2025-02-01T02:00:00.000Z',
-          orderEndDate: null,
         },
       })
       const res = createMockResponse()
@@ -275,20 +248,15 @@ describe('SubjectController', () => {
       const validationService = new ValidationService(deviceActivationsService)
       const controller = new SubjectController(service, deviceActivationsService, validationService)
 
-      mockRestClient.post.mockResolvedValue({
-        queryExecutionId: '1234',
-      })
-
       // When
       await controller.search(req, res, next)
 
       // Then
-      expect(mockRestClient.post).not.toHaveBeenCalled()
-      expect(res.redirect).toHaveBeenCalledWith('/location-data/subjects')
+      expect(res.redirect).toHaveBeenCalledWith('/location-data/device-activations/1')
       expect(req.session.validationErrors).toEqual([
         {
           field: 'fromDate',
-          message: 'Date and time search window should be within Order date range',
+          message: 'Date and time search window should be within device activation date range',
         },
       ])
     })
@@ -356,17 +324,19 @@ describe('SubjectController', () => {
         lines: [],
         tileUrl: '',
         vectorUrl: '',
-        fromDate: {
-          date: '01/01/2025',
-          hour: '00',
-          minute: '00',
-          second: '00',
-        },
-        toDate: {
-          date: '02/01/2025',
-          hour: '00',
-          minute: '00',
-          second: '00',
+        formData: {
+          fromDate: {
+            date: '01/01/2025',
+            hour: '00',
+            minute: '00',
+            second: '00',
+          },
+          toDate: {
+            date: '02/01/2025',
+            hour: '00',
+            minute: '00',
+            second: '00',
+          },
         },
       })
     })
@@ -511,17 +481,20 @@ describe('SubjectController', () => {
         ],
         tileUrl: '',
         vectorUrl: '',
-        fromDate: {
-          date: '01/01/2025',
-          hour: '00',
-          minute: '00',
-          second: '00',
-        },
-        toDate: {
-          date: '02/01/2025',
-          hour: '00',
-          minute: '00',
-          second: '00',
+        formData: {
+          fromDate: {
+            date: '01/01/2025',
+            hour: '00',
+            minute: '00',
+            second: '00',
+          },
+
+          toDate: {
+            date: '02/01/2025',
+            hour: '00',
+            minute: '00',
+            second: '00',
+          },
         },
       })
     })

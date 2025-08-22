@@ -111,7 +111,7 @@ context('Location Data', () => {
         status: 200,
         response: {
           data: {
-            deviceActivationId: 123456789,
+            deviceActivationId: 1,
             deviceId: 123456789,
             personId: 123456789,
             deviceActivationDate: '2025-01-01T00:00:00.000Z',
