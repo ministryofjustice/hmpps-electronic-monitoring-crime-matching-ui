@@ -36,12 +36,18 @@ export default class SubjectController {
         const params = `from=${formData.data.fromDate}&to=${formData.data.toDate}`
         res.redirect(`/location-data/device-activations/${deviceActivation.deviceActivationId}?${params.toString()}`)
       } else {
-        req.session.formData = req.body
+        req.session.formData = {
+          ...req.body,
+          deviceActivationId: req.params.deviceActivationId,
+        }
         req.session.validationErrors = validationResult.errors
         res.redirect(req.body.origin)
       }
     } else {
-      req.session.formData = req.body
+      req.session.formData = {
+        ...req.body,
+        deviceActivationId: req.params.deviceActivationId,
+      }
       req.session.validationErrors = convertZodErrorToValidationError(formData.error)
       res.redirect(req.body.origin)
     }

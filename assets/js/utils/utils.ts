@@ -8,11 +8,22 @@
  * @returns A formatted string like "42 km/h", or the fallback value
  */
 
-export default function queryElement<T extends Element>(
+type Constructor<T> = {
+  new (): T
+}
+
+const isNodeListOfElement = <T extends Element>(
+  elements: NodeListOf<Element>,
+  expectedConstructor: Constructor<T>,
+): elements is NodeListOf<T> => {
+  return [...elements.values()].every(element => element instanceof expectedConstructor)
+}
+
+export const queryElement = <T extends Element>(
   parent: Document | Element,
   selector: string,
-  expectedConstructor?: { new (): T },
-): T {
+  expectedConstructor?: Constructor<T>,
+): T => {
   const el = parent.querySelector(selector)
 
   if (!el) {
@@ -24,4 +35,18 @@ export default function queryElement<T extends Element>(
   }
 
   return el as T
+}
+
+export const queryElementAll = <T extends Element>(
+  parent: Document | Element,
+  selector: string,
+  expectedConstructor: Constructor<T>,
+): NodeListOf<T> => {
+  const elements = parent.querySelectorAll(selector)
+
+  if (expectedConstructor && isNodeListOfElement(elements, expectedConstructor)) {
+    return elements
+  }
+
+  throw new Error(`Elements matched by "${selector}" are not instances of ${expectedConstructor.name}.`)
 }

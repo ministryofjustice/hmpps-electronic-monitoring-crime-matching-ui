@@ -5,7 +5,7 @@ import TracksLayer from './layers/tracks'
 import ConfidenceLayer from './layers/confidence'
 import NumberingLayer from './layers/numbering'
 import createLayerVisibilityToggle from './controls/layerVisibilityToggle'
-import queryElement from '../../utils/utils'
+import { queryElement } from '../../utils/utils'
 import initialiseDateFilterForm from '../../forms/date-filter-form'
 
 const initialiseLocationDataView = async () => {
