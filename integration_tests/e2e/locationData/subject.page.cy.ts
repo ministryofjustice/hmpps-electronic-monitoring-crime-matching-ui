@@ -90,7 +90,7 @@ context('Location Data', () => {
         status: 200,
         deviceActivationId,
         query: 'from=\\S+&to=\\S+',
-        response: data,
+        response: sampleLocations,
       })
 
       const fromDateUTC = '2025-08-01T09:00:00.000Z'
