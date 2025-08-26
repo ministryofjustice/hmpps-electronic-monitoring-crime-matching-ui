@@ -1,6 +1,7 @@
-import dayjs from 'dayjs'
 import SubjectsPage from '../../pages/locationData/subjects'
 import Page from '../../pages/page'
+import SubjectPage from '../../pages/locationData/subject'
+import sampleLocations from './fixtures/sample-locations'
 
 const url = '/location-data/subjects'
 
@@ -12,8 +13,14 @@ context('Location Data', () => {
       cy.signIn()
     })
 
-    it('should display the location results on map if the search query is valid', () => {
-      cy.stubCreateSubjectLocationsQuery()
+    it('should display the location results on map if the submitted dates are valid', () => {
+      cy.stubGetDeviceActivation()
+      cy.stubGetDeviceActivationPositions({
+        status: 200,
+        deviceActivationId: '1',
+        query: 'from=\\S+&to=\\S+',
+        response: sampleLocations,
+      })
       cy.stubGetPersons({
         status: 200,
         query: '.*',
@@ -27,7 +34,7 @@ context('Location Data', () => {
               address: '123 Street',
               deviceActivations: [
                 {
-                  deviceActivationId: 123456,
+                  deviceActivationId: 1,
                   deviceId: 123456,
                   personId: 123456,
                   deviceActivationDate: '2024-12-01T00:00:00.000Z',
@@ -53,13 +60,27 @@ context('Location Data', () => {
       page.dataTable.shouldHaveResults()
 
       page.locationsForm.continueButton.should('be.disabled')
-      const now = dayjs('2025-08-01T09:00:00Z')
-      const toDate = now.add(1, 'day')
-      page.locationsForm.fillInWith({ fromDate: now.toDate(), toDate: toDate.toDate() })
+      page.locationsForm.fillInWith({
+        fromDate: { date: '01/01/2025', hour: '09', minute: '00', second: '00' },
+        toDate: { date: '02/01/2025', hour: '09', minute: '00', second: '00' },
+      })
       page.dataTable.selectRow('1')
       page.locationsForm.continueButton.should('not.be.disabled')
       page.locationsForm.continueButton.click()
-      cy.url().should('include', '?queryId=4321')
+
+      const subjectPage = Page.verifyOnPage(SubjectPage)
+      subjectPage.map.sidebar.form.fromDateField.shouldHaveValue({
+        date: '01/01/2025',
+        hour: '09',
+        minute: '00',
+        second: '00',
+      })
+      subjectPage.map.sidebar.form.toDateField.shouldHaveValue({
+        date: '02/01/2025',
+        hour: '09',
+        minute: '00',
+        second: '00',
+      })
     })
   })
 })

@@ -6,6 +6,7 @@ import ConfidenceLayer from './layers/confidence'
 import NumberingLayer from './layers/numbering'
 import createLayerVisibilityToggle from './controls/layerVisibilityToggle'
 import queryElement from '../../utils/utils'
+import initialiseDateFilterForm from '../../forms/date-filter-form'
 
 const initialiseLocationDataView = async () => {
   const mojMap = queryElement(document, 'moj-map') as MojMap
@@ -53,6 +54,8 @@ const initialiseLocationDataView = async () => {
   createLayerVisibilityToggle('#tracks', tracksLayer)
   createLayerVisibilityToggle('#confidence', confidenceLayer)
   createLayerVisibilityToggle('#numbering', locationNumberingLayer)
+
+  initialiseDateFilterForm()
 }
 
 export default initialiseLocationDataView
