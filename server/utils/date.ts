@@ -14,16 +14,17 @@ const parseDateTimeFromComponents = (date: string, hour: string, minute: string,
 }
 
 const parseDateTimeFromISOString = (dateString: string) => {
-  return dayjs(dateString, ['YYYY-MM-DDTHH:mm:ss[Z]', 'YYYY-MM-DDTHH:mm:ss.SSS[Z]'], true)
+  return dayjs(dateString)
 }
 
 const getDateComponents = (date: Dayjs) => {
   if (date.isValid()) {
+    const londonDate = date.tz('Europe/London')
     return {
-      date: date.format('DD/MM/YYYY'),
-      hour: date.hour().toString().padStart(2, '0'),
-      minute: date.minute().toString().padStart(2, '0'),
-      second: date.second().toString().padStart(2, '0'),
+      date: londonDate.format('DD/MM/YYYY'),
+      hour: londonDate.format('HH'),
+      minute: londonDate.format('mm'),
+      second: londonDate.format('ss'),
     }
   }
 
