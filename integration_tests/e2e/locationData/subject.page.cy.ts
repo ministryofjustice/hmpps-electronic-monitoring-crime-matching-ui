@@ -110,6 +110,67 @@ context('Location Data', () => {
       })
       page.map.sidebar.form.toDateField.shouldHaveValue({ date: '02/08/2025', hour: '00', minute: '59', second: '00' })
     })
+
+    it('should reset the date filter form', () => {
+      cy.stubGetDeviceActivation()
+      cy.stubGetDeviceActivationPositions({
+        status: 200,
+        deviceActivationId,
+        query,
+        response: sampleLocations,
+      })
+      cy.visit(url)
+
+      const page = Page.verifyOnPage(SubjectPage)
+
+      // Make sure the form is populated from query params
+      page.map.sidebar.form.fromDateField.shouldHaveValue({
+        date: '01/01/2025',
+        hour: '01',
+        minute: '20',
+        second: '03',
+      })
+      page.map.sidebar.form.toDateField.shouldHaveValue({ date: '02/01/2025', hour: '02', minute: '04', second: '50' })
+      page.map.sidebar.form.resetButton.should('be.disabled')
+
+      // Fill in the form with new values
+      page.map.sidebar.form.fillInWith({
+        fromDate: {
+          date: '10/02/2025',
+          hour: '10',
+          minute: '11',
+          second: '12',
+        },
+        toDate: {
+          date: '11/02/2025',
+          hour: '20',
+          minute: '21',
+          second: '22',
+        },
+      })
+
+      // Make sure the form was filled in correctly
+      page.map.sidebar.form.fromDateField.shouldHaveValue({
+        date: '10/02/2025',
+        hour: '10',
+        minute: '11',
+        second: '12',
+      })
+      page.map.sidebar.form.toDateField.shouldHaveValue({ date: '11/02/2025', hour: '20', minute: '21', second: '22' })
+
+      // Reset the form
+      page.map.sidebar.form.resetButton.should('not.be.disabled')
+      page.map.sidebar.form.resetButton.click()
+
+      // Make sure the form was reset to initial values
+      page.map.sidebar.form.fromDateField.shouldHaveValue({
+        date: '01/01/2025',
+        hour: '01',
+        minute: '20',
+        second: '03',
+      })
+      page.map.sidebar.form.toDateField.shouldHaveValue({ date: '02/01/2025', hour: '02', minute: '04', second: '50' })
+    })
   })
 
   context('Interacting with the map', () => {

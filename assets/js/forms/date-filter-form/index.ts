@@ -1,13 +1,17 @@
+import { queryElement, queryElementAll } from '../../utils/utils'
+
 const initialiseDateFilterForm = () => {
-  const form = document.getElementById('dateFilterForm')
+  const form = queryElement(document, '#dateFilterForm', HTMLFormElement)
 
   if (form) {
-    const inputs = form.querySelectorAll('input')
-    const continueButton = form.querySelector('#continue') as HTMLButtonElement
+    const inputs = queryElementAll(form, 'input', HTMLInputElement)
+    const continueButton = queryElement(form, '#continue', HTMLButtonElement)
+    const resetButton = queryElement(form, '#reset', HTMLButtonElement)
 
     inputs.forEach(input => {
       input.addEventListener('change', () => {
         continueButton.disabled = false
+        resetButton.disabled = false
       })
     })
   }
