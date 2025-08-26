@@ -83,6 +83,33 @@ context('Location Data', () => {
       })
       page.map.sidebar.form.toDateField.shouldHaveValue({ date: '02/01/2025', hour: '02', minute: '04', second: '50' })
     })
+
+    it('should display the current date times using Europe/London locale if the date is in BST', () => {
+      cy.stubGetDeviceActivation()
+      cy.stubGetDeviceActivationPositions({
+        status: 200,
+        deviceActivationId,
+        query: 'from=\\S+&to=\\S+',
+        response: data,
+      })
+
+      const fromDateUTC = '2025-08-01T09:00:00.000Z'
+      const toDateUTC = '2025-08-01T23:59:00.000Z'
+
+      cy.visit(`/location-data/device-activations/${deviceActivationId}?from=${fromDateUTC}&to=${toDateUTC}`)
+
+      const page = Page.verifyOnPage(SubjectPage)
+
+      page.map.shouldExist()
+      page.map.sidebar.shouldExist()
+      page.map.sidebar.form.fromDateField.shouldHaveValue({
+        date: '01/08/2025',
+        hour: '10',
+        minute: '00',
+        second: '00',
+      })
+      page.map.sidebar.form.toDateField.shouldHaveValue({ date: '02/08/2025', hour: '00', minute: '59', second: '00' })
+    })
   })
 
   context('Interacting with the map', () => {
