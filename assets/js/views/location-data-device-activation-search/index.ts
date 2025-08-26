@@ -1,15 +1,11 @@
 import initialiseDateFilterForm from '../../forms/date-filter-form'
+import { queryElement, queryElementAll } from '../../utils/utils'
 
-const querySelectorAllHtmlElement = (selector: string) => {
-  return Array.from(document.querySelectorAll(selector)).filter(node => node instanceof HTMLElement)
-}
-
-const handleRadioChange = (radio: HTMLElement) => {
+const handleRadioChange = (radio: HTMLElement, form: HTMLFormElement, continueButton: HTMLButtonElement) => {
   const deviceActivationId = radio.getAttribute('value')
-  const form = document.getElementById('dateFilterForm')
-  const continueButton = document.getElementById('continue') as HTMLButtonElement
 
   if (continueButton) {
+    // eslint-disable-next-line no-param-reassign
     continueButton.disabled = false
   }
 
@@ -19,10 +15,17 @@ const handleRadioChange = (radio: HTMLElement) => {
 }
 
 const initialiseLocationDataDeviceActivationSearchView = () => {
-  const radios = querySelectorAllHtmlElement('input[type="radio"][name="deviceActivationId"]')
+  const form = queryElement(document, '#dateFilterForm', HTMLFormElement)
+  const radios = queryElementAll(document, 'input[type="radio"][name="deviceActivationId"]', HTMLInputElement)
+  const continueButton = queryElement(document, '#continue', HTMLButtonElement)
 
   radios.forEach(radio => {
-    radio.addEventListener('change', () => handleRadioChange(radio))
+    radio.addEventListener('change', () => handleRadioChange(radio, form, continueButton))
+
+    // Form loaded with radio checked
+    if (radio.checked) {
+      handleRadioChange(radio, form, continueButton)
+    }
   })
 
   initialiseDateFilterForm()

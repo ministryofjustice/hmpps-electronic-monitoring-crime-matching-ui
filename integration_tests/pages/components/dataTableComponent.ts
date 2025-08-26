@@ -73,6 +73,10 @@ export default class DataTableComponent {
     this.pagination.shouldNotExist()
   }
 
+  shouldHaveSelectedRow(id: string): void {
+    cy.get(`input[type=radio][value="${id}"]`).should('be.checked')
+  }
+
   selectRow(id: string): void {
     cy.get(`input[type=radio][value="${id}"]`).check()
   }

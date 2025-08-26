@@ -51,9 +51,12 @@ context('Location Data', () => {
       page = Page.verifyOnPage(SubjectsPage)
       page.dataTable.shouldHaveResults()
 
-      page.locationsForm.fillInWith({ fromDate: undefined, toDate: undefined })
       page.dataTable.selectRow('1')
+      page.locationsForm.fillInWith({ fromDate: undefined, toDate: undefined })
       page.locationsForm.continueButton.click()
+
+      page = Page.verifyOnPage(SubjectsPage)
+      page.dataTable.shouldHaveSelectedRow('1')
       page.locationsForm.fromDateField.shouldHaveValidationMessage('You must enter a valid value for date')
       page.locationsForm.toDateField.shouldHaveValidationMessage('You must enter a valid value for date')
     })
@@ -116,6 +119,9 @@ context('Location Data', () => {
       page.locationsForm.fillInWith({ fromDate, toDate })
       page.dataTable.selectRow('1')
       page.locationsForm.continueButton.click()
+
+      page = Page.verifyOnPage(SubjectsPage)
+      page.dataTable.shouldHaveSelectedRow('1')
       page.locationsForm.fromDateField.shouldHaveValidationMessage(
         'Date and time search window should be within device activation date range',
       )
@@ -167,6 +173,9 @@ context('Location Data', () => {
       page.locationsForm.fillInWith({ fromDate, toDate })
       page.dataTable.selectRow('1')
       page.locationsForm.continueButton.click()
+
+      page = Page.verifyOnPage(SubjectsPage)
+      page.dataTable.shouldHaveSelectedRow('1')
       page.locationsForm.fromDateField.shouldHaveValidationMessage(
         'Date and time search window should not exceed 48 hours',
       )
@@ -218,6 +227,9 @@ context('Location Data', () => {
       page.locationsForm.fillInWith({ fromDate, toDate })
       page.dataTable.selectRow('1')
       page.locationsForm.continueButton.click()
+
+      page = Page.verifyOnPage(SubjectsPage)
+      page.dataTable.shouldHaveSelectedRow('1')
       page.locationsForm.toDateField.shouldHaveValidationMessage('To date must be after From date')
     })
   })

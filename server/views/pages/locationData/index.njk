@@ -1,6 +1,7 @@
 {% extends "../../partials/layout.njk" %}
 {% from "govuk/components/input/macro.njk" import govukInput %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
 {% from "../../components/datatable/macro.njk" import dataTable %}
 {% from "govuk/components/pagination/macro.njk" import govukPagination %}
 {% from "../../components/date-time-picker/macro.njk" import dateTimePicker %}
@@ -15,12 +16,13 @@
 
 {% for person in persons %}
   {% for deviceActivation in person.deviceActivations %}
+    {% set selected = ' checked' if formData.deviceActivationId == deviceActivation.deviceActivationId else '' %}
     {%
       set rows = (rows.push(
         [
           {
             html: '<div class="govuk-radios__item govuk-radios--small">
-                    <input type="radio" class="govuk-radios__input" name="deviceActivationId" id="' + deviceActivation.deviceActivationId + '" value="' + deviceActivation.deviceActivationId + '" autocomplete="off">
+                    <input type="radio" class="govuk-radios__input" name="deviceActivationId" id="' + deviceActivation.deviceActivationId + '" value="' + deviceActivation.deviceActivationId + '" autocomplete="off"' + selected +'>
                     <label class="govuk-label govuk-radios__label" for="' + deviceActivation.deviceActivationId + '">
                     </label>
                   </div>'
