@@ -170,6 +170,8 @@ context('Location Data', () => {
         second: '03',
       })
       page.map.sidebar.form.toDateField.shouldHaveValue({ date: '02/01/2025', hour: '02', minute: '04', second: '50' })
+      page.map.sidebar.form.continueButton.should('be.disabled')
+      page.map.sidebar.form.resetButton.should('be.disabled')
     })
   })
 
