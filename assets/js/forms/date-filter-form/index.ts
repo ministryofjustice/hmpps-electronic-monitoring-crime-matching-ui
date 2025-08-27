@@ -14,6 +14,11 @@ const initialiseDateFilterForm = () => {
         resetButton.disabled = false
       })
     })
+
+    form.addEventListener('reset', () => {
+      continueButton.disabled = true
+      resetButton.disabled = true
+    })
   }
 }
 

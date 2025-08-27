@@ -144,6 +144,8 @@ context('Location Data', () => {
         minute: '',
         second: '',
       })
+      page.locationsForm.continueButton.should('be.disabled')
+      page.locationsForm.resetButton.should('be.disabled')
     })
   })
 })
