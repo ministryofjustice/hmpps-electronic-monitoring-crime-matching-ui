@@ -3,6 +3,7 @@ import { PageElement } from '../page'
 import FormCheckboxComponent from './formCheckboxComponent'
 import TabComponent from './tabComponent'
 import SearchDeviceActivationPositionsFormComponent from './forms/searchDeviceActivationPositions'
+import ExportLocationDataFormComponent from './forms/exportLocationDataForm'
 
 export default class MapSidebarComponent {
   private elementCacheId: string = uuidv4()
@@ -43,6 +44,10 @@ export default class MapSidebarComponent {
 
   get form(): SearchDeviceActivationPositionsFormComponent {
     return new SearchDeviceActivationPositionsFormComponent()
+  }
+
+  get exportForm(): ExportLocationDataFormComponent {
+    return new ExportLocationDataFormComponent()
   }
 
   // HELPERS

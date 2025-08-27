@@ -36,4 +36,18 @@ const getDateComponents = (date: Dayjs) => {
   }
 }
 
-export { parseDateTimeFromComponents, parseDateTimeFromISOString, getDateComponents }
+const formatDate = (datetime?: string | null): string => {
+  if (!datetime) {
+    return ''
+  }
+
+  const date = dayjs(datetime)
+
+  if (!date.isValid()) {
+    return ''
+  }
+
+  return date.tz('Europe/London').format('DD/MM/YYYY HH:mm')
+}
+
+export { parseDateTimeFromComponents, parseDateTimeFromISOString, getDateComponents, formatDate }

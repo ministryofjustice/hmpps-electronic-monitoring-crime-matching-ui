@@ -9,7 +9,6 @@ import Logger from 'bunyan'
 import createMockLogger from '../../testutils/createMockLogger'
 import createMockRequest from '../../testutils/createMockRequest'
 import createMockResponse from '../../testutils/createMockResponse'
-import SubjectService from '../../services/locationData/subject'
 import SubjectController from './subject'
 import DeviceActivationsService from '../../services/deviceActivationsService'
 import ValidationService from '../../services/locationData/validationService'
@@ -71,10 +70,9 @@ describe('SubjectController', () => {
       })
       const res = createMockResponse()
       const next = jest.fn()
-      const service = new SubjectService(mockRestClient)
       const deviceActivationsService = new DeviceActivationsService(mockRestClient)
       const validationService = new ValidationService(deviceActivationsService)
-      const controller = new SubjectController(service, deviceActivationsService, validationService)
+      const controller = new SubjectController(deviceActivationsService, validationService)
 
       // When
       await controller.search(req, res, next)
@@ -103,10 +101,9 @@ describe('SubjectController', () => {
       })
       const res = createMockResponse()
       const next = jest.fn()
-      const service = new SubjectService(mockRestClient)
       const deviceActivationsService = new DeviceActivationsService(mockRestClient)
       const validationService = new ValidationService(deviceActivationsService)
-      const controller = new SubjectController(service, deviceActivationsService, validationService)
+      const controller = new SubjectController(deviceActivationsService, validationService)
 
       // When
       await controller.search(req, res, next)
@@ -150,10 +147,9 @@ describe('SubjectController', () => {
       })
       const res = createMockResponse()
       const next = jest.fn()
-      const service = new SubjectService(mockRestClient)
       const deviceActivationsService = new DeviceActivationsService(mockRestClient)
       const validationService = new ValidationService(deviceActivationsService)
-      const controller = new SubjectController(service, deviceActivationsService, validationService)
+      const controller = new SubjectController(deviceActivationsService, validationService)
 
       // When
       await controller.search(req, res, next)
@@ -193,10 +189,9 @@ describe('SubjectController', () => {
       })
       const res = createMockResponse()
       const next = jest.fn()
-      const service = new SubjectService(mockRestClient)
       const deviceActivationsService = new DeviceActivationsService(mockRestClient)
       const validationService = new ValidationService(deviceActivationsService)
-      const controller = new SubjectController(service, deviceActivationsService, validationService)
+      const controller = new SubjectController(deviceActivationsService, validationService)
 
       // When
       await controller.search(req, res, next)
@@ -243,10 +238,9 @@ describe('SubjectController', () => {
       })
       const res = createMockResponse()
       const next = jest.fn()
-      const service = new SubjectService(mockRestClient)
       const deviceActivationsService = new DeviceActivationsService(mockRestClient)
       const validationService = new ValidationService(deviceActivationsService)
-      const controller = new SubjectController(service, deviceActivationsService, validationService)
+      const controller = new SubjectController(deviceActivationsService, validationService)
 
       // When
       await controller.search(req, res, next)
@@ -286,10 +280,9 @@ describe('SubjectController', () => {
       })
       const res = createMockResponse()
       const next = jest.fn()
-      const service = new SubjectService(mockRestClient)
       const deviceActivationsService = new DeviceActivationsService(mockRestClient)
       const validationService = new ValidationService(deviceActivationsService)
-      const controller = new SubjectController(service, deviceActivationsService, validationService)
+      const controller = new SubjectController(deviceActivationsService, validationService)
 
       // GET /device-activations/1/positions
       mockRestClient.get.mockResolvedValue({
@@ -338,6 +331,12 @@ describe('SubjectController', () => {
             second: '00',
           },
         },
+        exportForm: {
+          enabled: true,
+          from,
+          to,
+          url: `/location-data/device-activations/${deviceActivationId}/download`,
+        },
       })
     })
 
@@ -364,10 +363,9 @@ describe('SubjectController', () => {
       })
       const res = createMockResponse()
       const next = jest.fn()
-      const service = new SubjectService(mockRestClient)
       const deviceActivationsService = new DeviceActivationsService(mockRestClient)
       const validationService = new ValidationService(deviceActivationsService)
-      const controller = new SubjectController(service, deviceActivationsService, validationService)
+      const controller = new SubjectController(deviceActivationsService, validationService)
 
       // GET /device-activations/1/positions
       mockRestClient.get.mockResolvedValue({
@@ -495,6 +493,12 @@ describe('SubjectController', () => {
             minute: '00',
             second: '00',
           },
+        },
+        exportForm: {
+          enabled: true,
+          from,
+          to,
+          url: `/location-data/device-activations/${deviceActivationId}/download`,
         },
       })
     })

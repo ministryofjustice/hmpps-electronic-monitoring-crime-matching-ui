@@ -7,6 +7,10 @@ type SearchCrimeBatchesFormData = {
 }
 
 export default class SearchCrimeBatchesFormComponent extends FormComponent {
+  constructor() {
+    super('crime-batches-search-form')
+  }
+
   // FIELDS
 
   get searchTermField(): FormInputComponent {

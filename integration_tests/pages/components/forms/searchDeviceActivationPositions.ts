@@ -8,6 +8,10 @@ type SearchDeviceActivationPositionsFormData = {
 }
 
 export default class SearchDeviceActivationPositionsFormComponent extends FormComponent {
+  constructor() {
+    super('dateFilterForm')
+  }
+
   // FIELDS
 
   get fromDateField(): FormDateTimeComponent {
