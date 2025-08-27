@@ -22,6 +22,10 @@ export default class SearchDeviceActivationPositionsFormComponent extends FormCo
     return this.form.contains('button', 'Apply')
   }
 
+  get resetButton(): PageElement {
+    return this.form.contains('button', 'Reset')
+  }
+
   // HELPERS
 
   fillInWith(data: SearchDeviceActivationPositionsFormData) {

@@ -82,5 +82,68 @@ context('Location Data', () => {
         second: '00',
       })
     })
+
+    it('should reset the date filter form', () => {
+      cy.stubGetDeviceActivation()
+      cy.stubGetPersons({
+        status: 200,
+        query: '.*',
+        response: {
+          data: [
+            {
+              personId: '1',
+              nomisId: 'Nomis 1',
+              name: 'John',
+              dateOfBirth: '2000-12-01T00:00:00.000Z',
+              address: '123 Street',
+              deviceActivations: [
+                {
+                  deviceActivationId: 1,
+                  deviceId: 123456,
+                  personId: 123456,
+                  deviceActivationDate: '2024-12-01T00:00:00.000Z',
+                  deviceDeactivationDate: null,
+                },
+              ],
+            },
+          ],
+          pageCount: 1,
+          pageNumber: 1,
+          pageSize: 10,
+        },
+      })
+
+      cy.visit(url)
+      let page = Page.verifyOnPage(SubjectsPage)
+
+      page.form.fillInWith({ name: 'foo' })
+      page.form.searchButton.click()
+
+      cy.url().should('include', '?name=foo&nomisId=')
+      page = Page.verifyOnPage(SubjectsPage)
+      page.dataTable.shouldHaveResults()
+
+      page.locationsForm.continueButton.should('be.disabled')
+      page.locationsForm.resetButton.should('be.disabled')
+      page.dataTable.selectRow('1')
+      page.locationsForm.fillInWith({
+        fromDate: { date: '01/01/2025', hour: '09', minute: '00', second: '00' },
+        toDate: { date: '02/01/2025', hour: '09', minute: '00', second: '00' },
+      })
+      page.locationsForm.resetButton.should('not.be.disabled')
+      page.locationsForm.resetButton.click()
+      page.locationsForm.fromDateField.shouldHaveValue({
+        date: '',
+        hour: '',
+        minute: '',
+        second: '',
+      })
+      page.locationsForm.toDateField.shouldHaveValue({
+        date: '',
+        hour: '',
+        minute: '',
+        second: '',
+      })
+    })
   })
 })
