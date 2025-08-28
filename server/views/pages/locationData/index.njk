@@ -7,6 +7,7 @@
 {% from "../../components/date-time-picker/macro.njk" import dateTimePicker %}
 
 {% set pageTitle = applicationName + " - Subject Search" %}
+{% set containerClasses = "govuk-full-width-container" %}
 {% set mainClasses = "app-container govuk-body device-activation-search" %}
 {% set rows = [] %}
 {% set pageSize = 10 %}
@@ -56,8 +57,8 @@
 
 {% block content %}
   <div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds govuk-!-static-padding-0">
-      <h1>Subject Search</h1>
+    <div class="govuk-grid-column-one-quarter">
+      <h1 class="govuk-heading-m">PoP search</h1>
       <form method="post" novalidate id="subject-search-form">
         <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
         {{
@@ -66,7 +67,6 @@
               text: "Name",
               classes: "govuk-label--s"
             },
-            classes: "govuk-!-width-two-thirds",
             id: "name",
             name: "name",
             value: name,
@@ -80,7 +80,6 @@
               text: "NOMIS ID",
               classes: "govuk-label--s"
             },
-            classes: "govuk-!-width-two-thirds",
             id: "nomis-id",
             name: "nomisId",
             value: nomisId,
@@ -95,44 +94,52 @@
           })
         }}
       </form>
+
+      {% include "./partials/dateFilterForm.njk" %}
     </div>
 
-    {{
-      dataTable({
-        columns: [
-          {
-            text: ""
-          },
-          {
-            text: "NOMIS ID"
-          },
-          {
-            text: "Name"
-          },
-          {
-            text: "Date of Birth"
-          },
-          {
-            text: "Address"
-          },
-          {
-            text: "Device ID"
-          },
-          {
-            text: "Tag Period Start"
-          },
-          {
-            text: "Tag Period End"
+    <div class="govuk-grid-column-three-quarters">
+      <h2 class="govuk-heading-m">
+        Results
+        <span class="govuk-caption-m">Select a row before applying dates and time</span>
+      </h2>
+      
+      {{
+        dataTable({
+          columns: [
+            {
+              text: ""
+            },
+            {
+              text: "NOMIS ID"
+            },
+            {
+              text: "Name"
+            },
+            {
+              text: "Date of Birth"
+            },
+            {
+              text: "Address"
+            },
+            {
+              text: "Device ID"
+            },
+            {
+              text: "Tag Period Start"
+            },
+            {
+              text: "Tag Period End"
+            }
+          ],
+          rows: rows,
+          pagination: {
+            pageCount: pageCount,
+            currentPage: pageNumber,
+            hrefPrefix: '?name=' + name + "&nomisId=" + nomisId
           }
-        ],
-        rows: rows,
-        pagination: {
-          pageCount: pageCount,
-          currentPage: pageNumber,
-          hrefPrefix: '?name=' + name + "&nomisId=" + nomisId
-        }
-      })
-    }}
-    {% include "./partials/dateFilterForm.njk" %}
+        })
+      }}
+    </div>
   </div>
 {% endblock %}
