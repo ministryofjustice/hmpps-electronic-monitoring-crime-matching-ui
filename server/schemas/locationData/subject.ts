@@ -1,12 +1,16 @@
 import { z } from 'zod/v4'
 import DateTimeInputModel from '../formInput/dateTime'
 
-const subjectQueryParametersSchema = z.object({
+const viewLocationsQueryParametersSchema = z.object({
   from: z.string().default(''),
   to: z.string().default(''),
 })
 
-const subjectLocationsFormDataSchema = z
+const downloadLocationsQueryParameterSchema = viewLocationsQueryParametersSchema.extend({
+  reportType: z.enum(['condensed', 'full']).default('condensed'),
+})
+
+const searchLocationsFormDataSchema = z
   .object({
     fromDate: DateTimeInputModel,
     toDate: DateTimeInputModel,
@@ -18,31 +22,4 @@ const subjectLocationsFormDataSchema = z
     }
   })
 
-const createSubjectLocationsQueryDtoSchema = z.object({
-  queryExecutionId: z.string(),
-})
-
-const getSubjectDtoSchema = z.object({
-  locations: z.array(
-    z.object({
-      locationRef: z.number(),
-      point: z.object({
-        latitude: z.number(),
-        longitude: z.number(),
-      }),
-      confidenceCircle: z.number(),
-      speed: z.number(),
-      direction: z.number(),
-      timestamp: z.string(),
-      geolocationMechanism: z.number(),
-      sequenceNumber: z.number(),
-    }),
-  ),
-})
-
-export {
-  subjectQueryParametersSchema,
-  subjectLocationsFormDataSchema,
-  createSubjectLocationsQueryDtoSchema,
-  getSubjectDtoSchema,
-}
+export { downloadLocationsQueryParameterSchema, searchLocationsFormDataSchema, viewLocationsQueryParametersSchema }

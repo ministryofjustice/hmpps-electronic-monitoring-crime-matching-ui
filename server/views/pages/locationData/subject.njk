@@ -16,34 +16,7 @@
 
   <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible" />
 
-  {{
-    govukRadios({
-      name: "exportOption",
-      fieldset: {
-        legend: {
-          text: "Export trail data",
-          isPageHeading: false,
-          classes: "govuk-fieldset__legend--s"
-        }
-      },
-      items: [
-        {
-          value: "condensed",
-          text: "Condensed report"
-        },
-        {
-          value: "full",
-          text: "Full report"
-        }
-      ]
-    })
-  }}
-
-  {{
-    govukButton({
-      text: "Export"
-    })
-  }}
+  {% include "./partials/exportForm.njk" %}
 {% endset %}
 
 

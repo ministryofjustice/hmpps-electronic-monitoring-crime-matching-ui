@@ -5,8 +5,8 @@ import { PageElement } from '../page'
 export default abstract class FormComponent {
   protected elementCacheId: string = uuidv4()
 
-  constructor() {
-    cy.get('form', { log: false }).as(this.elementCacheId)
+  constructor(id: string) {
+    cy.get(`form#${id}`, { log: false }).as(this.elementCacheId)
   }
 
   // PROPERTIES

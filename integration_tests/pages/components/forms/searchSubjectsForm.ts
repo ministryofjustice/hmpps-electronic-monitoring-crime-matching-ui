@@ -8,6 +8,9 @@ type SearchSubjectsFormData = {
 }
 
 export default class SearchSubjectsFormComponent extends FormComponent {
+  constructor() {
+    super('subject-search-form')
+  }
   // FIELDS
 
   get searchNomisIdField(): FormInputComponent {

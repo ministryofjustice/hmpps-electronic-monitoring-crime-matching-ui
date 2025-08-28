@@ -7,7 +7,7 @@ const sampleLocations = {
       geolocationMechanism: 1,
       locationRef: 1,
       speed: 1,
-      timestamp: '',
+      timestamp: '2025-01-01T00:00:00.000Z',
       sequenceNumber: 1,
     },
     {
@@ -17,7 +17,7 @@ const sampleLocations = {
       geolocationMechanism: 1,
       locationRef: 2,
       speed: 10,
-      timestamp: '',
+      timestamp: '2025-01-01T00:01:00.000Z',
       sequenceNumber: 2,
     },
     {
@@ -27,7 +27,7 @@ const sampleLocations = {
       geolocationMechanism: 1,
       locationRef: 3,
       speed: 0,
-      timestamp: '',
+      timestamp: '2025-01-01T00:02:00.000Z',
       sequenceNumber: 3,
     },
     {
@@ -37,7 +37,7 @@ const sampleLocations = {
       geolocationMechanism: 1,
       locationRef: 4,
       speed: 2,
-      timestamp: '',
+      timestamp: '2025-01-01T00:03:00.000Z',
       sequenceNumber: 4,
     },
     {
@@ -47,7 +47,7 @@ const sampleLocations = {
       geolocationMechanism: 1,
       locationRef: 5,
       speed: 5,
-      timestamp: '',
+      timestamp: '2025-01-01T00:04:00.000Z',
       sequenceNumber: 5,
     },
     {
@@ -57,7 +57,7 @@ const sampleLocations = {
       geolocationMechanism: 1,
       locationRef: 6,
       speed: 6,
-      timestamp: '',
+      timestamp: '2025-01-01T00:05:00.000Z',
       sequenceNumber: 6,
     },
   ],

@@ -2,7 +2,6 @@ import { dataAccess } from '../data'
 import AuditService from './auditService'
 import CrimeMappingService from './crimeMapping'
 import CrimeBatchesService from './crimeMapping/crimeBatches'
-import SubjectService from './locationData/subject'
 import PersonsService from './personsService'
 import DeviceActivationsService from './deviceActivationsService'
 import ValidationService from './locationData/validationService'
@@ -15,7 +14,6 @@ export const services = () => {
   const crimeMappingService = new CrimeMappingService()
   const deviceActivationsService = new DeviceActivationsService(crimeMatchingApiClient)
   const validationService = new ValidationService(deviceActivationsService)
-  const subjectService = new SubjectService(crimeMatchingApiClient)
   const personsService = new PersonsService(crimeMatchingApiClient)
 
   return {
@@ -25,7 +23,6 @@ export const services = () => {
     crimeMappingService,
     deviceActivationsService,
     personsService,
-    subjectService,
     validationService,
   }
 }

@@ -1,0 +1,40 @@
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "../../../components/date-time-picker/macro.njk" import dateTimePicker %}
+
+<form id="exportLocationDataForm" action="{{ exportForm.url }}">
+  <input type="hidden" name="from" value="{{ exportForm.from }}" />
+  <input type="hidden" name="to" value="{{ exportForm.to }}" />
+
+  {{
+    govukRadios({
+      name: "reportType",
+      fieldset: {
+        legend: {
+          text: "Export trail data",
+          isPageHeading: false,
+          classes: "govuk-fieldset__legend--s"
+        }
+      },
+      items: [
+        {
+          value: "condensed",
+          text: "Condensed report",
+          checked: true,
+          disabled: not exportForm.enabled
+        },
+        {
+          value: "full",
+          text: "Full report",
+          disabled: not exportForm.enabled
+        }
+      ]
+    })
+  }}
+
+  {{
+    govukButton({
+      text: "Export",
+      disabled: not exportForm.enabled
+    })
+  }}
+</form>
