@@ -113,9 +113,12 @@ context('Location Data', () => {
           data: {
             deviceActivationId: 1,
             deviceId: 123456789,
+            deviceName: '123456789',
             personId: 123456789,
             deviceActivationDate: '2025-01-01T00:00:00.000Z',
             deviceDeactivationDate: '2025-01-02T00:00:00.000Z',
+            orderStart: '2024-12-01T00:00:00.000Z',
+            orderEnd: '2024-12-31T00:00:00.000Z',
           },
         },
       })

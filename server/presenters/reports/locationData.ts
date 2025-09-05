@@ -60,10 +60,10 @@ const getRow = (
     deviceWearer.nomisId,
     deviceWearer.pncRef,
     deviceWearer.address,
-    deviceWearer.dateOfBirth,
+    formatDate(deviceWearer.dateOfBirth),
     deviceWearer.probationPractitioner,
-    deviceActivation.orderStart,
-    deviceActivation.orderEnd,
+    formatDate(deviceActivation.orderStart),
+    formatDate(deviceActivation.orderEnd),
     ...condensedColumns,
   ]
 
