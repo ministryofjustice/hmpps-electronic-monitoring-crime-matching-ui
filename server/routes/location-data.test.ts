@@ -99,9 +99,12 @@ describe('/location-data', () => {
         data: {
           deviceActivationId: 123456789,
           deviceId: 123456789,
+          deviceName: '123456789',
           personId: 123456789,
           deviceActivationDate: '2025-01-01T00:00:00.000Z',
           deviceDeactivationDate: null,
+          orderStart: '2024-12-01T00:00:00.000Z',
+          orderEnd: '2024-12-31T00:00:00.000Z',
         },
       })
 
