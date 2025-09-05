@@ -7,6 +7,7 @@ import { RedisClient } from './redisClient'
 
 jest.mock('./tokenStore/redisTokenStore')
 jest.mock('./redisClient')
+jest.mock('../../logger')
 
 const redisClient = {} as jest.Mocked<RedisClient>
 const tokenStore = new TokenStore(redisClient) as jest.Mocked<TokenStore>

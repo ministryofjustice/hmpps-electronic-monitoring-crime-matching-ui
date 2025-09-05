@@ -3,6 +3,8 @@ import nock from 'nock'
 import { AgentConfig } from '../config'
 import RestClient from './restClient'
 
+jest.mock('../../logger')
+
 const restClient = new RestClient(
   'api-name',
   {

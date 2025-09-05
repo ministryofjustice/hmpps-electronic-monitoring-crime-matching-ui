@@ -5,8 +5,7 @@ import customParseFormat from 'dayjs/plugin/customParseFormat'
 import isSameOrAfter from 'dayjs/plugin/isSameOrAfter'
 import isSameOrBefore from 'dayjs/plugin/isSameOrBefore'
 import { RestClient } from '@ministryofjustice/hmpps-rest-client'
-import Logger from 'bunyan'
-import createMockLogger from '../../testutils/createMockLogger'
+import logger from '../../../logger'
 import createMockRequest from '../../testutils/createMockRequest'
 import createMockResponse from '../../testutils/createMockResponse'
 import SubjectController from './subject'
@@ -21,13 +20,12 @@ dayjs.extend(isSameOrAfter)
 dayjs.extend(isSameOrBefore)
 
 jest.mock('@ministryofjustice/hmpps-rest-client')
+jest.mock('../../../logger')
 
 describe('SubjectController', () => {
-  let logger: jest.Mocked<Logger>
   let mockRestClient: jest.Mocked<RestClient>
 
   beforeEach(() => {
-    logger = createMockLogger()
     mockRestClient = new RestClient(
       'crimeMatchingApi',
       {
