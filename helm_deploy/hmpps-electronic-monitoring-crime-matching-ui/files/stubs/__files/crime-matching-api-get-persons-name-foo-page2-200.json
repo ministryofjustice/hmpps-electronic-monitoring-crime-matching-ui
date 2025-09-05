@@ -3,48 +3,63 @@
     {
       "personId": "11",
       "nomisId": "Nomis 11",
+      "pncRef": "YY/NNNNNNND",
       "name": "John",
       "dateOfBirth": "2000-12-01T00:00:00.000Z",
       "address": "123 Street",
+      "probationPractitioner": "John Smith",
       "deviceActivations": [
         {
           "deviceActivationId": 123456,
           "deviceId": 123456,
+          "deviceName": "123456",
           "personId": 11,
           "deviceActivationDate": "2024-12-01T00:00:00.000Z",
-          "deviceDeactivationDate": null
+          "deviceDeactivationDate": null,
+          "orderStart": "2024-12-01T00:00:00.000Z",
+          "orderEnd": "2024-12-31T00:00:00.000Z"
         }
       ]
     },
     {
       "personId": "12",
       "nomisId": "Nomis 12",
+      "pncRef": "YY/NNNNNNND",
       "name": "John",
       "dateOfBirth": "2000-12-01T00:00:00.000Z",
       "address": "123 Street",
+      "probationPractitioner": "John Smith",
       "deviceActivations": [
         {
           "deviceActivationId": 123456,
           "deviceId": 123456,
+          "deviceName": "123456",
           "personId": 12,
           "deviceActivationDate": "2024-12-01T00:00:00.000Z",
-          "deviceDeactivationDate": null
+          "deviceDeactivationDate": null,
+          "orderStart": "2024-12-01T00:00:00.000Z",
+          "orderEnd": "2024-12-31T00:00:00.000Z"
         }
       ]
     },
     {
       "personId": "13",
       "nomisId": "Nomis 13",
+      "pncRef": "YY/NNNNNNND",
       "name": "John",
       "dateOfBirth": "2000-12-01T00:00:00.000Z",
       "address": "123 Street",
+      "probationPractitioner": "John Smith",
       "deviceActivations": [
         {
           "deviceActivationId": 123456,
           "deviceId": 123456,
+          "deviceName": "123456",
           "personId": 13,
           "deviceActivationDate": "2024-12-01T00:00:00.000Z",
-          "deviceDeactivationDate": null
+          "deviceDeactivationDate": null,
+          "orderStart": "2024-12-01T00:00:00.000Z",
+          "orderEnd": "2024-12-31T00:00:00.000Z"
         }
       ]
     }

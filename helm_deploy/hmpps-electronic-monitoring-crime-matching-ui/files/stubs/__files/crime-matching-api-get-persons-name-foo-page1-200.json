@@ -3,160 +3,210 @@
     {
       "personId": "1",
       "nomisId": "Nomis 1",
+      "pncRef": "YY/NNNNNNND",
       "name": "John",
       "dateOfBirth": "2000-12-01T00:00:00.000Z",
       "address": "123 Street",
+      "probationPractitioner": "John Smith",
       "deviceActivations": [
         {
           "deviceActivationId": 1,
           "deviceId": 123456,
+          "deviceName": "123456",
           "personId": 1,
           "deviceActivationDate": "2024-12-01T00:00:00.000Z",
-          "deviceDeactivationDate": null
+          "deviceDeactivationDate": null,
+          "orderStart": "2024-12-01T00:00:00.000Z",
+          "orderEnd": "2024-12-31T00:00:00.000Z"
         }
       ]
     },
     {
       "personId": "2",
       "nomisId": "Nomis 2",
+      "pncRef": "YY/NNNNNNND",
       "name": "John",
       "dateOfBirth": "2000-12-01T00:00:00.000Z",
       "address": "123 Street",
+      "probationPractitioner": "John Smith",
       "deviceActivations": [
         {
           "deviceActivationId": 123456,
           "deviceId": 123456,
+          "deviceName": "123456",
           "personId": 2,
           "deviceActivationDate": "2024-12-01T00:00:00.000Z",
-          "deviceDeactivationDate": null
+          "deviceDeactivationDate": null,
+          "orderStart": "2024-12-01T00:00:00.000Z",
+          "orderEnd": "2024-12-31T00:00:00.000Z"
         }
       ]
     },
     {
       "personId": "3",
       "nomisId": "Nomis 3",
+      "pncRef": "YY/NNNNNNND",
       "name": "John",
       "dateOfBirth": "2000-12-01T00:00:00.000Z",
       "address": "123 Street",
+      "probationPractitioner": "John Smith",
       "deviceActivations": [
         {
           "deviceActivationId": 123456,
           "deviceId": 123456,
+          "deviceName": "123456",
           "personId": 3,
           "deviceActivationDate": "2024-12-01T00:00:00.000Z",
-          "deviceDeactivationDate": null
+          "deviceDeactivationDate": null,
+          "orderStart": "2024-12-01T00:00:00.000Z",
+          "orderEnd": "2024-12-31T00:00:00.000Z"
         }
       ]
     },
     {
       "personId": "4",
       "nomisId": "Nomis 4",
+      "pncRef": "YY/NNNNNNND",
       "name": "John",
       "dateOfBirth": "2000-12-01T00:00:00.000Z",
       "address": "123 Street",
+      "probationPractitioner": "John Smith",
       "deviceActivations": [
         {
           "deviceActivationId": 123456,
           "deviceId": 123456,
+          "deviceName": "123456",
           "personId": 4,
           "deviceActivationDate": "2024-12-01T00:00:00.000Z",
-          "deviceDeactivationDate": null
+          "deviceDeactivationDate": null,
+          "orderStart": "2024-12-01T00:00:00.000Z",
+          "orderEnd": "2024-12-31T00:00:00.000Z"
         }
       ]
     },
     {
       "personId": "5",
       "nomisId": "Nomis 5",
+      "pncRef": "YY/NNNNNNND",
       "name": "John",
       "dateOfBirth": "2000-12-01T00:00:00.000Z",
       "address": "123 Street",
+      "probationPractitioner": "John Smith",
       "deviceActivations": [
         {
           "deviceActivationId": 123456,
           "deviceId": 123456,
+          "deviceName": "123456",
           "personId": 5,
           "deviceActivationDate": "2024-12-01T00:00:00.000Z",
-          "deviceDeactivationDate": null
+          "deviceDeactivationDate": null,
+          "orderStart": "2024-12-01T00:00:00.000Z",
+          "orderEnd": "2024-12-31T00:00:00.000Z"
         }
       ]
     },
     {
       "personId": "6",
       "nomisId": "Nomis 6",
+      "pncRef": "YY/NNNNNNND",
       "name": "John",
       "dateOfBirth": "2000-12-01T00:00:00.000Z",
       "address": "123 Street",
+      "probationPractitioner": "John Smith",
       "deviceActivations": [
         {
           "deviceActivationId": 123456,
           "deviceId": 123456,
+          "deviceName": "123456",
           "personId": 6,
           "deviceActivationDate": "2024-12-01T00:00:00.000Z",
-          "deviceDeactivationDate": null
+          "deviceDeactivationDate": null,
+          "orderStart": "2024-12-01T00:00:00.000Z",
+          "orderEnd": "2024-12-31T00:00:00.000Z"
         }
       ]
     },
     {
       "personId": "7",
       "nomisId": "Nomis 7",
+      "pncRef": "YY/NNNNNNND",
       "name": "John",
       "dateOfBirth": "2000-12-01T00:00:00.000Z",
       "address": "123 Street",
+      "probationPractitioner": "John Smith",
       "deviceActivations": [
         {
           "deviceActivationId": 123456,
           "deviceId": 123456,
+          "deviceName": "123456",
           "personId": 7,
           "deviceActivationDate": "2024-12-01T00:00:00.000Z",
-          "deviceDeactivationDate": null
+          "deviceDeactivationDate": null,
+          "orderStart": "2024-12-01T00:00:00.000Z",
+          "orderEnd": "2024-12-31T00:00:00.000Z"
         }
       ]
     },
     {
       "personId": "8",
       "nomisId": "Nomis 8",
+      "pncRef": "YY/NNNNNNND",
       "name": "John",
       "dateOfBirth": "2000-12-01T00:00:00.000Z",
       "address": "123 Street",
+      "probationPractitioner": "John Smith",
       "deviceActivations": [
         {
           "deviceActivationId": 123456,
           "deviceId": 123456,
+          "deviceName": "123456",
           "personId": 8,
           "deviceActivationDate": "2024-12-01T00:00:00.000Z",
-          "deviceDeactivationDate": null
+          "deviceDeactivationDate": null,
+          "orderStart": "2024-12-01T00:00:00.000Z",
+          "orderEnd": "2024-12-31T00:00:00.000Z"
         }
       ]
     },
     {
       "personId": "9",
       "nomisId": "Nomis 9",
+      "pncRef": "YY/NNNNNNND",
       "name": "John",
       "dateOfBirth": "2000-12-01T00:00:00.000Z",
       "address": "123 Street",
+      "probationPractitioner": "John Smith",
       "deviceActivations": [
         {
           "deviceActivationId": 123456,
           "deviceId": 123456,
+          "deviceName": "123456",
           "personId": 9,
           "deviceActivationDate": "2024-12-01T00:00:00.000Z",
-          "deviceDeactivationDate": null
+          "deviceDeactivationDate": null,
+          "orderStart": "2024-12-01T00:00:00.000Z",
+          "orderEnd": "2024-12-31T00:00:00.000Z"
         }
       ]
     },
     {
       "personId": "10",
       "nomisId": "Nomis 10",
+      "pncRef": "YY/NNNNNNND",
       "name": "John",
       "dateOfBirth": "2000-12-01T00:00:00.000Z",
       "address": "123 Street",
+      "probationPractitioner": "John Smith",
       "deviceActivations": [
         {
           "deviceActivationId": 123456,
           "deviceId": 123456,
+          "deviceName": "123456",
           "personId": 10,
           "deviceActivationDate": "2024-12-01T00:00:00.000Z",
-          "deviceDeactivationDate": null
+          "deviceDeactivationDate": null,
+          "orderStart": "2024-12-01T00:00:00.000Z",
+          "orderEnd": "2024-12-31T00:00:00.000Z"
         }
       ]
     }
