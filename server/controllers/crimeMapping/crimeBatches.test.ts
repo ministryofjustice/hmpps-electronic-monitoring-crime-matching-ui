@@ -1,6 +1,6 @@
 import { RestClient } from '@ministryofjustice/hmpps-rest-client'
-import logger from '../../../logger'
 import { ZodError } from 'zod/v4'
+import logger from '../../../logger'
 import createMockRequest from '../../testutils/createMockRequest'
 import createMockResponse from '../../testutils/createMockResponse'
 import CrimeBatchesController from './crimeBatches'
