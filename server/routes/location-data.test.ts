@@ -4,6 +4,7 @@ import { appWithAllRoutes, user } from './testutils/appSetup'
 import logger from '../../logger'
 import DeviceActivationsService from '../services/deviceActivationsService'
 import ValidationService from '../services/locationData/validationService'
+import PersonsService from '../services/personsService'
 
 jest.mock('@ministryofjustice/hmpps-rest-client')
 jest.mock('../../logger')
@@ -30,10 +31,12 @@ describe('/location-data', () => {
   describe('GET /location-data/device-activations/:deviceActivationId', () => {
     it('should return a 404 if the deviceActivationId is missing', () => {
       const deviceActivationsService = new DeviceActivationsService(restClient)
+      const personsService = new PersonsService(restClient)
       const validationService = new ValidationService(deviceActivationsService)
       const app = appWithAllRoutes({
         services: {
           deviceActivationsService,
+          personsService,
           validationService,
         },
         userSupplier: () => user,
@@ -51,10 +54,12 @@ describe('/location-data', () => {
 
     it('should return a 404 if the Device Activation cannot be found', () => {
       const deviceActivationsService = new DeviceActivationsService(restClient)
+      const personsService = new PersonsService(restClient)
       const validationService = new ValidationService(deviceActivationsService)
       const app = appWithAllRoutes({
         services: {
           deviceActivationsService,
+          personsService,
           validationService,
         },
         userSupplier: () => user,
@@ -79,10 +84,12 @@ describe('/location-data', () => {
 
     it('should return a 200 if the Device Activation was found', () => {
       const deviceActivationsService = new DeviceActivationsService(restClient)
+      const personsService = new PersonsService(restClient)
       const validationService = new ValidationService(deviceActivationsService)
       const app = appWithAllRoutes({
         services: {
           deviceActivationsService,
+          personsService,
           validationService,
         },
         userSupplier: () => user,

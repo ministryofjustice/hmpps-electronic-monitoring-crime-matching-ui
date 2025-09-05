@@ -1,6 +1,7 @@
 import { asUser, RestClient } from '@ministryofjustice/hmpps-rest-client'
-import getPersonsDtoSchema from '../schemas/dtos/person'
+import { getPersonDtoSchema, getPersonsDtoSchema } from '../schemas/dtos/person'
 import GetPersonsDto from '../types/dtos/persons'
+import Person from '../types/entities/person'
 
 class PersonsService {
   constructor(private readonly crimeMatchingApiClient: RestClient) {}
@@ -17,7 +18,7 @@ class PersonsService {
 
     const response = await this.crimeMatchingApiClient.get(
       {
-        path: `/persons`,
+        path: '/persons',
         query: {
           name,
           nomisId,
@@ -29,6 +30,17 @@ class PersonsService {
     )
 
     return getPersonsDtoSchema.parse(response)
+  }
+
+  async getPerson(token: string, personId: number): Promise<Person> {
+    const response = await this.crimeMatchingApiClient.get(
+      {
+        path: `/persons/${personId}`,
+      },
+      asUser(token),
+    )
+
+    return getPersonDtoSchema.parse(response).data
   }
 }
 
