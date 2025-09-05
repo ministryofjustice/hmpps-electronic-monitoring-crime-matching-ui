@@ -5,8 +5,10 @@ const personSchema = z.object({
   personId: z.string(),
   name: z.string(),
   nomisId: z.string(),
+  pncRef: z.string(),
   address: z.string(),
   dateOfBirth: z.string(),
+  probationPractitioner: z.string(),
   deviceActivations: z.array(deviceActivationSchema),
 })
 

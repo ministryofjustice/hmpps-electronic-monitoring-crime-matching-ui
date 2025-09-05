@@ -6,4 +6,8 @@ const getPersonsDtoSchema = paginatedDtoSchema.extend({
   data: z.array(personSchema),
 })
 
-export default getPersonsDtoSchema
+const getPersonDtoSchema = z.object({
+  data: personSchema,
+})
+
+export { getPersonDtoSchema, getPersonsDtoSchema }

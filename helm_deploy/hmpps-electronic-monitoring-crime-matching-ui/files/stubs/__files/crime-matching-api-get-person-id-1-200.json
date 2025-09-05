@@ -1,0 +1,12 @@
+{
+  "data": {
+    "personId": "1",
+    "name": "Jane Doe",
+    "nomisId": "Nomis 1",
+    "pncRef": "YY/NNNNNNND",
+    "address": "123 Street",
+    "dateOfBirth": "2000-12-01T00:00:00.000Z",
+    "probationPractitioner": "John Smith",
+    "deviceActivations": []
+  }
+}

@@ -1,4 +1,5 @@
 import DeviceActivation from '../../types/entities/deviceActivation'
+import Person from '../../types/entities/person'
 import Position from '../../types/entities/position'
 import { formatDate } from '../../utils/date'
 import radToDeg from '../../utils/math'
@@ -36,6 +37,7 @@ const getHeaders = (condensed: boolean): Array<string> => {
 }
 
 const getRow = (
+  deviceWearer: Person,
   deviceActivation: DeviceActivation,
   position: Position,
   index: number,
@@ -52,16 +54,16 @@ const getRow = (
   ]
   const fullColumns = [
     deviceActivation.deviceId.toString(),
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
+    deviceActivation.deviceName,
+    deviceWearer.personId,
+    deviceWearer.name,
+    deviceWearer.nomisId,
+    deviceWearer.pncRef,
+    deviceWearer.address,
+    formatDate(deviceWearer.dateOfBirth),
+    deviceWearer.probationPractitioner,
+    formatDate(deviceActivation.orderStart),
+    formatDate(deviceActivation.orderEnd),
     ...condensedColumns,
   ]
 
@@ -73,19 +75,21 @@ const getRow = (
 }
 
 const getRows = (
+  deviceWearer: Person,
   deviceActivation: DeviceActivation,
   positions: Array<Position>,
   condensed: boolean,
 ): Array<Array<string>> => {
-  return positions.map((position, index) => getRow(deviceActivation, position, index, condensed))
+  return positions.map((position, index) => getRow(deviceWearer, deviceActivation, position, index, condensed))
 }
 
 const generateLocationDataReport = (
+  deviceWearer: Person,
   deviceActivation: DeviceActivation,
   positions: Array<Position>,
   condensed: boolean,
 ): string => {
-  const data = [getHeaders(condensed), ...getRows(deviceActivation, positions, condensed)]
+  const data = [getHeaders(condensed), ...getRows(deviceWearer, deviceActivation, positions, condensed)]
 
   return data.map(row => row.join(',')).join('\n')
 }

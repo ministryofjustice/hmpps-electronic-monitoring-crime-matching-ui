@@ -4,9 +4,9 @@ import asyncMiddleware from '../middleware/asyncMiddleware'
 import populateDeviceActivation from '../middleware/populateDeviceActivation'
 import SubjectController from '../controllers/locationData/subject'
 
-const locationDataRoutes = ({ deviceActivationsService, validationService }: Services): Router => {
+const locationDataRoutes = ({ deviceActivationsService, personsService, validationService }: Services): Router => {
   const router = Router()
-  const subjectController = new SubjectController(deviceActivationsService, validationService)
+  const subjectController = new SubjectController(deviceActivationsService, personsService, validationService)
 
   router.param('deviceActivationId', populateDeviceActivation(deviceActivationsService))
 

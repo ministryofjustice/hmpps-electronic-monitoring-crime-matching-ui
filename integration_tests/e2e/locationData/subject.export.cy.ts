@@ -24,6 +24,7 @@ context('Location Data', () => {
         query: 'from=\\S+&to=\\S+',
         response: sampleLocations,
       })
+      cy.stubGetPerson()
     })
 
     it('should have condensed selected by default', () => {
