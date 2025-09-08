@@ -39,7 +39,7 @@ const defaultGetSubjectOptions: StubGetSubjectOptions = {
 }
 
 const stubGetSubject = (options: StubGetSubjectOptions = defaultGetSubjectOptions) => {
-  let urlPattern = `${baseUrl}/subjects/${options.personId}`
+  let urlPattern = `${baseUrl}/persons/${options.personId}`
 
   if (options.query.length > 0) {
     urlPattern += `\\?${options.query}`

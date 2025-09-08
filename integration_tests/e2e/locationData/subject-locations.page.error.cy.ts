@@ -1,7 +1,7 @@
-import SubjectsPage from '../../pages/locationData/subjects'
+import PersonsPage from '../../pages/locationData/persons'
 import Page from '../../pages/page'
 
-const url = '/location-data/subjects'
+const url = '/location-data/persons'
 
 context('Location Data', () => {
   context('Subject Location Search', () => {
@@ -21,7 +21,7 @@ context('Location Data', () => {
             {
               personId: '1',
               nomisId: 'Nomis 1',
-              name: 'John',
+              personName: 'John',
               dateOfBirth: '2000-12-01T00:00:00.000Z',
               address: '123 Street',
               deviceActivations: [
@@ -42,20 +42,20 @@ context('Location Data', () => {
       })
 
       cy.visit(url)
-      let page = Page.verifyOnPage(SubjectsPage)
+      let page = Page.verifyOnPage(PersonsPage)
 
-      page.form.fillInWith({ name: 'foo' })
+      page.form.fillInWith({ personName: 'foo' })
       page.form.searchButton.click()
 
-      cy.url().should('include', '?name=foo&nomisId=')
-      page = Page.verifyOnPage(SubjectsPage)
+      cy.url().should('include', '?personName=foo')
+      page = Page.verifyOnPage(PersonsPage)
       page.dataTable.shouldHaveResults()
 
       page.dataTable.selectRow('1')
       page.locationsForm.fillInWith({ fromDate: undefined, toDate: undefined })
       page.locationsForm.continueButton.click()
 
-      page = Page.verifyOnPage(SubjectsPage)
+      page = Page.verifyOnPage(PersonsPage)
       page.dataTable.shouldHaveSelectedRow('1')
       page.locationsForm.fromDateField.shouldHaveValidationMessage('You must enter a valid value for date')
       page.locationsForm.toDateField.shouldHaveValidationMessage('You must enter a valid value for date')
@@ -83,7 +83,7 @@ context('Location Data', () => {
             {
               personId: '1',
               nomisId: 'Nomis 1',
-              name: 'John',
+              personName: 'John',
               dateOfBirth: '2000-12-01T00:00:00.000Z',
               address: '123 Street',
               deviceActivations: [
@@ -107,20 +107,20 @@ context('Location Data', () => {
       const toDate = { date: '02/08/2025', hour: '09', minute: '00', second: '00' }
 
       cy.visit(url)
-      let page = Page.verifyOnPage(SubjectsPage)
+      let page = Page.verifyOnPage(PersonsPage)
 
-      page.form.fillInWith({ name: 'foo' })
+      page.form.fillInWith({ personName: 'foo' })
       page.form.searchButton.click()
 
-      cy.url().should('include', '?name=foo&nomisId=')
-      page = Page.verifyOnPage(SubjectsPage)
+      cy.url().should('include', '?personName=foo')
+      page = Page.verifyOnPage(PersonsPage)
       page.dataTable.shouldHaveResults()
 
       page.locationsForm.fillInWith({ fromDate, toDate })
       page.dataTable.selectRow('1')
       page.locationsForm.continueButton.click()
 
-      page = Page.verifyOnPage(SubjectsPage)
+      page = Page.verifyOnPage(PersonsPage)
       page.dataTable.shouldHaveSelectedRow('1')
       page.locationsForm.fromDateField.shouldHaveValidationMessage(
         'Date and time search window should be within device activation date range',
@@ -137,7 +137,7 @@ context('Location Data', () => {
             {
               personId: '1',
               nomisId: 'Nomis 1',
-              name: 'John',
+              personName: 'John',
               dateOfBirth: '2000-12-01T00:00:00.000Z',
               address: '123 Street',
               deviceActivations: [
@@ -161,20 +161,20 @@ context('Location Data', () => {
       const toDate = { date: '04/08/2025', hour: '09', minute: '00', second: '00' }
 
       cy.visit(url)
-      let page = Page.verifyOnPage(SubjectsPage)
+      let page = Page.verifyOnPage(PersonsPage)
 
-      page.form.fillInWith({ name: 'foo' })
+      page.form.fillInWith({ personName: 'foo' })
       page.form.searchButton.click()
 
-      cy.url().should('include', '?name=foo&nomisId=')
-      page = Page.verifyOnPage(SubjectsPage)
+      cy.url().should('include', '?personName=foo')
+      page = Page.verifyOnPage(PersonsPage)
       page.dataTable.shouldHaveResults()
 
       page.locationsForm.fillInWith({ fromDate, toDate })
       page.dataTable.selectRow('1')
       page.locationsForm.continueButton.click()
 
-      page = Page.verifyOnPage(SubjectsPage)
+      page = Page.verifyOnPage(PersonsPage)
       page.dataTable.shouldHaveSelectedRow('1')
       page.locationsForm.fromDateField.shouldHaveValidationMessage(
         'Date and time search window should not exceed 48 hours',
@@ -191,7 +191,7 @@ context('Location Data', () => {
             {
               personId: '1',
               nomisId: 'Nomis 1',
-              name: 'John',
+              personName: 'John',
               dateOfBirth: '2000-12-01T00:00:00.000Z',
               address: '123 Street',
               deviceActivations: [
@@ -215,20 +215,20 @@ context('Location Data', () => {
       const toDate = { date: '31/07/2025', hour: '09', minute: '00', second: '00' }
 
       cy.visit(url)
-      let page = Page.verifyOnPage(SubjectsPage)
+      let page = Page.verifyOnPage(PersonsPage)
 
-      page.form.fillInWith({ name: 'foo' })
+      page.form.fillInWith({ personName: 'foo' })
       page.form.searchButton.click()
 
-      cy.url().should('include', '?name=foo&nomisId=')
-      page = Page.verifyOnPage(SubjectsPage)
+      cy.url().should('include', '?personName=foo')
+      page = Page.verifyOnPage(PersonsPage)
       page.dataTable.shouldHaveResults()
 
       page.locationsForm.fillInWith({ fromDate, toDate })
       page.dataTable.selectRow('1')
       page.locationsForm.continueButton.click()
 
-      page = Page.verifyOnPage(SubjectsPage)
+      page = Page.verifyOnPage(PersonsPage)
       page.dataTable.shouldHaveSelectedRow('1')
       page.locationsForm.toDateField.shouldHaveValidationMessage('To date must be after From date')
     })
