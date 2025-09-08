@@ -9,7 +9,7 @@ type StubGetPersons200Options = {
     data: Array<{
       personId: string
       nomisId: string
-      name: string
+      personName: string
       dateOfBirth: string
       address: string
       deviceActivations: Array<{
@@ -34,7 +34,7 @@ type StubGetPersons404Options = {
 
 type StubGetPersonsOptions = StubGetPersons200Options | StubGetPersons404Options
 
-const defaultGetSubjectsQueryOptions: StubGetPersonsOptions = {
+const defaultGetPersonsQueryOptions: StubGetPersonsOptions = {
   status: 200,
   query: '.*',
   response: {
@@ -45,7 +45,7 @@ const defaultGetSubjectsQueryOptions: StubGetPersonsOptions = {
   },
 }
 
-const stubGetPersons = (options: StubGetPersonsOptions = defaultGetSubjectsQueryOptions) =>
+const stubGetPersons = (options: StubGetPersonsOptions = defaultGetPersonsQueryOptions) =>
   stubFor({
     request: {
       method: 'GET',

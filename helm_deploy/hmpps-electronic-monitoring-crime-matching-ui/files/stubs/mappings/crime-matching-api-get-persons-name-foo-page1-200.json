@@ -1,7 +1,7 @@
 {
   "request": {
     "method": "GET",
-    "urlPattern": "/crime-matching/persons\\?name=foo&nomisId=&include_device_activations=true&page=1"
+    "urlPattern": "/crime-matching/persons\\?personName=foo&includeDeviceActivations=true&page=1"
   },
   "response": {
     "status": 200,

@@ -5,8 +5,14 @@ import GetPersonsDto from '../types/dtos/persons'
 class PersonsService {
   constructor(private readonly crimeMatchingApiClient: RestClient) {}
 
-  async getPersons(token: string, name: string, nomisId: string, page: string): Promise<GetPersonsDto> {
-    if (name === '' && nomisId === '') {
+  async getPersons(
+    token: string,
+    personName: string,
+    nomisId: string,
+    deviceId: string,
+    page: string,
+  ): Promise<GetPersonsDto> {
+    if (personName === '' && nomisId === '' && deviceId === '') {
       return {
         data: [],
         pageCount: 1,
@@ -19,9 +25,10 @@ class PersonsService {
       {
         path: `/persons`,
         query: {
-          name,
+          personName,
           nomisId,
-          include_device_activations: true,
+          deviceId,
+          includeDeviceActivations: true,
           page,
         },
       },

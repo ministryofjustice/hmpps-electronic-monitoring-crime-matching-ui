@@ -3,7 +3,7 @@ import deviceActivationSchema from './deviceActivation'
 
 const personSchema = z.object({
   personId: z.string(),
-  name: z.string(),
+  personName: z.string(),
   nomisId: z.string(),
   address: z.string(),
   dateOfBirth: z.string(),

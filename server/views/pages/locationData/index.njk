@@ -7,12 +7,44 @@
 {% from "../../components/date-time-picker/macro.njk" import dateTimePicker %}
 
 {% set pageTitle = applicationName + " - Subject Search" %}
+{% set containerClasses = "govuk-full-width-container" %}
 {% set mainClasses = "app-container govuk-body device-activation-search" %}
 {% set rows = [] %}
 {% set pageSize = 10 %}
 {% set currentPage = 1 %}
-{% set totalPages = (subjects.length / pageSize) | round(0, 'ceil') %}
+{% set totalPages = (persons.length / pageSize) | round(0, 'ceil') %}
 {% set activeLinkId = "location-data" %}
+
+{% set nameHtml %}
+{{ govukInput({
+  id: "person-name",
+  name: "personName",
+  value: personName,
+  classes: "govuk-!-width-two-thirds"
+}) }}
+{% endset %}
+
+{% set nomisIdHtml %}
+{{ govukInput({
+  id: "nomis-id",
+  name: "nomisId",
+  value: nomisId,
+  classes: "govuk-!-width-two-thirds"
+}) }}
+{% endset %}
+
+{% set deviceIdHtml %}
+{{ govukInput({
+  id: "device-id",
+  name: "deviceId",
+  value: deviceId,
+  classes: "govuk-!-width-two-thirds"
+}) }}
+{% endset %}
+
+{% set timeHtml %}
+  {% include "./partials/dateFilterForm.njk" %}
+{% endset %}
 
 {% for person in persons %}
   {% for deviceActivation in person.deviceActivations %}
@@ -31,7 +63,7 @@
             text: person.nomisId
           },
           {
-            text: person.name
+            text: person.personName
           },
           {
             text: person.dateOfBirth | formatDate
@@ -56,83 +88,105 @@
 
 {% block content %}
   <div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds govuk-!-static-padding-0">
-      <h1>Subject Search</h1>
-      <form method="post" novalidate id="subject-search-form">
+    <div class="govuk-grid-column-one-quarter">
+      {# <h1 class="govuk-heading-m">PoP Search</h1> #}
+      <form method="post" id="person-search-form">
         <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
-        {{
-          govukInput({
-            label: {
-              text: "Name",
-              classes: "govuk-label--s"
-            },
-            classes: "govuk-!-width-two-thirds",
-            id: "name",
-            name: "name",
-            value: name,
-            errorMessage: errors.name
-          })
-        }}
 
-        {{
-          govukInput({
-            label: {
-              text: "NOMIS ID",
-              classes: "govuk-label--s"
+        {{ govukRadios({
+          name: "personSearchType",
+          hint: {
+            text: "Select one option"
+          },
+          fieldset: {
+            legend: {
+              text: "PoP Search",
+              isPageHeading: true,
+              classes: "govuk-fieldset__legend--l"
+            }
+          },
+          errorMessage: errors.personSearchType,
+          items: [
+            {
+              value: "personName",
+              text: "Name",
+              checked: formData.personSearchType == 'personName',
+              conditional: {
+                html: nameHtml
+              }
             },
-            classes: "govuk-!-width-two-thirds",
-            id: "nomis-id",
-            name: "nomisId",
-            value: nomisId,
-            errorMessage: error.nomisId
-          })
-        }}
+            {
+              value: "nomisId",
+              text: "Nomis ID",
+              checked: formData.personSearchType == 'nomisId',
+              conditional: {
+                html: nomisIdHtml
+              }
+            },
+            {
+              value: "deviceId",
+              text: "Device ID",
+              checked: formData.personSearchType == 'deviceId',
+              conditional: {
+                html: deviceIdHtml
+              }
+            }
+          ]
+        }) }}
 
         {{
           govukButton({
+            id: "search-persons-button",
             text: "Search",
             name: "action"
           })
         }}
       </form>
+      <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible" />
+      {% include "./partials/dateFilterForm.njk" %}
     </div>
 
-    {{
-      dataTable({
-        columns: [
-          {
-            text: ""
-          },
-          {
-            text: "NOMIS ID"
-          },
-          {
-            text: "Name"
-          },
-          {
-            text: "Date of Birth"
-          },
-          {
-            text: "Address"
-          },
-          {
-            text: "Device ID"
-          },
-          {
-            text: "Tag Period Start"
-          },
-          {
-            text: "Tag Period End"
+    <div class="govuk-grid-column-three-quarters">
+      <h2 class="govuk-heading-m">
+        Results
+        <span class="govuk-caption-m">Select a row before applying dates and time</span>
+      </h2>
+      {{
+        dataTable({
+          columns: [
+            {
+              text: ""
+            },
+            {
+              text: "NOMIS ID"
+            },
+            {
+              text: "Name"
+            },
+            {
+              text: "Date of Birth"
+            },
+            {
+              text: "Address"
+            },
+            {
+              text: "Device ID"
+            },
+            {
+              text: "Tag Period Start"
+            },
+            {
+              text: "Tag Period End"
+            }
+          ],
+          rows: rows,
+          pagination: {
+            pageCount: pageCount,
+            currentPage: pageNumber
           }
-        ],
-        rows: rows,
-        pagination: {
-          pageCount: pageCount,
-          currentPage: pageNumber,
-          hrefPrefix: '?name=' + name + "&nomisId=" + nomisId
-        }
-      })
-    }}
-    {% include "./partials/dateFilterForm.njk" %}
+        })
+      }}
+      </div>
   </div>
 {% endblock %}
+{# hrefPrefix: '?name=' + name + "&nomisId=" + nomisId #}

@@ -1,8 +1,8 @@
 import Page from '../../pages/page'
 import ErrorPage from '../../pages/error'
-import SubjectsPage from '../../pages/locationData/subjects'
+import PersonsPage from '../../pages/locationData/persons'
 
-const url = '/location-data/subjects'
+const url = '/location-data/persons'
 
 context('Location Data', () => {
   context('Subject Search - Error states', () => {
@@ -21,15 +21,29 @@ context('Location Data', () => {
       })
 
       cy.visit(url)
-      const page = Page.verifyOnPage(SubjectsPage)
+      const page = Page.verifyOnPage(PersonsPage)
 
       // Submit a search
-      page.form.fillInWith({ name: 'foo' })
+      page.form.fillInWith({ personName: 'foo' })
       page.form.searchButton.click()
 
       // User should be redirected to an error page
       Page.verifyOnPage(ErrorPage, 'Internal Server Error')
-      cy.url().should('include', '?name=foo&nomisId=')
+      cy.url().should('include', '?personName=foo')
+    })
+
+    it('should display an error if no valid search criteria values provided', () => {
+      cy.stubGetPersons()
+
+      cy.visit(url)
+      let page = Page.verifyOnPage(PersonsPage)
+
+      page.form.fillInWith({ personName: ' ' })
+      page.form.searchButton.click()
+
+      // User should be redirected to an error page
+      page = Page.verifyOnPage(PersonsPage)
+      page.form.personsSearchField.shouldHaveValidationMessage('You must enter a value for Name, NOMIS ID or Device ID')
     })
   })
 })
