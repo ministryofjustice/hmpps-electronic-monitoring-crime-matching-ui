@@ -219,7 +219,74 @@ context('Location Data', () => {
       page.map.sidebar.form.toDateField.shouldNotHaveValidationMessage()
     })
 
-    it('should display validation messages if submitted date range exceeds device activation', () => {
+    it('should display validation messages if submitted from date is before device activation', () => {
+      cy.stubGetDeviceActivation({
+        deviceActivationId: '1',
+        status: 200,
+        response: {
+          data: {
+            deviceActivationId: 1,
+            deviceId: 123456789,
+            deviceName: '123456789',
+            personId: 123456789,
+            deviceActivationDate: '2025-01-01T00:00:00.000Z',
+            deviceDeactivationDate: '2025-01-03T00:00:00.000Z',
+            orderStart: '2024-12-01T00:00:00.000Z',
+            orderEnd: '2024-12-31T00:00:00.000Z',
+          },
+        },
+      })
+      cy.stubGetDeviceActivationPositions({
+        status: 200,
+        deviceActivationId,
+        query: 'from=\\S+&to=\\S+',
+        response: sampleLocations,
+      })
+
+      // Visit the subject page with a valid url
+      cy.visit(url)
+
+      let page = Page.verifyOnPage(SubjectPage)
+
+      page.map.sidebar.form.fillInWith({
+        fromDate: {
+          date: '02/12/2024',
+          hour: '1',
+          minute: '2',
+          second: '3',
+        },
+        toDate: {
+          date: '03/12/2024',
+          hour: '4',
+          minute: '5',
+          second: '6',
+        },
+      })
+      page.map.sidebar.form.continueButton.click()
+
+      page = Page.verifyOnPage(SubjectPage)
+
+      // The view should continue to display the last valid search
+      cy.url().should('contain', query)
+
+      // The view should display the incorrect form data + validation messages
+      page.map.sidebar.form.fromDateField.shouldHaveValue({
+        date: '02/12/2024',
+        hour: '1',
+        minute: '2',
+        second: '3',
+      })
+      page.map.sidebar.form.fromDateField.shouldHaveValidationMessage('Update date to inside tag period')
+      page.map.sidebar.form.toDateField.shouldHaveValue({
+        date: '03/12/2024',
+        hour: '4',
+        minute: '5',
+        second: '6',
+      })
+      page.map.sidebar.form.toDateField.shouldNotHaveValidationMessage()
+    })
+
+    it('should display validation messages if submitted from date is after device deactivation', () => {
       cy.stubGetDeviceActivation({
         deviceActivationId: '1',
         status: 200,
@@ -276,16 +343,14 @@ context('Location Data', () => {
         minute: '2',
         second: '3',
       })
-      page.map.sidebar.form.fromDateField.shouldHaveValidationMessage(
-        'Date and time search window should be within device activation date range',
-      )
+      page.map.sidebar.form.fromDateField.shouldNotHaveValidationMessage()
       page.map.sidebar.form.toDateField.shouldHaveValue({
         date: '03/02/2025',
         hour: '4',
         minute: '5',
         second: '6',
       })
-      page.map.sidebar.form.toDateField.shouldNotHaveValidationMessage()
+      page.map.sidebar.form.toDateField.shouldHaveValidationMessage('Update date to inside tag period')
     })
   })
 })

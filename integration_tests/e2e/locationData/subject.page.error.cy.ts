@@ -103,7 +103,50 @@ context('Location Data', () => {
       page.map.sidebar.form.toDateField.shouldHaveValue({ date: '05/01/2025', hour: '00', minute: '00', second: '00' })
     })
 
-    it('should display validation errors if date period in url exceeds device activation period', () => {
+    it('should display validation errors if from date in url is before device activation', () => {
+      const from = '2024-12-01T00:00:00.000Z'
+      const to = '2024-12-02T00:00:00.000Z'
+      cy.stubGetDeviceActivation({
+        deviceActivationId: '1',
+        status: 200,
+        response: {
+          data: {
+            deviceActivationId: 1,
+            deviceId: 123456789,
+            deviceName: '123456789',
+            personId: 123456789,
+            deviceActivationDate: '2025-01-01T00:00:00.000Z',
+            deviceDeactivationDate: '2025-01-02T00:00:00.000Z',
+            orderStart: '2024-12-01T00:00:00.000Z',
+            orderEnd: '2024-12-31T00:00:00.000Z',
+          },
+        },
+      })
+      cy.visit(`${url}?from=${from}&to=${to}`)
+
+      const page = Page.verifyOnPage(SubjectPage)
+
+      page.map.shouldExist()
+      page.map.shouldNotHaveAlerts()
+      page.map.sidebar.shouldExist()
+      page.map.sidebar.shouldHaveTabs()
+      page.map.sidebar.timeTab.shouldBeActive()
+      page.map.sidebar.analysisTab.shouldNotBeActive()
+      page.map.sidebar.shouldHaveControls()
+
+      page.map.sidebar.form.checkHasForm()
+      page.map.sidebar.form.fromDateField.shouldHaveValue({
+        date: '01/12/2024',
+        hour: '00',
+        minute: '00',
+        second: '00',
+      })
+      page.map.sidebar.form.fromDateField.shouldHaveValidationMessage('Update date to inside tag period')
+      page.map.sidebar.form.toDateField.shouldNotHaveValidationMessage()
+      page.map.sidebar.form.toDateField.shouldHaveValue({ date: '02/12/2024', hour: '00', minute: '00', second: '00' })
+    })
+
+    it('should display validation errors if to date in url is after device activation', () => {
       const from = '2025-02-01T00:00:00.000Z'
       const to = '2025-02-02T00:00:00.000Z'
       cy.stubGetDeviceActivation({
@@ -141,11 +184,9 @@ context('Location Data', () => {
         minute: '00',
         second: '00',
       })
-      page.map.sidebar.form.fromDateField.shouldHaveValidationMessage(
-        'Date and time search window should be within device activation date range',
-      )
-      page.map.sidebar.form.toDateField.shouldNotHaveValidationMessage()
+      page.map.sidebar.form.fromDateField.shouldNotHaveValidationMessage()
       page.map.sidebar.form.toDateField.shouldHaveValue({ date: '02/02/2025', hour: '00', minute: '00', second: '00' })
+      page.map.sidebar.form.toDateField.shouldHaveValidationMessage('Update date to inside tag period')
     })
   })
 })

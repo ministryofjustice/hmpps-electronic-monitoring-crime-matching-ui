@@ -1,12 +1,14 @@
-import { Dayjs } from 'dayjs'
+import dayjs, { Dayjs } from 'dayjs'
 import DeviceActivation from '../../types/entities/deviceActivation'
 import { ValidationResult } from '../../models/ValidationResult'
 import DeviceActivationsService from '../deviceActivationsService'
+import { parseDateTimeFromISOString } from '../../utils/date'
 
 const ERROR_INVALID_DATE = 'You must enter a valid value for date'
 const ERROR_TO_BEFORE_FROM = 'To date must be after From date'
-const ERROR_DATES_EXCEED_DEVICE_ACTIVATION = 'Date and time search window should be within device activation date range'
 const ERROR_DATES_EXCEED_MAX_SEARCH_WINDOW = 'Date and time search window should not exceed 48 hours'
+const ERROR_FROM_BEFORE_DEVICE_ACTIVATION = 'Update date to inside tag period'
+const ERROR_TO_AFTER_DEVICE_DEACTIVATION = 'Update date to inside tag period'
 const MAX_SEARCH_WINDOW = 48 * 60 * 60 * 1000
 
 class ValidationService {
@@ -60,21 +62,29 @@ class ValidationService {
       }
     }
 
-    if (!this.deviceActivationsService.isDateRangeWithinDeviceActivation(deviceActivation, from, to)) {
-      return {
-        success: false,
-        errors: [
-          {
-            field: 'fromDate',
-            message: ERROR_DATES_EXCEED_DEVICE_ACTIVATION,
-          },
-        ],
-      }
+    const deviceActivationDate = parseDateTimeFromISOString(deviceActivation.deviceActivationDate)
+    const deviceDeactivationDate =
+      deviceActivation.deviceDeactivationDate === null
+        ? dayjs()
+        : parseDateTimeFromISOString(deviceActivation.deviceDeactivationDate)
+
+    if (from.isBefore(deviceActivationDate)) {
+      errors.push({
+        field: 'fromDate',
+        message: ERROR_FROM_BEFORE_DEVICE_ACTIVATION,
+      })
+    }
+
+    if (to.isAfter(deviceDeactivationDate)) {
+      errors.push({
+        field: 'toDate',
+        message: ERROR_TO_AFTER_DEVICE_DEACTIVATION,
+      })
     }
 
     return {
-      success: true,
-      errors: [],
+      success: errors.length === 0,
+      errors,
     }
   }
 }

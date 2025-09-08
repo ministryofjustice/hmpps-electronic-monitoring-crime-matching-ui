@@ -66,7 +66,7 @@ context('Location Data', () => {
       page.locationsForm.toDateField.shouldHaveValidationMessage('You must enter a valid value for date')
     })
 
-    it('should display an error message if date range is outside device activation date range', () => {
+    it('should display an error message if date range is from date is before device activation', () => {
       cy.stubGetDeviceActivation({
         deviceActivationId: '1',
         status: 200,
@@ -116,8 +116,8 @@ context('Location Data', () => {
         },
       })
 
-      const fromDate = { date: '01/08/2025', hour: '09', minute: '00', second: '00' }
-      const toDate = { date: '02/08/2025', hour: '09', minute: '00', second: '00' }
+      const fromDate = { date: '01/08/2024', hour: '09', minute: '00', second: '00' }
+      const toDate = { date: '02/08/2024', hour: '09', minute: '00', second: '00' }
 
       cy.visit(url)
       let page = Page.verifyOnPage(SubjectsPage)
@@ -135,9 +135,79 @@ context('Location Data', () => {
 
       page = Page.verifyOnPage(SubjectsPage)
       page.dataTable.shouldHaveSelectedRow('1')
-      page.locationsForm.fromDateField.shouldHaveValidationMessage(
-        'Date and time search window should be within device activation date range',
-      )
+      page.locationsForm.fromDateField.shouldHaveValidationMessage('Update date to inside tag period')
+    })
+
+    it('should display an error message if date range is to date is after device deactivation', () => {
+      cy.stubGetDeviceActivation({
+        deviceActivationId: '1',
+        status: 200,
+        response: {
+          data: {
+            deviceActivationId: 1,
+            deviceId: 123456,
+            deviceName: '123456',
+            personId: 123456,
+            deviceActivationDate: '2024-12-01T00:00:00.000Z',
+            deviceDeactivationDate: '2024-12-02T00:00:00.000Z',
+            orderStart: '2024-12-01T00:00:00.000Z',
+            orderEnd: '2024-12-31T00:00:00.000Z',
+          },
+        },
+      })
+      cy.stubGetPersons({
+        status: 200,
+        query: '.*',
+        response: {
+          data: [
+            {
+              personId: '1',
+              nomisId: 'Nomis 1',
+              pncRef: 'YY/NNNNNNND',
+              name: 'John',
+              dateOfBirth: '2000-12-01T00:00:00.000Z',
+              address: '123 Street',
+              probationPractitioner: 'John Smith',
+              deviceActivations: [
+                {
+                  deviceActivationId: 1,
+                  deviceId: 123456,
+                  deviceName: '123456',
+                  personId: 123456,
+                  deviceActivationDate: '2024-12-01T00:00:00.000Z',
+                  deviceDeactivationDate: '2024-12-02T00:00:00.000Z',
+                  orderStart: '2024-12-01T00:00:00.000Z',
+                  orderEnd: '2024-12-31T00:00:00.000Z',
+                },
+              ],
+            },
+          ],
+          pageCount: 1,
+          pageNumber: 1,
+          pageSize: 10,
+        },
+      })
+
+      const fromDate = { date: '02/12/2024', hour: '09', minute: '00', second: '00' }
+      const toDate = { date: '03/12/2024', hour: '09', minute: '00', second: '00' }
+
+      cy.visit(url)
+      let page = Page.verifyOnPage(SubjectsPage)
+
+      page.form.fillInWith({ name: 'foo' })
+      page.form.searchButton.click()
+
+      cy.url().should('include', '?name=foo&nomisId=')
+      page = Page.verifyOnPage(SubjectsPage)
+      page.dataTable.shouldHaveResults()
+
+      page.locationsForm.fillInWith({ fromDate, toDate })
+      page.dataTable.selectRow('1')
+      page.locationsForm.continueButton.click()
+
+      page = Page.verifyOnPage(SubjectsPage)
+      page.dataTable.shouldHaveSelectedRow('1')
+      page.locationsForm.toDateField.shouldHaveValidationMessage('Update date to inside tag period')
     })
 
     it('should display an error message if date range is outside of maximum time window', () => {
