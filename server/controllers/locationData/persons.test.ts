@@ -1,23 +1,21 @@
 import { RestClient } from '@ministryofjustice/hmpps-rest-client'
-import Logger from 'bunyan'
 import { ZodError } from 'zod/v4'
+import logger from '../../../logger'
 import createMockPerson from '../../testutils/createMockPerson'
-import createMockLogger from '../../testutils/createMockLogger'
 import createMockRequest from '../../testutils/createMockRequest'
 import createMockResponse from '../../testutils/createMockResponse'
 import PersonsService from '../../services/personsService'
 import PersonsController from './persons'
 
 jest.mock('@ministryofjustice/hmpps-rest-client')
+jest.mock('../../../logger')
 
 const mockPerson = createMockPerson()
 
 describe('PersonsController', () => {
-  let logger: jest.Mocked<Logger>
   let mockRestClient: jest.Mocked<RestClient>
 
   beforeEach(() => {
-    logger = createMockLogger()
     mockRestClient = new RestClient(
       'crimeMatchingApi',
       {

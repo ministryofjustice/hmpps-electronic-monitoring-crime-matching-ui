@@ -9,9 +9,12 @@ type StubGetDeviceActivation200Options = {
     data: {
       deviceActivationId: number
       deviceId: number
+      deviceName: string
       personId: number
       deviceActivationDate: string
       deviceDeactivationDate: string | null
+      orderStart: string
+      orderEnd: string
     }
   }
 }
@@ -31,9 +34,12 @@ const defaultGetDeviceActivationOptions: StubGetDeviceActivationOptions = {
     data: {
       deviceActivationId: 1,
       deviceId: 123456789,
-      personId: 123456789,
+      deviceName: '123456789',
+      personId: 1,
       deviceActivationDate: '2025-01-01T00:00:00.000Z',
       deviceDeactivationDate: null,
+      orderStart: '2024-12-01T00:00:00.000Z',
+      orderEnd: '2024-12-31T00:00:00.000Z',
     },
   },
 }

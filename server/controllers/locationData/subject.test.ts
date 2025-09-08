@@ -5,13 +5,13 @@ import customParseFormat from 'dayjs/plugin/customParseFormat'
 import isSameOrAfter from 'dayjs/plugin/isSameOrAfter'
 import isSameOrBefore from 'dayjs/plugin/isSameOrBefore'
 import { RestClient } from '@ministryofjustice/hmpps-rest-client'
-import Logger from 'bunyan'
-import createMockLogger from '../../testutils/createMockLogger'
+import logger from '../../../logger'
 import createMockRequest from '../../testutils/createMockRequest'
 import createMockResponse from '../../testutils/createMockResponse'
 import SubjectController from './subject'
 import DeviceActivationsService from '../../services/deviceActivationsService'
 import ValidationService from '../../services/locationData/validationService'
+import PersonsService from '../../services/personsService'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
@@ -20,13 +20,12 @@ dayjs.extend(isSameOrAfter)
 dayjs.extend(isSameOrBefore)
 
 jest.mock('@ministryofjustice/hmpps-rest-client')
+jest.mock('../../../logger')
 
 describe('SubjectController', () => {
-  let logger: jest.Mocked<Logger>
   let mockRestClient: jest.Mocked<RestClient>
 
   beforeEach(() => {
-    logger = createMockLogger()
     mockRestClient = new RestClient(
       'crimeMatchingApi',
       {
@@ -63,16 +62,20 @@ describe('SubjectController', () => {
         deviceActivation: {
           deviceActivationId: 1,
           deviceId: 123456,
+          deviceName: '123456',
           personId: 1,
           deviceActivationDate: '2024-12-01T00:00:00.000Z',
           deviceDeactivationDate: null,
+          orderStart: '2024-12-01T00:00:00.000Z',
+          orderEnd: '2024-12-31T00:00:00.000Z',
         },
       })
       const res = createMockResponse()
       const next = jest.fn()
       const deviceActivationsService = new DeviceActivationsService(mockRestClient)
+      const personsService = new PersonsService(mockRestClient)
       const validationService = new ValidationService(deviceActivationsService)
-      const controller = new SubjectController(deviceActivationsService, validationService)
+      const controller = new SubjectController(deviceActivationsService, personsService, validationService)
 
       // When
       await controller.search(req, res, next)
@@ -102,8 +105,9 @@ describe('SubjectController', () => {
       const res = createMockResponse()
       const next = jest.fn()
       const deviceActivationsService = new DeviceActivationsService(mockRestClient)
+      const personsService = new PersonsService(mockRestClient)
       const validationService = new ValidationService(deviceActivationsService)
-      const controller = new SubjectController(deviceActivationsService, validationService)
+      const controller = new SubjectController(deviceActivationsService, personsService, validationService)
 
       // When
       await controller.search(req, res, next)
@@ -148,8 +152,9 @@ describe('SubjectController', () => {
       const res = createMockResponse()
       const next = jest.fn()
       const deviceActivationsService = new DeviceActivationsService(mockRestClient)
+      const personsService = new PersonsService(mockRestClient)
       const validationService = new ValidationService(deviceActivationsService)
-      const controller = new SubjectController(deviceActivationsService, validationService)
+      const controller = new SubjectController(deviceActivationsService, personsService, validationService)
 
       // When
       await controller.search(req, res, next)
@@ -190,8 +195,9 @@ describe('SubjectController', () => {
       const res = createMockResponse()
       const next = jest.fn()
       const deviceActivationsService = new DeviceActivationsService(mockRestClient)
+      const personsService = new PersonsService(mockRestClient)
       const validationService = new ValidationService(deviceActivationsService)
-      const controller = new SubjectController(deviceActivationsService, validationService)
+      const controller = new SubjectController(deviceActivationsService, personsService, validationService)
 
       // When
       await controller.search(req, res, next)
@@ -226,9 +232,12 @@ describe('SubjectController', () => {
         deviceActivation: {
           deviceActivationId: 1,
           deviceId: 123456,
+          deviceName: '123456',
           personId: 1,
           deviceActivationDate: '2024-12-01T00:00:00.000Z',
           deviceDeactivationDate: '2024-12-02T00:00:00.000Z',
+          orderStart: '2024-12-01T00:00:00.000Z',
+          orderEnd: '2024-12-31T00:00:00.000Z',
         },
         body: {
           origin: '/location-data/device-activations/1',
@@ -239,8 +248,9 @@ describe('SubjectController', () => {
       const res = createMockResponse()
       const next = jest.fn()
       const deviceActivationsService = new DeviceActivationsService(mockRestClient)
+      const personsService = new PersonsService(mockRestClient)
       const validationService = new ValidationService(deviceActivationsService)
-      const controller = new SubjectController(deviceActivationsService, validationService)
+      const controller = new SubjectController(deviceActivationsService, personsService, validationService)
 
       // When
       await controller.search(req, res, next)
@@ -273,16 +283,20 @@ describe('SubjectController', () => {
         deviceActivation: {
           deviceActivationId: 1,
           deviceId: 123456789,
+          deviceName: '123456789',
           personId: 123456789,
           deviceActivationDate: '2025-01-01T00:00:00.000Z',
           deviceDeactivationDate: null,
+          orderStart: '2024-12-01T00:00:00.000Z',
+          orderEnd: '2024-12-31T00:00:00.000Z',
         },
       })
       const res = createMockResponse()
       const next = jest.fn()
       const deviceActivationsService = new DeviceActivationsService(mockRestClient)
+      const personsService = new PersonsService(mockRestClient)
       const validationService = new ValidationService(deviceActivationsService)
-      const controller = new SubjectController(deviceActivationsService, validationService)
+      const controller = new SubjectController(deviceActivationsService, personsService, validationService)
 
       // GET /device-activations/1/positions
       mockRestClient.get.mockResolvedValue({
@@ -356,16 +370,20 @@ describe('SubjectController', () => {
         deviceActivation: {
           deviceActivationId: 1,
           deviceId: 123456789,
+          deviceName: '123456789',
           personId: 123456789,
           deviceActivationDate: '2025-01-01T00:00:00.000Z',
           deviceDeactivationDate: null,
+          orderStart: '2024-12-01T00:00:00.000Z',
+          orderEnd: '2024-12-31T00:00:00.000Z',
         },
       })
       const res = createMockResponse()
       const next = jest.fn()
       const deviceActivationsService = new DeviceActivationsService(mockRestClient)
+      const personsService = new PersonsService(mockRestClient)
       const validationService = new ValidationService(deviceActivationsService)
-      const controller = new SubjectController(deviceActivationsService, validationService)
+      const controller = new SubjectController(deviceActivationsService, personsService, validationService)
 
       // GET /device-activations/1/positions
       mockRestClient.get.mockResolvedValue({
@@ -447,7 +465,6 @@ describe('SubjectController', () => {
               confidence: 20,
               type: 'pop-location',
               sequenceNumber: 2,
-
               overlayTemplateId: 'overlay-template-pop-location',
               displaySpeed: '7 km/h',
               displayDirection: '210°',

@@ -4,6 +4,8 @@ import type { Request, Response } from 'express'
 import authorisationMiddleware from './authorisationMiddleware'
 import createMockRequest from '../testutils/createMockRequest'
 
+jest.mock('../../logger')
+
 function createToken(authorities: string[]) {
   const payload = {
     user_name: 'USER1',

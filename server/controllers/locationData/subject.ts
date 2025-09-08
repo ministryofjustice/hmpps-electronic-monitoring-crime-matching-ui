@@ -13,10 +13,12 @@ import { getDateComponents, parseDateTimeFromISOString } from '../../utils/date'
 import { convertZodErrorToValidationError, flattenErrorsToMap } from '../../utils/errors'
 import ValidationService from '../../services/locationData/validationService'
 import generateLocationDataReport from '../../presenters/reports/locationData'
+import PersonsService from '../../services/personsService'
 
 export default class SubjectController {
   constructor(
     private readonly deviceActivationsService: DeviceActivationsService,
+    private readonly personsService: PersonsService,
     private readonly validationService: ValidationService,
   ) {}
 
@@ -135,13 +137,15 @@ export default class SubjectController {
     )
 
     if (validationResult.success) {
-      const positions = await this.deviceActivationsService.getDeviceActivationPositions(
+      const deviceWearerPromise = this.personsService.getPerson(token, deviceActivation!.personId)
+      const positionsPromise = this.deviceActivationsService.getDeviceActivationPositions(
         token,
         deviceActivation!,
         fromDate,
         toDate,
       )
-      const csvData = generateLocationDataReport(deviceActivation!, positions, reportType === 'condensed')
+      const [deviceWearer, positions] = await Promise.all([deviceWearerPromise, positionsPromise])
+      const csvData = generateLocationDataReport(deviceWearer, deviceActivation!, positions, reportType === 'condensed')
       const fileName = `location-data-${deviceActivation?.deviceId}-${from}-${to}-${reportType}.csv`
 
       res.setHeader('Content-Type', 'text/csv')

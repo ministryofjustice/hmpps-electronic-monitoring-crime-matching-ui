@@ -10,14 +10,19 @@ type StubGetPersons200Options = {
       personId: string
       nomisId: string
       personName: string
+      pncRef: string
       dateOfBirth: string
       address: string
+      probationPractitioner: string
       deviceActivations: Array<{
         deviceActivationId: number
         deviceId: number
+        deviceName: string
         personId: number
         deviceActivationDate: string
         deviceDeactivationDate: string | null
+        orderStart: string
+        orderEnd: string
       }>
     }>
     pageCount: number

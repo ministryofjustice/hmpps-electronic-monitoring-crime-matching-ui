@@ -3,6 +3,8 @@ import { SendMessageCommand, SendMessageCommandInput, SQSClient } from '@aws-sdk
 
 import HmppsAuditClient, { SqsMessage } from './hmppsAuditClient'
 
+jest.mock('../../logger')
+
 describe('hmppsAuditClient', () => {
   const sqsMock = mockClient(SQSClient)
   let hmppsAuditClient: HmppsAuditClient

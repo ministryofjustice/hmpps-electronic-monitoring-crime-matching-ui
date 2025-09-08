@@ -6,7 +6,7 @@ import HmppsAuditClient from '../data/hmppsAuditClient'
 
 jest.mock('../services/auditService')
 jest.mock('../data/hmppsAuditClient')
-jest.mock('../data/restClient')
+jest.mock('@ministryofjustice/hmpps-rest-client')
 
 const hmppsAuditClient = new HmppsAuditClient({
   queueUrl: '',
