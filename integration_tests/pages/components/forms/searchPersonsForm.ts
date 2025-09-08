@@ -1,6 +1,5 @@
 import { PageElement } from '../../page'
 import FormComponent from '../formComponent'
-import FormInputComponent from '../formInputComponent'
 import FormRadiosComponent from '../formRadiosComponent'
 
 type SearchPersonsFormData = {
@@ -14,21 +13,6 @@ export default class SearchPersonsFormComponent extends FormComponent {
     super('person-search-form')
   }
   // FIELDS
-
-  get searchNomisIdField(): FormInputComponent {
-    const label = 'Nomis ID'
-    return new FormInputComponent(this.form, label)
-  }
-
-  get searchPersonNameField(): FormInputComponent {
-    const label = 'Name'
-    return new FormInputComponent(this.form, label)
-  }
-
-  get searchDeviceIdField(): FormInputComponent {
-    const label = 'Device ID'
-    return new FormInputComponent(this.form, label)
-  }
 
   get searchButton(): PageElement {
     return this.form.contains('button', 'Search')

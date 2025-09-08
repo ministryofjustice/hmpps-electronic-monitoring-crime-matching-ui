@@ -182,11 +182,11 @@
           rows: rows,
           pagination: {
             pageCount: pageCount,
-            currentPage: pageNumber
+            currentPage: pageNumber,
+            hrefPrefix: '?personName=' + personName + "&nomisId=" + nomisId + "&deviceId=" + deviceId
           }
         })
       }}
       </div>
   </div>
 {% endblock %}
-{# hrefPrefix: '?name=' + name + "&nomisId=" + nomisId #}

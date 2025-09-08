@@ -110,107 +110,107 @@ context('Location Data', () => {
       page.dataTable.shouldNotHavePagination()
     })
 
-    // it('should display the second page of results if the user clicks the next page button', () => {
-    //   // Stub the api to simulate the query returning the first page results
-    //   cy.stubGetPersons({
-    //     status: 200,
-    //     query: '\\?personName=foo&nomisId=&deviceId&includeDeviceActivations=true&page=1',
-    //     response: {
-    //       data: [
-    //         {
-    //           personId: '1',
-    //           nomisId: 'Nomis 1',
-    //           personName: 'John',
-    //           dateOfBirth: '2000-12-01T00:00:00.000Z',
-    //           address: '123 Street',
-    //           deviceActivations: [
-    //             {
-    //               deviceActivationId: 123456,
-    //               deviceId: 123456,
-    //               personId: 654321,
-    //               deviceActivationDate: '2024-12-01T00:00:00.000Z',
-    //               deviceDeactivationDate: null,
-    //             },
-    //           ],
-    //         },
-    //       ],
-    //       pageCount: 2,
-    //       pageNumber: 1,
-    //       pageSize: 10,
-    //     },
-    //   })
-    //   // Stub the api to simulate the query returning the second page results
-    //   cy.stubGetPersons({
-    //     status: 200,
-    //     query: '\\?personName=foo&nomisId=&deviceId&includeDeviceActivations=true&page=2',
-    //     response: {
-    //       data: [
-    //         {
-    //           personId: '2',
-    //           nomisId: 'Nomis 2',
-    //           personName: 'Lee',
-    //           dateOfBirth: '2000-12-01T00:00:00.000Z',
-    //           address: '456 Avenue',
-    //           deviceActivations: [
-    //             {
-    //               deviceActivationId: 123456,
-    //               deviceId: 654321,
-    //               personId: 654321,
-    //               deviceActivationDate: '2024-12-01T00:00:00.000Z',
-    //               deviceDeactivationDate: '2024-12-01T00:00:00.000Z',
-    //             },
-    //           ],
-    //         },
-    //       ],
-    //       pageCount: 2,
-    //       pageNumber: 2,
-    //       pageSize: 10,
-    //     },
-    //   })
+    it('should display the second page of results if the user clicks the next page button', () => {
+      // Stub the api to simulate the query returning the first page results
+      cy.stubGetPersons({
+        status: 200,
+        query: '\\?personName=foo&nomisId=&deviceId=&includeDeviceActivations=true&page=1',
+        response: {
+          data: [
+            {
+              personId: '1',
+              nomisId: 'Nomis 1',
+              personName: 'John',
+              dateOfBirth: '2000-12-01T00:00:00.000Z',
+              address: '123 Street',
+              deviceActivations: [
+                {
+                  deviceActivationId: 123456,
+                  deviceId: 123456,
+                  personId: 654321,
+                  deviceActivationDate: '2024-12-01T00:00:00.000Z',
+                  deviceDeactivationDate: null,
+                },
+              ],
+            },
+          ],
+          pageCount: 2,
+          pageNumber: 1,
+          pageSize: 10,
+        },
+      })
+      // Stub the api to simulate the query returning the second page results
+      cy.stubGetPersons({
+        status: 200,
+        query: '\\?personName=foo&nomisId=&deviceId=&includeDeviceActivations=true&page=2',
+        response: {
+          data: [
+            {
+              personId: '2',
+              nomisId: 'Nomis 2',
+              personName: 'Lee',
+              dateOfBirth: '2000-12-01T00:00:00.000Z',
+              address: '456 Avenue',
+              deviceActivations: [
+                {
+                  deviceActivationId: 123456,
+                  deviceId: 654321,
+                  personId: 654321,
+                  deviceActivationDate: '2024-12-01T00:00:00.000Z',
+                  deviceDeactivationDate: '2024-12-01T00:00:00.000Z',
+                },
+              ],
+            },
+          ],
+          pageCount: 2,
+          pageNumber: 2,
+          pageSize: 10,
+        },
+      })
 
-    //   cy.visit(url)
-    //   let page = Page.verifyOnPage(PersonsPage)
+      cy.visit(url)
+      let page = Page.verifyOnPage(PersonsPage)
 
-    //   // Submit a search
-    //   page.form.fillInWith({ personName: 'foo' })
-    //   page.form.searchButton.click()
+      // Submit a search
+      page.form.fillInWith({ personName: 'foo' })
+      page.form.searchButton.click()
 
-    //   // User should be shown the results
-    //   cy.url().should('include', '?personName=foo')
-    //   page = Page.verifyOnPage(PersonsPage)
-    //   page.dataTable.shouldHaveResults()
-    //   page.dataTable.shouldHaveColumns([
-    //     '',
-    //     'NOMIS ID',
-    //     'Name',
-    //     'Date of Birth',
-    //     'Address',
-    //     'Device ID',
-    //     'Tag Period Start',
-    //     'Tag Period End',
-    //   ])
-    //   page.dataTable.shouldHaveRows([
-    //     ['', 'Nomis 1', 'John', '01/12/2000 00:00', '123 Street', '123456', '01/12/2024 00:00', ''],
-    //   ])
-    //   page.dataTable.shouldHavePagination()
-    //   page.dataTable.pagination.shouldHaveCurrentPage('1')
-    //   page.dataTable.pagination.shouldHaveNextButton()
-    //   page.dataTable.pagination.shouldNotHavePrevButton()
+      // User should be shown the results
+      cy.url().should('include', '?personName=foo')
+      page = Page.verifyOnPage(PersonsPage)
+      page.dataTable.shouldHaveResults()
+      page.dataTable.shouldHaveColumns([
+        '',
+        'NOMIS ID',
+        'Name',
+        'Date of Birth',
+        'Address',
+        'Device ID',
+        'Tag Period Start',
+        'Tag Period End',
+      ])
+      page.dataTable.shouldHaveRows([
+        ['', 'Nomis 1', 'John', '01/12/2000 00:00', '123 Street', '123456', '01/12/2024 00:00', ''],
+      ])
+      page.dataTable.shouldHavePagination()
+      page.dataTable.pagination.shouldHaveCurrentPage('1')
+      page.dataTable.pagination.shouldHaveNextButton()
+      page.dataTable.pagination.shouldNotHavePrevButton()
 
-    //   // Navigate to the next page
-    //   page.dataTable.pagination.next.click()
+      // Navigate to the next page
+      page.dataTable.pagination.next.click()
 
-    //   // User should be shown the second page of results
-    //   cy.url().should('include', '?personName=foo&page=2')
-    //   page = Page.verifyOnPage(PersonsPage)
-    //   page.dataTable.shouldHaveResults()
-    //   page.dataTable.shouldHaveRows([
-    //     ['', 'Nomis 2', 'Lee', '01/12/2000 00:00', '456 Avenue', '654321', '01/12/2024 00:00', '01/12/2024 00:00'],
-    //   ])
-    //   page.dataTable.shouldHavePagination()
-    //   page.dataTable.pagination.shouldHaveCurrentPage('2')
-    //   page.dataTable.pagination.shouldNotHaveNextButton()
-    //   page.dataTable.pagination.shouldHavePrevButton()
-    // })
+      // User should be shown the second page of results
+      cy.url().should('include', '?personName=foo&nomisId=&deviceId=&page=2')
+      page = Page.verifyOnPage(PersonsPage)
+      page.dataTable.shouldHaveResults()
+      page.dataTable.shouldHaveRows([
+        ['', 'Nomis 2', 'Lee', '01/12/2000 00:00', '456 Avenue', '654321', '01/12/2024 00:00', '01/12/2024 00:00'],
+      ])
+      page.dataTable.shouldHavePagination()
+      page.dataTable.pagination.shouldHaveCurrentPage('2')
+      page.dataTable.pagination.shouldNotHaveNextButton()
+      page.dataTable.pagination.shouldHavePrevButton()
+    })
   })
 })
