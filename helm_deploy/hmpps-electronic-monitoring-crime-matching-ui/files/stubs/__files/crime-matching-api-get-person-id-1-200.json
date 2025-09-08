@@ -1,7 +1,7 @@
 {
   "data": {
     "personId": "1",
-    "name": "Jane Doe",
+    "personName": "Jane Doe",
     "nomisId": "Nomis 1",
     "pncRef": "YY/NNNNNNND",
     "address": "123 Street",

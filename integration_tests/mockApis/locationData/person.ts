@@ -8,7 +8,7 @@ type StubGetPerson200Options = {
   response: {
     data: {
       personId: string
-      name: string
+      personName: string
       nomisId: string
       pncRef: string
       address: string
@@ -33,7 +33,7 @@ const defaultGetPersonOptions: StubGetPersonOptions = {
   response: {
     data: {
       personId: '1',
-      name: 'Jane Doe',
+      personName: 'Jane Doe',
       nomisId: 'Nomis 1"',
       pncRef: 'YY/NNNNNNND',
       address: '123 Street',

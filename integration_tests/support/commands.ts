@@ -44,8 +44,8 @@ Cypress.Commands.add('stubGetPersons', options => {
   cy.task('stubGetPersons', options)
 })
 
-Cypress.Commands.add('stubGetSubject', options => {
-  cy.task('stubGetSubject', options)
+Cypress.Commands.add('stubGetPerson', options => {
+  cy.task('stubGetPerson', options)
 })
 
 Cypress.Commands.add('stubMapToken', options => {
