@@ -75,6 +75,7 @@ export default class SubjectController {
         fromDate,
         toDate,
       )
+
       const geoJsonData = createGeoJsonData(positions)
       const alerts: Array<MojAlert> = []
 
@@ -90,8 +91,7 @@ export default class SubjectController {
           url: `/location-data/device-activations/${deviceActivation?.deviceActivationId}/download`,
         },
         origin: req.originalUrl,
-        points: geoJsonData.points,
-        lines: geoJsonData.lines,
+        geoJson: geoJsonData,
         tileUrl: config.maps.tileUrl,
         vectorUrl: config.maps.vectorUrl,
         alerts,
@@ -107,8 +107,7 @@ export default class SubjectController {
           enabled: false,
         },
         origin: req.originalUrl,
-        points: JSON.stringify([]),
-        lines: JSON.stringify([]),
+        geoJson: JSON.stringify({}),
         tileUrl: config.maps.tileUrl,
         alerts: [],
         formData: {

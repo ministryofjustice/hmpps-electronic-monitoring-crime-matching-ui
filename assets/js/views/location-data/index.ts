@@ -15,8 +15,8 @@ const initialiseLocationDataView = async () => {
     mojMap.addEventListener('map:ready', () => resolve(), { once: true })
   })
 
-  const { points } = mojMap
-  const { lines } = mojMap
+  const { points } = mojMap.geoJson
+  const { lines } = mojMap.geoJson
 
   const locationsLayer = new LocationsLayer(points)
   const locationSource = locationsLayer.getSource()

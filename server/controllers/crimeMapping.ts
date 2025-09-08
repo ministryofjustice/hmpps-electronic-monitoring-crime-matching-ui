@@ -11,8 +11,7 @@ export default class CrimeMappingController {
     const geoJsonData = createGeoJsonData(data)
 
     res.render('pages/crime-mapping/index', {
-      points: JSON.stringify(geoJsonData.points),
-      lines: JSON.stringify(geoJsonData.lines),
+      geoJson: JSON.stringify(geoJsonData),
       tileUrl: config.maps.tileUrl,
       vectorUrl: config.maps.vectorUrl,
     })
