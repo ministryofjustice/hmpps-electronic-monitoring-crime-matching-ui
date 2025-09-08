@@ -8,6 +8,12 @@
     {% endfor %}
   </div>
 
+  <div class="app-map__sidebar">
+    {% if params.sidebarHtml %}
+      {{ params.sidebarHtml | safe | trim | indent(2) }}
+    {% endif %}
+  </div>
+
   {{
     mojMap({
       tileUrl: params.tileUrl,
@@ -26,10 +32,4 @@
       }
     })
   }}
-
-  <div class="app-map__sidebar">
-    {% if params.sidebarHtml %}
-      {{ params.sidebarHtml | safe | trim | indent(2) }}
-    {% endif %}
-  </div>
 </div>
