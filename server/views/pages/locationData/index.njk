@@ -17,9 +17,9 @@
 
 {% set nameHtml %}
 {{ govukInput({
-  id: "person-name",
-  name: "personName",
-  value: personName,
+  id: "name",
+  name: "name",
+  value: name,
   classes: "govuk-!-width-two-thirds"
 }) }}
 {% endset %}
@@ -63,7 +63,7 @@
             text: person.nomisId
           },
           {
-            text: person.personName
+            text: person.name
           },
           {
             text: person.dateOfBirth | formatDate
@@ -102,15 +102,15 @@
             legend: {
               text: "Search",
               isPageHeading: true,
-              classes: "govuk-fieldset__legend--m"
+              classes: "govuk-fieldset__legend--s"
             }
           },
           errorMessage: errors.personSearchType,
           items: [
             {
-              value: "personName",
+              value: "name",
               text: "Name",
-              checked: formData.personSearchType == 'personName',
+              checked: formData.personSearchType == 'name',
               conditional: {
                 html: nameHtml
               }
@@ -183,7 +183,7 @@
           pagination: {
             pageCount: pageCount,
             currentPage: pageNumber,
-            hrefPrefix: '?personName=' + personName + "&nomisId=" + nomisId + "&deviceId=" + deviceId
+            hrefPrefix: '?name=' + name + "&nomisId=" + nomisId + "&deviceId=" + deviceId
           }
         })
       }}

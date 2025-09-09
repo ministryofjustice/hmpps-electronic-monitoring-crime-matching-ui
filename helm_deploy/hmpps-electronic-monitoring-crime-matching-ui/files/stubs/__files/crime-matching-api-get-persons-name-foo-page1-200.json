@@ -3,7 +3,7 @@
     {
       "personId": "1",
       "nomisId": "Nomis 1",
-      "personName": "John",
+      "name": "John",
       "pncRef": "YY/NNNNNNND",
       "dateOfBirth": "2000-12-01T00:00:00.000Z",
       "address": "123 Street",
@@ -24,7 +24,7 @@
     {
       "personId": "2",
       "nomisId": "Nomis 2",
-      "personName": "John",
+      "name": "John",
       "pncRef": "YY/NNNNNNND",
       "dateOfBirth": "2000-12-01T00:00:00.000Z",
       "address": "123 Street",
@@ -45,7 +45,7 @@
     {
       "personId": "3",
       "nomisId": "Nomis 3",
-      "personName": "John",
+      "name": "John",
       "pncRef": "YY/NNNNNNND",
       "dateOfBirth": "2000-12-01T00:00:00.000Z",
       "address": "123 Street",
@@ -66,7 +66,7 @@
     {
       "personId": "4",
       "nomisId": "Nomis 4",
-      "personName": "John",
+      "name": "John",
       "pncRef": "YY/NNNNNNND",
       "dateOfBirth": "2000-12-01T00:00:00.000Z",
       "address": "123 Street",
@@ -87,7 +87,7 @@
     {
       "personId": "5",
       "nomisId": "Nomis 5",
-      "personName": "John",
+      "name": "John",
       "pncRef": "YY/NNNNNNND",
       "dateOfBirth": "2000-12-01T00:00:00.000Z",
       "address": "123 Street",
@@ -108,7 +108,7 @@
     {
       "personId": "6",
       "nomisId": "Nomis 6",
-      "personName": "John",
+      "name": "John",
       "pncRef": "YY/NNNNNNND",
       "dateOfBirth": "2000-12-01T00:00:00.000Z",
       "address": "123 Street",
@@ -129,7 +129,7 @@
     {
       "personId": "7",
       "nomisId": "Nomis 7",
-      "personName": "John",
+      "name": "John",
       "pncRef": "YY/NNNNNNND",
       "dateOfBirth": "2000-12-01T00:00:00.000Z",
       "address": "123 Street",
@@ -150,7 +150,7 @@
     {
       "personId": "8",
       "nomisId": "Nomis 8",
-      "personName": "John",
+      "name": "John",
       "pncRef": "YY/NNNNNNND",
       "dateOfBirth": "2000-12-01T00:00:00.000Z",
       "address": "123 Street",
@@ -171,7 +171,7 @@
     {
       "personId": "9",
       "nomisId": "Nomis 9",
-      "personName": "John",
+      "name": "John",
       "pncRef": "YY/NNNNNNND",
       "dateOfBirth": "2000-12-01T00:00:00.000Z",
       "address": "123 Street",
@@ -192,7 +192,7 @@
     {
       "personId": "10",
       "nomisId": "Nomis 10",
-      "personName": "John",
+      "name": "John",
       "pncRef": "YY/NNNNNNND",
       "dateOfBirth": "2000-12-01T00:00:00.000Z",
       "address": "123 Street",

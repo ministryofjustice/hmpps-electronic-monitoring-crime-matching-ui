@@ -9,7 +9,7 @@ type StubGetPersons200Options = {
     data: Array<{
       personId: string
       nomisId: string
-      personName: string
+      name: string
       pncRef: string
       dateOfBirth: string
       address: string

@@ -8,12 +8,12 @@ class PersonsService {
 
   async getPersons(
     token: string,
-    personName: string,
+    name: string,
     nomisId: string,
     deviceId: string,
     page: string,
   ): Promise<GetPersonsDto> {
-    if (personName === '' && nomisId === '' && deviceId === '') {
+    if (name === '' && nomisId === '' && deviceId === '') {
       return {
         data: [],
         pageCount: 1,
@@ -26,7 +26,7 @@ class PersonsService {
       {
         path: '/persons',
         query: {
-          personName,
+          name,
           nomisId,
           deviceId,
           includeDeviceActivations: true,

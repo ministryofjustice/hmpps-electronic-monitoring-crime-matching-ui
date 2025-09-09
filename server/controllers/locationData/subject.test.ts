@@ -97,7 +97,7 @@ describe('SubjectController', () => {
 
       const req = createMockRequest({
         body: {
-          origin: '/location-data/persons?personName=foo',
+          origin: '/location-data/persons?name=foo',
           fromDate: emptyDateInput,
           toDate: emptyDateInput,
         },
@@ -113,7 +113,7 @@ describe('SubjectController', () => {
       await controller.search(req, res, next)
 
       // Then
-      expect(res.redirect).toHaveBeenCalledWith('/location-data/persons?personName=foo')
+      expect(res.redirect).toHaveBeenCalledWith('/location-data/persons?name=foo')
       expect(req.session.validationErrors).toEqual([
         {
           field: 'fromDate',

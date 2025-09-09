@@ -4,7 +4,7 @@ import { paginatedDtoSchema } from '../pagination'
 const MISSING_FORM_VALUE_ERROR = 'You must enter a value for Name, NOMIS ID or Device ID'
 
 const personsQueryParametersSchema = z.object({
-  personName: z.string().default(''),
+  name: z.string().default(''),
   nomisId: z.string().default(''),
   deviceId: z.string().default(''),
 
@@ -16,10 +16,10 @@ const personsQueryParametersSchema = z.object({
 
 const personsFormDataSchema = z
   .object({
-    personName: z.string(),
+    name: z.string(),
     nomisId: z.string(),
     deviceId: z.string(),
-    personSearchType: z.enum(['personName', 'nomisId', 'deviceId']),
+    personSearchType: z.enum(['name', 'nomisId', 'deviceId']),
   })
   .refine(
     data => {
@@ -37,7 +37,7 @@ const getpersonsQueryDtoSchema = paginatedDtoSchema.extend({
     z.object({
       personId: z.string(),
       nomisId: z.string(),
-      personName: z.string(),
+      name: z.string(),
       dateOfBirth: z.string(),
       address: z.string(),
       deviceId: z.string(),

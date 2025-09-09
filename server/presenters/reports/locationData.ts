@@ -56,7 +56,7 @@ const getRow = (
     deviceActivation.deviceId.toString(),
     deviceActivation.deviceName,
     deviceWearer.personId,
-    deviceWearer.personName,
+    deviceWearer.name,
     deviceWearer.nomisId,
     deviceWearer.pncRef,
     deviceWearer.address,

@@ -24,12 +24,12 @@ context('Location Data', () => {
       const page = Page.verifyOnPage(PersonsPage)
 
       // Submit a search
-      page.form.fillInWith({ personName: 'foo' })
+      page.form.fillInWith({ name: 'foo' })
       page.form.searchButton.click()
 
       // User should be redirected to an error page
       Page.verifyOnPage(ErrorPage, 'Internal Server Error')
-      cy.url().should('include', '?personName=foo')
+      cy.url().should('include', '?name=foo')
     })
 
     it('should display an error if no valid search criteria values provided', () => {
@@ -38,7 +38,7 @@ context('Location Data', () => {
       cy.visit(url)
       let page = Page.verifyOnPage(PersonsPage)
 
-      page.form.fillInWith({ personName: ' ' })
+      page.form.fillInWith({ name: ' ' })
       page.form.searchButton.click()
 
       // User should be redirected to an error page

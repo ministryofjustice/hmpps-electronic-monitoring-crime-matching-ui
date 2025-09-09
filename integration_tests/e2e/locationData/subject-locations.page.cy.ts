@@ -29,7 +29,7 @@ context('Location Data', () => {
             {
               personId: '1',
               nomisId: 'Nomis 1',
-              personName: 'John',
+              name: 'John',
               pncRef: 'YY/NNNNNNND',
               dateOfBirth: '2000-12-01T00:00:00.000Z',
               address: '123 Street',
@@ -57,10 +57,10 @@ context('Location Data', () => {
       cy.visit(url)
       let page = Page.verifyOnPage(PersonsPage)
 
-      page.form.fillInWith({ personName: 'foo' })
+      page.form.fillInWith({ name: 'foo' })
       page.form.searchButton.click()
 
-      cy.url().should('include', '?personName=foo')
+      cy.url().should('include', '?name=foo')
       page = Page.verifyOnPage(PersonsPage)
       page.dataTable.shouldHaveResults()
 
@@ -98,7 +98,7 @@ context('Location Data', () => {
             {
               personId: '1',
               nomisId: 'Nomis 1',
-              personName: 'John',
+              name: 'John',
               pncRef: 'YY/NNNNNNND',
               dateOfBirth: '2000-12-01T00:00:00.000Z',
               address: '123 Street',
@@ -126,10 +126,10 @@ context('Location Data', () => {
       cy.visit(url)
       let page = Page.verifyOnPage(PersonsPage)
 
-      page.form.fillInWith({ personName: 'foo' })
+      page.form.fillInWith({ name: 'foo' })
       page.form.searchButton.click()
 
-      cy.url().should('include', '?personName=foo')
+      cy.url().should('include', '?name=foo')
       page = Page.verifyOnPage(PersonsPage)
       page.dataTable.shouldHaveResults()
 

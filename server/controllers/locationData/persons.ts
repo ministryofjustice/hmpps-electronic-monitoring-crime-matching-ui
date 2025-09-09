@@ -12,7 +12,7 @@ export default class PersonsController {
     const parsedQuery = personsQueryParametersSchema.parse(query)
     const queryResults = await this.service.getPersons(
       token,
-      parsedQuery.personName,
+      parsedQuery.name,
       parsedQuery.nomisId,
       parsedQuery.deviceId,
       parsedQuery.page,
@@ -20,7 +20,7 @@ export default class PersonsController {
 
     res.render('pages/locationData/index', {
       origin: req.originalUrl,
-      personName: parsedQuery.personName,
+      name: parsedQuery.name,
       nomisId: parsedQuery.nomisId,
       deviceId: parsedQuery.deviceId,
       persons: queryResults.data,
@@ -34,11 +34,11 @@ export default class PersonsController {
     req.session.formData = req.body
 
     if (formData.success) {
-      const { personSearchType, personName, nomisId, deviceId } = formData.data
+      const { personSearchType, name, nomisId, deviceId } = formData.data
       const params = new URLSearchParams()
 
-      if (personSearchType === 'personName') {
-        params.set(personSearchType, personName)
+      if (personSearchType === 'name') {
+        params.set(personSearchType, name)
       } else if (personSearchType === 'nomisId') {
         params.set(personSearchType, nomisId)
       } else {

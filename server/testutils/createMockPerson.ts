@@ -4,7 +4,7 @@ import Person from '../types/entities/person'
 const createMockPerson = (): Person => ({
   personId: randomUUID(),
   nomisId: randomUUID(),
-  personName: 'John',
+  name: 'John',
   pncRef: 'YY/NNNNNNND',
   dateOfBirth: '2000-12-01T00:00:00.000Z',
   address: '123 Street',

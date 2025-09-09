@@ -36,7 +36,7 @@ describe('PersonsController', () => {
       // Given
       const req = createMockRequest({
         query: {
-          personName: 'foo',
+          name: 'foo',
         },
       })
       const res = createMockResponse()
@@ -59,7 +59,7 @@ describe('PersonsController', () => {
         {
           path: '/persons',
           query: {
-            personName: 'foo',
+            name: 'foo',
             nomisId: '',
             deviceId: '',
             includeDeviceActivations: true,
@@ -69,7 +69,7 @@ describe('PersonsController', () => {
         undefined,
       )
       expect(res.render).toHaveBeenCalledWith('pages/locationData/index', {
-        personName: 'foo',
+        name: 'foo',
         nomisId: '',
         deviceId: '',
         persons: [mockPerson],
@@ -105,7 +105,7 @@ describe('PersonsController', () => {
         {
           path: '/persons',
           query: {
-            personName: '',
+            name: '',
             nomisId: 'foo',
             deviceId: '',
             includeDeviceActivations: true,
@@ -115,7 +115,7 @@ describe('PersonsController', () => {
         undefined,
       )
       expect(res.render).toHaveBeenCalledWith('pages/locationData/index', {
-        personName: '',
+        name: '',
         nomisId: 'foo',
         deviceId: '',
         persons: [mockPerson],
@@ -151,7 +151,7 @@ describe('PersonsController', () => {
         {
           path: '/persons',
           query: {
-            personName: '',
+            name: '',
             nomisId: '',
             deviceId: 'foo',
             includeDeviceActivations: true,
@@ -161,7 +161,7 @@ describe('PersonsController', () => {
         undefined,
       )
       expect(res.render).toHaveBeenCalledWith('pages/locationData/index', {
-        personName: '',
+        name: '',
         nomisId: '',
         deviceId: 'foo',
         persons: [mockPerson],
@@ -184,7 +184,7 @@ describe('PersonsController', () => {
       // Then
       expect(mockRestClient.get).not.toHaveBeenCalled()
       expect(res.render).toHaveBeenCalledWith('pages/locationData/index', {
-        personName: '',
+        name: '',
         nomisId: '',
         deviceId: '',
         persons: [],
@@ -197,7 +197,7 @@ describe('PersonsController', () => {
       // Given
       const req = createMockRequest({
         query: {
-          personName: 'foo',
+          name: 'foo',
         },
       })
       const res = createMockResponse()
@@ -220,7 +220,7 @@ describe('PersonsController', () => {
         {
           path: '/persons',
           query: {
-            personName: 'foo',
+            name: 'foo',
             nomisId: '',
             deviceId: '',
             includeDeviceActivations: true,
@@ -230,7 +230,7 @@ describe('PersonsController', () => {
         undefined,
       )
       expect(res.render).toHaveBeenCalledWith('pages/locationData/index', {
-        personName: 'foo',
+        name: 'foo',
         nomisId: '',
         deviceId: '',
         persons: [],
@@ -243,7 +243,7 @@ describe('PersonsController', () => {
       // Given
       const req = createMockRequest({
         query: {
-          personName: 'foo',
+          name: 'foo',
           page: '2',
         },
       })
@@ -267,7 +267,7 @@ describe('PersonsController', () => {
         {
           path: '/persons',
           query: {
-            personName: 'foo',
+            name: 'foo',
             nomisId: '',
             deviceId: '',
             includeDeviceActivations: true,
@@ -277,7 +277,7 @@ describe('PersonsController', () => {
         undefined,
       )
       expect(res.render).toHaveBeenCalledWith('pages/locationData/index', {
-        personName: 'foo',
+        name: 'foo',
         nomisId: '',
         deviceId: '',
         persons: [mockPerson],
@@ -309,7 +309,7 @@ describe('PersonsController', () => {
     it('should redirect to the view if a name search term is submitted', async () => {
       // Given
       const req = createMockRequest({
-        body: { personName: 'foo', nomisId: '', deviceId: '', personSearchType: 'personName' },
+        body: { name: 'foo', nomisId: '', deviceId: '', personSearchType: 'name' },
       })
       const res = createMockResponse()
       const next = jest.fn()
@@ -319,13 +319,13 @@ describe('PersonsController', () => {
       // When
       await controller.search(req, res, next)
 
-      expect(res.redirect).toHaveBeenCalledWith('/location-data/persons?personName=foo')
+      expect(res.redirect).toHaveBeenCalledWith('/location-data/persons?name=foo')
     })
 
     it('should redirect to the view if a nomisId search term is submitted', async () => {
       // Given
       const req = createMockRequest({
-        body: { nomisId: 'foo', personName: '', deviceId: '', personSearchType: 'nomisId' },
+        body: { nomisId: 'foo', name: '', deviceId: '', personSearchType: 'nomisId' },
       })
       const res = createMockResponse()
       const next = jest.fn()
@@ -341,7 +341,7 @@ describe('PersonsController', () => {
     it('should redirect to the view if a deviceId search term is submitted', async () => {
       // Given
       const req = createMockRequest({
-        body: { deviceId: 'foo', nomisId: '', personName: '', personSearchType: 'deviceId' },
+        body: { deviceId: 'foo', nomisId: '', name: '', personSearchType: 'deviceId' },
       })
       const res = createMockResponse()
       const next = jest.fn()
@@ -357,7 +357,7 @@ describe('PersonsController', () => {
     it('should redirect to the view with a validation error message if no search terms submitted', async () => {
       // Given
       const req = createMockRequest({
-        body: { personName: '', nomisId: '', deviceId: '', personSearchType: 'personName' },
+        body: { name: '', nomisId: '', deviceId: '', personSearchType: 'name' },
       })
       const res = createMockResponse()
       const next = jest.fn()
