@@ -5,7 +5,7 @@ import PersonsPage from '../../pages/locationData/persons'
 const url = '/location-data/persons'
 
 context('Location Data', () => {
-  context('Subject Search - Error states', () => {
+  context('Persons Search - Error states', () => {
     beforeEach(() => {
       cy.task('reset')
       cy.task('stubSignIn')

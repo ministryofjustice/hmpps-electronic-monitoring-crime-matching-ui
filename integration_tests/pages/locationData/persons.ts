@@ -5,7 +5,7 @@ import SearchPersonsFormComponent from '../components/forms/searchPersonsForm'
 
 export default class PersonsPage extends AppPage {
   constructor() {
-    super('PoP Search')
+    super('Search')
   }
 
   get dataTable(): DataTableComponent {

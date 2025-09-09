@@ -19,7 +19,7 @@ export default class SearchPersonsFormComponent extends FormComponent {
   }
 
   get personsSearchField(): FormRadiosComponent {
-    return new FormRadiosComponent(this.form, 'PoP Search')
+    return new FormRadiosComponent(this.form, 'Search')
   }
 
   // HELPERS

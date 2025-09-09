@@ -6,7 +6,7 @@
 {% from "govuk/components/pagination/macro.njk" import govukPagination %}
 {% from "../../components/date-time-picker/macro.njk" import dateTimePicker %}
 
-{% set pageTitle = applicationName + " - Subject Search" %}
+{% set pageTitle = applicationName + " - Persons Search" %}
 {% set containerClasses = "govuk-full-width-container" %}
 {% set mainClasses = "app-container govuk-body device-activation-search" %}
 {% set rows = [] %}
@@ -89,7 +89,7 @@
 {% block content %}
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-one-quarter">
-      {# <h1 class="govuk-heading-m">PoP Search</h1> #}
+      <h1 class="govuk-heading-m">Search Location Data</h1>
       <form method="post" id="person-search-form">
         <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
 
@@ -100,9 +100,9 @@
           },
           fieldset: {
             legend: {
-              text: "PoP Search",
+              text: "Search",
               isPageHeading: true,
-              classes: "govuk-fieldset__legend--l"
+              classes: "govuk-fieldset__legend--m"
             }
           },
           errorMessage: errors.personSearchType,
