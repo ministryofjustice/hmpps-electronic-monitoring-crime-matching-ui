@@ -1,10 +1,10 @@
-import SubjectsPage from '../../pages/locationData/subjects'
+import PersonsPage from '../../pages/locationData/persons'
 import Page from '../../pages/page'
 
-const url = '/location-data/subjects'
+const url = '/location-data/persons'
 
 context('Location Data', () => {
-  context('Subject Search', () => {
+  context('Persons Search', () => {
     beforeEach(() => {
       cy.task('reset')
       cy.task('stubSignIn')
@@ -13,7 +13,7 @@ context('Location Data', () => {
 
     it('should display the no result message when no search id in url', () => {
       cy.visit(url)
-      const page = Page.verifyOnPage(SubjectsPage)
+      const page = Page.verifyOnPage(PersonsPage)
 
       page.dataTable.shouldNotHaveResults()
       page.dataTable.shouldNotHavePagination()
@@ -23,17 +23,17 @@ context('Location Data', () => {
       cy.stubGetPersons()
 
       cy.visit(url)
-      let page = Page.verifyOnPage(SubjectsPage)
+      let page = Page.verifyOnPage(PersonsPage)
 
       page.form.fillInWith({ nomisId: 'foo' })
       page.form.searchButton.click()
 
-      cy.url().should('include', '?name=&nomisId=foo')
-      page = Page.verifyOnPage(SubjectsPage)
+      cy.url().should('include', '?nomisId=foo')
+      page = Page.verifyOnPage(PersonsPage)
       page.dataTable.shouldNotHaveResults()
       page.dataTable.shouldNotHavePagination()
-      page.form.searchNameField.shouldHaveValue('')
-      page.form.searchNomisIdField.shouldHaveValue('foo')
+      page.form.personsSearchField.shouldHaveValue('nomisId')
+      page.form.personsSearchField.shouldHaveInputValue('nomisId', 'foo')
     })
 
     it('should display the query results if the query returned results', () => {
@@ -45,8 +45,8 @@ context('Location Data', () => {
             {
               personId: '1',
               nomisId: 'Nomis 1',
-              pncRef: 'YY/NNNNNNND',
               name: 'John',
+              pncRef: 'YY/NNNNNNND',
               dateOfBirth: '2000-12-01T00:00:00.000Z',
               address: '123 Street',
               probationPractitioner: 'John Smith',
@@ -66,8 +66,8 @@ context('Location Data', () => {
             {
               personId: '2',
               nomisId: 'Nomis 2',
-              pncRef: 'YY/NNNNNNND',
               name: 'Lee',
+              pncRef: 'YY/NNNNNNND',
               dateOfBirth: '2000-12-01T00:00:00.000Z',
               address: '456 Avenue',
               probationPractitioner: 'John Smith',
@@ -92,13 +92,13 @@ context('Location Data', () => {
       })
 
       cy.visit(url)
-      let page = Page.verifyOnPage(SubjectsPage)
+      let page = Page.verifyOnPage(PersonsPage)
 
       page.form.fillInWith({ name: 'foo' })
       page.form.searchButton.click()
 
-      cy.url().should('include', '?name=foo&nomisId=')
-      page = Page.verifyOnPage(SubjectsPage)
+      cy.url().should('include', '?name=foo')
+      page = Page.verifyOnPage(PersonsPage)
       page.dataTable.shouldHaveResults()
       page.dataTable.shouldHaveColumns([
         '',
@@ -115,23 +115,23 @@ context('Location Data', () => {
         ['', 'Nomis 1', 'John', '01/12/2000 00:00', '123 Street', '123456', '01/12/2024 00:00', ''],
         ['', 'Nomis 2', 'Lee', '01/12/2000 00:00', '456 Avenue', '654321', '01/12/2024 00:00', '01/12/2024 00:00'],
       ])
+      page.form.personsSearchField.shouldHaveValue('name')
+      page.form.personsSearchField.shouldHaveInputValue('name', 'foo')
       page.dataTable.shouldNotHavePagination()
-      page.form.searchNameField.shouldHaveValue('foo')
-      page.form.searchNomisIdField.shouldHaveValue('')
     })
 
     it('should display the second page of results if the user clicks the next page button', () => {
       // Stub the api to simulate the query returning the first page results
       cy.stubGetPersons({
         status: 200,
-        query: '\\?name=foo&nomisId=&include_device_activations=true&page=1',
+        query: '\\?name=foo&nomisId=&deviceId=&includeDeviceActivations=true&page=1',
         response: {
           data: [
             {
               personId: '1',
               nomisId: 'Nomis 1',
-              pncRef: 'YY/NNNNNNND',
               name: 'John',
+              pncRef: 'YY/NNNNNNND',
               dateOfBirth: '2000-12-01T00:00:00.000Z',
               address: '123 Street',
               probationPractitioner: 'John Smith',
@@ -157,14 +157,14 @@ context('Location Data', () => {
       // Stub the api to simulate the query returning the second page results
       cy.stubGetPersons({
         status: 200,
-        query: '\\?name=foo&nomisId=&include_device_activations=true&page=2',
+        query: '\\?name=foo&nomisId=&deviceId=&includeDeviceActivations=true&page=2',
         response: {
           data: [
             {
               personId: '2',
               nomisId: 'Nomis 2',
-              pncRef: 'YY/NNNNNNND',
               name: 'Lee',
+              pncRef: 'YY/NNNNNNND',
               dateOfBirth: '2000-12-01T00:00:00.000Z',
               address: '456 Avenue',
               probationPractitioner: 'John Smith',
@@ -189,15 +189,15 @@ context('Location Data', () => {
       })
 
       cy.visit(url)
-      let page = Page.verifyOnPage(SubjectsPage)
+      let page = Page.verifyOnPage(PersonsPage)
 
       // Submit a search
       page.form.fillInWith({ name: 'foo' })
       page.form.searchButton.click()
 
       // User should be shown the results
-      cy.url().should('include', '?name=foo&nomisId=')
-      page = Page.verifyOnPage(SubjectsPage)
+      cy.url().should('include', '?name=foo')
+      page = Page.verifyOnPage(PersonsPage)
       page.dataTable.shouldHaveResults()
       page.dataTable.shouldHaveColumns([
         '',
@@ -221,8 +221,8 @@ context('Location Data', () => {
       page.dataTable.pagination.next.click()
 
       // User should be shown the second page of results
-      cy.url().should('include', '?name=foo&nomisId=&page=2')
-      page = Page.verifyOnPage(SubjectsPage)
+      cy.url().should('include', '?name=foo&nomisId=&deviceId=&page=2')
+      page = Page.verifyOnPage(PersonsPage)
       page.dataTable.shouldHaveResults()
       page.dataTable.shouldHaveRows([
         ['', 'Nomis 2', 'Lee', '01/12/2000 00:00', '456 Avenue', '654321', '01/12/2024 00:00', '01/12/2024 00:00'],

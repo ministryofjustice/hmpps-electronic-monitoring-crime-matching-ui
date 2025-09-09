@@ -6,8 +6,14 @@ import Person from '../types/entities/person'
 class PersonsService {
   constructor(private readonly crimeMatchingApiClient: RestClient) {}
 
-  async getPersons(token: string, name: string, nomisId: string, page: string): Promise<GetPersonsDto> {
-    if (name === '' && nomisId === '') {
+  async getPersons(
+    token: string,
+    name: string,
+    nomisId: string,
+    deviceId: string,
+    page: string,
+  ): Promise<GetPersonsDto> {
+    if (name === '' && nomisId === '' && deviceId === '') {
       return {
         data: [],
         pageCount: 1,
@@ -22,7 +28,8 @@ class PersonsService {
         query: {
           name,
           nomisId,
-          include_device_activations: true,
+          deviceId,
+          includeDeviceActivations: true,
           page,
         },
       },

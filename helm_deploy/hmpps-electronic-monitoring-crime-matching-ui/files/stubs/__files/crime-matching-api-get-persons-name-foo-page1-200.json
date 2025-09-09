@@ -3,8 +3,8 @@
     {
       "personId": "1",
       "nomisId": "Nomis 1",
-      "pncRef": "YY/NNNNNNND",
       "name": "John",
+      "pncRef": "YY/NNNNNNND",
       "dateOfBirth": "2000-12-01T00:00:00.000Z",
       "address": "123 Street",
       "probationPractitioner": "John Smith",
@@ -24,8 +24,8 @@
     {
       "personId": "2",
       "nomisId": "Nomis 2",
-      "pncRef": "YY/NNNNNNND",
       "name": "John",
+      "pncRef": "YY/NNNNNNND",
       "dateOfBirth": "2000-12-01T00:00:00.000Z",
       "address": "123 Street",
       "probationPractitioner": "John Smith",
@@ -45,8 +45,8 @@
     {
       "personId": "3",
       "nomisId": "Nomis 3",
-      "pncRef": "YY/NNNNNNND",
       "name": "John",
+      "pncRef": "YY/NNNNNNND",
       "dateOfBirth": "2000-12-01T00:00:00.000Z",
       "address": "123 Street",
       "probationPractitioner": "John Smith",
@@ -66,8 +66,8 @@
     {
       "personId": "4",
       "nomisId": "Nomis 4",
-      "pncRef": "YY/NNNNNNND",
       "name": "John",
+      "pncRef": "YY/NNNNNNND",
       "dateOfBirth": "2000-12-01T00:00:00.000Z",
       "address": "123 Street",
       "probationPractitioner": "John Smith",
@@ -87,8 +87,8 @@
     {
       "personId": "5",
       "nomisId": "Nomis 5",
-      "pncRef": "YY/NNNNNNND",
       "name": "John",
+      "pncRef": "YY/NNNNNNND",
       "dateOfBirth": "2000-12-01T00:00:00.000Z",
       "address": "123 Street",
       "probationPractitioner": "John Smith",
@@ -108,8 +108,8 @@
     {
       "personId": "6",
       "nomisId": "Nomis 6",
-      "pncRef": "YY/NNNNNNND",
       "name": "John",
+      "pncRef": "YY/NNNNNNND",
       "dateOfBirth": "2000-12-01T00:00:00.000Z",
       "address": "123 Street",
       "probationPractitioner": "John Smith",
@@ -129,8 +129,8 @@
     {
       "personId": "7",
       "nomisId": "Nomis 7",
-      "pncRef": "YY/NNNNNNND",
       "name": "John",
+      "pncRef": "YY/NNNNNNND",
       "dateOfBirth": "2000-12-01T00:00:00.000Z",
       "address": "123 Street",
       "probationPractitioner": "John Smith",
@@ -150,8 +150,8 @@
     {
       "personId": "8",
       "nomisId": "Nomis 8",
-      "pncRef": "YY/NNNNNNND",
       "name": "John",
+      "pncRef": "YY/NNNNNNND",
       "dateOfBirth": "2000-12-01T00:00:00.000Z",
       "address": "123 Street",
       "probationPractitioner": "John Smith",
@@ -171,8 +171,8 @@
     {
       "personId": "9",
       "nomisId": "Nomis 9",
-      "pncRef": "YY/NNNNNNND",
       "name": "John",
+      "pncRef": "YY/NNNNNNND",
       "dateOfBirth": "2000-12-01T00:00:00.000Z",
       "address": "123 Street",
       "probationPractitioner": "John Smith",
@@ -192,8 +192,8 @@
     {
       "personId": "10",
       "nomisId": "Nomis 10",
-      "pncRef": "YY/NNNNNNND",
       "name": "John",
+      "pncRef": "YY/NNNNNNND",
       "dateOfBirth": "2000-12-01T00:00:00.000Z",
       "address": "123 Street",
       "probationPractitioner": "John Smith",
