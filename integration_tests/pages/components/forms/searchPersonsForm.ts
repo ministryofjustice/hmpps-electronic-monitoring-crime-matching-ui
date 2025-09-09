@@ -24,7 +24,7 @@ export default class SearchPersonsFormComponent extends FormComponent {
 
   // HELPERS
 
-  fillInWith = (data: SearchPersonsFormData): undefined => {
+  fillInWith = (data: SearchPersonsFormData) => {
     if (data.nomisId) {
       this.personsSearchField.set('nomisId')
       this.personsSearchField.setInputField('nomisId', data.nomisId)
