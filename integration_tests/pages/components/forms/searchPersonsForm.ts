@@ -2,14 +2,14 @@ import { PageElement } from '../../page'
 import FormComponent from '../formComponent'
 import FormInputComponent from '../formInputComponent'
 
-type SearchSubjectsFormData = {
+type SearchPersonsFormData = {
   nomisId?: string
   name?: string
 }
 
-export default class SearchSubjectsFormComponent extends FormComponent {
+export default class SearchPersonsFormComponent extends FormComponent {
   constructor() {
-    super('subject-search-form')
+    super('person-search-form')
   }
   // FIELDS
 
@@ -29,7 +29,7 @@ export default class SearchSubjectsFormComponent extends FormComponent {
 
   // HELPERS
 
-  fillInWith = (data: SearchSubjectsFormData): undefined => {
+  fillInWith = (data: SearchPersonsFormData): undefined => {
     if (data.nomisId) {
       this.searchNomisIdField.set(data.nomisId)
     }

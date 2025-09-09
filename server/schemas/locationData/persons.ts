@@ -3,7 +3,7 @@ import { paginatedDtoSchema } from '../pagination'
 
 const MISSING_FORM_VALUE_ERROR = 'You must enter a value for either Name or NOMIS ID'
 
-const subjectsQueryParametersSchema = z.object({
+const personsQueryParametersSchema = z.object({
   name: z.string().default(''),
   nomisId: z.string().default(''),
   page: z
@@ -12,7 +12,7 @@ const subjectsQueryParametersSchema = z.object({
     .default('1'),
 })
 
-const subjectsFormDataSchema = z
+const personsFormDataSchema = z
   .object({
     name: z.string(),
     nomisId: z.string(),
@@ -28,11 +28,11 @@ const subjectsFormDataSchema = z
     }
   })
 
-const createSubjectsQueryDtoSchema = z.object({
+const createPersonsQueryDtoSchema = z.object({
   queryExecutionId: z.string(),
 })
 
-const getSubjectsQueryDtoSchema = paginatedDtoSchema.extend({
+const getPersonsQueryDtoSchema = paginatedDtoSchema.extend({
   data: z.array(
     z.object({
       personId: z.string(),
@@ -49,9 +49,4 @@ const getSubjectsQueryDtoSchema = paginatedDtoSchema.extend({
   ),
 })
 
-export {
-  subjectsQueryParametersSchema,
-  subjectsFormDataSchema,
-  createSubjectsQueryDtoSchema,
-  getSubjectsQueryDtoSchema,
-}
+export { personsQueryParametersSchema, personsFormDataSchema, createPersonsQueryDtoSchema, getPersonsQueryDtoSchema }
