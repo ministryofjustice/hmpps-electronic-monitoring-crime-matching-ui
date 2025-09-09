@@ -169,7 +169,7 @@ describe('SubjectController', () => {
       ])
     })
 
-    it('should redirect to a view containing a validation error message if dates exceed maximum window', async () => {
+    it('should redirect to a view containing a validation error message to date before if dates exceed maximum window', async () => {
       // Given
       const fromDateInput = {
         date: '1/2/2025',
@@ -212,17 +212,17 @@ describe('SubjectController', () => {
       ])
     })
 
-    it('should redirect to a view containing a validation error message if input dates are outside of device activation date range', async () => {
+    it('should redirect to a view containing a validation error message if from date is before device activation', async () => {
       // Given
       const fromDateInput = {
-        date: '1/1/2025',
+        date: '30/11/2024',
         hour: '1',
         minute: '1',
         second: '1',
       }
 
       const toDateInput = {
-        date: '2/1/2025',
+        date: '1/12/2024',
         hour: '1',
         minute: '1',
         second: '1',
@@ -260,7 +260,60 @@ describe('SubjectController', () => {
       expect(req.session.validationErrors).toEqual([
         {
           field: 'fromDate',
-          message: 'Date and time search window should be within device activation date range',
+          message: 'Update date to inside tag period',
+        },
+      ])
+    })
+
+    it('should redirect to a view containing a validation error message if to date is after device deactivation', async () => {
+      // Given
+      const fromDateInput = {
+        date: '01/01/2025',
+        hour: '1',
+        minute: '1',
+        second: '1',
+      }
+
+      const toDateInput = {
+        date: '02/01/2025',
+        hour: '1',
+        minute: '1',
+        second: '1',
+      }
+
+      const req = createMockRequest({
+        deviceActivation: {
+          deviceActivationId: 1,
+          deviceId: 123456,
+          deviceName: '123456',
+          personId: 1,
+          deviceActivationDate: '2024-12-01T00:00:00.000Z',
+          deviceDeactivationDate: '2024-12-02T00:00:00.000Z',
+          orderStart: '2024-12-01T00:00:00.000Z',
+          orderEnd: '2024-12-31T00:00:00.000Z',
+        },
+        body: {
+          origin: '/location-data/device-activations/1',
+          fromDate: fromDateInput,
+          toDate: toDateInput,
+        },
+      })
+      const res = createMockResponse()
+      const next = jest.fn()
+      const deviceActivationsService = new DeviceActivationsService(mockRestClient)
+      const personsService = new PersonsService(mockRestClient)
+      const validationService = new ValidationService(deviceActivationsService)
+      const controller = new SubjectController(deviceActivationsService, personsService, validationService)
+
+      // When
+      await controller.search(req, res, next)
+
+      // Then
+      expect(res.redirect).toHaveBeenCalledWith('/location-data/device-activations/1')
+      expect(req.session.validationErrors).toEqual([
+        {
+          field: 'toDate',
+          message: 'Update date to inside tag period',
         },
       ])
     })
