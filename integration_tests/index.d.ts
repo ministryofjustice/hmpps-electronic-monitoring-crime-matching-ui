@@ -62,7 +62,7 @@ declare global {
       stubGetDeviceActivationPositions(options?: StubGetDeviceActivationPositionsOptions): Chainable<void>
 
       /**
-       * Stub a wiremock response for the crimeMatchingApi GET /persons-query
+       * Stub a wiremock response for the crimeMatchingApi GET /persons
        */
       stubGetPersons(options?: StubGetPersonsOptions): Chainable<void>
 
