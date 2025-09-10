@@ -6,12 +6,12 @@
 {% from "govuk/components/pagination/macro.njk" import govukPagination %}
 {% from "../../components/date-time-picker/macro.njk" import dateTimePicker %}
 
-{% set pageTitle = applicationName + " - Subject Search" %}
+{% set pageTitle = applicationName + " - Persons Search" %}
 {% set mainClasses = "app-container govuk-body device-activation-search" %}
 {% set rows = [] %}
 {% set pageSize = 10 %}
 {% set currentPage = 1 %}
-{% set totalPages = (subjects.length / pageSize) | round(0, 'ceil') %}
+{% set totalPages = (persons.length / pageSize) | round(0, 'ceil') %}
 {% set activeLinkId = "location-data" %}
 
 {% for person in persons %}
@@ -57,8 +57,8 @@
 {% block content %}
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds govuk-!-static-padding-0">
-      <h1>Subject Search</h1>
-      <form method="post" novalidate id="subject-search-form">
+      <h1>Person Search</h1>
+      <form method="post" novalidate id="person-search-form">
         <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
         {{
           govukInput({

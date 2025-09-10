@@ -1,19 +1,19 @@
 import AppPage from '../appPage'
 import DataTableComponent from '../components/dataTableComponent'
 import SearchDeviceActivationPositionsFormComponent from '../components/forms/searchDeviceActivationPositions'
-import SearchSubjectsFormComponent from '../components/forms/searchSubjectsForm'
+import SearchPersonsFormComponent from '../components/forms/searchPersonsForm'
 
-export default class SubjectsPage extends AppPage {
+export default class PersonsPage extends AppPage {
   constructor() {
-    super('Subject Search')
+    super('Person Search')
   }
 
   get dataTable(): DataTableComponent {
     return new DataTableComponent()
   }
 
-  get form(): SearchSubjectsFormComponent {
-    return new SearchSubjectsFormComponent()
+  get form(): SearchPersonsFormComponent {
+    return new SearchPersonsFormComponent()
   }
 
   get locationsForm(): SearchDeviceActivationPositionsFormComponent {

@@ -1,9 +1,9 @@
-import SubjectsPage from '../../pages/locationData/subjects'
+import PersonsPage from '../../pages/locationData/persons'
 import Page from '../../pages/page'
 import SubjectPage from '../../pages/locationData/subject'
 import sampleLocations from './fixtures/sample-locations'
 
-const url = '/location-data/subjects'
+const url = '/location-data/persons'
 
 context('Location Data', () => {
   context('Subject Location Search', () => {
@@ -55,13 +55,13 @@ context('Location Data', () => {
       })
 
       cy.visit(url)
-      let page = Page.verifyOnPage(SubjectsPage)
+      let page = Page.verifyOnPage(PersonsPage)
 
       page.form.fillInWith({ name: 'foo' })
       page.form.searchButton.click()
 
       cy.url().should('include', '?name=foo&nomisId=')
-      page = Page.verifyOnPage(SubjectsPage)
+      page = Page.verifyOnPage(PersonsPage)
       page.dataTable.shouldHaveResults()
 
       page.locationsForm.continueButton.should('be.disabled')
@@ -124,13 +124,13 @@ context('Location Data', () => {
       })
 
       cy.visit(url)
-      let page = Page.verifyOnPage(SubjectsPage)
+      let page = Page.verifyOnPage(PersonsPage)
 
       page.form.fillInWith({ name: 'foo' })
       page.form.searchButton.click()
 
       cy.url().should('include', '?name=foo&nomisId=')
-      page = Page.verifyOnPage(SubjectsPage)
+      page = Page.verifyOnPage(PersonsPage)
       page.dataTable.shouldHaveResults()
 
       page.locationsForm.continueButton.should('be.disabled')

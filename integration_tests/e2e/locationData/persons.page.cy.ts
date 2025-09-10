@@ -1,10 +1,10 @@
-import SubjectsPage from '../../pages/locationData/subjects'
+import PersonsPage from '../../pages/locationData/persons'
 import Page from '../../pages/page'
 
-const url = '/location-data/subjects'
+const url = '/location-data/persons'
 
 context('Location Data', () => {
-  context('Subject Search', () => {
+  context('Persons Search', () => {
     beforeEach(() => {
       cy.task('reset')
       cy.task('stubSignIn')
@@ -13,7 +13,7 @@ context('Location Data', () => {
 
     it('should display the no result message when no search id in url', () => {
       cy.visit(url)
-      const page = Page.verifyOnPage(SubjectsPage)
+      const page = Page.verifyOnPage(PersonsPage)
 
       page.dataTable.shouldNotHaveResults()
       page.dataTable.shouldNotHavePagination()
@@ -23,13 +23,13 @@ context('Location Data', () => {
       cy.stubGetPersons()
 
       cy.visit(url)
-      let page = Page.verifyOnPage(SubjectsPage)
+      let page = Page.verifyOnPage(PersonsPage)
 
       page.form.fillInWith({ nomisId: 'foo' })
       page.form.searchButton.click()
 
       cy.url().should('include', '?name=&nomisId=foo')
-      page = Page.verifyOnPage(SubjectsPage)
+      page = Page.verifyOnPage(PersonsPage)
       page.dataTable.shouldNotHaveResults()
       page.dataTable.shouldNotHavePagination()
       page.form.searchNameField.shouldHaveValue('')
@@ -92,13 +92,13 @@ context('Location Data', () => {
       })
 
       cy.visit(url)
-      let page = Page.verifyOnPage(SubjectsPage)
+      let page = Page.verifyOnPage(PersonsPage)
 
       page.form.fillInWith({ name: 'foo' })
       page.form.searchButton.click()
 
       cy.url().should('include', '?name=foo&nomisId=')
-      page = Page.verifyOnPage(SubjectsPage)
+      page = Page.verifyOnPage(PersonsPage)
       page.dataTable.shouldHaveResults()
       page.dataTable.shouldHaveColumns([
         '',
@@ -189,7 +189,7 @@ context('Location Data', () => {
       })
 
       cy.visit(url)
-      let page = Page.verifyOnPage(SubjectsPage)
+      let page = Page.verifyOnPage(PersonsPage)
 
       // Submit a search
       page.form.fillInWith({ name: 'foo' })
@@ -197,7 +197,7 @@ context('Location Data', () => {
 
       // User should be shown the results
       cy.url().should('include', '?name=foo&nomisId=')
-      page = Page.verifyOnPage(SubjectsPage)
+      page = Page.verifyOnPage(PersonsPage)
       page.dataTable.shouldHaveResults()
       page.dataTable.shouldHaveColumns([
         '',
@@ -222,7 +222,7 @@ context('Location Data', () => {
 
       // User should be shown the second page of results
       cy.url().should('include', '?name=foo&nomisId=&page=2')
-      page = Page.verifyOnPage(SubjectsPage)
+      page = Page.verifyOnPage(PersonsPage)
       page.dataTable.shouldHaveResults()
       page.dataTable.shouldHaveRows([
         ['', 'Nomis 2', 'Lee', '01/12/2000 00:00', '456 Avenue', '654321', '01/12/2024 00:00', '01/12/2024 00:00'],

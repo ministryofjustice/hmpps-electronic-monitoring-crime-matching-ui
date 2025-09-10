@@ -5,14 +5,14 @@ import createMockPerson from '../../testutils/createMockPerson'
 import createMockRequest from '../../testutils/createMockRequest'
 import createMockResponse from '../../testutils/createMockResponse'
 import PersonsService from '../../services/personsService'
-import SubjectsController from './subjects'
+import PersonsController from './persons'
 
 jest.mock('@ministryofjustice/hmpps-rest-client')
 jest.mock('../../../logger')
 
-const mockSubject = createMockPerson()
+const mockPerson = createMockPerson()
 
-describe('SubjectsController', () => {
+describe('PersonsController', () => {
   let mockRestClient: jest.Mocked<RestClient>
 
   beforeEach(() => {
@@ -42,10 +42,10 @@ describe('SubjectsController', () => {
       const res = createMockResponse()
       const next = jest.fn()
       const service = new PersonsService(mockRestClient)
-      const controller = new SubjectsController(service)
+      const controller = new PersonsController(service)
 
       mockRestClient.get.mockResolvedValue({
-        data: [mockSubject],
+        data: [mockPerson],
         pageCount: 1,
         pageNumber: 1,
         pageSize: 10,
@@ -70,7 +70,7 @@ describe('SubjectsController', () => {
       expect(res.render).toHaveBeenCalledWith('pages/locationData/index', {
         name: 'foo',
         nomisId: '',
-        persons: [mockSubject],
+        persons: [mockPerson],
         pageCount: 1,
         pageNumber: 1,
       })
@@ -86,10 +86,10 @@ describe('SubjectsController', () => {
       const res = createMockResponse()
       const next = jest.fn()
       const service = new PersonsService(mockRestClient)
-      const controller = new SubjectsController(service)
+      const controller = new PersonsController(service)
 
       mockRestClient.get.mockResolvedValue({
-        data: [mockSubject],
+        data: [mockPerson],
         pageCount: 1,
         pageNumber: 1,
         pageSize: 10,
@@ -114,7 +114,7 @@ describe('SubjectsController', () => {
       expect(res.render).toHaveBeenCalledWith('pages/locationData/index', {
         name: '',
         nomisId: 'foo',
-        persons: [mockSubject],
+        persons: [mockPerson],
         pageCount: 1,
         pageNumber: 1,
       })
@@ -126,7 +126,7 @@ describe('SubjectsController', () => {
       const res = createMockResponse()
       const next = jest.fn()
       const service = new PersonsService(mockRestClient)
-      const controller = new SubjectsController(service)
+      const controller = new PersonsController(service)
 
       // When
       await controller.view(req, res, next)
@@ -152,7 +152,7 @@ describe('SubjectsController', () => {
       const res = createMockResponse()
       const next = jest.fn()
       const service = new PersonsService(mockRestClient)
-      const controller = new SubjectsController(service)
+      const controller = new PersonsController(service)
 
       mockRestClient.get.mockResolvedValue({
         data: [],
@@ -197,10 +197,10 @@ describe('SubjectsController', () => {
       const res = createMockResponse()
       const next = jest.fn()
       const service = new PersonsService(mockRestClient)
-      const controller = new SubjectsController(service)
+      const controller = new PersonsController(service)
 
       mockRestClient.get.mockResolvedValue({
-        data: [mockSubject],
+        data: [mockPerson],
         pageCount: 2,
         pageNumber: 2,
         pageSize: 10,
@@ -225,7 +225,7 @@ describe('SubjectsController', () => {
       expect(res.render).toHaveBeenCalledWith('pages/locationData/index', {
         name: 'foo',
         nomisId: '',
-        persons: [mockSubject],
+        persons: [mockPerson],
         pageCount: 2,
         pageNumber: 2,
       })
@@ -242,7 +242,7 @@ describe('SubjectsController', () => {
       const res = createMockResponse()
       const next = jest.fn()
       const service = new PersonsService(mockRestClient)
-      const controller = new SubjectsController(service)
+      const controller = new PersonsController(service)
 
       // When / Then
       expect(controller.view(req, res, next)).rejects.toBeInstanceOf(ZodError)
@@ -257,12 +257,12 @@ describe('SubjectsController', () => {
       const res = createMockResponse()
       const next = jest.fn()
       const service = new PersonsService(mockRestClient)
-      const controller = new SubjectsController(service)
+      const controller = new PersonsController(service)
 
       // When
       await controller.search(req, res, next)
 
-      expect(res.redirect).toHaveBeenCalledWith('/location-data/subjects?name=foo&nomisId=')
+      expect(res.redirect).toHaveBeenCalledWith('/location-data/persons?name=foo&nomisId=')
     })
 
     it('should redirect to the view if a nomisId search term is submitted', async () => {
@@ -271,12 +271,12 @@ describe('SubjectsController', () => {
       const res = createMockResponse()
       const next = jest.fn()
       const service = new PersonsService(mockRestClient)
-      const controller = new SubjectsController(service)
+      const controller = new PersonsController(service)
 
       // When
       await controller.search(req, res, next)
 
-      expect(res.redirect).toHaveBeenCalledWith('/location-data/subjects?name=&nomisId=foo')
+      expect(res.redirect).toHaveBeenCalledWith('/location-data/persons?name=&nomisId=foo')
     })
 
     it('should redirect to the view with a validation error message if no search terms submitted', async () => {
@@ -285,14 +285,14 @@ describe('SubjectsController', () => {
       const res = createMockResponse()
       const next = jest.fn()
       const service = new PersonsService(mockRestClient)
-      const controller = new SubjectsController(service)
+      const controller = new PersonsController(service)
 
       // When
       await controller.search(req, res, next)
 
       // Then
       expect(mockRestClient.post).not.toHaveBeenCalled()
-      expect(res.redirect).toHaveBeenCalledWith('/location-data/subjects')
+      expect(res.redirect).toHaveBeenCalledWith('/location-data/persons')
       expect(req.session.validationErrors).toEqual([
         {
           field: 'name',
