@@ -28,10 +28,6 @@ const personsFormDataSchema = z
     }
   })
 
-const createPersonsQueryDtoSchema = z.object({
-  queryExecutionId: z.string(),
-})
-
 const getPersonsQueryDtoSchema = paginatedDtoSchema.extend({
   data: z.array(
     z.object({
@@ -49,4 +45,4 @@ const getPersonsQueryDtoSchema = paginatedDtoSchema.extend({
   ),
 })
 
-export { personsQueryParametersSchema, personsFormDataSchema, createPersonsQueryDtoSchema, getPersonsQueryDtoSchema }
+export { personsQueryParametersSchema, personsFormDataSchema, getPersonsQueryDtoSchema }
