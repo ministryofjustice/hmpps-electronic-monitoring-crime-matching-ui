@@ -1,6 +1,6 @@
 import { PageElement } from '../../page'
 import FormComponent from '../formComponent'
-import FormInputComponent from '../formInputComponent'
+import FormRadiosComponent from '../formRadiosComponent'
 
 type SearchPersonsFormData = {
   nomisId?: string
@@ -13,28 +13,24 @@ export default class SearchPersonsFormComponent extends FormComponent {
   }
   // FIELDS
 
-  get searchNomisIdField(): FormInputComponent {
-    const label = 'NOMIS ID'
-    return new FormInputComponent(this.form, label)
-  }
-
-  get searchNameField(): FormInputComponent {
-    const label = 'Name'
-    return new FormInputComponent(this.form, label)
-  }
-
   get searchButton(): PageElement {
     return this.form.contains('button', 'Search')
+  }
+
+  get personsSearchField(): FormRadiosComponent {
+    return new FormRadiosComponent(this.form, 'Search')
   }
 
   // HELPERS
 
   fillInWith = (data: SearchPersonsFormData): undefined => {
     if (data.nomisId) {
-      this.searchNomisIdField.set(data.nomisId)
+      this.personsSearchField.set('nomisId')
+      this.personsSearchField.setInputField('nomisId', data.nomisId)
     }
     if (data.name) {
-      this.searchNameField.set(data.name)
+      this.personsSearchField.set('name')
+      this.personsSearchField.setInputField('name', data.name)
     }
   }
 }

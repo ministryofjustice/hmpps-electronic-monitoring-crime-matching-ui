@@ -37,6 +37,7 @@ describe('PersonsController', () => {
       const req = createMockRequest({
         query: {
           name: 'foo',
+          personSearchType: 'name',
         },
       })
       const res = createMockResponse()
@@ -60,7 +61,6 @@ describe('PersonsController', () => {
           path: '/persons',
           query: {
             name: 'foo',
-            nomisId: '',
             include_device_activations: true,
             page: '1',
           },
@@ -68,6 +68,9 @@ describe('PersonsController', () => {
         undefined,
       )
       expect(res.render).toHaveBeenCalledWith('pages/locationData/index', {
+        formData: {
+          personSearchType: 'name',
+        },
         name: 'foo',
         nomisId: '',
         persons: [mockPerson],
@@ -81,6 +84,7 @@ describe('PersonsController', () => {
       const req = createMockRequest({
         query: {
           nomisId: 'foo',
+          personSearchType: 'nomisId',
         },
       })
       const res = createMockResponse()
@@ -103,7 +107,6 @@ describe('PersonsController', () => {
         {
           path: '/persons',
           query: {
-            name: '',
             nomisId: 'foo',
             include_device_activations: true,
             page: '1',
@@ -112,6 +115,9 @@ describe('PersonsController', () => {
         undefined,
       )
       expect(res.render).toHaveBeenCalledWith('pages/locationData/index', {
+        formData: {
+          personSearchType: 'nomisId',
+        },
         name: '',
         nomisId: 'foo',
         persons: [mockPerson],
@@ -134,8 +140,9 @@ describe('PersonsController', () => {
       // Then
       expect(mockRestClient.get).not.toHaveBeenCalled()
       expect(res.render).toHaveBeenCalledWith('pages/locationData/index', {
-        name: '',
-        nomisId: '',
+        formData: {
+          personSearchType: undefined,
+        },
         persons: [],
         pageCount: 1,
         pageNumber: 1,
@@ -147,6 +154,7 @@ describe('PersonsController', () => {
       const req = createMockRequest({
         query: {
           name: 'foo',
+          personSearchType: 'name',
         },
       })
       const res = createMockResponse()
@@ -170,7 +178,6 @@ describe('PersonsController', () => {
           path: '/persons',
           query: {
             name: 'foo',
-            nomisId: '',
             include_device_activations: true,
             page: '1',
           },
@@ -178,6 +185,9 @@ describe('PersonsController', () => {
         undefined,
       )
       expect(res.render).toHaveBeenCalledWith('pages/locationData/index', {
+        formData: {
+          personSearchType: 'name',
+        },
         name: 'foo',
         nomisId: '',
         persons: [],
@@ -191,6 +201,7 @@ describe('PersonsController', () => {
       const req = createMockRequest({
         query: {
           name: 'foo',
+          personSearchType: 'name',
           page: '2',
         },
       })
@@ -215,7 +226,6 @@ describe('PersonsController', () => {
           path: '/persons',
           query: {
             name: 'foo',
-            nomisId: '',
             include_device_activations: true,
             page: '2',
           },
@@ -223,6 +233,9 @@ describe('PersonsController', () => {
         undefined,
       )
       expect(res.render).toHaveBeenCalledWith('pages/locationData/index', {
+        formData: {
+          personSearchType: 'name',
+        },
         name: 'foo',
         nomisId: '',
         persons: [mockPerson],
@@ -253,7 +266,7 @@ describe('PersonsController', () => {
   describe('submit search query', () => {
     it('should redirect to the view if a name search term is submitted', async () => {
       // Given
-      const req = createMockRequest({ body: { name: 'foo', nomisId: '' } })
+      const req = createMockRequest({ body: { name: 'foo', nomisId: '', personSearchType: 'name' } })
       const res = createMockResponse()
       const next = jest.fn()
       const service = new PersonsService(mockRestClient)
@@ -262,12 +275,12 @@ describe('PersonsController', () => {
       // When
       await controller.search(req, res, next)
 
-      expect(res.redirect).toHaveBeenCalledWith('/location-data/persons?name=foo&nomisId=')
+      expect(res.redirect).toHaveBeenCalledWith('/location-data/persons?name=foo&nomisId=&personSearchType=name')
     })
 
     it('should redirect to the view if a nomisId search term is submitted', async () => {
       // Given
-      const req = createMockRequest({ body: { name: '', nomisId: 'foo' } })
+      const req = createMockRequest({ body: { name: '', nomisId: 'foo', personSearchType: 'nomisId' } })
       const res = createMockResponse()
       const next = jest.fn()
       const service = new PersonsService(mockRestClient)
@@ -276,7 +289,7 @@ describe('PersonsController', () => {
       // When
       await controller.search(req, res, next)
 
-      expect(res.redirect).toHaveBeenCalledWith('/location-data/persons?name=&nomisId=foo')
+      expect(res.redirect).toHaveBeenCalledWith('/location-data/persons?name=&nomisId=foo&personSearchType=nomisId')
     })
 
     it('should redirect to the view with a validation error message if no search terms submitted', async () => {
@@ -295,7 +308,7 @@ describe('PersonsController', () => {
       expect(res.redirect).toHaveBeenCalledWith('/location-data/persons')
       expect(req.session.validationErrors).toEqual([
         {
-          field: 'name',
+          field: 'personSearchType',
           message: 'You must enter a value for either Name or NOMIS ID',
         },
       ])
