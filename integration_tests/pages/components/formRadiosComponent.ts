@@ -34,12 +34,21 @@ class FormRadiosComponent {
     this.element.find(`input[value="${value}"]`).check({ force: true })
   }
 
+  setInputField(field: string, value: string) {
+    this.element.find(`input[name="${field}"]`).clear()
+    this.element.find(`input[name="${field}"]`).type(value)
+  }
+
   shouldHaveOptions(options: Array<string>): void {
     this.options.should('deep.equal', options)
   }
 
   shouldHaveValue(value: string): void {
     this.element.find(`input[value="${value}"]`).should('be.checked')
+  }
+
+  shouldHaveInputValue(field: string, value: string): void {
+    this.element.find(`input[name="${field}"]`).should('have.value', value as string)
   }
 
   shouldExist(): void {
