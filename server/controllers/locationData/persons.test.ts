@@ -261,6 +261,28 @@ describe('PersonsController', () => {
       expect(controller.view(req, res, next)).rejects.toBeInstanceOf(ZodError)
       expect(mockRestClient.get).not.toHaveBeenCalled()
     })
+
+    it('should throw an error if the "personSearchType" query parameter is not provided', async () => {
+      // Given
+      const req = createMockRequest({
+        query: {
+          nomisId: 'foo',
+          personSearchType: '',
+        },
+      })
+      const res = createMockResponse()
+      const next = jest.fn()
+      const service = new PersonsService(mockRestClient)
+      const controller = new PersonsController(service)
+
+      // When
+      try {
+        await controller.view(req, res, next)
+      } catch (e) {
+        // Then
+        expect((e as Error).name).toEqual('ZodError')
+      }
+    })
   })
 
   describe('submit search query', () => {
