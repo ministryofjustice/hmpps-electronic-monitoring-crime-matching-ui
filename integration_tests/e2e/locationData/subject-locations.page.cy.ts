@@ -60,7 +60,7 @@ context('Location Data', () => {
       page.form.fillInWith({ name: 'foo' })
       page.form.searchButton.click()
 
-      cy.url().should('include', '?name=foo&nomisId=')
+      cy.url().should('include', '?searchField=name&searchTerm=foo')
       page = Page.verifyOnPage(PersonsPage)
       page.dataTable.shouldHaveResults()
 
@@ -129,7 +129,7 @@ context('Location Data', () => {
       page.form.fillInWith({ name: 'foo' })
       page.form.searchButton.click()
 
-      cy.url().should('include', '?name=foo&nomisId=')
+      cy.url().should('include', '?searchField=name&searchTerm=foo')
       page = Page.verifyOnPage(PersonsPage)
       page.dataTable.shouldHaveResults()
 

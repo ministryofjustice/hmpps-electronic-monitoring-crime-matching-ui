@@ -11,21 +11,19 @@ export default class PersonsController {
     const { token } = res.locals.user
     const parsedQuery = personsQueryParametersSchema.parse(query)
 
-    const { personSearchType } = parsedQuery
-    const searchValue = personSearchType ? String(parsedQuery[personSearchType]) : null
+    const { searchField, searchTerm } = parsedQuery
 
-    if (personSearchType && searchValue) {
-      const queryResults = await this.service.getPersons(token, personSearchType, searchValue, parsedQuery.page)
+    if (searchField && searchTerm) {
+      const queryResults = await this.service.getPersons(token, searchField, searchTerm, parsedQuery.page)
       res.render('pages/locationData/index', {
         origin: req.originalUrl,
-        name: parsedQuery.name,
-        nomisId: parsedQuery.nomisId,
         persons: queryResults.data,
         pageCount: queryResults.pageCount,
         pageNumber: queryResults.pageNumber,
+        searchField,
+        searchTerm,
         formData: {
           ...res.locals.formData,
-          personSearchType,
         },
       })
     } else {
@@ -35,7 +33,6 @@ export default class PersonsController {
         pageNumber: 1,
         formData: {
           ...res.locals.formData,
-          personSearchType,
         },
       })
     }
@@ -48,7 +45,7 @@ export default class PersonsController {
     }
 
     if (formData.success) {
-      const params = new URLSearchParams(formData.data)
+      const params = `searchField=${formData.data.searchField}&searchTerm=${formData.data.searchTerm}`
       res.redirect(`/location-data/persons?${params.toString()}`)
     } else {
       req.session.validationErrors = convertZodErrorToValidationError(formData.error)

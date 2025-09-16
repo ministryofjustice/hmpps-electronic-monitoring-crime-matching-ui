@@ -28,7 +28,7 @@ context('Location Data', () => {
       page.form.fillInWith({ nomisId: 'foo' })
       page.form.searchButton.click()
 
-      cy.url().should('include', '?name=&nomisId=foo')
+      cy.url().should('include', '?searchField=nomisId&searchTerm=foo')
       page = Page.verifyOnPage(PersonsPage)
       page.dataTable.shouldNotHaveResults()
       page.dataTable.shouldNotHavePagination()
@@ -97,7 +97,7 @@ context('Location Data', () => {
       page.form.fillInWith({ name: 'foo' })
       page.form.searchButton.click()
 
-      cy.url().should('include', '?name=foo&nomisId=')
+      cy.url().should('include', '?searchField=name&searchTerm=foo')
       page = Page.verifyOnPage(PersonsPage)
       page.dataTable.shouldHaveResults()
       page.dataTable.shouldHaveColumns([
@@ -196,7 +196,7 @@ context('Location Data', () => {
       page.form.searchButton.click()
 
       // User should be shown the results
-      cy.url().should('include', '?name=foo&nomisId=&personSearchType=name')
+      cy.url().should('include', '?searchField=name&searchTerm=foo')
       page = Page.verifyOnPage(PersonsPage)
       page.dataTable.shouldHaveResults()
       page.dataTable.shouldHaveColumns([
@@ -223,7 +223,7 @@ context('Location Data', () => {
       page.dataTable.pagination.next.click()
 
       // User should be shown the second page of results
-      cy.url().should('include', '?name=foo&nomisId=&personSearchType=name&page=2')
+      cy.url().should('include', '?searchField=name&searchTerm=foo&page=2')
       page = Page.verifyOnPage(PersonsPage)
       page.dataTable.shouldHaveResults()
       page.dataTable.shouldHaveRows([

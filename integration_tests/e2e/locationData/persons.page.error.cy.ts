@@ -29,7 +29,7 @@ context('Location Data', () => {
 
       // User should be redirected to an error page
       Page.verifyOnPage(ErrorPage, 'Internal Server Error')
-      cy.url().should('include', '?name=foo&nomisId=')
+      cy.url().should('include', '?searchField=name&searchTerm=foo')
     })
 
     it('should display an error if no valid search criteria values provided', () => {

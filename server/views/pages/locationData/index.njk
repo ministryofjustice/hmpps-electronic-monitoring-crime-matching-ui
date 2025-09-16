@@ -14,16 +14,22 @@
 {% set totalPages = (persons.length / pageSize) | round(0, 'ceil') %}
 {% set activeLinkId = "location-data" %}
 
+{% if searchField === 'name' %}
+  {% set name = searchTerm %}
+{% elif searchField === 'nomisId' %}
+  {% set nomisId = searchTerm %}
+{% endif %}
+
 {% set nameHtml %}
-{{ govukInput({
-  id: "name",
-  name: "name",
-  value: name,
-  classes: "govuk-!-width-two-thirds",
-  label: {
-    text: "Name"
-  }
-}) }}
+  {{ govukInput({
+    id: "name",
+    name: "name",
+    value: name,
+    classes: "govuk-!-width-two-thirds",
+    label: {
+      text: "Name"
+    }
+  }) }}
 {% endset %}
 
 {% set nomisIdHtml %}
@@ -85,7 +91,7 @@
       <form method="post" novalidate id="person-search-form">
         <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
         {{ govukRadios({
-          name: "personSearchType",
+          name: "searchField",
           hint: {
             text: "Select one option"
           },
@@ -96,12 +102,12 @@
               classes: "govuk-fieldset__legend--s"
             }
           },
-          errorMessage: errors.personSearchType,
+          errorMessage: errors.searchField,
           items: [
             {
               value: "name",
               text: "Name",
-              checked: formData.personSearchType === 'name',
+              checked: searchField === 'name',
               conditional: {
                 html: nameHtml
               }
@@ -109,7 +115,7 @@
             {
               value: "nomisId",
               text: "NOMIS ID",
-              checked: formData.personSearchType === 'nomisId',
+              checked: searchField === 'nomisId',
               conditional: {
                 html: nomisIdHtml
               }
@@ -166,7 +172,7 @@
           pagination: {
             pageCount: pageCount,
             currentPage: pageNumber,
-            hrefPrefix: '?name=' + name + "&nomisId=" + nomisId + "&personSearchType=" + formData.personSearchType
+            hrefPrefix: "?searchField=" + searchField + '&searchTerm=' + searchTerm
           }
         })
       }}
