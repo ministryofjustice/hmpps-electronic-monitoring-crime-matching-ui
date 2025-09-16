@@ -257,7 +257,7 @@ describe('PersonsController', () => {
       // Given
       const req = createMockRequest({
         query: {
-          nomisId: 'foo',
+          searchTerm: 'foo',
           searchField: '',
         },
       })
