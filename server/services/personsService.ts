@@ -6,22 +6,12 @@ import Person from '../types/entities/person'
 class PersonsService {
   constructor(private readonly crimeMatchingApiClient: RestClient) {}
 
-  async getPersons(token: string, name: string, nomisId: string, page: string): Promise<GetPersonsDto> {
-    if (name === '' && nomisId === '') {
-      return {
-        data: [],
-        pageCount: 1,
-        pageNumber: 1,
-        pageSize: 10,
-      }
-    }
-
+  async getPersons(token: string, searchField: string, searchTerm: string, page: string): Promise<GetPersonsDto> {
     const response = await this.crimeMatchingApiClient.get(
       {
         path: '/persons',
         query: {
-          name,
-          nomisId,
+          [searchField]: searchTerm,
           include_device_activations: true,
           page,
         },

@@ -4,8 +4,8 @@ import { paginatedDtoSchema } from '../pagination'
 const MISSING_FORM_VALUE_ERROR = 'You must enter a value for either Name or NOMIS ID'
 
 const personsQueryParametersSchema = z.object({
-  name: z.string().default(''),
-  nomisId: z.string().default(''),
+  searchTerm: z.string().default(''),
+  searchField: z.enum(['name', 'nomisId']).optional(),
   page: z
     .string()
     .regex(/^\d{1,2}$/)
@@ -16,15 +16,33 @@ const personsFormDataSchema = z
   .object({
     name: z.string(),
     nomisId: z.string(),
+    searchField: z.enum(['name', 'nomisId']).optional(),
   })
   .check(ctx => {
-    if (Object.values(ctx.value).every(value => value === '' || value === undefined)) {
+    if (
+      [ctx.value.name, ctx.value.nomisId].every(value => value.trim() === '' || value === undefined) ||
+      ctx.value.searchField === undefined
+    ) {
       ctx.issues.push({
         code: 'custom',
         input: ctx.value,
         message: MISSING_FORM_VALUE_ERROR,
-        path: ['name'],
+        path: ['searchField'],
       })
+    }
+  })
+  .transform(data => {
+    const { searchField } = data
+    let searchTerm = ''
+    if (searchField === 'name') {
+      searchTerm = data.name
+    } else if (searchField === 'nomisId') {
+      searchTerm = data.nomisId
+    }
+
+    return {
+      searchField,
+      searchTerm,
     }
   })
 

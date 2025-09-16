@@ -29,7 +29,21 @@ context('Location Data', () => {
 
       // User should be redirected to an error page
       Page.verifyOnPage(ErrorPage, 'Internal Server Error')
-      cy.url().should('include', '?name=foo&nomisId=')
+      cy.url().should('include', '?searchField=name&searchTerm=foo')
+    })
+
+    it('should display an error if no valid search criteria values provided', () => {
+      cy.stubGetPersons()
+
+      cy.visit(url)
+      let page = Page.verifyOnPage(PersonsPage)
+
+      page.form.fillInWith({ name: ' ' })
+      page.form.searchButton.click()
+
+      // User should be redirected to an error page
+      page = Page.verifyOnPage(PersonsPage)
+      page.form.personsSearchField.shouldHaveValidationMessage('You must enter a value for either Name or NOMIS ID')
     })
   })
 })

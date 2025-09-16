@@ -28,12 +28,12 @@ context('Location Data', () => {
       page.form.fillInWith({ nomisId: 'foo' })
       page.form.searchButton.click()
 
-      cy.url().should('include', '?name=&nomisId=foo')
+      cy.url().should('include', '?searchField=nomisId&searchTerm=foo')
       page = Page.verifyOnPage(PersonsPage)
       page.dataTable.shouldNotHaveResults()
       page.dataTable.shouldNotHavePagination()
-      page.form.searchNameField.shouldHaveValue('')
-      page.form.searchNomisIdField.shouldHaveValue('foo')
+      page.form.personsSearchField.shouldHaveValue('nomisId')
+      page.form.personsSearchField.shouldHaveInputValue('nomisId', 'foo')
     })
 
     it('should display the query results if the query returned results', () => {
@@ -97,7 +97,7 @@ context('Location Data', () => {
       page.form.fillInWith({ name: 'foo' })
       page.form.searchButton.click()
 
-      cy.url().should('include', '?name=foo&nomisId=')
+      cy.url().should('include', '?searchField=name&searchTerm=foo')
       page = Page.verifyOnPage(PersonsPage)
       page.dataTable.shouldHaveResults()
       page.dataTable.shouldHaveColumns([
@@ -116,15 +116,15 @@ context('Location Data', () => {
         ['', 'Nomis 2', 'Lee', '01/12/2000 00:00', '456 Avenue', '654321', '01/12/2024 00:00', '01/12/2024 00:00'],
       ])
       page.dataTable.shouldNotHavePagination()
-      page.form.searchNameField.shouldHaveValue('foo')
-      page.form.searchNomisIdField.shouldHaveValue('')
+      page.form.personsSearchField.shouldHaveValue('name')
+      page.form.personsSearchField.shouldHaveInputValue('name', 'foo')
     })
 
     it('should display the second page of results if the user clicks the next page button', () => {
       // Stub the api to simulate the query returning the first page results
       cy.stubGetPersons({
         status: 200,
-        query: '\\?name=foo&nomisId=&include_device_activations=true&page=1',
+        query: '\\?name=foo&include_device_activations=true&page=1',
         response: {
           data: [
             {
@@ -157,7 +157,7 @@ context('Location Data', () => {
       // Stub the api to simulate the query returning the second page results
       cy.stubGetPersons({
         status: 200,
-        query: '\\?name=foo&nomisId=&include_device_activations=true&page=2',
+        query: '\\?name=foo&include_device_activations=true&page=2',
         response: {
           data: [
             {
@@ -196,7 +196,7 @@ context('Location Data', () => {
       page.form.searchButton.click()
 
       // User should be shown the results
-      cy.url().should('include', '?name=foo&nomisId=')
+      cy.url().should('include', '?searchField=name&searchTerm=foo')
       page = Page.verifyOnPage(PersonsPage)
       page.dataTable.shouldHaveResults()
       page.dataTable.shouldHaveColumns([
@@ -216,12 +216,14 @@ context('Location Data', () => {
       page.dataTable.pagination.shouldHaveCurrentPage('1')
       page.dataTable.pagination.shouldHaveNextButton()
       page.dataTable.pagination.shouldNotHavePrevButton()
+      page.form.personsSearchField.shouldHaveValue('name')
+      page.form.personsSearchField.shouldHaveInputValue('name', 'foo')
 
       // Navigate to the next page
       page.dataTable.pagination.next.click()
 
       // User should be shown the second page of results
-      cy.url().should('include', '?name=foo&nomisId=&page=2')
+      cy.url().should('include', '?searchField=name&searchTerm=foo&page=2')
       page = Page.verifyOnPage(PersonsPage)
       page.dataTable.shouldHaveResults()
       page.dataTable.shouldHaveRows([
@@ -231,6 +233,8 @@ context('Location Data', () => {
       page.dataTable.pagination.shouldHaveCurrentPage('2')
       page.dataTable.pagination.shouldNotHaveNextButton()
       page.dataTable.pagination.shouldHavePrevButton()
+      page.form.personsSearchField.shouldHaveValue('name')
+      page.form.personsSearchField.shouldHaveInputValue('name', 'foo')
     })
   })
 })

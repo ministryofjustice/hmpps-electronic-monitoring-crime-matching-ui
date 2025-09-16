@@ -14,6 +14,30 @@
 {% set totalPages = (persons.length / pageSize) | round(0, 'ceil') %}
 {% set activeLinkId = "location-data" %}
 
+{% if searchField === 'name' %}
+  {% set name = searchTerm %}
+{% elif searchField === 'nomisId' %}
+  {% set nomisId = searchTerm %}
+{% endif %}
+
+{% set nameHtml %}
+  {{ govukInput({
+    id: "name",
+    name: "name",
+    value: name,
+    classes: "govuk-!-width-two-thirds"
+  }) }}
+{% endset %}
+
+{% set nomisIdHtml %}
+{{ govukInput({
+  id: "nomis-id",
+  name: "nomisId",
+  value: nomisId,
+  classes: "govuk-!-width-two-thirds"
+}) }}
+{% endset %}
+
 {% for person in persons %}
   {% for deviceActivation in person.deviceActivations %}
     {% set selected = ' checked' if formData.deviceActivationId == deviceActivation.deviceActivationId else '' %}
@@ -56,83 +80,96 @@
 
 {% block content %}
   <div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds govuk-!-static-padding-0">
-      <h1>Person Search</h1>
+    <div class="govuk-grid-column-one-quarter">
+      <h1 class="govuk-heading-m">Search Location Data</h1>
       <form method="post" novalidate id="person-search-form">
         <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
-        {{
-          govukInput({
-            label: {
+        {{ govukRadios({
+          name: "searchField",
+          hint: {
+            text: "Select one option"
+          },
+          fieldset: {
+            legend: {
+              text: "Search",
+              isPageHeading: true,
+              classes: "govuk-fieldset__legend--s"
+            }
+          },
+          errorMessage: errors.searchField,
+          items: [
+            {
+              value: "name",
               text: "Name",
-              classes: "govuk-label--s"
+              checked: searchField === 'name',
+              conditional: {
+                html: nameHtml
+              }
             },
-            classes: "govuk-!-width-two-thirds",
-            id: "name",
-            name: "name",
-            value: name,
-            errorMessage: errors.name
-          })
-        }}
-
-        {{
-          govukInput({
-            label: {
+            {
+              value: "nomisId",
               text: "NOMIS ID",
-              classes: "govuk-label--s"
-            },
-            classes: "govuk-!-width-two-thirds",
-            id: "nomis-id",
-            name: "nomisId",
-            value: nomisId,
-            errorMessage: error.nomisId
-          })
-        }}
+              checked: searchField === 'nomisId',
+              conditional: {
+                html: nomisIdHtml
+              }
+            }
+          ]
+        }) }}
 
         {{
           govukButton({
+            id: "search-persons-button",
             text: "Search",
             name: "action"
           })
         }}
       </form>
+      <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible" />
+      {% include "./partials/dateFilterForm.njk" %}
     </div>
 
-    {{
-      dataTable({
-        columns: [
-          {
-            text: ""
-          },
-          {
-            text: "NOMIS ID"
-          },
-          {
-            text: "Name"
-          },
-          {
-            text: "Date of Birth"
-          },
-          {
-            text: "Address"
-          },
-          {
-            text: "Device ID"
-          },
-          {
-            text: "Tag Period Start"
-          },
-          {
-            text: "Tag Period End"
+    <div class="govuk-grid-column-three-quarters">
+      <h2 class="govuk-heading-m">
+        Results
+        <span class="govuk-caption-m">Select a row before applying dates and time</span>
+      </h2>
+      {{
+        dataTable({
+          columns: [
+            {
+              text: ""
+            },
+            {
+              text: "NOMIS ID"
+            },
+            {
+              text: "Name"
+            },
+            {
+              text: "Date of Birth"
+            },
+            {
+              text: "Address"
+            },
+            {
+              text: "Device ID"
+            },
+            {
+              text: "Tag Period Start"
+            },
+            {
+              text: "Tag Period End"
+            }
+          ],
+          rows: rows,
+          pagination: {
+            pageCount: pageCount,
+            currentPage: pageNumber,
+            hrefPrefix: "?searchField=" + searchField + '&searchTerm=' + searchTerm
           }
-        ],
-        rows: rows,
-        pagination: {
-          pageCount: pageCount,
-          currentPage: pageNumber,
-          hrefPrefix: '?name=' + name + "&nomisId=" + nomisId
-        }
-      })
-    }}
-    {% include "./partials/dateFilterForm.njk" %}
+        })
+      }}
+    </div>
   </div>
 {% endblock %}

@@ -10,23 +10,42 @@ export default class PersonsController {
     const { query } = req
     const { token } = res.locals.user
     const parsedQuery = personsQueryParametersSchema.parse(query)
-    const queryResults = await this.service.getPersons(token, parsedQuery.name, parsedQuery.nomisId, parsedQuery.page)
 
-    res.render('pages/locationData/index', {
-      origin: req.originalUrl,
-      name: parsedQuery.name,
-      nomisId: parsedQuery.nomisId,
-      persons: queryResults.data,
-      pageCount: queryResults.pageCount,
-      pageNumber: queryResults.pageNumber,
-    })
+    const { searchField, searchTerm } = parsedQuery
+
+    if (searchField && searchTerm) {
+      const queryResults = await this.service.getPersons(token, searchField, searchTerm, parsedQuery.page)
+      res.render('pages/locationData/index', {
+        origin: req.originalUrl,
+        persons: queryResults.data,
+        pageCount: queryResults.pageCount,
+        pageNumber: queryResults.pageNumber,
+        searchField,
+        searchTerm,
+        formData: {
+          ...res.locals.formData,
+        },
+      })
+    } else {
+      res.render('pages/locationData/index', {
+        persons: [],
+        pageCount: 1,
+        pageNumber: 1,
+        formData: {
+          ...res.locals.formData,
+        },
+      })
+    }
   }
 
   search: RequestHandler = async (req, res) => {
     const formData = personsFormDataSchema.safeParse(req.body)
+    req.session.formData = {
+      ...req.body,
+    }
 
     if (formData.success) {
-      const params = new URLSearchParams(formData.data)
+      const params = `searchField=${formData.data.searchField}&searchTerm=${formData.data.searchTerm}`
       res.redirect(`/location-data/persons?${params.toString()}`)
     } else {
       req.session.validationErrors = convertZodErrorToValidationError(formData.error)
