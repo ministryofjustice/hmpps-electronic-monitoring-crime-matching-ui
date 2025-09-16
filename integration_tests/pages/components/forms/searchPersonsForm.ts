@@ -5,6 +5,7 @@ import FormRadiosComponent from '../formRadiosComponent'
 type SearchPersonsFormData = {
   nomisId?: string
   name?: string
+  deviceId?: string
 }
 
 export default class SearchPersonsFormComponent extends FormComponent {
@@ -31,6 +32,10 @@ export default class SearchPersonsFormComponent extends FormComponent {
     if (data.name) {
       this.personsSearchField.set('name')
       this.personsSearchField.setInputField('name', data.name)
+    }
+    if (data.deviceId) {
+      this.personsSearchField.set('deviceId')
+      this.personsSearchField.setInputField('deviceId', data.deviceId)
     }
   }
 }
