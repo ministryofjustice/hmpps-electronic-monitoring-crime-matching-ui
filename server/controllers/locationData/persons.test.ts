@@ -167,7 +167,7 @@ describe('PersonsController', () => {
       })
     })
 
-    it('should render a view containing no results if there are no query params', async () => {
+    it('should render a view containing no results if there are no query parameters', async () => {
       // Given
       const req = createMockRequest()
       const res = createMockResponse()
@@ -381,7 +381,7 @@ describe('PersonsController', () => {
       expect(req.session.validationErrors).toEqual([
         {
           field: 'searchField',
-          message: 'You must enter a value for either Name, NOMIS ID or Device ID',
+          message: 'You must enter a value for Name, NOMIS ID or Device ID',
         },
       ])
     })

@@ -1,7 +1,7 @@
 import { z } from 'zod/v4'
 import { paginatedDtoSchema } from '../pagination'
 
-const MISSING_FORM_VALUE_ERROR = 'You must enter a value for either Name, NOMIS ID or Device ID'
+const MISSING_FORM_VALUE_ERROR = 'You must enter a value for Name, NOMIS ID or Device ID'
 
 const personsQueryParametersSchema = z.object({
   searchTerm: z.string().default(''),

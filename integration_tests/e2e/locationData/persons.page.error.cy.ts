@@ -43,9 +43,7 @@ context('Location Data', () => {
 
       // User should be redirected to an error page
       page = Page.verifyOnPage(PersonsPage)
-      page.form.personsSearchField.shouldHaveValidationMessage(
-        'You must enter a value for either Name, NOMIS ID or Device ID',
-      )
+      page.form.personsSearchField.shouldHaveValidationMessage('You must enter a value for Name, NOMIS ID or Device ID')
     })
   })
 })
