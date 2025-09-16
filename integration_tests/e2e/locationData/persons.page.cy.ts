@@ -236,5 +236,89 @@ context('Location Data', () => {
       page.form.personsSearchField.shouldHaveValue('name')
       page.form.personsSearchField.shouldHaveInputValue('name', 'foo')
     })
+
+    it('should display query results when searching by deviceId', () => {
+      cy.stubGetPersons({
+        status: 200,
+        query: '.*',
+        response: {
+          data: [
+            {
+              personId: '1',
+              nomisId: 'Nomis 1',
+              pncRef: 'YY/NNNNNNND',
+              name: 'John',
+              dateOfBirth: '2000-12-01T00:00:00.000Z',
+              address: '123 Street',
+              probationPractitioner: 'John Smith',
+              deviceActivations: [
+                {
+                  deviceActivationId: 123456,
+                  deviceId: 123456,
+                  deviceName: '123456',
+                  personId: 123456,
+                  deviceActivationDate: '2024-12-01T00:00:00.000Z',
+                  deviceDeactivationDate: null,
+                  orderStart: '2024-12-01T00:00:00.000Z',
+                  orderEnd: '2024-12-31T00:00:00.000Z',
+                },
+              ],
+            },
+            {
+              personId: '2',
+              nomisId: 'Nomis 2',
+              pncRef: 'YY/NNNNNNND',
+              name: 'Lee',
+              dateOfBirth: '2000-12-01T00:00:00.000Z',
+              address: '456 Avenue',
+              probationPractitioner: 'John Smith',
+              deviceActivations: [
+                {
+                  deviceActivationId: 123456,
+                  deviceId: 654321,
+                  deviceName: '654321',
+                  personId: 123456,
+                  deviceActivationDate: '2024-12-01T00:00:00.000Z',
+                  deviceDeactivationDate: '2024-12-01T00:00:00.000Z',
+                  orderStart: '2024-12-01T00:00:00.000Z',
+                  orderEnd: '2024-12-31T00:00:00.000Z',
+                },
+              ],
+            },
+          ],
+          pageCount: 1,
+          pageNumber: 1,
+          pageSize: 10,
+        },
+      })
+
+      cy.visit(url)
+      let page = Page.verifyOnPage(PersonsPage)
+
+      page.form.fillInWith({ deviceId: 'foo' })
+      page.form.searchButton.click()
+
+      cy.url().should('include', '?searchField=deviceId&searchTerm=foo')
+      page = Page.verifyOnPage(PersonsPage)
+      page.dataTable.shouldHaveResults()
+      page.dataTable.shouldHaveColumns([
+        '',
+        'NOMIS ID',
+        'Name',
+        'Date of Birth',
+        'Address',
+        'Device ID',
+        'Tag Period Start',
+        'Tag Period End',
+      ])
+
+      page.dataTable.shouldHaveRows([
+        ['', 'Nomis 1', 'John', '01/12/2000 00:00', '123 Street', '123456', '01/12/2024 00:00', ''],
+        ['', 'Nomis 2', 'Lee', '01/12/2000 00:00', '456 Avenue', '654321', '01/12/2024 00:00', '01/12/2024 00:00'],
+      ])
+      page.dataTable.shouldNotHavePagination()
+      page.form.personsSearchField.shouldHaveValue('deviceId')
+      page.form.personsSearchField.shouldHaveInputValue('deviceId', 'foo')
+    })
   })
 })

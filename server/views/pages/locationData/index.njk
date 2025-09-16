@@ -18,6 +18,8 @@
   {% set name = searchTerm %}
 {% elif searchField === 'nomisId' %}
   {% set nomisId = searchTerm %}
+{% elif searchField === 'deviceId' %}
+  {% set deviceId = searchTerm %}
 {% endif %}
 
 {% set nameHtml %}
@@ -34,6 +36,15 @@
   id: "nomis-id",
   name: "nomisId",
   value: nomisId,
+  classes: "govuk-!-width-two-thirds"
+}) }}
+{% endset %}
+
+{% set deviceIdHtml %}
+{{ govukInput({
+  id: "device-id",
+  name: "deviceId",
+  value: deviceId,
   classes: "govuk-!-width-two-thirds"
 }) }}
 {% endset %}
@@ -112,6 +123,14 @@
               checked: searchField === 'nomisId',
               conditional: {
                 html: nomisIdHtml
+              }
+            },
+            {
+              value: "deviceId",
+              text: "Device ID",
+              checked: searchField === 'deviceId',
+              conditional: {
+                html: deviceIdHtml
               }
             }
           ]

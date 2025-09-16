@@ -122,7 +122,52 @@ describe('PersonsController', () => {
       })
     })
 
-    it('should render a view containing no results if there is no name or nomisId in the query params', async () => {
+    it('should query the api and render a view containing persons if there is a deviceId query parameter', async () => {
+      // Given
+      const req = createMockRequest({
+        query: {
+          searchTerm: 'foo',
+          searchField: 'deviceId',
+        },
+      })
+      const res = createMockResponse()
+      const next = jest.fn()
+      const service = new PersonsService(mockRestClient)
+      const controller = new PersonsController(service)
+
+      mockRestClient.get.mockResolvedValue({
+        data: [mockPerson],
+        pageCount: 1,
+        pageNumber: 1,
+        pageSize: 10,
+      })
+
+      // When
+      await controller.view(req, res, next)
+
+      // Then
+      expect(mockRestClient.get).toHaveBeenCalledWith(
+        {
+          path: '/persons',
+          query: {
+            deviceId: 'foo',
+            include_device_activations: true,
+            page: '1',
+          },
+        },
+        undefined,
+      )
+      expect(res.render).toHaveBeenCalledWith('pages/locationData/index', {
+        formData: {},
+        searchField: 'deviceId',
+        searchTerm: 'foo',
+        persons: [mockPerson],
+        pageCount: 1,
+        pageNumber: 1,
+      })
+    })
+
+    it('should render a view containing no results if there are no query parameters', async () => {
       // Given
       const req = createMockRequest()
       const res = createMockResponse()
@@ -279,7 +324,7 @@ describe('PersonsController', () => {
   describe('submit search query', () => {
     it('should redirect to the view if a name search term is submitted', async () => {
       // Given
-      const req = createMockRequest({ body: { name: 'foo', nomisId: '', searchField: 'name' } })
+      const req = createMockRequest({ body: { name: 'foo', nomisId: '', deviceId: '', searchField: 'name' } })
       const res = createMockResponse()
       const next = jest.fn()
       const service = new PersonsService(mockRestClient)
@@ -293,7 +338,7 @@ describe('PersonsController', () => {
 
     it('should redirect to the view if a nomisId search term is submitted', async () => {
       // Given
-      const req = createMockRequest({ body: { name: '', nomisId: 'foo', searchField: 'nomisId' } })
+      const req = createMockRequest({ body: { name: '', nomisId: 'foo', deviceId: '', searchField: 'nomisId' } })
       const res = createMockResponse()
       const next = jest.fn()
       const service = new PersonsService(mockRestClient)
@@ -305,9 +350,23 @@ describe('PersonsController', () => {
       expect(res.redirect).toHaveBeenCalledWith('/location-data/persons?searchField=nomisId&searchTerm=foo')
     })
 
+    it('should redirect to the view if a deviceId search term is submitted', async () => {
+      // Given
+      const req = createMockRequest({ body: { name: '', nomisId: '', deviceId: 'foo', searchField: 'deviceId' } })
+      const res = createMockResponse()
+      const next = jest.fn()
+      const service = new PersonsService(mockRestClient)
+      const controller = new PersonsController(service)
+
+      // When
+      await controller.search(req, res, next)
+
+      expect(res.redirect).toHaveBeenCalledWith('/location-data/persons?searchField=deviceId&searchTerm=foo')
+    })
+
     it('should redirect to the view with a validation error message if no search terms submitted', async () => {
       // Given
-      const req = createMockRequest({ body: { nomisId: '', name: '' } })
+      const req = createMockRequest({ body: { nomisId: '', name: '', deviceId: '', searchField: 'nomisId' } })
       const res = createMockResponse()
       const next = jest.fn()
       const service = new PersonsService(mockRestClient)
@@ -322,7 +381,7 @@ describe('PersonsController', () => {
       expect(req.session.validationErrors).toEqual([
         {
           field: 'searchField',
-          message: 'You must enter a value for either Name or NOMIS ID',
+          message: 'You must enter a value for Name, NOMIS ID or Device ID',
         },
       ])
     })
