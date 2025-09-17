@@ -5,7 +5,7 @@ type GetSubjectDto = {
 }
 
 type CreateSubjectLocationsQueryRequestDto = {
-  personId: string
+  personId: number
   fromDate: DateAndTimeInput
   toDate: DateAndTimeInput
   orderStartDate: string

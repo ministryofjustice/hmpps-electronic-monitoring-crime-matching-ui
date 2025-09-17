@@ -43,7 +43,7 @@ context('Location Data', () => {
         response: {
           data: [
             {
-              personId: '1',
+              personId: 1,
               nomisId: 'Nomis 1',
               pncRef: 'YY/NNNNNNND',
               name: 'John',
@@ -64,7 +64,7 @@ context('Location Data', () => {
               ],
             },
             {
-              personId: '2',
+              personId: 2,
               nomisId: 'Nomis 2',
               pncRef: 'YY/NNNNNNND',
               name: 'Lee',
@@ -128,7 +128,7 @@ context('Location Data', () => {
         response: {
           data: [
             {
-              personId: '1',
+              personId: 1,
               nomisId: 'Nomis 1',
               pncRef: 'YY/NNNNNNND',
               name: 'John',
@@ -161,7 +161,7 @@ context('Location Data', () => {
         response: {
           data: [
             {
-              personId: '2',
+              personId: 2,
               nomisId: 'Nomis 2',
               pncRef: 'YY/NNNNNNND',
               name: 'Lee',
@@ -244,7 +244,7 @@ context('Location Data', () => {
         response: {
           data: [
             {
-              personId: '1',
+              personId: 1,
               nomisId: 'Nomis 1',
               pncRef: 'YY/NNNNNNND',
               name: 'John',
@@ -265,7 +265,7 @@ context('Location Data', () => {
               ],
             },
             {
-              personId: '2',
+              personId: 2,
               nomisId: 'Nomis 2',
               pncRef: 'YY/NNNNNNND',
               name: 'Lee',

@@ -1,7 +1,7 @@
 {
   "data": [
     {
-      "personId": "11",
+      "personId": 11,
       "nomisId": "Nomis 11",
       "pncRef": "YY/NNNNNNND",
       "name": "John",
@@ -22,7 +22,7 @@
       ]
     },
     {
-      "personId": "12",
+      "personId": 12,
       "nomisId": "Nomis 12",
       "pncRef": "YY/NNNNNNND",
       "name": "John",
@@ -43,7 +43,7 @@
       ]
     },
     {
-      "personId": "13",
+      "personId": 13,
       "nomisId": "Nomis 13",
       "pncRef": "YY/NNNNNNND",
       "name": "John",

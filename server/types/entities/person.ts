@@ -1,7 +1,7 @@
 import DeviceActivation from './deviceActivation'
 
 type Person = {
-  personId: string
+  personId: number
   name: string
   nomisId: string
   pncRef: string

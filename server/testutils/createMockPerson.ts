@@ -2,7 +2,7 @@ import { randomUUID } from 'crypto'
 import Person from '../types/entities/person'
 
 const createMockPerson = (): Person => ({
-  personId: randomUUID(),
+  personId: 654321,
   nomisId: randomUUID(),
   pncRef: 'YY/NNNNNNND',
   name: 'John',

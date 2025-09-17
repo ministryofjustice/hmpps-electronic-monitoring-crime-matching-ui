@@ -7,7 +7,7 @@ type StubGetPersons200Options = {
   query: string
   response: {
     data: Array<{
-      personId: string
+      personId: number
       nomisId: string
       pncRef: string
       name: string
