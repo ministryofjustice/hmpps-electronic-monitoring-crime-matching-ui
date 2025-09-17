@@ -12,7 +12,7 @@ class PersonsService {
         path: '/persons',
         query: {
           [searchField]: searchTerm,
-          include_device_activations: true,
+          includeDeviceActivations: true,
           page,
         },
       },

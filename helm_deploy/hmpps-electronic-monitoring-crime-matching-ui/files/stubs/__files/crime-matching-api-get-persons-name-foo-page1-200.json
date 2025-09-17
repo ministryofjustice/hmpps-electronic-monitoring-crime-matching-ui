@@ -1,7 +1,7 @@
 {
   "data": [
     {
-      "personId": "1",
+      "personId": 1,
       "nomisId": "Nomis 1",
       "pncRef": "YY/NNNNNNND",
       "name": "John",
@@ -22,7 +22,7 @@
       ]
     },
     {
-      "personId": "2",
+      "personId": 2,
       "nomisId": "Nomis 2",
       "pncRef": "YY/NNNNNNND",
       "name": "John",
@@ -43,7 +43,7 @@
       ]
     },
     {
-      "personId": "3",
+      "personId": 3,
       "nomisId": "Nomis 3",
       "pncRef": "YY/NNNNNNND",
       "name": "John",
@@ -64,7 +64,7 @@
       ]
     },
     {
-      "personId": "4",
+      "personId": 4,
       "nomisId": "Nomis 4",
       "pncRef": "YY/NNNNNNND",
       "name": "John",
@@ -85,7 +85,7 @@
       ]
     },
     {
-      "personId": "5",
+      "personId": 5,
       "nomisId": "Nomis 5",
       "pncRef": "YY/NNNNNNND",
       "name": "John",
@@ -106,7 +106,7 @@
       ]
     },
     {
-      "personId": "6",
+      "personId": 6,
       "nomisId": "Nomis 6",
       "pncRef": "YY/NNNNNNND",
       "name": "John",
@@ -127,7 +127,7 @@
       ]
     },
     {
-      "personId": "7",
+      "personId": 7,
       "nomisId": "Nomis 7",
       "pncRef": "YY/NNNNNNND",
       "name": "John",
@@ -148,7 +148,7 @@
       ]
     },
     {
-      "personId": "8",
+      "personId": 8,
       "nomisId": "Nomis 8",
       "pncRef": "YY/NNNNNNND",
       "name": "John",
@@ -169,7 +169,7 @@
       ]
     },
     {
-      "personId": "9",
+      "personId": 9,
       "nomisId": "Nomis 9",
       "pncRef": "YY/NNNNNNND",
       "name": "John",
@@ -190,7 +190,7 @@
       ]
     },
     {
-      "personId": "10",
+      "personId": 10,
       "nomisId": "Nomis 10",
       "pncRef": "YY/NNNNNNND",
       "name": "John",

@@ -55,7 +55,7 @@ const getRow = (
   const fullColumns = [
     deviceActivation.deviceId.toString(),
     deviceActivation.deviceName,
-    deviceWearer.personId,
+    deviceWearer.personId.toString(),
     deviceWearer.name,
     deviceWearer.nomisId,
     deviceWearer.pncRef,

@@ -1,5 +1,4 @@
 import { z } from 'zod/v4'
-import { paginatedDtoSchema } from '../pagination'
 
 const MISSING_FORM_VALUE_ERROR = 'You must enter a value for Name, NOMIS ID or Device ID'
 
@@ -51,21 +50,4 @@ const personsFormDataSchema = z
     }
   })
 
-const getPersonsQueryDtoSchema = paginatedDtoSchema.extend({
-  data: z.array(
-    z.object({
-      personId: z.string(),
-      nomisId: z.string(),
-      name: z.string(),
-      dateOfBirth: z.string(),
-      address: z.string(),
-      orderStartDate: z.string(),
-      orderEndDate: z.string().nullable(),
-      deviceId: z.string(),
-      tagPeriodStartDate: z.string(),
-      tagPeriodEndDate: z.string().nullable(),
-    }),
-  ),
-})
-
-export { personsQueryParametersSchema, personsFormDataSchema, getPersonsQueryDtoSchema }
+export { personsQueryParametersSchema, personsFormDataSchema }
