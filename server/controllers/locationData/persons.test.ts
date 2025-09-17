@@ -61,7 +61,7 @@ describe('PersonsController', () => {
           path: '/persons',
           query: {
             name: 'foo',
-            include_device_activations: true,
+            includeDeviceActivations: true,
             page: '1',
           },
         },
@@ -106,7 +106,7 @@ describe('PersonsController', () => {
           path: '/persons',
           query: {
             nomisId: 'foo',
-            include_device_activations: true,
+            includeDeviceActivations: true,
             page: '1',
           },
         },
@@ -151,7 +151,7 @@ describe('PersonsController', () => {
           path: '/persons',
           query: {
             deviceId: 'foo',
-            include_device_activations: true,
+            includeDeviceActivations: true,
             page: '1',
           },
         },
@@ -218,7 +218,7 @@ describe('PersonsController', () => {
           path: '/persons',
           query: {
             name: 'foo',
-            include_device_activations: true,
+            includeDeviceActivations: true,
             page: '1',
           },
         },
@@ -264,7 +264,7 @@ describe('PersonsController', () => {
           path: '/persons',
           query: {
             name: 'foo',
-            include_device_activations: true,
+            includeDeviceActivations: true,
             page: '2',
           },
         },

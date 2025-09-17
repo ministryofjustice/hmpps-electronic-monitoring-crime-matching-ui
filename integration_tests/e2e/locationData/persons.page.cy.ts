@@ -124,7 +124,7 @@ context('Location Data', () => {
       // Stub the api to simulate the query returning the first page results
       cy.stubGetPersons({
         status: 200,
-        query: '\\?name=foo&include_device_activations=true&page=1',
+        query: '\\?name=foo&includeDeviceActivations=true&page=1',
         response: {
           data: [
             {
@@ -157,7 +157,7 @@ context('Location Data', () => {
       // Stub the api to simulate the query returning the second page results
       cy.stubGetPersons({
         status: 200,
-        query: '\\?name=foo&include_device_activations=true&page=2',
+        query: '\\?name=foo&includeDeviceActivations=true&page=2',
         response: {
           data: [
             {
