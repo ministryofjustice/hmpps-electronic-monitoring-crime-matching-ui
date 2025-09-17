@@ -51,21 +51,4 @@ const personsFormDataSchema = z
     }
   })
 
-const getPersonsQueryDtoSchema = paginatedDtoSchema.extend({
-  data: z.array(
-    z.object({
-      personId: z.number(),
-      nomisId: z.string(),
-      name: z.string(),
-      dateOfBirth: z.string(),
-      address: z.string(),
-      orderStartDate: z.string(),
-      orderEndDate: z.string().nullable(),
-      deviceId: z.number(),
-      tagPeriodStartDate: z.string(),
-      tagPeriodEndDate: z.string().nullable(),
-    }),
-  ),
-})
-
-export { personsQueryParametersSchema, personsFormDataSchema, getPersonsQueryDtoSchema }
+export { personsQueryParametersSchema, personsFormDataSchema }
