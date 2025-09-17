@@ -1,5 +1,4 @@
 import { z } from 'zod/v4'
-import { paginatedDtoSchema } from '../pagination'
 
 const MISSING_FORM_VALUE_ERROR = 'You must enter a value for Name, NOMIS ID or Device ID'
 
