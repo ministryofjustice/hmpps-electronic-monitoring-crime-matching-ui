@@ -1,7 +1,7 @@
 import VectorLayer from 'ol/layer/Vector'
 import VectorSource from 'ol/source/Vector'
 import { GeoJSON } from 'ol/format'
-import { Fill, Stroke, Style } from 'ol/style'
+import { Stroke, Style } from 'ol/style'
 import { Circle as CircleGeom, Point } from 'ol/geom'
 import { Feature } from 'ol'
 
