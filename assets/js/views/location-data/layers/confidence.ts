@@ -1,17 +1,15 @@
 import VectorLayer from 'ol/layer/Vector'
 import VectorSource from 'ol/source/Vector'
 import { GeoJSON } from 'ol/format'
-import { Fill, Stroke, Style } from 'ol/style'
+import { Stroke, Style } from 'ol/style'
 import { Circle as CircleGeom, Point } from 'ol/geom'
 import { Feature } from 'ol'
 
 const confidenceCircleStyle = new Style({
   stroke: new Stroke({
-    color: 'orange',
-    width: 2,
-  }),
-  fill: new Fill({
-    color: 'rgba(255, 165, 0, 0.1)',
+    color: 'rgb(245, 202, 45)',
+    width: 1,
+    lineDash: [3, 5],
   }),
 })
 
