@@ -1,4 +1,5 @@
 import { MojMap } from 'hmpps-open-layers-map'
+import { LocationLayer } from 'hmpps-open-layers-map/layers'
 import { isEmpty } from 'ol/extent'
 import LocationsLayer from './layers/locations'
 import TracksLayer from './layers/tracks'
@@ -15,19 +16,23 @@ const initialiseLocationDataView = async () => {
     mojMap.addEventListener('map:ready', () => resolve(), { once: true })
   })
 
-  const { points } = mojMap.geoJson
-  const { lines } = mojMap.geoJson
+  const map = mojMap.olMapInstance!
+  const geoJson = mojMap.geojson
 
-  const locationsLayer = new LocationsLayer(points)
+  if (!geoJson) return
+
+  /* const locationsLayer = new LocationsLayer(points)
   const locationSource = locationsLayer.getSource()
   const tracksLayer = new TracksLayer(lines)
   const confidenceLayer = new ConfidenceLayer(points)
-  const locationNumberingLayer = new NumberingLayer(points)
+  const locationNumberingLayer = new NumberingLayer(points) */
 
-  mojMap.map.addLayer(locationsLayer)
-  mojMap.map.addLayer(tracksLayer)
+  let locationSource = null
+  const locationsLayer = mojMap.addLayer(new LocationLayer(geoJson))
+  if (locationsLayer) locationSource = locationsLayer.getSource()
+  /* mojMap.map.addLayer(tracksLayer)
   mojMap.map.addLayer(confidenceLayer)
-  mojMap.map.addLayer(locationNumberingLayer)
+  mojMap.map.addLayer(locationNumberingLayer) */
 
   mojMap.dispatchEvent(
     new CustomEvent('app:map:layers:ready', {
@@ -41,19 +46,19 @@ const initialiseLocationDataView = async () => {
     const extent = locationSource.getExtent()
 
     if (isEmpty(extent) === false) {
-      mojMap.map.getView().fit(extent, {
+      map.getView().fit(extent, {
         maxZoom: 16,
         padding: [30, 30, 30, 30],
-        size: mojMap.map.getSize(),
+        size: map.getSize(),
       })
     }
   }
 
   // Add controls
-  createLayerVisibilityToggle('#locations', locationsLayer, mojMap)
-  createLayerVisibilityToggle('#tracks', tracksLayer)
+  if (locationsLayer) createLayerVisibilityToggle('#locations', locationsLayer, mojMap)
+  /* createLayerVisibilityToggle('#tracks', tracksLayer)
   createLayerVisibilityToggle('#confidence', confidenceLayer)
-  createLayerVisibilityToggle('#numbering', locationNumberingLayer)
+  createLayerVisibilityToggle('#numbering', locationNumberingLayer) */
 
   initialiseDateFilterForm()
 }

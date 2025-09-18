@@ -1,10 +1,11 @@
 import { RequestHandler } from 'express'
+import { mdssPositionsToGeoJson } from 'hmpps-open-layers-map/converters'
 import {
   downloadLocationsQueryParameterSchema,
   searchLocationsFormDataSchema,
   viewLocationsQueryParametersSchema,
 } from '../../schemas/locationData/subject'
-import createGeoJsonData from '../../presenters/crimeMapping'
+import formatLocationData from '../../presenters/helpers/formatLocationFeature'
 import config from '../../config'
 import { createMojAlertWarning } from '../../utils/alerts'
 import { MojAlert } from '../../types/govUk/mojAlert'
@@ -76,7 +77,9 @@ export default class SubjectController {
         toDate,
       )
 
-      const geoJsonData = createGeoJsonData(positions)
+      let geoJsonData = mdssPositionsToGeoJson(positions)
+      geoJsonData = formatLocationData(geoJsonData)
+
       const alerts: Array<MojAlert> = []
 
       if (positions.length === 0) {

@@ -326,13 +326,8 @@ describe('SubjectController', () => {
       const from = '2025-01-01T00:00:00.000Z'
       const to = '2025-01-02T00:00:00.000Z'
       const req = createMockRequest({
-        params: {
-          deviceActivationId,
-        },
-        query: {
-          from,
-          to,
-        },
+        params: { deviceActivationId },
+        query: { from, to },
         deviceActivation: {
           deviceActivationId: 1,
           deviceId: 123456789,
@@ -352,22 +347,14 @@ describe('SubjectController', () => {
       const controller = new SubjectController(deviceActivationsService, personsService, validationService)
 
       // GET /device-activations/1/positions
-      mockRestClient.get.mockResolvedValue({
-        data: [],
-      })
+      mockRestClient.get.mockResolvedValue({ data: [] })
 
       // When
       await controller.view(req, res, next)
 
       // Then
       expect(mockRestClient.get).toHaveBeenCalledWith(
-        {
-          path: `/device-activations/${deviceActivationId}/positions`,
-          query: {
-            from,
-            to,
-          },
-        },
+        { path: `/device-activations/${deviceActivationId}/positions`, query: { from, to } },
         undefined,
       )
       expect(res.render).toHaveBeenCalledWith('pages/locationData/subject', {
@@ -380,22 +367,16 @@ describe('SubjectController', () => {
             variant: 'warning',
           },
         ],
-        geoJson: { points: [], lines: [] },
+        geoJson: {
+          type: 'FeatureCollection',
+          features: [],
+          origin: undefined,
+        },
         tileUrl: '',
         vectorUrl: '',
         formData: {
-          fromDate: {
-            date: '01/01/2025',
-            hour: '00',
-            minute: '00',
-            second: '00',
-          },
-          toDate: {
-            date: '02/01/2025',
-            hour: '00',
-            minute: '00',
-            second: '00',
-          },
+          fromDate: { date: '01/01/2025', hour: '00', minute: '00', second: '00' },
+          toDate: { date: '02/01/2025', hour: '00', minute: '00', second: '00' },
         },
         exportForm: {
           enabled: true,
@@ -412,13 +393,8 @@ describe('SubjectController', () => {
       const from = '2025-01-01T00:00:00.000Z'
       const to = '2025-01-02T00:00:00.000Z'
       const req = createMockRequest({
-        params: {
-          deviceActivationId,
-        },
-        query: {
-          from,
-          to,
-        },
+        params: { deviceActivationId },
+        query: { from, to },
         deviceActivation: {
           deviceActivationId: 1,
           deviceId: 123456789,
@@ -442,10 +418,7 @@ describe('SubjectController', () => {
         data: [
           {
             locationRef: 1,
-            point: {
-              latitude: 123.123,
-              longitude: 123.123,
-            },
+            point: { latitude: 123.123, longitude: 123.123 },
             confidenceCircle: 10,
             speed: 5,
             direction: 3.14159,
@@ -455,10 +428,7 @@ describe('SubjectController', () => {
           },
           {
             locationRef: 2,
-            point: {
-              latitude: 456.123,
-              longitude: 456.123,
-            },
+            point: { latitude: 456.123, longitude: 456.123 },
             confidenceCircle: 20,
             speed: 7,
             direction: 3.66519,
@@ -474,28 +444,22 @@ describe('SubjectController', () => {
 
       // Then
       expect(mockRestClient.get).toHaveBeenCalledWith(
-        {
-          path: `/device-activations/${deviceActivationId}/positions`,
-          query: {
-            from,
-            to,
-          },
-        },
+        { path: `/device-activations/${deviceActivationId}/positions`, query: { from, to } },
         undefined,
       )
       expect(res.render).toHaveBeenCalledWith('pages/locationData/subject', {
         alerts: [],
         geoJson: {
-          points: [
+          type: 'FeatureCollection',
+          origin: undefined,
+          features: [
             {
               type: 'Feature',
-              id: '0',
+              id: '1',
               properties: {
-                '@id': '0',
+                '@id': '1',
                 confidence: 10,
-                type: 'pop-location',
                 sequenceNumber: 1,
-
                 overlayTemplateId: 'overlay-template-pop-location',
                 displaySpeed: '5 km/h',
                 displayDirection: '180°',
@@ -504,19 +468,20 @@ describe('SubjectController', () => {
                 displayConfidence: '10m',
                 displayLatitude: '123.123',
                 displayLongitude: '123.123',
+                type: 'mdss-location',
+                speed: 5,
+                direction: 3.14159,
+                geolocationMechanism: 1,
+                timestamp: '2025-01-01T00:00:00Z',
               },
-              geometry: {
-                type: 'Point',
-                coordinates: [123.123, 123.123],
-              },
+              geometry: { type: 'Point', coordinates: [123.123, 123.123] },
             },
             {
               type: 'Feature',
-              id: '1',
+              id: '2',
               properties: {
-                '@id': '1',
+                '@id': '2',
                 confidence: 20,
-                type: 'pop-location',
                 sequenceNumber: 2,
                 overlayTemplateId: 'overlay-template-pop-location',
                 displaySpeed: '7 km/h',
@@ -526,18 +491,18 @@ describe('SubjectController', () => {
                 displayConfidence: '20m',
                 displayLatitude: '456.123',
                 displayLongitude: '456.123',
+                type: 'mdss-location',
+                speed: 7,
+                direction: 3.66519,
+                geolocationMechanism: 1,
+                timestamp: '2025-01-01T00:01:00Z',
               },
-              geometry: {
-                type: 'Point',
-                coordinates: [456.123, 456.123],
-              },
+              geometry: { type: 'Point', coordinates: [456.123, 456.123] },
             },
-          ],
-          lines: [
             {
               type: 'Feature',
-              id: '0',
-              properties: { '@id': '0', direction: 3.14159 },
+              id: '1-2',
+              properties: { '@id': '1-2', type: 'mdss-line', direction: 3.14159 },
               geometry: {
                 type: 'LineString',
                 coordinates: [
@@ -551,19 +516,8 @@ describe('SubjectController', () => {
         tileUrl: '',
         vectorUrl: '',
         formData: {
-          fromDate: {
-            date: '01/01/2025',
-            hour: '00',
-            minute: '00',
-            second: '00',
-          },
-
-          toDate: {
-            date: '02/01/2025',
-            hour: '00',
-            minute: '00',
-            second: '00',
-          },
+          fromDate: { date: '01/01/2025', hour: '00', minute: '00', second: '00' },
+          toDate: { date: '02/01/2025', hour: '00', minute: '00', second: '00' },
         },
         exportForm: {
           enabled: true,

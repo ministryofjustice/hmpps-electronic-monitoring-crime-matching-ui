@@ -1,6 +1,7 @@
 import { RequestHandler } from 'express'
+import { mdssPositionsToGeoJson } from 'hmpps-open-layers-map/converters'
 import CrimeMappingService from '../services/crimeMapping'
-import createGeoJsonData from '../presenters/crimeMapping'
+import formatLocationData from '../presenters/helpers/formatLocationFeature'
 import config from '../config'
 
 export default class CrimeMappingController {
@@ -8,7 +9,8 @@ export default class CrimeMappingController {
 
   view: RequestHandler = async (req, res) => {
     const data = await this.service.getData()
-    const geoJsonData = createGeoJsonData(data)
+    let geoJsonData = mdssPositionsToGeoJson(data)
+    geoJsonData = formatLocationData(geoJsonData)
 
     res.render('pages/crime-mapping/index', {
       geoJson: JSON.stringify(geoJsonData),
