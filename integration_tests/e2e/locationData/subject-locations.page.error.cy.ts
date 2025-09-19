@@ -57,7 +57,10 @@ context('Location Data', () => {
       page.dataTable.shouldHaveResults()
 
       page.dataTable.selectRow('1')
-      page.locationsForm.fillInWith({ fromDate: undefined, toDate: undefined })
+      page.locationsForm.fillInWith({
+        fromDate: { date: '01/08/2024', hour: ' ', minute: ' ', second: ' ' },
+        toDate: undefined,
+      })
       page.locationsForm.continueButton.click()
 
       page = Page.verifyOnPage(PersonsPage)
@@ -129,8 +132,8 @@ context('Location Data', () => {
       page = Page.verifyOnPage(PersonsPage)
       page.dataTable.shouldHaveResults()
 
-      page.locationsForm.fillInWith({ fromDate, toDate })
       page.dataTable.selectRow('1')
+      page.locationsForm.fillInWith({ fromDate, toDate })
       page.locationsForm.continueButton.click()
 
       page = Page.verifyOnPage(PersonsPage)
@@ -201,8 +204,8 @@ context('Location Data', () => {
       page = Page.verifyOnPage(PersonsPage)
       page.dataTable.shouldHaveResults()
 
-      page.locationsForm.fillInWith({ fromDate, toDate })
       page.dataTable.selectRow('1')
+      page.locationsForm.fillInWith({ fromDate, toDate })
       page.locationsForm.continueButton.click()
 
       page = Page.verifyOnPage(PersonsPage)
@@ -258,8 +261,8 @@ context('Location Data', () => {
       page = Page.verifyOnPage(PersonsPage)
       page.dataTable.shouldHaveResults()
 
-      page.locationsForm.fillInWith({ fromDate, toDate })
       page.dataTable.selectRow('1')
+      page.locationsForm.fillInWith({ fromDate, toDate })
       page.locationsForm.continueButton.click()
 
       page = Page.verifyOnPage(PersonsPage)
@@ -317,8 +320,8 @@ context('Location Data', () => {
       page = Page.verifyOnPage(PersonsPage)
       page.dataTable.shouldHaveResults()
 
-      page.locationsForm.fillInWith({ fromDate, toDate })
       page.dataTable.selectRow('1')
+      page.locationsForm.fillInWith({ fromDate, toDate })
       page.locationsForm.continueButton.click()
 
       page = Page.verifyOnPage(PersonsPage)
