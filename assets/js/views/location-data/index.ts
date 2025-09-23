@@ -1,10 +1,6 @@
 import { MojMap } from 'hmpps-open-layers-map'
-import { LocationLayer } from 'hmpps-open-layers-map/layers'
+import { LocationsLayer, TracksLayer, CirclesLayer, NumberingLayer } from 'hmpps-open-layers-map/layers'
 import { isEmpty } from 'ol/extent'
-import LocationsLayer from './layers/locations'
-import TracksLayer from './layers/tracks'
-import ConfidenceLayer from './layers/confidence'
-import NumberingLayer from './layers/numbering'
 import createLayerVisibilityToggle from './controls/layerVisibilityToggle'
 import { queryElement } from '../../utils/utils'
 import initialiseDateFilterForm from '../../forms/date-filter-form'
@@ -21,18 +17,42 @@ const initialiseLocationDataView = async () => {
 
   if (!geoJson) return
 
-  /* const locationsLayer = new LocationsLayer(points)
-  const locationSource = locationsLayer.getSource()
-  const tracksLayer = new TracksLayer(lines)
-  const confidenceLayer = new ConfidenceLayer(points)
-  const locationNumberingLayer = new NumberingLayer(points) */
-
   let locationSource = null
-  const locationsLayer = mojMap.addLayer(new LocationLayer(geoJson))
-  if (locationsLayer) locationSource = locationsLayer.getSource()
-  /* mojMap.map.addLayer(tracksLayer)
-  mojMap.map.addLayer(confidenceLayer)
-  mojMap.map.addLayer(locationNumberingLayer) */
+  const locationsLayer = mojMap.addLayer(
+    new LocationsLayer({
+      geoJson,
+    }),
+  )!
+
+  const tracksLayer = mojMap.addLayer(
+    new TracksLayer({
+      geoJson,
+      visible: false,
+      lines: {},
+      arrows: { enabled: true },
+    }),
+  )!
+
+  const confidenceLayer = mojMap.addLayer(
+    new CirclesLayer({
+      geoJson,
+      id: 'confidence',
+      title: 'Confidence circles',
+      radiusProperty: 'confidence',
+      visible: false,
+      zIndex: 20,
+    }),
+  )
+
+  const numbersLayer = mojMap.addLayer(
+    new NumberingLayer({
+      geoJson,
+      numberProperty: 'sequenceNumber',
+      title: 'Location numbering',
+      visible: false,
+      zIndex: 30,
+    }),
+  )
 
   mojMap.dispatchEvent(
     new CustomEvent('app:map:layers:ready', {
@@ -41,6 +61,8 @@ const initialiseLocationDataView = async () => {
       detail: { message: 'All custom layers added' },
     }),
   )
+
+  if (locationsLayer) locationSource = locationsLayer.getSource()
 
   if (locationSource) {
     const extent = locationSource.getExtent()
@@ -56,9 +78,9 @@ const initialiseLocationDataView = async () => {
 
   // Add controls
   if (locationsLayer) createLayerVisibilityToggle('#locations', locationsLayer, mojMap)
-  /* createLayerVisibilityToggle('#tracks', tracksLayer)
-  createLayerVisibilityToggle('#confidence', confidenceLayer)
-  createLayerVisibilityToggle('#numbering', locationNumberingLayer) */
+  if (tracksLayer) createLayerVisibilityToggle('#tracks', tracksLayer, mojMap)
+  if (confidenceLayer) createLayerVisibilityToggle('#confidence', confidenceLayer)
+  if (numbersLayer) createLayerVisibilityToggle('#numbering', numbersLayer)
 
   initialiseDateFilterForm()
 }
