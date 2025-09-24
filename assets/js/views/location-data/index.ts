@@ -20,16 +20,18 @@ const initialiseLocationDataView = async () => {
   let locationSource = null
   const locationsLayer = mojMap.addLayer(
     new LocationsLayer({
+      title: 'pointsLayer',
       geoJson,
     }),
   )!
 
   const tracksLayer = mojMap.addLayer(
     new TracksLayer({
+      title: 'tracksLayer',
       geoJson,
       visible: false,
-      lines: {},
-      arrows: { enabled: true },
+      lines: { title: 'linesLayer' },
+      arrows: { enabled: true, title: 'arrowsLayer' },
     }),
   )!
 
@@ -37,7 +39,7 @@ const initialiseLocationDataView = async () => {
     new CirclesLayer({
       geoJson,
       id: 'confidence',
-      title: 'Confidence circles',
+      title: 'confidenceLayer',
       radiusProperty: 'confidence',
       visible: false,
       zIndex: 20,
@@ -48,7 +50,7 @@ const initialiseLocationDataView = async () => {
     new NumberingLayer({
       geoJson,
       numberProperty: 'sequenceNumber',
-      title: 'Location numbering',
+      title: 'numberingLayer',
       visible: false,
       zIndex: 30,
     }),

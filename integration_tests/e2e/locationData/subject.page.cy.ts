@@ -1,4 +1,3 @@
-import BaseLayer from 'ol/layer/Base'
 import VectorLayer from 'ol/layer/Vector'
 import SubjectPage from '../../pages/locationData/subject'
 import Page from '../../pages/page'
@@ -14,6 +13,11 @@ context('Location Data', () => {
       cy.task('reset')
       cy.task('stubSignIn')
       cy.signIn()
+
+      cy.stubMapVectorStyle()
+      cy.stubVectorTiles()
+      cy.stubMapToken()
+      cy.stubMapTiles()
     })
 
     it('should display a map showing the subjects locations', () => {
@@ -204,30 +208,11 @@ context('Location Data', () => {
 
     it('should display the map with the correct layers and features', () => {
       page.map.mapInstance.then(map => {
-        const confidenceLayer = map
-          .getLayers()
-          .getArray()
-          .find((l: BaseLayer) => l.get('title') === 'confidenceLayer')
-        const tracksLayerGroup = map
-          .getLayers()
-          .getArray()
-          .find((l: BaseLayer) => l.get('title') === 'tracksLayer')
-        const arrowsLayer = tracksLayerGroup
-          .get('layers')
-          .getArray()
-          .find((l: BaseLayer) => l.get('title') === 'arrowsLayer')
-        const linesLayer = tracksLayerGroup
-          .get('layers')
-          .getArray()
-          .find((l: BaseLayer) => l.get('title') === 'linesLayer')
-        const pointsLayer = map
-          .getLayers()
-          .getArray()
-          .find((l: BaseLayer) => l.get('title') === 'pointsLayer') as VectorLayer
-        const numberingLayer = map
-          .getLayers()
-          .getArray()
-          .find((l: BaseLayer) => l.get('title') === 'numberingLayer')
+        const confidenceLayer = page.map.findLayerByTitle(map, 'confidenceLayer')
+        const arrowsLayer = page.map.findLayerByTitle(map, 'arrowsLayer')
+        const linesLayer = page.map.findLayerByTitle(map, 'linesLayer')
+        const pointsLayer = page.map.findLayerByTitle(map, 'pointsLayer') as VectorLayer
+        const numberingLayer = page.map.findLayerByTitle(map, 'numberingLayer')
 
         page.map.shouldHaveMapLayer(confidenceLayer, 'Confidence')
         page.map.shouldHaveMapLayer(arrowsLayer, 'Arrows')
@@ -239,17 +224,14 @@ context('Location Data', () => {
       })
     })
 
-    it('should show the overlay when a pop-location feature is clicked', () => {
+    it('should show the overlay when an mdss-location feature is clicked', () => {
       page.map.mapComponent.should('have.attr', 'uses-internal-overlays')
 
       page.map.mapInstance.then(map => {
-        const pointsLayer = map
-          .getLayers()
-          .getArray()
-          .find((l: BaseLayer) => l.get('title') === 'pointsLayer') as VectorLayer
+        const pointsLayer = page.map.findLayerByTitle(map, 'pointsLayer') as VectorLayer
 
         const feature = pointsLayer.getSource().getFeatures()[0]
-        expect(feature.get('type')).to.equal('pop-location')
+        expect(feature.get('type')).to.equal('mdss-location')
 
         const coordinate = feature.getGeometry().getCoordinates()
 
@@ -285,10 +267,7 @@ context('Location Data', () => {
 
     it('should hide the overlay when map is clicked outside a feature', () => {
       page.map.mapInstance.then(map => {
-        const pointsLayer = map
-          .getLayers()
-          .getArray()
-          .find((l: BaseLayer) => l.get('title') === 'pointsLayer') as VectorLayer
+        const pointsLayer = page.map.findLayerByTitle(map, 'pointsLayer') as VectorLayer
 
         const feature = pointsLayer.getSource().getFeatures()[0]
         const coordinate = feature.getGeometry().getCoordinates()
@@ -306,10 +285,7 @@ context('Location Data', () => {
 
     it('should hide the overlay when the close button is clicked', () => {
       page.map.mapInstance.then(map => {
-        const pointsLayer = map
-          .getLayers()
-          .getArray()
-          .find((l: BaseLayer) => l.get('title') === 'pointsLayer') as VectorLayer
+        const pointsLayer = page.map.findLayerByTitle(map, 'pointsLayer') as VectorLayer
 
         const feature = pointsLayer.getSource().getFeatures()[0]
         const coordinate = feature.getGeometry().getCoordinates()
@@ -327,10 +303,7 @@ context('Location Data', () => {
 
     it('should hide overlay when location toggle is turned off and stay hidden when turned back on', () => {
       page.map.mapInstance.then(map => {
-        const pointsLayer = map
-          .getLayers()
-          .getArray()
-          .find((l: BaseLayer) => l.get('title') === 'pointsLayer') as VectorLayer
+        const pointsLayer = page.map.findLayerByTitle(map, 'pointsLayer') as VectorLayer
 
         const feature = pointsLayer.getSource().getFeatures()[0]
         const coordinate = feature.getGeometry().getCoordinates()

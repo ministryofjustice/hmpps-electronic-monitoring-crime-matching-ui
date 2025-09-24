@@ -104,6 +104,7 @@ export default {
     },
   },
   maps: {
+    apiKey: get('OS_MAPS_API_KEY', ''),
     tileUrl: get('OS_MAPS_TILE_URL', ''),
     vectorUrl: get('OS_MAPS_VECTOR_URL', ''),
   },

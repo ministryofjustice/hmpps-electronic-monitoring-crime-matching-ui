@@ -27,12 +27,13 @@ export default class MapComponent {
 
   get mapInstance(): Cypress.Chainable<Map> {
     return cy.get('moj-map').then($el => {
-      const el = $el[0] as HTMLElement & { map?: Map }
+      const el = $el[0] as HTMLElement & { olMapInstance?: Map }
 
       return new Cypress.Promise<Map>(resolve => {
         const handler = () => {
-          if (el.map) {
-            resolve(el.map)
+          if (el.olMapInstance) {
+            // app:map:layers:ready may have fired before we added the event listener
+            resolve(el.olMapInstance)
           } else {
             el.addEventListener(
               'map:render:complete',
@@ -97,5 +98,23 @@ export default class MapComponent {
         canvas.dispatchEvent(event)
       })
     })
+  }
+
+  // Recursively searches through all OL layers/groups and sub-layers to find a layer with the given title
+  findLayerByTitle(map: Map, title: string): BaseLayer | undefined {
+    const walkLayers = (layer: BaseLayer): BaseLayer | undefined => {
+      if (layer.get('title') === title) return layer
+
+      const children =
+        (layer as unknown as { getLayers?: () => { getArray?: () => BaseLayer[] } }).getLayers?.().getArray?.() ?? []
+
+      for (const child of children) {
+        const matchedResult = walkLayers(child)
+        if (matchedResult) return matchedResult
+      }
+      return undefined
+    }
+
+    return walkLayers(map.getLayerGroup())
   }
 }

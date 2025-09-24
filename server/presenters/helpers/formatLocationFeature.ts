@@ -11,7 +11,7 @@ export default function formatLocationData(geoJson: FeatureCollection): FeatureC
         properties: {
           ...feature.properties,
           // Overlay template
-          overlayTemplateId: 'overlay-template-pop-location',
+          overlayTemplateId: 'overlay-template-mdss-location',
 
           // Display values
           displaySpeed: formatDisplayValue(feature.properties?.speed, ' km/h', 'N/A'),

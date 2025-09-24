@@ -13,6 +13,10 @@ generic-service:
     TOKEN_VERIFICATION_API_URL: "https://token-verification-api-dev.prison.service.justice.gov.uk"
     ENVIRONMENT_NAME: DEV
     AUDIT_ENABLED: "false"
+    OS_MAPS_AUTH_URL: "https://api.os.uk/oauth2/token/v1"
+    OS_MAPS_TILE_URL: "https://api.os.uk/maps/raster/v1/zxy/Road_3857/{z}/{x}/{y}"
+    OS_MAPS_VECTOR_URL: "https://api.os.uk/maps/vector/v1/vts/resources/styles?srs=3857&key=YxPpAhGij30IB7zdUPDOyQZLnveQJ908"
+    OS_MAPS_API_KEY: "YxPpAhGij30IB7zdUPDOyQZLnveQJ908"
     EM_CRIME_MATCHING_API_URL: "http://hmpps-electronic-monitoring-crime-matching-api-stubs/crime-matching"
 
 generic-prometheus-alerts:
