@@ -57,7 +57,11 @@ generic-service:
     # This secret will need to be created in your namespace (note it isn't in hmpps-templates-dev)
     # IRSA configuration in your namespace will also be required, and then uncomment serviceAccountName above.
     # sqs-hmpps-audit-secret:
-    #   AUDIT_SQS_QUEUE_URL: 'sqs_queue_url'
+    #   AUDIT_SQS_QUEUE_URL: 'sqs_queue_url'    
+    hmpps-electronic-monitoring-crime-matching-os-maps:
+      OS_MAPS_VECTOR_URL: 'OS_MAPS_VECTOR_URL'
+      OS_MAPS_API_KEY: 'OS_MAPS_API_KEY'
+      OS_MAPS_API_SECRET: 'OS_MAPS_API_SECRET'
 
   allowlist:
     groups:
