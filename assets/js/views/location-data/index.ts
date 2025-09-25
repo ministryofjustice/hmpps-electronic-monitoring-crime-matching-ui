@@ -17,7 +17,6 @@ const initialiseLocationDataView = async () => {
 
   if (!geoJson) return
 
-  let locationSource = null
   const locationsLayer = mojMap.addLayer(
     new LocationsLayer({
       title: 'pointsLayer',
@@ -64,11 +63,10 @@ const initialiseLocationDataView = async () => {
     }),
   )
 
-  if (locationsLayer) locationSource = locationsLayer.getSource()
+  const locationSource = locationsLayer?.getSource()
 
   if (locationSource) {
     const extent = locationSource.getExtent()
-
     if (isEmpty(extent) === false) {
       map.getView().fit(extent, {
         maxZoom: 16,

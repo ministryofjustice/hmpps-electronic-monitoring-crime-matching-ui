@@ -77,9 +77,7 @@ export default class SubjectController {
         toDate,
       )
 
-      let geoJsonData = mdssPositionsToGeoJson(positions)
-      geoJsonData = formatLocationData(geoJsonData)
-
+      const geoJsonData = formatLocationData(mdssPositionsToGeoJson(positions))
       const alerts: Array<MojAlert> = []
 
       if (positions.length === 0) {

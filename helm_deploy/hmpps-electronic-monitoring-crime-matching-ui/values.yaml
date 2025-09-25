@@ -33,6 +33,9 @@ generic-service:
     TOKEN_VERIFICATION_ENABLED: 'true'
     AUDIT_SQS_REGION: 'eu-west-2'
     AUDIT_SERVICE_NAME: 'HMPPS549' # Your audit service name
+    OS_MAPS_AUTH_URL: "https://api.os.uk/oauth2/token/v1"
+    OS_MAPS_TILE_URL: "https://api.os.uk/maps/raster/v1/zxy/Road_3857/{z}/{x}/{y}"
+    OS_MAPS_VECTOR_URL: "https://api.os.uk/maps/vector/v1/vts/resources/styles?srs=3857"
 
   # Pre-existing kubernetes secrets to load as environment variables in the deployment.
   # namespace_secrets:
@@ -59,7 +62,6 @@ generic-service:
     # sqs-hmpps-audit-secret:
     #   AUDIT_SQS_QUEUE_URL: 'sqs_queue_url'    
     hmpps-electronic-monitoring-crime-matching-os-maps:
-      OS_MAPS_VECTOR_URL: 'OS_MAPS_VECTOR_URL'
       OS_MAPS_API_KEY: 'OS_MAPS_API_KEY'
       OS_MAPS_API_SECRET: 'OS_MAPS_API_SECRET'
 
