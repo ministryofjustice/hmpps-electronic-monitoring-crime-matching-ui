@@ -1,9 +1,6 @@
 import { MojMap } from 'hmpps-open-layers-map'
+import { LocationsLayer, TracksLayer, CirclesLayer, NumberingLayer } from 'hmpps-open-layers-map/layers'
 import { isEmpty } from 'ol/extent'
-import LocationsLayer from './layers/locations'
-import TracksLayer from './layers/tracks'
-import ConfidenceLayer from './layers/confidence'
-import NumberingLayer from './layers/numbering'
 import createLayerVisibilityToggle from './controls/layerVisibilityToggle'
 import { queryElement } from '../../utils/utils'
 import initialiseDateFilterForm from '../../forms/date-filter-form'
@@ -15,19 +12,48 @@ const initialiseLocationDataView = async () => {
     mojMap.addEventListener('map:ready', () => resolve(), { once: true })
   })
 
-  const { points } = mojMap
-  const { lines } = mojMap
+  const map = mojMap.olMapInstance!
+  const geoJson = mojMap.geojson
 
-  const locationsLayer = new LocationsLayer(points)
-  const locationSource = locationsLayer.getSource()
-  const tracksLayer = new TracksLayer(lines)
-  const confidenceLayer = new ConfidenceLayer(points)
-  const locationNumberingLayer = new NumberingLayer(points)
+  if (!geoJson) return
 
-  mojMap.map.addLayer(locationsLayer)
-  mojMap.map.addLayer(tracksLayer)
-  mojMap.map.addLayer(confidenceLayer)
-  mojMap.map.addLayer(locationNumberingLayer)
+  const locationsLayer = mojMap.addLayer(
+    new LocationsLayer({
+      title: 'pointsLayer',
+      geoJson,
+    }),
+  )!
+
+  const tracksLayer = mojMap.addLayer(
+    new TracksLayer({
+      title: 'tracksLayer',
+      geoJson,
+      visible: false,
+      lines: { title: 'linesLayer' },
+      arrows: { enabled: true, title: 'arrowsLayer' },
+    }),
+  )!
+
+  const confidenceLayer = mojMap.addLayer(
+    new CirclesLayer({
+      geoJson,
+      id: 'confidence',
+      title: 'confidenceLayer',
+      radiusProperty: 'confidence',
+      visible: false,
+      zIndex: 20,
+    }),
+  )
+
+  const numbersLayer = mojMap.addLayer(
+    new NumberingLayer({
+      geoJson,
+      numberProperty: 'sequenceNumber',
+      title: 'numberingLayer',
+      visible: false,
+      zIndex: 30,
+    }),
+  )
 
   mojMap.dispatchEvent(
     new CustomEvent('app:map:layers:ready', {
@@ -37,23 +63,24 @@ const initialiseLocationDataView = async () => {
     }),
   )
 
+  const locationSource = locationsLayer?.getSource()
+
   if (locationSource) {
     const extent = locationSource.getExtent()
-
     if (isEmpty(extent) === false) {
-      mojMap.map.getView().fit(extent, {
+      map.getView().fit(extent, {
         maxZoom: 16,
         padding: [30, 30, 30, 30],
-        size: mojMap.map.getSize(),
+        size: map.getSize(),
       })
     }
   }
 
   // Add controls
-  createLayerVisibilityToggle('#locations', locationsLayer, mojMap)
-  createLayerVisibilityToggle('#tracks', tracksLayer)
-  createLayerVisibilityToggle('#confidence', confidenceLayer)
-  createLayerVisibilityToggle('#numbering', locationNumberingLayer)
+  if (locationsLayer) createLayerVisibilityToggle('#locations', locationsLayer, mojMap)
+  if (tracksLayer) createLayerVisibilityToggle('#tracks', tracksLayer, mojMap)
+  if (confidenceLayer) createLayerVisibilityToggle('#confidence', confidenceLayer)
+  if (numbersLayer) createLayerVisibilityToggle('#numbering', numbersLayer)
 
   initialiseDateFilterForm()
 }

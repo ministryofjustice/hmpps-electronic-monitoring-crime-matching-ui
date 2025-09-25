@@ -1,10 +1,11 @@
 import { RequestHandler } from 'express'
+import { mdssPositionsToGeoJson } from 'hmpps-open-layers-map/converters'
 import {
   downloadLocationsQueryParameterSchema,
   searchLocationsFormDataSchema,
   viewLocationsQueryParametersSchema,
 } from '../../schemas/locationData/subject'
-import createGeoJsonData from '../../presenters/crimeMapping'
+import formatLocationData from '../../presenters/helpers/formatLocationFeature'
 import config from '../../config'
 import { createMojAlertWarning } from '../../utils/alerts'
 import { MojAlert } from '../../types/govUk/mojAlert'
@@ -75,7 +76,8 @@ export default class SubjectController {
         fromDate,
         toDate,
       )
-      const geoJsonData = createGeoJsonData(positions)
+
+      const geoJsonData = formatLocationData(mdssPositionsToGeoJson(positions))
       const alerts: Array<MojAlert> = []
 
       if (positions.length === 0) {
@@ -90,8 +92,8 @@ export default class SubjectController {
           url: `/location-data/device-activations/${deviceActivation?.deviceActivationId}/download`,
         },
         origin: req.originalUrl,
-        points: geoJsonData.points,
-        lines: geoJsonData.lines,
+        apiKey: config.maps.apiKey,
+        geoJson: geoJsonData,
         tileUrl: config.maps.tileUrl,
         vectorUrl: config.maps.vectorUrl,
         alerts,
@@ -107,8 +109,8 @@ export default class SubjectController {
           enabled: false,
         },
         origin: req.originalUrl,
-        points: JSON.stringify([]),
-        lines: JSON.stringify([]),
+        apiKey: config.maps.apiKey,
+        geoJson: JSON.stringify({}),
         tileUrl: config.maps.tileUrl,
         alerts: [],
         formData: {

@@ -15,7 +15,7 @@ params:
     type: string
     required: false
     description: A Content Security Policy nonce to include in inline styles
-  - name: geoData
+  - name: geoJson
     type: object
     required: false
     description: GeoJSON data to load onto the map component

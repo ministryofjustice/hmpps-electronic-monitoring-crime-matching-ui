@@ -380,8 +380,12 @@ describe('SubjectController', () => {
             variant: 'warning',
           },
         ],
-        points: [],
-        lines: [],
+        apiKey: '',
+        geoJson: {
+          type: 'FeatureCollection',
+          features: [],
+          origin: undefined,
+        },
         tileUrl: '',
         vectorUrl: '',
         formData: {
@@ -486,67 +490,81 @@ describe('SubjectController', () => {
       )
       expect(res.render).toHaveBeenCalledWith('pages/locationData/subject', {
         alerts: [],
-        points: [
-          {
-            type: 'Feature',
-            id: '0',
-            properties: {
-              '@id': '0',
-              confidence: 10,
-              type: 'pop-location',
-              sequenceNumber: 1,
-
-              overlayTemplateId: 'overlay-template-pop-location',
-              displaySpeed: '5 km/h',
-              displayDirection: '180°',
-              displayGeolocationMechanism: '1',
-              displayTimestamp: '2025-01-01T00:00:00Z',
-              displayConfidence: '10m',
-              displayLatitude: '123.123',
-              displayLongitude: '123.123',
+        apiKey: '',
+        geoJson: {
+          type: 'FeatureCollection',
+          origin: undefined,
+          features: [
+            {
+              type: 'Feature',
+              id: '1',
+              properties: {
+                '@id': '1',
+                confidence: 10,
+                sequenceNumber: 1,
+                overlayTemplateId: 'overlay-template-mdss-location',
+                displaySpeed: '5 km/h',
+                displayDirection: '180°',
+                displayGeolocationMechanism: '1',
+                displayTimestamp: '2025-01-01T00:00:00Z',
+                displayConfidence: '10m',
+                displayLatitude: '123.123',
+                displayLongitude: '123.123',
+                type: 'mdss-location',
+                speed: 5,
+                direction: 3.14159,
+                geolocationMechanism: 1,
+                timestamp: '2025-01-01T00:00:00Z',
+              },
+              geometry: {
+                type: 'Point',
+                coordinates: [123.123, 123.123],
+              },
             },
-            geometry: {
-              type: 'Point',
-              coordinates: [123.123, 123.123],
+            {
+              type: 'Feature',
+              id: '2',
+              properties: {
+                '@id': '2',
+                confidence: 20,
+                sequenceNumber: 2,
+                overlayTemplateId: 'overlay-template-mdss-location',
+                displaySpeed: '7 km/h',
+                displayDirection: '210°',
+                displayGeolocationMechanism: '1',
+                displayTimestamp: '2025-01-01T00:01:00Z',
+                displayConfidence: '20m',
+                displayLatitude: '456.123',
+                displayLongitude: '456.123',
+                type: 'mdss-location',
+                speed: 7,
+                direction: 3.66519,
+                geolocationMechanism: 1,
+                timestamp: '2025-01-01T00:01:00Z',
+              },
+              geometry: {
+                type: 'Point',
+                coordinates: [456.123, 456.123],
+              },
             },
-          },
-          {
-            type: 'Feature',
-            id: '1',
-            properties: {
-              '@id': '1',
-              confidence: 20,
-              type: 'pop-location',
-              sequenceNumber: 2,
-              overlayTemplateId: 'overlay-template-pop-location',
-              displaySpeed: '7 km/h',
-              displayDirection: '210°',
-              displayGeolocationMechanism: '1',
-              displayTimestamp: '2025-01-01T00:01:00Z',
-              displayConfidence: '20m',
-              displayLatitude: '456.123',
-              displayLongitude: '456.123',
+            {
+              type: 'Feature',
+              id: '1-2',
+              properties: {
+                '@id': '1-2',
+                type: 'mdss-line',
+                direction: 3.14159,
+              },
+              geometry: {
+                type: 'LineString',
+                coordinates: [
+                  [123.123, 123.123],
+                  [456.123, 456.123],
+                ],
+              },
             },
-            geometry: {
-              type: 'Point',
-              coordinates: [456.123, 456.123],
-            },
-          },
-        ],
-        lines: [
-          {
-            type: 'Feature',
-            id: '0',
-            properties: { '@id': '0', direction: 3.14159 },
-            geometry: {
-              type: 'LineString',
-              coordinates: [
-                [123.123, 123.123],
-                [456.123, 456.123],
-              ],
-            },
-          },
-        ],
+          ],
+        },
         tileUrl: '',
         vectorUrl: '',
         formData: {
@@ -556,7 +574,6 @@ describe('SubjectController', () => {
             minute: '00',
             second: '00',
           },
-
           toDate: {
             date: '02/01/2025',
             hour: '00',

@@ -133,11 +133,9 @@
 {% block content %}
   {{
     appMap({
+      apiKey: apiKey,
       cspNonce: cspNonce,
-      geoData: {
-        points: points,
-        lines: lines
-      },
+      geoJson: geoJson,
       tileUrl: tileUrl,
       vectorUrl: vectorUrl,
       alerts: alerts,
@@ -150,7 +148,7 @@
       They are used as markers and replaced within assets/js files at runtime.
       Implemented this way to avoid large Template Literals in the JavaScript file. #}
   {% raw %}
-    <template id="overlay-template-pop-location">
+    <template id="overlay-template-mdss-location">
       <div part="app-map__overlay-row">
         <strong part="app-map__overlay-strong">Speed: </strong><span>{{ displaySpeed }}</span>
       </div>
