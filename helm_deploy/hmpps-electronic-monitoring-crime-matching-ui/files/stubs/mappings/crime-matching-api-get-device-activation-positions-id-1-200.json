@@ -1,7 +1,7 @@
 {
   "request": {
     "method": "GET",
-    "urlPattern": "/crime-matching/device-activations/1/positions\\?from=\\S+&to=\\S+"
+    "urlPattern": "/crime-matching/device-activations/1/positions\\?from=\\S+&to=\\S+&geolocationMechanism=GPS"
   },
   "response": {
     "status": 200,

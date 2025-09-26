@@ -19,7 +19,7 @@ context('Location Data', () => {
       cy.stubGetDeviceActivationPositions({
         status: 200,
         deviceActivationId,
-        query: 'from=\\S+&to=\\S+',
+        query: 'from=\\S+&to=\\S+&geolocationMechanism=GPS',
         response: sampleLocations,
       })
 
@@ -66,7 +66,7 @@ context('Location Data', () => {
       cy.stubGetDeviceActivationPositions({
         status: 200,
         deviceActivationId,
-        query: 'from=\\S+&to=\\S+',
+        query: 'from=\\S+&to=\\S+&geolocationMechanism=GPS',
         response: sampleLocations,
       })
 
@@ -118,7 +118,7 @@ context('Location Data', () => {
       cy.stubGetDeviceActivationPositions({
         status: 200,
         deviceActivationId,
-        query: 'from=\\S+&to=\\S+',
+        query: 'from=\\S+&to=\\S+&geolocationMechanism=GPS',
         response: sampleLocations,
       })
 
@@ -170,7 +170,7 @@ context('Location Data', () => {
       cy.stubGetDeviceActivationPositions({
         status: 200,
         deviceActivationId,
-        query: 'from=\\S+&to=\\S+',
+        query: 'from=\\S+&to=\\S+&geolocationMechanism=GPS',
         response: sampleLocations,
       })
 
@@ -239,7 +239,7 @@ context('Location Data', () => {
       cy.stubGetDeviceActivationPositions({
         status: 200,
         deviceActivationId,
-        query: 'from=\\S+&to=\\S+',
+        query: 'from=\\S+&to=\\S+&geolocationMechanism=GPS',
         response: sampleLocations,
       })
 
@@ -306,7 +306,7 @@ context('Location Data', () => {
       cy.stubGetDeviceActivationPositions({
         status: 200,
         deviceActivationId,
-        query: 'from=\\S+&to=\\S+',
+        query: 'from=\\S+&to=\\S+&geolocationMechanism=GPS',
         response: sampleLocations,
       })
 

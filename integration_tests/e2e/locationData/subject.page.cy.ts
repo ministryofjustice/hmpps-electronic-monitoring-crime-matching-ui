@@ -4,7 +4,7 @@ import Page from '../../pages/page'
 import sampleLocations from './fixtures/sample-locations'
 
 const deviceActivationId = '1'
-const query = 'from=2025-01-01T01:20:03.000Z&to=2025-01-02T02:04:50.000Z'
+const query = 'from=2025-01-01T01:20:03.000Z&to=2025-01-02T02:04:50.000Z&geolocationMechanism=GPS'
 const url = `/location-data/device-activations/${deviceActivationId}?${query}`
 
 context('Location Data', () => {
@@ -93,7 +93,7 @@ context('Location Data', () => {
       cy.stubGetDeviceActivationPositions({
         status: 200,
         deviceActivationId,
-        query: 'from=\\S+&to=\\S+',
+        query: 'from=\\S+&to=\\S+&geolocationMechanism=GPS',
         response: sampleLocations,
       })
 
