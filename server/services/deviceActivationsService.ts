@@ -1,4 +1,4 @@
-import { asUser, RestClient } from '@ministryofjustice/hmpps-rest-client'
+import { asSystem, RestClient } from '@ministryofjustice/hmpps-rest-client'
 import { Dayjs } from 'dayjs'
 import Position from '../types/entities/position'
 import { getDeviceActivationDtoSchema, getDeviceActivationPositionsDtoSchema } from '../schemas/dtos/deviceActivation'
@@ -8,19 +8,19 @@ import { SortDirection, sortPositionsByTimestamp } from '../utils/sort'
 class DeviceActivationsService {
   constructor(private readonly crimeMatchingApiClient: RestClient) {}
 
-  async getDeviceActivation(token: string, deviceActivationId: string): Promise<DeviceActivation> {
+  async getDeviceActivation(username: string, deviceActivationId: string): Promise<DeviceActivation> {
     const response = await this.crimeMatchingApiClient.get(
       {
         path: `/device-activations/${deviceActivationId}`,
       },
-      asUser(token),
+      asSystem(username),
     )
 
     return getDeviceActivationDtoSchema.parse(response).data
   }
 
   async getDeviceActivationPositions(
-    token: string,
+    username: string,
     deviceActivation: DeviceActivation,
     fromDate: Dayjs,
     toDate: Dayjs,
@@ -33,7 +33,7 @@ class DeviceActivationsService {
           to: toDate.toISOString(),
         },
       },
-      asUser(token),
+      asSystem(username),
     )
 
     return getDeviceActivationPositionsDtoSchema
