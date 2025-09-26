@@ -1,11 +1,11 @@
-import { RestClient } from '@ministryofjustice/hmpps-rest-client'
 import createMockRequest from '../testutils/createMockRequest'
 import createMockResponse from '../testutils/createMockResponse'
 import DeviceActivationsService from '../services/deviceActivationsService'
 import populateDeviceActivation from './populateDeviceActivation'
 import logger from '../../logger'
+import CrimeMatchingClient from '../data/crimeMatchingClient'
 
-jest.mock('@ministryofjustice/hmpps-rest-client')
+jest.mock('../data/crimeMatchingClient')
 jest.mock('../../logger')
 
 const notFoundResponse = {
@@ -29,20 +29,12 @@ const successResponse = {
 }
 
 describe('populateDeviceActivation', () => {
-  let restClient: jest.Mocked<RestClient>
+  let restClient: jest.Mocked<CrimeMatchingClient>
 
   beforeEach(() => {
     jest.resetAllMocks()
 
-    restClient = new RestClient(
-      'crimeMatchingApi',
-      {
-        url: '',
-        timeout: { response: 0, deadline: 0 },
-        agent: { timeout: 0 },
-      },
-      logger,
-    ) as jest.Mocked<RestClient>
+    restClient = new CrimeMatchingClient(logger) as jest.Mocked<CrimeMatchingClient>
   })
 
   it('should throw an error when the device activation was not found', async () => {
@@ -53,7 +45,7 @@ describe('populateDeviceActivation', () => {
     const service = new DeviceActivationsService(restClient)
 
     // Stub a 404 response from the API
-    restClient.get.mockRejectedValue({
+    restClient.getDeviceActivation.mockRejectedValue({
       message: 'Not Found',
       name: 'Not Found',
       stack: '',
@@ -77,7 +69,7 @@ describe('populateDeviceActivation', () => {
     const service = new DeviceActivationsService(restClient)
 
     // Stub a 200 response from the API
-    restClient.get.mockResolvedValue(successResponse)
+    restClient.getDeviceActivation.mockResolvedValue(successResponse)
 
     // When
     await populateDeviceActivation(service)(req, res, next, '123456789', 'deviceActivationId')

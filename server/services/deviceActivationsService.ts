@@ -1,39 +1,32 @@
-import { asUser, RestClient } from '@ministryofjustice/hmpps-rest-client'
+import { asSystem } from '@ministryofjustice/hmpps-rest-client'
 import { Dayjs } from 'dayjs'
 import Position from '../types/entities/position'
 import { getDeviceActivationDtoSchema, getDeviceActivationPositionsDtoSchema } from '../schemas/dtos/deviceActivation'
 import DeviceActivation from '../types/entities/deviceActivation'
 import { SortDirection, sortPositionsByTimestamp } from '../utils/sort'
+import CrimeMatchingClient from '../data/crimeMatchingClient'
 
 class DeviceActivationsService {
-  constructor(private readonly crimeMatchingApiClient: RestClient) {}
+  constructor(private readonly crimeMatchingApiClient: CrimeMatchingClient) {}
 
-  async getDeviceActivation(token: string, deviceActivationId: string): Promise<DeviceActivation> {
-    const response = await this.crimeMatchingApiClient.get(
-      {
-        path: `/device-activations/${deviceActivationId}`,
-      },
-      asUser(token),
-    )
+  async getDeviceActivation(username: string, deviceActivationId: string): Promise<DeviceActivation> {
+    const response = await this.crimeMatchingApiClient.getDeviceActivation(asSystem(username), deviceActivationId)
 
     return getDeviceActivationDtoSchema.parse(response).data
   }
 
   async getDeviceActivationPositions(
-    token: string,
+    username: string,
     deviceActivation: DeviceActivation,
     fromDate: Dayjs,
     toDate: Dayjs,
   ): Promise<Array<Position>> {
-    const response = await this.crimeMatchingApiClient.get(
-      {
-        path: `/device-activations/${deviceActivation.deviceActivationId}/positions`,
-        query: {
-          from: fromDate.toISOString(),
-          to: toDate.toISOString(),
-        },
-      },
-      asUser(token),
+    const response = await this.crimeMatchingApiClient.getDeviceActivationPositions(
+      asSystem(username),
+      deviceActivation.deviceActivationId,
+      fromDate.toISOString(),
+      toDate.toISOString(),
+      'GPS',
     )
 
     return getDeviceActivationPositionsDtoSchema

@@ -8,13 +8,13 @@ export default class PersonsController {
 
   view: RequestHandler = async (req, res) => {
     const { query } = req
-    const { token } = res.locals.user
+    const { username } = res.locals.user
     const parsedQuery = personsQueryParametersSchema.parse(query)
 
     const { searchField, searchTerm } = parsedQuery
 
     if (searchField && searchTerm) {
-      const queryResults = await this.service.getPersons(token, searchField, searchTerm, parsedQuery.page)
+      const queryResults = await this.service.getPersons(username, searchField, searchTerm, parsedQuery.page)
       res.render('pages/locationData/index', {
         origin: req.originalUrl,
         persons: queryResults.data,

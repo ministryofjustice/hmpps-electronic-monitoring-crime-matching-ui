@@ -58,7 +58,7 @@ export default class SubjectController {
   }
 
   view: RequestHandler = async (req, res) => {
-    const { token } = res.locals.user
+    const { username } = res.locals.user
     const { query, deviceActivation } = req
     const { from, to } = viewLocationsQueryParametersSchema.parse(query)
     const fromDate = parseDateTimeFromISOString(from)
@@ -71,7 +71,7 @@ export default class SubjectController {
 
     if (validationResult.success) {
       const positions = await this.deviceActivationsService.getDeviceActivationPositions(
-        token,
+        username,
         deviceActivation!,
         fromDate,
         toDate,
@@ -127,7 +127,7 @@ export default class SubjectController {
   }
 
   download: RequestHandler = async (req, res, next) => {
-    const { token } = res.locals.user
+    const { username } = res.locals.user
     const { query, deviceActivation } = req
     const { from, to, reportType } = downloadLocationsQueryParameterSchema.parse(query)
     const fromDate = parseDateTimeFromISOString(from)
@@ -139,9 +139,9 @@ export default class SubjectController {
     )
 
     if (validationResult.success) {
-      const deviceWearerPromise = this.personsService.getPerson(token, deviceActivation!.personId)
+      const deviceWearerPromise = this.personsService.getPerson(username, deviceActivation!.personId)
       const positionsPromise = this.deviceActivationsService.getDeviceActivationPositions(
-        token,
+        username,
         deviceActivation!,
         fromDate,
         toDate,

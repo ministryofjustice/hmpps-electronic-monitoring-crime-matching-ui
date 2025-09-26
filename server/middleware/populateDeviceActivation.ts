@@ -6,8 +6,8 @@ const populateDeviceActivation =
   (deviceActivationsService: DeviceActivationsService): RequestParamHandler =>
   async (req: Request, res: Response, next: NextFunction, deviceActivationId: string) => {
     try {
-      const { token } = res.locals.user
-      const deviceActivation = await deviceActivationsService.getDeviceActivation(token, deviceActivationId)
+      const { username } = res.locals.user
+      const deviceActivation = await deviceActivationsService.getDeviceActivation(username, deviceActivationId)
 
       req.deviceActivation = deviceActivation
       next()

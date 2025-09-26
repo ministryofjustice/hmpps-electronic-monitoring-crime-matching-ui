@@ -1,4 +1,3 @@
-import { RestClient } from '@ministryofjustice/hmpps-rest-client'
 import { ZodError } from 'zod/v4'
 import logger from '../../../logger'
 import createMockPerson from '../../testutils/createMockPerson'
@@ -6,25 +5,18 @@ import createMockRequest from '../../testutils/createMockRequest'
 import createMockResponse from '../../testutils/createMockResponse'
 import PersonsService from '../../services/personsService'
 import PersonsController from './persons'
+import CrimeMatchingClient from '../../data/crimeMatchingClient'
 
-jest.mock('@ministryofjustice/hmpps-rest-client')
+jest.mock('../../data/crimeMatchingClient')
 jest.mock('../../../logger')
 
 const mockPerson = createMockPerson()
 
 describe('PersonsController', () => {
-  let mockRestClient: jest.Mocked<RestClient>
+  let mockRestClient: jest.Mocked<CrimeMatchingClient>
 
   beforeEach(() => {
-    mockRestClient = new RestClient(
-      'crimeMatchingApi',
-      {
-        url: '',
-        timeout: { response: 0, deadline: 0 },
-        agent: { timeout: 0 },
-      },
-      logger,
-    ) as jest.Mocked<RestClient>
+    mockRestClient = new CrimeMatchingClient(logger) as jest.Mocked<CrimeMatchingClient>
   })
 
   afterEach(() => {
@@ -45,7 +37,7 @@ describe('PersonsController', () => {
       const service = new PersonsService(mockRestClient)
       const controller = new PersonsController(service)
 
-      mockRestClient.get.mockResolvedValue({
+      mockRestClient.getPersonsBySearchTerm.mockResolvedValue({
         data: [mockPerson],
         pageCount: 1,
         pageNumber: 1,
@@ -56,16 +48,16 @@ describe('PersonsController', () => {
       await controller.view(req, res, next)
 
       // Then
-      expect(mockRestClient.get).toHaveBeenCalledWith(
+      expect(mockRestClient.getPersonsBySearchTerm).toHaveBeenCalledWith(
         {
-          path: '/persons',
-          query: {
-            name: 'foo',
-            includeDeviceActivations: true,
-            page: '1',
+          tokenType: 'SYSTEM_TOKEN',
+          user: {
+            username: 'fakeUserName',
           },
         },
-        undefined,
+        'name',
+        'foo',
+        '1',
       )
       expect(res.render).toHaveBeenCalledWith('pages/locationData/index', {
         formData: {},
@@ -90,7 +82,7 @@ describe('PersonsController', () => {
       const service = new PersonsService(mockRestClient)
       const controller = new PersonsController(service)
 
-      mockRestClient.get.mockResolvedValue({
+      mockRestClient.getPersonsBySearchTerm.mockResolvedValue({
         data: [mockPerson],
         pageCount: 1,
         pageNumber: 1,
@@ -101,16 +93,16 @@ describe('PersonsController', () => {
       await controller.view(req, res, next)
 
       // Then
-      expect(mockRestClient.get).toHaveBeenCalledWith(
+      expect(mockRestClient.getPersonsBySearchTerm).toHaveBeenCalledWith(
         {
-          path: '/persons',
-          query: {
-            nomisId: 'foo',
-            includeDeviceActivations: true,
-            page: '1',
+          tokenType: 'SYSTEM_TOKEN',
+          user: {
+            username: 'fakeUserName',
           },
         },
-        undefined,
+        'nomisId',
+        'foo',
+        '1',
       )
       expect(res.render).toHaveBeenCalledWith('pages/locationData/index', {
         formData: {},
@@ -135,7 +127,7 @@ describe('PersonsController', () => {
       const service = new PersonsService(mockRestClient)
       const controller = new PersonsController(service)
 
-      mockRestClient.get.mockResolvedValue({
+      mockRestClient.getPersonsBySearchTerm.mockResolvedValue({
         data: [mockPerson],
         pageCount: 1,
         pageNumber: 1,
@@ -146,16 +138,16 @@ describe('PersonsController', () => {
       await controller.view(req, res, next)
 
       // Then
-      expect(mockRestClient.get).toHaveBeenCalledWith(
+      expect(mockRestClient.getPersonsBySearchTerm).toHaveBeenCalledWith(
         {
-          path: '/persons',
-          query: {
-            deviceId: 'foo',
-            includeDeviceActivations: true,
-            page: '1',
+          tokenType: 'SYSTEM_TOKEN',
+          user: {
+            username: 'fakeUserName',
           },
         },
-        undefined,
+        'deviceId',
+        'foo',
+        '1',
       )
       expect(res.render).toHaveBeenCalledWith('pages/locationData/index', {
         formData: {},
@@ -179,7 +171,7 @@ describe('PersonsController', () => {
       await controller.view(req, res, next)
 
       // Then
-      expect(mockRestClient.get).not.toHaveBeenCalled()
+      expect(mockRestClient.getPersonsBySearchTerm).not.toHaveBeenCalled()
       expect(res.render).toHaveBeenCalledWith('pages/locationData/index', {
         formData: {},
         searchField: undefined,
@@ -202,7 +194,7 @@ describe('PersonsController', () => {
       const service = new PersonsService(mockRestClient)
       const controller = new PersonsController(service)
 
-      mockRestClient.get.mockResolvedValue({
+      mockRestClient.getPersonsBySearchTerm.mockResolvedValue({
         data: [],
         pageCount: 1,
         pageNumber: 1,
@@ -213,16 +205,16 @@ describe('PersonsController', () => {
       await controller.view(req, res, next)
 
       // Then
-      expect(mockRestClient.get).toHaveBeenCalledWith(
+      expect(mockRestClient.getPersonsBySearchTerm).toHaveBeenCalledWith(
         {
-          path: '/persons',
-          query: {
-            name: 'foo',
-            includeDeviceActivations: true,
-            page: '1',
+          tokenType: 'SYSTEM_TOKEN',
+          user: {
+            username: 'fakeUserName',
           },
         },
-        undefined,
+        'name',
+        'foo',
+        '1',
       )
       expect(res.render).toHaveBeenCalledWith('pages/locationData/index', {
         formData: {},
@@ -248,7 +240,7 @@ describe('PersonsController', () => {
       const service = new PersonsService(mockRestClient)
       const controller = new PersonsController(service)
 
-      mockRestClient.get.mockResolvedValue({
+      mockRestClient.getPersonsBySearchTerm.mockResolvedValue({
         data: [mockPerson],
         pageCount: 2,
         pageNumber: 2,
@@ -259,16 +251,16 @@ describe('PersonsController', () => {
       await controller.view(req, res, next)
 
       // Then
-      expect(mockRestClient.get).toHaveBeenCalledWith(
+      expect(mockRestClient.getPersonsBySearchTerm).toHaveBeenCalledWith(
         {
-          path: '/persons',
-          query: {
-            name: 'foo',
-            includeDeviceActivations: true,
-            page: '2',
+          tokenType: 'SYSTEM_TOKEN',
+          user: {
+            username: 'fakeUserName',
           },
         },
-        undefined,
+        'name',
+        'foo',
+        '2',
       )
       expect(res.render).toHaveBeenCalledWith('pages/locationData/index', {
         formData: {},
@@ -376,7 +368,6 @@ describe('PersonsController', () => {
       await controller.search(req, res, next)
 
       // Then
-      expect(mockRestClient.post).not.toHaveBeenCalled()
       expect(res.redirect).toHaveBeenCalledWith('/location-data/persons')
       expect(req.session.validationErrors).toEqual([
         {

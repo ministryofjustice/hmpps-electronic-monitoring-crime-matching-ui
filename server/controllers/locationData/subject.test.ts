@@ -4,7 +4,6 @@ import timezone from 'dayjs/plugin/timezone'
 import customParseFormat from 'dayjs/plugin/customParseFormat'
 import isSameOrAfter from 'dayjs/plugin/isSameOrAfter'
 import isSameOrBefore from 'dayjs/plugin/isSameOrBefore'
-import { RestClient } from '@ministryofjustice/hmpps-rest-client'
 import logger from '../../../logger'
 import createMockRequest from '../../testutils/createMockRequest'
 import createMockResponse from '../../testutils/createMockResponse'
@@ -12,6 +11,7 @@ import SubjectController from './subject'
 import DeviceActivationsService from '../../services/deviceActivationsService'
 import ValidationService from '../../services/locationData/validationService'
 import PersonsService from '../../services/personsService'
+import CrimeMatchingClient from '../../data/crimeMatchingClient'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
@@ -19,22 +19,14 @@ dayjs.extend(customParseFormat)
 dayjs.extend(isSameOrAfter)
 dayjs.extend(isSameOrBefore)
 
-jest.mock('@ministryofjustice/hmpps-rest-client')
+jest.mock('../../data/crimeMatchingClient')
 jest.mock('../../../logger')
 
 describe('SubjectController', () => {
-  let mockRestClient: jest.Mocked<RestClient>
+  let mockRestClient: jest.Mocked<CrimeMatchingClient>
 
   beforeEach(() => {
-    mockRestClient = new RestClient(
-      'crimeMatchingApi',
-      {
-        url: '',
-        timeout: { response: 0, deadline: 0 },
-        agent: { timeout: 0 },
-      },
-      logger,
-    ) as jest.Mocked<RestClient>
+    mockRestClient = new CrimeMatchingClient(logger) as jest.Mocked<CrimeMatchingClient>
   })
 
   describe('search', () => {
@@ -352,7 +344,7 @@ describe('SubjectController', () => {
       const controller = new SubjectController(deviceActivationsService, personsService, validationService)
 
       // GET /device-activations/1/positions
-      mockRestClient.get.mockResolvedValue({
+      mockRestClient.getDeviceActivationPositions.mockResolvedValue({
         data: [],
       })
 
@@ -360,15 +352,17 @@ describe('SubjectController', () => {
       await controller.view(req, res, next)
 
       // Then
-      expect(mockRestClient.get).toHaveBeenCalledWith(
+      expect(mockRestClient.getDeviceActivationPositions).toHaveBeenCalledWith(
         {
-          path: `/device-activations/${deviceActivationId}/positions`,
-          query: {
-            from,
-            to,
+          tokenType: 'SYSTEM_TOKEN',
+          user: {
+            username: 'fakeUserName',
           },
         },
-        undefined,
+        Number(deviceActivationId),
+        from,
+        to,
+        'GPS',
       )
       expect(res.render).toHaveBeenCalledWith('pages/locationData/subject', {
         alerts: [
@@ -443,7 +437,7 @@ describe('SubjectController', () => {
       const controller = new SubjectController(deviceActivationsService, personsService, validationService)
 
       // GET /device-activations/1/positions
-      mockRestClient.get.mockResolvedValue({
+      mockRestClient.getDeviceActivationPositions.mockResolvedValue({
         data: [
           {
             positionId: 1,
@@ -472,15 +466,17 @@ describe('SubjectController', () => {
       await controller.view(req, res, next)
 
       // Then
-      expect(mockRestClient.get).toHaveBeenCalledWith(
+      expect(mockRestClient.getDeviceActivationPositions).toHaveBeenCalledWith(
         {
-          path: `/device-activations/${deviceActivationId}/positions`,
-          query: {
-            from,
-            to,
+          tokenType: 'SYSTEM_TOKEN',
+          user: {
+            username: 'fakeUserName',
           },
         },
-        undefined,
+        Number(deviceActivationId),
+        from,
+        to,
+        'GPS',
       )
       expect(res.render).toHaveBeenCalledWith('pages/locationData/subject', {
         alerts: [],

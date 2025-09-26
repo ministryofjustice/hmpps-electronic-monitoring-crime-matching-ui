@@ -1,27 +1,19 @@
 import request from 'supertest'
-import { RestClient } from '@ministryofjustice/hmpps-rest-client'
 import { appWithAllRoutes, user } from './testutils/appSetup'
 import logger from '../../logger'
 import DeviceActivationsService from '../services/deviceActivationsService'
 import ValidationService from '../services/locationData/validationService'
 import PersonsService from '../services/personsService'
+import CrimeMatchingClient from '../data/crimeMatchingClient'
 
-jest.mock('@ministryofjustice/hmpps-rest-client')
+jest.mock('../data/crimeMatchingClient')
 jest.mock('../../logger')
 
 describe('/location-data', () => {
-  let restClient: jest.Mocked<RestClient>
+  let restClient: jest.Mocked<CrimeMatchingClient>
 
   beforeEach(() => {
-    restClient = new RestClient(
-      'crimeMatchingApi',
-      {
-        url: '',
-        timeout: { response: 0, deadline: 0 },
-        agent: { timeout: 0 },
-      },
-      logger,
-    ) as jest.Mocked<RestClient>
+    restClient = new CrimeMatchingClient(logger) as jest.Mocked<CrimeMatchingClient>
   })
 
   afterEach(() => {
@@ -65,7 +57,7 @@ describe('/location-data', () => {
         userSupplier: () => user,
       })
 
-      restClient.get.mockRejectedValue({
+      restClient.getDeviceActivation.mockRejectedValue({
         message: 'Not Found',
         name: 'Not Found',
         stack: '',
@@ -95,7 +87,7 @@ describe('/location-data', () => {
         userSupplier: () => user,
       })
 
-      restClient.get.mockResolvedValueOnce({
+      restClient.getDeviceActivation.mockResolvedValueOnce({
         data: {
           deviceActivationId: 123456789,
           deviceId: 123456789,
