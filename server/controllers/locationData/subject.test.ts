@@ -454,7 +454,6 @@ describe('SubjectController', () => {
             direction: 3.14159,
             timestamp: '2025-01-01T00:00:00Z',
             geolocationMechanism: 'GPS',
-            sequenceNumber: 1,
           },
           {
             positionId: 2,
@@ -465,7 +464,6 @@ describe('SubjectController', () => {
             direction: 3.66519,
             timestamp: '2025-01-01T00:01:00Z',
             geolocationMechanism: 'GPS',
-            sequenceNumber: 2,
           },
         ],
       })
@@ -509,7 +507,7 @@ describe('SubjectController', () => {
                 type: 'mdss-location',
                 speed: 5,
                 direction: 3.14159,
-                geolocationMechanism: "GPS",
+                geolocationMechanism: 'GPS',
                 timestamp: '2025-01-01T00:00:00Z',
               },
               geometry: {
@@ -535,7 +533,7 @@ describe('SubjectController', () => {
                 type: 'mdss-location',
                 speed: 7,
                 direction: 3.66519,
-                geolocationMechanism: "GPS",
+                geolocationMechanism: 'GPS',
                 timestamp: '2025-01-01T00:01:00Z',
               },
               geometry: {

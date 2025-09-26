@@ -3,6 +3,7 @@ import { Dayjs } from 'dayjs'
 import Position from '../types/entities/position'
 import { getDeviceActivationDtoSchema, getDeviceActivationPositionsDtoSchema } from '../schemas/dtos/deviceActivation'
 import DeviceActivation from '../types/entities/deviceActivation'
+import { SortDirection, sortPositionsByTimestamp } from '../utils/sort'
 
 class DeviceActivationsService {
   constructor(private readonly crimeMatchingApiClient: RestClient) {}
@@ -35,7 +36,13 @@ class DeviceActivationsService {
       asUser(token),
     )
 
-    return getDeviceActivationPositionsDtoSchema.parse(response).data
+    return getDeviceActivationPositionsDtoSchema
+      .parse(response)
+      .data.sort(sortPositionsByTimestamp(SortDirection.ASC))
+      .map((position, i) => ({
+        ...position,
+        sequenceNumber: i + 1,
+      }))
   }
 }
 
