@@ -2,24 +2,23 @@ import { stubFor } from '../wiremock'
 
 const baseUrl = '/crime-matching'
 
+type Position = {
+  positionId: number
+  latitude: number
+  longitude: number
+  precision: number
+  speed: number
+  direction: number
+  timestamp: string
+  geolocationMechanism: 'GPS' | 'RF' | 'LBS' | 'WIFI'
+}
+
 type StubGetDeviceActivationPositions200Options = {
   status: 200
   deviceActivationId: string
   query: string
   response: {
-    data: Array<{
-      locationRef: number
-      point: {
-        latitude: number
-        longitude: number
-      }
-      confidenceCircle: number
-      speed: number
-      direction: number
-      timestamp: string
-      geolocationMechanism: number
-      sequenceNumber: number
-    }>
+    data: Array<Position>
   }
 }
 
@@ -67,4 +66,4 @@ const stubGetDeviceActivationPositions = (
   })
 }
 
-export { stubGetDeviceActivationPositions, StubGetDeviceActivationPositionsOptions }
+export { stubGetDeviceActivationPositions, StubGetDeviceActivationPositionsOptions, Position }

@@ -1,16 +1,14 @@
-type Point = {
-  latitude: number
-  longitude: number
-}
+import GeolocationMechanism from './geolocationMechanism'
 
 type Position = {
-  locationRef: number
-  point: Point
-  confidenceCircle: number
+  positionId: number
+  latitude: number
+  longitude: number
+  precision: number
   speed: number
   direction: number
   timestamp: string
-  geolocationMechanism: number
+  geolocationMechanism: GeolocationMechanism
   sequenceNumber: number
 }
 

@@ -1,7 +1,7 @@
-import { Location } from '../location'
+import Position from '../entities/position'
 
 type GetSubjectDto = {
-  locations: Array<Location>
+  locations: Array<Position>
 }
 
 type CreateSubjectLocationsQueryRequestDto = {

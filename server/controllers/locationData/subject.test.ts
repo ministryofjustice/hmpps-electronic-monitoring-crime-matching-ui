@@ -446,29 +446,25 @@ describe('SubjectController', () => {
       mockRestClient.get.mockResolvedValue({
         data: [
           {
-            locationRef: 1,
-            point: {
-              latitude: 123.123,
-              longitude: 123.123,
-            },
-            confidenceCircle: 10,
+            positionId: 1,
+            latitude: 123.123,
+            longitude: 123.123,
+            precision: 10,
             speed: 5,
             direction: 3.14159,
             timestamp: '2025-01-01T00:00:00Z',
-            geolocationMechanism: 1,
+            geolocationMechanism: 'GPS',
             sequenceNumber: 1,
           },
           {
-            locationRef: 2,
-            point: {
-              latitude: 456.123,
-              longitude: 456.123,
-            },
-            confidenceCircle: 20,
+            positionId: 2,
+            latitude: 456.123,
+            longitude: 456.123,
+            precision: 20,
             speed: 7,
             direction: 3.66519,
             timestamp: '2025-01-01T00:01:00Z',
-            geolocationMechanism: 1,
+            geolocationMechanism: 'GPS',
             sequenceNumber: 2,
           },
         ],
@@ -491,9 +487,9 @@ describe('SubjectController', () => {
       expect(res.render).toHaveBeenCalledWith('pages/locationData/subject', {
         alerts: [],
         apiKey: '',
+        origin: undefined,
         geoJson: {
           type: 'FeatureCollection',
-          origin: undefined,
           features: [
             {
               type: 'Feature',
@@ -505,7 +501,7 @@ describe('SubjectController', () => {
                 overlayTemplateId: 'overlay-template-mdss-location',
                 displaySpeed: '5 km/h',
                 displayDirection: '180°',
-                displayGeolocationMechanism: '1',
+                displayGeolocationMechanism: 'GPS',
                 displayTimestamp: '2025-01-01T00:00:00Z',
                 displayConfidence: '10m',
                 displayLatitude: '123.123',
@@ -513,7 +509,7 @@ describe('SubjectController', () => {
                 type: 'mdss-location',
                 speed: 5,
                 direction: 3.14159,
-                geolocationMechanism: 1,
+                geolocationMechanism: "GPS",
                 timestamp: '2025-01-01T00:00:00Z',
               },
               geometry: {
@@ -531,7 +527,7 @@ describe('SubjectController', () => {
                 overlayTemplateId: 'overlay-template-mdss-location',
                 displaySpeed: '7 km/h',
                 displayDirection: '210°',
-                displayGeolocationMechanism: '1',
+                displayGeolocationMechanism: 'GPS',
                 displayTimestamp: '2025-01-01T00:01:00Z',
                 displayConfidence: '20m',
                 displayLatitude: '456.123',
@@ -539,7 +535,7 @@ describe('SubjectController', () => {
                 type: 'mdss-location',
                 speed: 7,
                 direction: 3.66519,
-                geolocationMechanism: 1,
+                geolocationMechanism: "GPS",
                 timestamp: '2025-01-01T00:01:00Z',
               },
               geometry: {

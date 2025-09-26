@@ -1,6 +1,6 @@
 import { asUser, RestClient } from '@ministryofjustice/hmpps-rest-client'
 import { Dayjs } from 'dayjs'
-import { Location } from '../types/location'
+import Position from '../types/entities/position'
 import { getDeviceActivationDtoSchema, getDeviceActivationPositionsDtoSchema } from '../schemas/dtos/deviceActivation'
 import DeviceActivation from '../types/entities/deviceActivation'
 
@@ -23,7 +23,7 @@ class DeviceActivationsService {
     deviceActivation: DeviceActivation,
     fromDate: Dayjs,
     toDate: Dayjs,
-  ): Promise<Array<Location>> {
+  ): Promise<Array<Position>> {
     const response = await this.crimeMatchingApiClient.get(
       {
         path: `/device-activations/${deviceActivation.deviceActivationId}/positions`,
