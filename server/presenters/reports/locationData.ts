@@ -45,9 +45,9 @@ const getRow = (
 ): Array<string> => {
   const condensedColumns = [
     formatDate(position.timestamp),
-    position.point.latitude.toString(),
-    position.point.longitude.toString(),
-    position.confidenceCircle.toString(),
+    position.latitude.toString(),
+    position.longitude.toString(),
+    position.precision.toString(),
     position.speed.toString(),
     radToDeg(position.direction).toString(),
     (index + 1).toString(),

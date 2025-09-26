@@ -1,17 +1,15 @@
 import { z } from 'zod/v4'
 
 const positionSchema = z.object({
-  locationRef: z.number(),
-  point: z.object({
-    latitude: z.number(),
-    longitude: z.number(),
-  }),
-  confidenceCircle: z.number(),
+  positionId: z.number(),
+  latitude: z.number(),
+  longitude: z.number(),
+  precision: z.number(),
   speed: z.number(),
   direction: z.number(),
   timestamp: z.string(),
-  geolocationMechanism: z.number(),
-  sequenceNumber: z.number(),
+  geolocationMechanism: z.union([z.literal('GPS'), z.literal('RF'), z.literal('LBS'), z.literal('WIFI')]),
+  sequenceNumber: z.number().default(0),
 })
 
 export default positionSchema
