@@ -110,7 +110,10 @@ export default class SubjectController {
         },
         origin: req.originalUrl,
         apiKey: config.maps.apiKey,
-        geoJson: JSON.stringify({}),
+        geoJson: {
+          type: 'FeatureCollection',
+          features: [],
+        },
         tileUrl: config.maps.tileUrl,
         alerts: [],
         formData: {
