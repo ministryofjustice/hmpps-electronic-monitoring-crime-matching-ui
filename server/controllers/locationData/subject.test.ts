@@ -348,6 +348,20 @@ describe('SubjectController', () => {
         data: [],
       })
 
+      // GET /persons/1
+      mockRestClient.getPerson.mockResolvedValue({
+        data: {
+          personId: 1,
+          name: 'Jane Doe',
+          nomisId: 'Nomis 1',
+          pncRef: 'YY/NNNNNNND',
+          address: '123 Street',
+          dateOfBirth: '2000-12-01T00:00:00.000Z',
+          probationPractitioner: 'John Smith',
+          deviceActivations: [],
+        },
+      })
+
       // When
       await controller.view(req, res, next)
 
@@ -375,6 +389,21 @@ describe('SubjectController', () => {
           },
         ],
         apiKey: '',
+        deviceWearer: {
+          personId: 1,
+          name: 'Jane Doe',
+          nomisId: 'Nomis 1',
+          pncRef: 'YY/NNNNNNND',
+          address: '123 Street',
+          dateOfBirth: '2000-12-01T00:00:00.000Z',
+          probationPractitioner: 'John Smith',
+          deviceActivations: [],
+        },
+        geoJson: {
+          type: 'FeatureCollection',
+          features: [],
+          origin: undefined,
+        },
         positions: [],
         tileUrl: '',
         vectorUrl: '',
@@ -458,6 +487,20 @@ describe('SubjectController', () => {
         ],
       })
 
+      // GET /persons/1
+      mockRestClient.getPerson.mockResolvedValue({
+        data: {
+          personId: 1,
+          name: 'Jane Doe',
+          nomisId: 'Nomis 1',
+          pncRef: 'YY/NNNNNNND',
+          address: '123 Street',
+          dateOfBirth: '2000-12-01T00:00:00.000Z',
+          probationPractitioner: 'John Smith',
+          deviceActivations: [],
+        },
+      })
+
       // When
       await controller.view(req, res, next)
 
@@ -477,6 +520,16 @@ describe('SubjectController', () => {
       expect(res.render).toHaveBeenCalledWith('pages/locationData/subject', {
         alerts: [],
         apiKey: '',
+        deviceWearer: {
+          personId: 1,
+          name: 'Jane Doe',
+          nomisId: 'Nomis 1',
+          pncRef: 'YY/NNNNNNND',
+          address: '123 Street',
+          dateOfBirth: '2000-12-01T00:00:00.000Z',
+          probationPractitioner: 'John Smith',
+          deviceActivations: [],
+        },
         origin: undefined,
         positions: [
           {
