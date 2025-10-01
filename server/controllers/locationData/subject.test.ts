@@ -348,6 +348,20 @@ describe('SubjectController', () => {
         data: [],
       })
 
+      // GET /persons/1
+      mockRestClient.getPerson.mockResolvedValue({
+        data: {
+          personId: 1,
+          name: 'Jane Doe',
+          nomisId: 'Nomis 1',
+          pncRef: 'YY/NNNNNNND',
+          address: '123 Street',
+          dateOfBirth: '2000-12-01T00:00:00.000Z',
+          probationPractitioner: 'John Smith',
+          deviceActivations: [],
+        },
+      })
+
       // When
       await controller.view(req, res, next)
 
@@ -375,6 +389,16 @@ describe('SubjectController', () => {
           },
         ],
         apiKey: '',
+        deviceWearer: {
+          personId: 1,
+          name: 'Jane Doe',
+          nomisId: 'Nomis 1',
+          pncRef: 'YY/NNNNNNND',
+          address: '123 Street',
+          dateOfBirth: '2000-12-01T00:00:00.000Z',
+          probationPractitioner: 'John Smith',
+          deviceActivations: [],
+        },
         geoJson: {
           type: 'FeatureCollection',
           features: [],
@@ -463,6 +487,20 @@ describe('SubjectController', () => {
         ],
       })
 
+      // GET /persons/1
+      mockRestClient.getPerson.mockResolvedValue({
+        data: {
+          personId: 1,
+          name: 'Jane Doe',
+          nomisId: 'Nomis 1',
+          pncRef: 'YY/NNNNNNND',
+          address: '123 Street',
+          dateOfBirth: '2000-12-01T00:00:00.000Z',
+          probationPractitioner: 'John Smith',
+          deviceActivations: [],
+        },
+      })
+
       // When
       await controller.view(req, res, next)
 
@@ -482,6 +520,16 @@ describe('SubjectController', () => {
       expect(res.render).toHaveBeenCalledWith('pages/locationData/subject', {
         alerts: [],
         apiKey: '',
+        deviceWearer: {
+          personId: 1,
+          name: 'Jane Doe',
+          nomisId: 'Nomis 1',
+          pncRef: 'YY/NNNNNNND',
+          address: '123 Street',
+          dateOfBirth: '2000-12-01T00:00:00.000Z',
+          probationPractitioner: 'John Smith',
+          deviceActivations: [],
+        },
         origin: undefined,
         geoJson: {
           type: 'FeatureCollection',
@@ -493,7 +541,8 @@ describe('SubjectController', () => {
                 '@id': '1',
                 confidence: 10,
                 sequenceNumber: 1,
-                overlayTemplateId: 'overlay-template-mdss-location',
+                overlayTitleTemplateId: 'overlay-title-mdss-location',
+                overlayBodyTemplateId: 'overlay-body-mdss-location',
                 displaySpeed: '5 km/h',
                 displayDirection: '180°',
                 displayGeolocationMechanism: 'GPS',
@@ -506,6 +555,8 @@ describe('SubjectController', () => {
                 direction: 3.14159,
                 geolocationMechanism: 'GPS',
                 timestamp: '2025-01-01T00:00:00Z',
+                subjectName: 'Jane Doe',
+                subjectNomisId: 'Nomis 1',
               },
               geometry: {
                 type: 'Point',
@@ -519,7 +570,8 @@ describe('SubjectController', () => {
                 '@id': '2',
                 confidence: 20,
                 sequenceNumber: 2,
-                overlayTemplateId: 'overlay-template-mdss-location',
+                overlayTitleTemplateId: 'overlay-title-mdss-location',
+                overlayBodyTemplateId: 'overlay-body-mdss-location',
                 displaySpeed: '7 km/h',
                 displayDirection: '210°',
                 displayGeolocationMechanism: 'GPS',
@@ -532,6 +584,8 @@ describe('SubjectController', () => {
                 direction: 3.66519,
                 geolocationMechanism: 'GPS',
                 timestamp: '2025-01-01T00:01:00Z',
+                subjectName: 'Jane Doe',
+                subjectNomisId: 'Nomis 1',
               },
               geometry: {
                 type: 'Point',
@@ -545,6 +599,8 @@ describe('SubjectController', () => {
                 '@id': '1-2',
                 type: 'mdss-line',
                 direction: 3.14159,
+                subjectName: 'Jane Doe',
+                subjectNomisId: 'Nomis 1',
               },
               geometry: {
                 type: 'LineString',

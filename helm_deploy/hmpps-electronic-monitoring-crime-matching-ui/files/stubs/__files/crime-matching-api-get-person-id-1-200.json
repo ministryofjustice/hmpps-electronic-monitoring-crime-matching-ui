@@ -1,6 +1,6 @@
 {
   "data": {
-    "personId": "1",
+    "personId": 1,
     "name": "Jane Doe",
     "nomisId": "Nomis 1",
     "pncRef": "YY/NNNNNNND",

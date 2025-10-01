@@ -1,5 +1,6 @@
 import { RequestHandler } from 'express'
 import { mdssPositionsToGeoJson } from 'hmpps-open-layers-map/converters'
+import { Dayjs } from 'dayjs'
 import {
   downloadLocationsQueryParameterSchema,
   searchLocationsFormDataSchema,
@@ -15,6 +16,9 @@ import { convertZodErrorToValidationError, flattenErrorsToMap } from '../../util
 import ValidationService from '../../services/locationData/validationService'
 import generateLocationDataReport from '../../presenters/reports/locationData'
 import PersonsService from '../../services/personsService'
+import DeviceActivation from '../../types/entities/deviceActivation'
+import Position from '../../types/entities/position'
+import Person from '../../types/entities/person'
 
 export default class SubjectController {
   constructor(
@@ -22,6 +26,22 @@ export default class SubjectController {
     private readonly personsService: PersonsService,
     private readonly validationService: ValidationService,
   ) {}
+
+  private async fetchWearerAndPositions(
+    username: string,
+    deviceActivation: DeviceActivation,
+    fromDate: Dayjs,
+    toDate: Dayjs,
+  ): Promise<[Person, Position[]]> {
+    const deviceWearerPromise = this.personsService.getPerson(username, Number(deviceActivation!.personId))
+    const positionsPromise = this.deviceActivationsService.getDeviceActivationPositions(
+      username,
+      deviceActivation!,
+      fromDate,
+      toDate,
+    )
+    return Promise.all([deviceWearerPromise, positionsPromise])
+  }
 
   search: RequestHandler = async (req, res) => {
     const deviceActivation = req.deviceActivation!
@@ -70,7 +90,7 @@ export default class SubjectController {
     )
 
     if (validationResult.success) {
-      const positions = await this.deviceActivationsService.getDeviceActivationPositions(
+      const [deviceWearer, positions] = await this.fetchWearerAndPositions(
         username,
         deviceActivation!,
         fromDate,
@@ -80,11 +100,23 @@ export default class SubjectController {
       const geoJsonData = formatLocationData(mdssPositionsToGeoJson(positions))
       const alerts: Array<MojAlert> = []
 
+      const featuresWithDeviceInfo = geoJsonData.features.map(feature => ({
+        ...feature,
+        properties: {
+          ...feature.properties,
+          subjectName: deviceWearer.name,
+          subjectNomisId: deviceWearer.nomisId,
+        },
+      }))
+
+      geoJsonData.features = featuresWithDeviceInfo
+
       if (positions.length === 0) {
         alerts.push(createMojAlertWarning('No GPS Data for Dates and Times Selected'))
       }
 
       res.render('pages/locationData/subject', {
+        deviceWearer,
         exportForm: {
           enabled: true,
           from,
@@ -143,14 +175,13 @@ export default class SubjectController {
     )
 
     if (validationResult.success) {
-      const deviceWearerPromise = this.personsService.getPerson(username, deviceActivation!.personId)
-      const positionsPromise = this.deviceActivationsService.getDeviceActivationPositions(
+      const [deviceWearer, positions] = await this.fetchWearerAndPositions(
         username,
         deviceActivation!,
         fromDate,
         toDate,
       )
-      const [deviceWearer, positions] = await Promise.all([deviceWearerPromise, positionsPromise])
+
       const csvData = generateLocationDataReport(deviceWearer, deviceActivation!, positions, reportType === 'condensed')
       const fileName = `location-data-${deviceActivation?.deviceId}-${from}-${to}-${reportType}.csv`
 
