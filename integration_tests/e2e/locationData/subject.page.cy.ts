@@ -28,6 +28,7 @@ context('Location Data', () => {
         query,
         response: sampleLocations,
       })
+      cy.stubGetPerson()
       cy.visit(url)
 
       const page = Page.verifyOnPage(SubjectPage)
@@ -66,6 +67,7 @@ context('Location Data', () => {
           data: [],
         },
       })
+      cy.stubGetPerson()
       cy.visit(url)
 
       const page = Page.verifyOnPage(SubjectPage)
@@ -96,6 +98,7 @@ context('Location Data', () => {
         query: 'from=\\S+&to=\\S+&geolocationMechanism=GPS',
         response: sampleLocations,
       })
+      cy.stubGetPerson()
 
       const fromDateUTC = '2025-08-01T09:00:00.000Z'
       const toDateUTC = '2025-08-01T23:59:00.000Z'
@@ -123,6 +126,7 @@ context('Location Data', () => {
         query,
         response: sampleLocations,
       })
+      cy.stubGetPerson()
       cy.visit(url)
 
       const page = Page.verifyOnPage(SubjectPage)
@@ -197,6 +201,7 @@ context('Location Data', () => {
         query,
         response: sampleLocations,
       })
+      cy.stubGetPerson()
 
       cy.visit(url)
 

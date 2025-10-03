@@ -53,6 +53,7 @@ context('Location Data', () => {
           pageSize: 10,
         },
       })
+      cy.stubGetPerson()
 
       cy.visit(url)
       let page = Page.verifyOnPage(PersonsPage)
@@ -123,6 +124,7 @@ context('Location Data', () => {
           pageSize: 10,
         },
       })
+      cy.stubGetPerson()
 
       cy.visit(url)
       let page = Page.verifyOnPage(PersonsPage)
