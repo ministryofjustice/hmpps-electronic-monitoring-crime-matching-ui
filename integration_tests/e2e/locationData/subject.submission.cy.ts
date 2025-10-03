@@ -22,6 +22,7 @@ context('Location Data', () => {
         query: 'from=\\S+&to=\\S+&geolocationMechanism=GPS',
         response: sampleLocations,
       })
+      cy.stubGetPerson()
 
       // Visit the subject page with a valid url
       cy.visit(url)
@@ -69,6 +70,7 @@ context('Location Data', () => {
         query: 'from=\\S+&to=\\S+&geolocationMechanism=GPS',
         response: sampleLocations,
       })
+      cy.stubGetPerson()
 
       // Visit the subject page with a valid url
       cy.visit(url)
@@ -121,6 +123,7 @@ context('Location Data', () => {
         query: 'from=\\S+&to=\\S+&geolocationMechanism=GPS',
         response: sampleLocations,
       })
+      cy.stubGetPerson()
 
       // Visit the subject page with a valid url
       cy.visit(url)
@@ -173,6 +176,7 @@ context('Location Data', () => {
         query: 'from=\\S+&to=\\S+&geolocationMechanism=GPS',
         response: sampleLocations,
       })
+      cy.stubGetPerson()
 
       // Visit the subject page with a valid url
       cy.visit(url)
@@ -242,6 +246,22 @@ context('Location Data', () => {
         query: 'from=\\S+&to=\\S+&geolocationMechanism=GPS',
         response: sampleLocations,
       })
+      cy.stubGetPerson({
+        status: 200,
+        personId: 123456789,
+        response: {
+          data: {
+            personId: 123456789,
+            name: 'Jane Doe',
+            nomisId: 'Nomis 1',
+            pncRef: 'YY/NNNNNNND',
+            address: '123 Street',
+            dateOfBirth: '2000-12-01T00:00:00.000Z',
+            probationPractitioner: 'John Smith',
+            deviceActivations: [],
+          },
+        },
+      })
 
       // Visit the subject page with a valid url
       cy.visit(url)
@@ -308,6 +328,22 @@ context('Location Data', () => {
         deviceActivationId,
         query: 'from=\\S+&to=\\S+&geolocationMechanism=GPS',
         response: sampleLocations,
+      })
+      cy.stubGetPerson({
+        status: 200,
+        personId: 123456789,
+        response: {
+          data: {
+            personId: 123456789,
+            name: 'Jane Doe',
+            nomisId: 'Nomis 1',
+            pncRef: 'YY/NNNNNNND',
+            address: '123 Street',
+            dateOfBirth: '2000-12-01T00:00:00.000Z',
+            probationPractitioner: 'John Smith',
+            deviceActivations: [],
+          },
+        },
       })
 
       // Visit the subject page with a valid url
