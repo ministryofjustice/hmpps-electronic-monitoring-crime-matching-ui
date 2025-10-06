@@ -97,7 +97,7 @@
     "express-session": "^1.18.1",
     "govuk-frontend": "^5.11.0",
     "helmet": "^8.0.0",
-    "hmpps-open-layers-map": "^0.6.78",
+    "hmpps-open-layers-map": "^0.6.90",
     "http-errors": "^2.0.0",
     "jwt-decode": "^4.0.0",
     "nocache": "^4.0.0",
