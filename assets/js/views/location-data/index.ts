@@ -14,6 +14,7 @@ const initialiseLocationDataView = async () => {
 
   const map = mojMap.olMapInstance!
   const geoJson = mojMap.geojson
+  const { positions } = mojMap
 
   if (!geoJson) return
 
@@ -27,10 +28,8 @@ const initialiseLocationDataView = async () => {
   const tracksLayer = mojMap.addLayer(
     new TracksLayer({
       title: 'tracksLayer',
-      geoJson,
+      positions,
       visible: false,
-      lines: { title: 'linesLayer' },
-      arrows: { enabled: true, title: 'arrowsLayer' },
     }),
   )!
 

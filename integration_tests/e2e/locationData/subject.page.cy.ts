@@ -209,14 +209,12 @@ context('Location Data', () => {
     it('should display the map with the correct layers and features', () => {
       page.map.mapInstance.then(map => {
         const confidenceLayer = page.map.findLayerByTitle(map, 'confidenceLayer')
-        const arrowsLayer = page.map.findLayerByTitle(map, 'arrowsLayer')
-        const linesLayer = page.map.findLayerByTitle(map, 'linesLayer')
+        const tracksLayer = page.map.findLayerByTitle(map, 'tracksLayer')
         const pointsLayer = page.map.findLayerByTitle(map, 'pointsLayer') as VectorLayer
         const numberingLayer = page.map.findLayerByTitle(map, 'numberingLayer')
 
         page.map.shouldHaveMapLayer(confidenceLayer, 'Confidence')
-        page.map.shouldHaveMapLayer(arrowsLayer, 'Arrows')
-        page.map.shouldHaveMapLayer(linesLayer, 'Lines')
+        page.map.shouldHaveMapLayer(tracksLayer, 'Tracks')
         page.map.shouldHaveMapLayer(pointsLayer, 'Points')
         page.map.shouldHaveMapLayer(numberingLayer, 'Numbers')
 

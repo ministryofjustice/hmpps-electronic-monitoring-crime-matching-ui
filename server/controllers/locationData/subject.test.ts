@@ -380,6 +380,7 @@ describe('SubjectController', () => {
           features: [],
           origin: undefined,
         },
+        positions: [],
         tileUrl: '',
         vectorUrl: '',
         formData: {
@@ -555,6 +556,30 @@ describe('SubjectController', () => {
             },
           ],
         },
+        positions: [
+          {
+            direction: 3.14159,
+            geolocationMechanism: 'GPS',
+            latitude: 123.123,
+            longitude: 123.123,
+            positionId: 1,
+            precision: 10,
+            sequenceNumber: 1,
+            speed: 5,
+            timestamp: '2025-01-01T00:00:00Z',
+          },
+          {
+            direction: 3.66519,
+            geolocationMechanism: 'GPS',
+            latitude: 456.123,
+            longitude: 456.123,
+            positionId: 2,
+            precision: 20,
+            sequenceNumber: 2,
+            speed: 7,
+            timestamp: '2025-01-01T00:01:00Z',
+          },
+        ],
         tileUrl: '',
         vectorUrl: '',
         formData: {
