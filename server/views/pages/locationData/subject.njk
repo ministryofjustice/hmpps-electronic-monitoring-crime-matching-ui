@@ -144,6 +144,10 @@
     })
   }}
 
+  <script type="application/json" slot="positions">
+    {{ positions | dump | safe }}
+  </script>
+
   {# The {{ }} placeholders are not processed by Nunjucks.
       They are used as markers and replaced within assets/js files at runtime.
       Implemented this way to avoid large Template Literals in the JavaScript file. #}

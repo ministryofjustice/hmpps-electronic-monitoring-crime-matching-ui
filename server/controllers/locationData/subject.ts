@@ -94,6 +94,7 @@ export default class SubjectController {
         origin: req.originalUrl,
         apiKey: config.maps.apiKey,
         geoJson: geoJsonData,
+        positions,
         tileUrl: config.maps.tileUrl,
         vectorUrl: config.maps.vectorUrl,
         alerts,
