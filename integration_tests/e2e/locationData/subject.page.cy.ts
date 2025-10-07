@@ -229,7 +229,6 @@ context('Location Data', () => {
         const pointsLayer = page.map.findLayerByTitle(map, 'pointsLayer') as VectorLayer
 
         const feature = pointsLayer.getSource().getFeatures()[0]
-        expect(feature.get('type')).to.equal('mdss-location')
 
         const coordinate = feature.getGeometry().getCoordinates()
 

@@ -135,7 +135,7 @@
     appMap({
       apiKey: apiKey,
       cspNonce: cspNonce,
-      geoJson: geoJson,
+      positions: positions,
       tileUrl: tileUrl,
       vectorUrl: vectorUrl,
       alerts: alerts,
@@ -143,10 +143,6 @@
       sidebarHtml: sidebarHtml
     })
   }}
-
-  <script type="application/json" slot="positions">
-    {{ positions | dump | safe }}
-  </script>
 
   {# The {{ }} placeholders are not processed by Nunjucks.
       They are used as markers and replaced within assets/js files at runtime.
