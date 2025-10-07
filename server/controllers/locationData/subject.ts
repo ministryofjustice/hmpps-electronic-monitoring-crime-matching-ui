@@ -26,6 +26,7 @@ export default class SubjectController {
     private readonly validationService: ValidationService,
   ) {}
 
+  // Fetch device wearer and positions in parallel
   private async fetchWearerAndPositions(
     username: string,
     deviceActivation: DeviceActivation,
@@ -95,18 +96,8 @@ export default class SubjectController {
         fromDate,
         toDate,
       )
+
       const alerts: Array<MojAlert> = []
-
-      const featuresWithDeviceInfo = geoJsonData.features.map(feature => ({
-        ...feature,
-        properties: {
-          ...feature.properties,
-          subjectName: deviceWearer.name,
-          subjectNomisId: deviceWearer.nomisId,
-        },
-      }))
-
-      geoJsonData.features = featuresWithDeviceInfo
 
       if (positions.length === 0) {
         alerts.push(createMojAlertWarning('No GPS Data for Dates and Times Selected'))

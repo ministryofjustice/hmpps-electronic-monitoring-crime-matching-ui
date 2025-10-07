@@ -399,11 +399,6 @@ describe('SubjectController', () => {
           probationPractitioner: 'John Smith',
           deviceActivations: [],
         },
-        geoJson: {
-          type: 'FeatureCollection',
-          features: [],
-          origin: undefined,
-        },
         positions: [],
         tileUrl: '',
         vectorUrl: '',
