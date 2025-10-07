@@ -1,13 +1,6 @@
-{% from "moj/components/alert/macro.njk" import mojAlert %}
 {% from "components/moj-map/macro.njk" import mojMap %}
 
 <div class="app-map">
-  <div class="app-map__error">
-    {% for alert in params.alerts %}
-      {{ mojAlert(alert) }}
-    {% endfor %}
-  </div>
-
   <div class="app-map__sidebar">
     {% if params.sidebarHtml %}
       {{ params.sidebarHtml | safe | trim | indent(2) }}
@@ -16,6 +9,7 @@
 
   {{
     mojMap({
+      alerts: params.alerts,
       apiKey: params.apiKey,
       tileUrl: params.tileUrl,
       vectorUrl: params.vectorUrl,
