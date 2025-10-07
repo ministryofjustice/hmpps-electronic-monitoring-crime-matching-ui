@@ -97,7 +97,14 @@ export default class SubjectController {
         toDate,
       )
 
+      const annotatedPositions = annotatePositionsWithDisplayProperties(positions)
       const alerts: Array<MojAlert> = []
+
+      const positionsWithDeviceInfo = annotatedPositions.map(position => ({
+        ...position,
+        subjectName: deviceWearer.name,
+        subjectNomisId: deviceWearer.nomisId,
+      }))
 
       if (positions.length === 0) {
         alerts.push(createMojAlertWarning('No GPS Data for Dates and Times Selected'))
@@ -113,7 +120,7 @@ export default class SubjectController {
         },
         origin: req.originalUrl,
         apiKey: config.maps.apiKey,
-        positions: annotatePositionsWithDisplayProperties(positions),
+        positions: positionsWithDeviceInfo,
         tileUrl: config.maps.tileUrl,
         vectorUrl: config.maps.vectorUrl,
         alerts,

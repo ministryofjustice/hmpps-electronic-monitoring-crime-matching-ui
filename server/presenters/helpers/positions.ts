@@ -6,7 +6,8 @@ export default function annotatePositionsWithDisplayProperties(positions: Array<
     ...position,
 
     // Overlay template
-    overlayBodyTemplateId: 'overlay-template-mdss-location',
+    overlayTitleTemplateId: 'overlay-title-mdss-location',
+    overlayBodyTemplateId: 'overlay-body-mdss-location',
 
     // Display values
     displaySpeed: formatDisplayValue(position.speed, ' km/h', 'N/A'),
