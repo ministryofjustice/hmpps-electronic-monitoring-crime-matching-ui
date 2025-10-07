@@ -13,15 +13,11 @@ const initialiseLocationDataView = async () => {
   })
 
   const map = mojMap.olMapInstance!
-  const geoJson = mojMap.geojson
   const { positions } = mojMap
-
-  if (!geoJson) return
-
   const locationsLayer = mojMap.addLayer(
     new LocationsLayer({
       title: 'pointsLayer',
-      geoJson,
+      positions,
     }),
   )!
 
@@ -35,10 +31,9 @@ const initialiseLocationDataView = async () => {
 
   const confidenceLayer = mojMap.addLayer(
     new CirclesLayer({
-      geoJson,
+      positions,
       id: 'confidence',
       title: 'confidenceLayer',
-      radiusProperty: 'confidence',
       visible: false,
       zIndex: 20,
     }),
@@ -46,7 +41,7 @@ const initialiseLocationDataView = async () => {
 
   const numbersLayer = mojMap.addLayer(
     new NumberingLayer({
-      geoJson,
+      positions,
       numberProperty: 'sequenceNumber',
       title: 'numberingLayer',
       visible: false,

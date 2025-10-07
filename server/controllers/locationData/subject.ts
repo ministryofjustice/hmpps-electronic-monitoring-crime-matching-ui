@@ -1,11 +1,9 @@
 import { RequestHandler } from 'express'
-import { mdssPositionsToGeoJson } from 'hmpps-open-layers-map/converters'
 import {
   downloadLocationsQueryParameterSchema,
   searchLocationsFormDataSchema,
   viewLocationsQueryParametersSchema,
 } from '../../schemas/locationData/subject'
-import formatLocationData from '../../presenters/helpers/formatLocationFeature'
 import config from '../../config'
 import { createMojAlertWarning } from '../../utils/alerts'
 import { MojAlert } from '../../types/govUk/mojAlert'
@@ -15,6 +13,7 @@ import { convertZodErrorToValidationError, flattenErrorsToMap } from '../../util
 import ValidationService from '../../services/locationData/validationService'
 import generateLocationDataReport from '../../presenters/reports/locationData'
 import PersonsService from '../../services/personsService'
+import annotatePositionsWithDisplayProperties from '../../presenters/helpers/positions'
 
 export default class SubjectController {
   constructor(
@@ -76,8 +75,6 @@ export default class SubjectController {
         fromDate,
         toDate,
       )
-
-      const geoJsonData = formatLocationData(mdssPositionsToGeoJson(positions))
       const alerts: Array<MojAlert> = []
 
       if (positions.length === 0) {
@@ -93,8 +90,7 @@ export default class SubjectController {
         },
         origin: req.originalUrl,
         apiKey: config.maps.apiKey,
-        geoJson: geoJsonData,
-        positions,
+        positions: annotatePositionsWithDisplayProperties(positions),
         tileUrl: config.maps.tileUrl,
         vectorUrl: config.maps.vectorUrl,
         alerts,
@@ -111,10 +107,7 @@ export default class SubjectController {
         },
         origin: req.originalUrl,
         apiKey: config.maps.apiKey,
-        geoJson: {
-          type: 'FeatureCollection',
-          features: [],
-        },
+        positions: [],
         tileUrl: config.maps.tileUrl,
         alerts: [],
         formData: {
