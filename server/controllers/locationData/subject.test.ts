@@ -348,6 +348,20 @@ describe('SubjectController', () => {
         data: [],
       })
 
+      // GET /persons/1
+      mockRestClient.getPerson.mockResolvedValue({
+        data: {
+          personId: 1,
+          name: 'Jane Doe',
+          nomisId: 'Nomis 1',
+          pncRef: 'YY/NNNNNNND',
+          address: '123 Street',
+          dateOfBirth: '2000-12-01T00:00:00.000Z',
+          probationPractitioner: 'John Smith',
+          deviceActivations: [],
+        },
+      })
+
       // When
       await controller.view(req, res, next)
 
@@ -375,6 +389,16 @@ describe('SubjectController', () => {
           },
         ],
         apiKey: '',
+        deviceWearer: {
+          personId: 1,
+          name: 'Jane Doe',
+          nomisId: 'Nomis 1',
+          pncRef: 'YY/NNNNNNND',
+          address: '123 Street',
+          dateOfBirth: '2000-12-01T00:00:00.000Z',
+          probationPractitioner: 'John Smith',
+          deviceActivations: [],
+        },
         positions: [],
         tileUrl: '',
         vectorUrl: '',
@@ -458,6 +482,20 @@ describe('SubjectController', () => {
         ],
       })
 
+      // GET /persons/1
+      mockRestClient.getPerson.mockResolvedValue({
+        data: {
+          personId: 1,
+          name: 'Jane Doe',
+          nomisId: 'Nomis 1',
+          pncRef: 'YY/NNNNNNND',
+          address: '123 Street',
+          dateOfBirth: '2000-12-01T00:00:00.000Z',
+          probationPractitioner: 'John Smith',
+          deviceActivations: [],
+        },
+      })
+
       // When
       await controller.view(req, res, next)
 
@@ -477,6 +515,16 @@ describe('SubjectController', () => {
       expect(res.render).toHaveBeenCalledWith('pages/locationData/subject', {
         alerts: [],
         apiKey: '',
+        deviceWearer: {
+          personId: 1,
+          name: 'Jane Doe',
+          nomisId: 'Nomis 1',
+          pncRef: 'YY/NNNNNNND',
+          address: '123 Street',
+          dateOfBirth: '2000-12-01T00:00:00.000Z',
+          probationPractitioner: 'John Smith',
+          deviceActivations: [],
+        },
         origin: undefined,
         positions: [
           {
@@ -496,7 +544,10 @@ describe('SubjectController', () => {
             displayLongitude: '123.123',
             displaySpeed: '5 km/h',
             displayTimestamp: '2025-01-01T00:00:00Z',
-            overlayBodyTemplateId: 'overlay-template-mdss-location',
+            overlayTitleTemplateId: 'overlay-title-mdss-location',
+            overlayBodyTemplateId: 'overlay-body-mdss-location',
+            subjectName: 'Jane Doe',
+            subjectNomisId: 'Nomis 1',
           },
           {
             direction: 3.66519,
@@ -515,7 +566,10 @@ describe('SubjectController', () => {
             displayLongitude: '456.123',
             displaySpeed: '7 km/h',
             displayTimestamp: '2025-01-01T00:01:00Z',
-            overlayBodyTemplateId: 'overlay-template-mdss-location',
+            overlayTitleTemplateId: 'overlay-title-mdss-location',
+            overlayBodyTemplateId: 'overlay-body-mdss-location',
+            subjectName: 'Jane Doe',
+            subjectNomisId: 'Nomis 1',
           },
         ],
         tileUrl: '',

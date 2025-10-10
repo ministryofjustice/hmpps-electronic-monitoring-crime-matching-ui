@@ -131,6 +131,7 @@
 {% endset %}
 
 {% block content %}
+
   {{
     appMap({
       apiKey: apiKey,
@@ -148,29 +149,40 @@
       They are used as markers and replaced within assets/js files at runtime.
       Implemented this way to avoid large Template Literals in the JavaScript file. #}
   {% raw %}
-    <template id="overlay-template-mdss-location">
-      <div part="app-map__overlay-row">
-        <strong part="app-map__overlay-strong">Speed: </strong><span>{{ displaySpeed }}</span>
-      </div>
-      <div part="app-map__overlay-row">
-        <strong part="app-map__overlay-strong">Direction: </strong><span>{{ displayDirection }}</span>
-      </div>
-      <div part="app-map__overlay-row">
-        <strong part="app-map__overlay-strong">Geolocation Mechanism: </strong
-        ><span>{{ displayGeolocationMechanism }}</span>
-      </div>
-      <div part="app-map__overlay-row">
-        <strong part="app-map__overlay-strong">Recorded Date: </strong><span>{{ displayTimestamp }}</span>
-      </div>
-      <div part="app-map__overlay-row">
-        <strong part="app-map__overlay-strong">Confidence: </strong><span>{{ displayConfidence }}</span>
-      </div>
-      <div part="app-map__overlay-row">
-        <strong part="app-map__overlay-strong">Latitude: </strong><span>{{ displayLatitude }}</span>
-      </div>
-      <div part="app-map__overlay-row">
-        <strong part="app-map__overlay-strong">Longitude: </strong><span>{{ displayLongitude }}</span>
-      </div>
-    </template>
+  <template id="overlay-title-mdss-location">
+    <div><strong>Name (NOMIS ID): {{ subjectName }}</strong></div>
+    <div><strong>Device ID: {{ subjectNomisId }}</strong></div>
+  </template>
+
+  <template id="overlay-body-mdss-location">
+    <div class="app-map__overlay-row">
+      <span class="app-map__overlay-label">Speed:</span>
+      <span class="app-map__overlay-value">{{ displaySpeed }}</span>
+    </div>
+    <div class="app-map__overlay-row">
+      <span class="app-map__overlay-label">Direction:</span>
+      <span class="app-map__overlay-value">{{ displayDirection }}</span>
+    </div>
+    <div class="app-map__overlay-row" part="app-map__overlay-row">
+      <span class="app-map__overlay-label">Geolocation Mechanism:</span>
+      <span class="app-map__overlay-value">{{ displayGeolocationMechanism }}</span>
+    </div>
+    <div class="app-map__overlay-row" part="app-map__overlay-row">
+      <span class="app-map__overlay-label">Recorded Date:</span>
+      <span class="app-map__overlay-value"">{{ displayTimestamp }}</span>
+    </div>
+    <div class="app-map__overlay-row" part="app-map__overlay-row">
+      <span class="app-map__overlay-label">Confidence:</span>
+      <span class="app-map__overlay-value">{{ displayConfidence }}</span>
+    </div>
+    <div class="app-map__overlay-row" part="app-map__overlay-row">
+      <span class="app-map__overlay-label">Latitude:</span>
+      <span class="app-map__overlay-value">{{ displayLatitude }}</span>
+    </div>
+    <div class="app-map__overlay-row" part="app-map__overlay-row">
+      <span class="app-map__overlay-label">Longitude:</span>
+      <span class="app-map__overlay-value">{{ displayLongitude }}</span>
+    </div>
+  </template>
   {% endraw %}
 {% endblock %}

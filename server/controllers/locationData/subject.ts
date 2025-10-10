@@ -1,4 +1,5 @@
 import { RequestHandler } from 'express'
+import { Dayjs } from 'dayjs'
 import {
   downloadLocationsQueryParameterSchema,
   searchLocationsFormDataSchema,
@@ -13,6 +14,9 @@ import { convertZodErrorToValidationError, flattenErrorsToMap } from '../../util
 import ValidationService from '../../services/locationData/validationService'
 import generateLocationDataReport from '../../presenters/reports/locationData'
 import PersonsService from '../../services/personsService'
+import DeviceActivation from '../../types/entities/deviceActivation'
+import Position from '../../types/entities/position'
+import Person from '../../types/entities/person'
 import annotatePositionsWithDisplayProperties from '../../presenters/helpers/positions'
 
 export default class SubjectController {
@@ -21,6 +25,23 @@ export default class SubjectController {
     private readonly personsService: PersonsService,
     private readonly validationService: ValidationService,
   ) {}
+
+  // Fetch device wearer and positions in parallel
+  private async fetchWearerAndPositions(
+    username: string,
+    deviceActivation: DeviceActivation,
+    fromDate: Dayjs,
+    toDate: Dayjs,
+  ): Promise<[Person, Position[]]> {
+    const deviceWearerPromise = this.personsService.getPerson(username, Number(deviceActivation!.personId))
+    const positionsPromise = this.deviceActivationsService.getDeviceActivationPositions(
+      username,
+      deviceActivation!,
+      fromDate,
+      toDate,
+    )
+    return Promise.all([deviceWearerPromise, positionsPromise])
+  }
 
   search: RequestHandler = async (req, res) => {
     const deviceActivation = req.deviceActivation!
@@ -69,19 +90,28 @@ export default class SubjectController {
     )
 
     if (validationResult.success) {
-      const positions = await this.deviceActivationsService.getDeviceActivationPositions(
+      const [deviceWearer, positions] = await this.fetchWearerAndPositions(
         username,
         deviceActivation!,
         fromDate,
         toDate,
       )
+
+      const annotatedPositions = annotatePositionsWithDisplayProperties(positions)
       const alerts: Array<MojAlert> = []
+
+      const positionsWithDeviceInfo = annotatedPositions.map(position => ({
+        ...position,
+        subjectName: deviceWearer.name,
+        subjectNomisId: deviceWearer.nomisId,
+      }))
 
       if (positions.length === 0) {
         alerts.push(createMojAlertWarning('No GPS Data for Dates and Times Selected'))
       }
 
       res.render('pages/locationData/subject', {
+        deviceWearer,
         exportForm: {
           enabled: true,
           from,
@@ -90,7 +120,7 @@ export default class SubjectController {
         },
         origin: req.originalUrl,
         apiKey: config.maps.apiKey,
-        positions: annotatePositionsWithDisplayProperties(positions),
+        positions: positionsWithDeviceInfo,
         tileUrl: config.maps.tileUrl,
         vectorUrl: config.maps.vectorUrl,
         alerts,
@@ -136,14 +166,13 @@ export default class SubjectController {
     )
 
     if (validationResult.success) {
-      const deviceWearerPromise = this.personsService.getPerson(username, deviceActivation!.personId)
-      const positionsPromise = this.deviceActivationsService.getDeviceActivationPositions(
+      const [deviceWearer, positions] = await this.fetchWearerAndPositions(
         username,
         deviceActivation!,
         fromDate,
         toDate,
       )
-      const [deviceWearer, positions] = await Promise.all([deviceWearerPromise, positionsPromise])
+
       const csvData = generateLocationDataReport(deviceWearer, deviceActivation!, positions, reportType === 'condensed')
       const fileName = `location-data-${deviceActivation?.deviceId}-${from}-${to}-${reportType}.csv`
 
