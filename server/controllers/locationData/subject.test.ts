@@ -388,7 +388,7 @@ describe('SubjectController', () => {
             variant: 'warning',
           },
         ],
-        apiKey: '',
+        apiKey: 'apikey',
         deviceWearer: {
           personId: 1,
           name: 'Jane Doe',
@@ -400,8 +400,6 @@ describe('SubjectController', () => {
           deviceActivations: [],
         },
         positions: [],
-        tileUrl: '',
-        vectorUrl: '',
         formData: {
           fromDate: {
             date: '01/01/2025',
@@ -514,7 +512,7 @@ describe('SubjectController', () => {
       )
       expect(res.render).toHaveBeenCalledWith('pages/locationData/subject', {
         alerts: [],
-        apiKey: '',
+        apiKey: 'apikey',
         deviceWearer: {
           personId: 1,
           name: 'Jane Doe',
@@ -572,8 +570,6 @@ describe('SubjectController', () => {
             subjectNomisId: 'Nomis 1',
           },
         ],
-        tileUrl: '',
-        vectorUrl: '',
         formData: {
           fromDate: {
             date: '01/01/2025',

@@ -6,9 +6,6 @@ export default class CrimeMappingController {
   constructor(private readonly service: CrimeMappingService) {}
 
   view: RequestHandler = async (req, res) => {
-    res.render('pages/crime-mapping/index', {
-      tileUrl: config.maps.tileUrl,
-      vectorUrl: config.maps.vectorUrl,
-    })
+    res.render('pages/crime-mapping/index')
   }
 }

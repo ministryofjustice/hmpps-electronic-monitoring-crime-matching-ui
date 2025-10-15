@@ -1,6 +1,8 @@
 import express from 'express'
 
 import createError from 'http-errors'
+import { mojOrdnanceSurveyAuth } from 'hmpps-open-layers-map/ordnance-survey-auth'
+import config from './config'
 import nunjucksSetup from './utils/nunjucksSetup'
 import errorHandler from './errorHandler'
 import { appInsightsMiddleware } from './utils/azureAppInsights'
@@ -24,6 +26,15 @@ export default function createApp(services: Services): express.Application {
   app.set('json spaces', 2)
   app.set('trust proxy', true)
   app.set('port', process.env.PORT || 3000)
+
+  // Ordnance Survey Maps middleware
+  // Serves map vector styles and resources from OS Maps API with appropriate caching
+  app.use(
+    mojOrdnanceSurveyAuth({
+      apiKey: config.maps.apiKey,
+      apiSecret: config.maps.apiSecret,
+    }),
+  )
 
   app.use(appInsightsMiddleware())
   app.use(setUpHealthChecks(services.applicationInfo))
