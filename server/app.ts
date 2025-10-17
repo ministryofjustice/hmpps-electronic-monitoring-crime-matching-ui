@@ -1,10 +1,12 @@
 import express from 'express'
 
 import createError from 'http-errors'
-import { mojOrdnanceSurveyAuth } from 'hmpps-open-layers-map/ordnance-survey-auth'
+import { CacheClient, mojOrdnanceSurveyAuth } from 'hmpps-open-layers-map/ordnance-survey-auth'
 import config from './config'
 import nunjucksSetup from './utils/nunjucksSetup'
 import errorHandler from './errorHandler'
+import { createRedisClient } from './data/redisClient'
+import logger from '../logger'
 import { appInsightsMiddleware } from './utils/azureAppInsights'
 import authorisationMiddleware from './middleware/authorisationMiddleware'
 
@@ -21,6 +23,7 @@ import routes from './routes'
 import type { Services } from './services'
 
 export default function createApp(services: Services): express.Application {
+  let redisClient: CacheClient | undefined
   const app = express()
 
   app.set('json spaces', 2)
@@ -29,10 +32,17 @@ export default function createApp(services: Services): express.Application {
 
   // Ordnance Survey Maps middleware
   // Serves map vector styles and resources from OS Maps API with appropriate caching
+  // Connect Redis client for OS tile caching
+  if (config.redis.enabled) {
+    redisClient = createRedisClient()
+    redisClient.connect?.().catch((err: Error) => logger.error(`Error connecting to Redis`, err))
+  }
+
   app.use(
     mojOrdnanceSurveyAuth({
       apiKey: config.maps.apiKey,
       apiSecret: config.maps.apiSecret,
+      redisClient,
     }),
   )
 
