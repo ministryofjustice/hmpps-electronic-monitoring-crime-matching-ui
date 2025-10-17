@@ -17,6 +17,7 @@ context('Location Data', () => {
       cy.task('reset')
       cy.task('stubSignIn')
       cy.signIn()
+      cy.stubMapMiddleware()
       cy.stubGetDeviceActivation()
       cy.stubGetDeviceActivationPositions({
         status: 200,

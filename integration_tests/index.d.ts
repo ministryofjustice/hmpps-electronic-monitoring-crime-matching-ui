@@ -4,7 +4,6 @@ import { StubGetDeviceActivationOptions } from './mockApis/locationData/deviceAc
 import { StubGetDeviceActivationPositionsOptions } from './mockApis/locationData/deviceActivationPositions'
 import { StubGetPersonsOptions } from './mockApis/locationData/persons'
 import { StubGetPersonOptions } from './mockApis/locationData/person'
-import { StubMapTokenOptions } from './mockApis/map'
 
 declare global {
   namespace Cypress {
@@ -72,24 +71,9 @@ declare global {
       stubGetPerson(options?: StubGetPersonOptions): Chainable<void>
 
       /**
-       * Stub a wiremock response for GET /map/token
+       * Stub the /os-map/vector/style endpoint to simulate the Ordnance Survey middleware.
        */
-      stubMapToken(options?: StubMapTokenOptions): Chainable<void>
-
-      /**
-       * Stub a wiremock response for GET map tile requests
-       */
-      stubMapTiles(options?: Record<string, unknown>): Chainable<void>
-
-      /**
-       * Stub a wiremock response for GET /maps/vector/v1/vts
-       */
-      stubMapVectorStyle(options?: Record<string, unknown>): Chainable<void>
-
-      /**
-       * Stub a wiremock response for GET .pbf vector tiles
-       */
-      stubVectorTiles(options?: Record<string, unknown>): Chainable<void>
+      stubMapMiddleware(): Chainable<void>
     }
   }
 }

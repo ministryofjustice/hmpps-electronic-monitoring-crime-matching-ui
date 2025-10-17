@@ -48,18 +48,31 @@ Cypress.Commands.add('stubGetPerson', options => {
   cy.task('stubGetPerson', options)
 })
 
-Cypress.Commands.add('stubMapToken', options => {
-  cy.task('stubMapToken', options)
-})
+Cypress.Commands.add('stubMapMiddleware', () => {
+  cy.intercept('GET', '/os-map/vector/style', {
+    statusCode: 200,
+    body: {
+      version: 8,
+      sources: {
+        'os-source': { type: 'vector', url: '/os-map/vector/source' },
+      },
+      layers: [
+        { id: 'background', type: 'background', paint: {} },
+        { id: 'stub-layer', type: 'fill', source: 'os-source', paint: {} },
+      ],
+    },
+  }).as('stubMapStyle')
 
-Cypress.Commands.add('stubMapTiles', options => {
-  cy.task('stubMapTiles', options)
-})
+  cy.intercept('GET', '/os-map/vector/source', {
+    statusCode: 200,
+    body: {
+      type: 'vector',
+      tiles: ['/os-map/vector/tiles/{z}/{x}/{y}.pbf'],
+    },
+  }).as('stubMapSource')
 
-Cypress.Commands.add('stubMapVectorStyle', () => {
-  cy.task('stubMapVectorStyle')
-})
-
-Cypress.Commands.add('stubVectorTiles', () => {
-  cy.task('stubVectorTiles')
+  cy.intercept('GET', /\/os-map\/vector\/tiles\/.*\.pbf/, {
+    statusCode: 200,
+    body: '',
+  }).as('stubMapTiles')
 })

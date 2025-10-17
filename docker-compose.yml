@@ -42,9 +42,6 @@ services:
       - TOKEN_VERIFICATION_ENABLED=false
       - INGRESS_URL=http://localhost:3000
       - NO_HTTPS=true
-      - OS_MAPS_AUTH_URL=UNASSIGNED
-      - OS_MAPS_VECTOR_URL=UNASSIGNED
-      - OS_MAPS_TILE_URL=UNASSIGNED
       - OS_MAPS_API_KEY=UNASSIGNED
       - OS_MAPS_API_SECRET=UNASSIGNED
       - EM_CRIME_MATCHING_API_URL=http://hmpps-electronic-monitoring-crime-matching-api:8081/crime-matching

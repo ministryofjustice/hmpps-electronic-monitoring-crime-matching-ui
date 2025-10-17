@@ -14,10 +14,7 @@ context('Location Data', () => {
       cy.task('stubSignIn')
       cy.signIn()
 
-      cy.stubMapVectorStyle()
-      cy.stubVectorTiles()
-      cy.stubMapToken()
-      cy.stubMapTiles()
+      cy.stubMapMiddleware()
     })
 
     it('should display a map showing the subjects locations', () => {
@@ -190,10 +187,7 @@ context('Location Data', () => {
       cy.task('reset')
       cy.task('stubSignIn')
       cy.signIn()
-      cy.stubMapVectorStyle()
-      cy.stubVectorTiles()
-      cy.stubMapToken()
-      cy.stubMapTiles()
+      cy.stubMapMiddleware()
       cy.stubGetDeviceActivation()
       cy.stubGetDeviceActivationPositions({
         status: 200,

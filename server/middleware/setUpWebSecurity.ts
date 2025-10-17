@@ -25,19 +25,15 @@ export default function setUpWebSecurity(): Router {
           // <link href="http://example.com/" rel="stylesheet" nonce="{{ cspNonce }}">
           // This ensures only scripts we trust are loaded, and not anything injected into the
           // page by an attacker.
-          connectSrc: ["'self'", 'api.os.uk'],
-          imgSrc: ["'self'", 'api.os.uk', 'data: blob:'],
           // @ts-expect-error mismatch response
           scriptSrc: ["'self'", (_req: Request, res: Response) => `'nonce-${res.locals.cspNonce}'`],
-          // @ts-expect-error mismatch response
-          styleSrc: ["'self'", 'cdn.jsdelivr.net', (_req: Request, res: Response) => `'nonce-${res.locals.cspNonce}'`],
-          // Allow inline style ATTRIBUTES only (needed by Open Layers controls):
-          styleSrcAttr: ["'unsafe-inline'"],
+          styleSrc: ["'self'", 'cdn.jsdelivr.net', "'unsafe-inline'"],
           fontSrc: ["'self'", 'cdn.jsdelivr.net'],
           formAction: [`'self' ${config.apis.hmppsAuth.externalUrl}`],
+          ...(config.production ? {} : { upgradeInsecureRequests: null }),
         },
       },
-      crossOriginEmbedderPolicy: false,
+      crossOriginEmbedderPolicy: true,
     }),
   )
   return router

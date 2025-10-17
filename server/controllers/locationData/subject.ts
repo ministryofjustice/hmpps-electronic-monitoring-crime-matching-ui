@@ -121,8 +121,6 @@ export default class SubjectController {
         origin: req.originalUrl,
         apiKey: config.maps.apiKey,
         positions: positionsWithDeviceInfo,
-        tileUrl: config.maps.tileUrl,
-        vectorUrl: config.maps.vectorUrl,
         alerts,
         formData: {
           fromDate: getDateComponents(fromDate),
@@ -138,7 +136,6 @@ export default class SubjectController {
         origin: req.originalUrl,
         apiKey: config.maps.apiKey,
         positions: [],
-        tileUrl: config.maps.tileUrl,
         alerts: [],
         formData: {
           fromDate: getDateComponents(fromDate),
