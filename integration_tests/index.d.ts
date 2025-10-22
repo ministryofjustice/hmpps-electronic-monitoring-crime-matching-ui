@@ -1,4 +1,3 @@
-import Map from 'ol/Map'
 import { StubCreateCrimeBatchQueryOptions, StubGetCrimeBatchesOptions } from './mockApis/crimeMatching/crimeBatches'
 import { StubGetDeviceActivationOptions } from './mockApis/locationData/deviceActivation'
 import { StubGetDeviceActivationPositionsOptions } from './mockApis/locationData/deviceActivationPositions'
@@ -31,14 +30,6 @@ declare global {
        * @example cy.signIn({ failOnStatusCode: boolean })
        */
       signIn(options?: { failOnStatusCode: boolean }): Chainable<AUTWindow>
-
-      /**
-       * Custom command to run a callback after the OpenLayers map triggers a 'postrender' event.
-       * Ensures the map is fully rendered before running any logic such as pixel-to-coordinate interaction.
-       * Useful when testing pointer/click behavior or other map interactions.
-       * @example cy.mapPostRenderComplete(map, () => { const pixel = map.getPixelFromCoordinate(coord) })
-       */
-      mapPostRenderComplete<T = void>(map: Map, callback: () => T): Chainable<T>
 
       /**
        * Stub a wiremock response for the crimeMatchingApi POST /crime-batches-query
