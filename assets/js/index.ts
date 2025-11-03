@@ -1,6 +1,6 @@
 import * as govukFrontend from 'govuk-frontend'
 import * as mojFrontend from '@ministryofjustice/frontend'
-import 'hmpps-open-layers-map'
+import '@ministryofjustice/hmpps-electronic-monitoring-components/map'
 import initialiseLocationDataView from './views/location-data'
 import initialiseLocationDataDeviceActivationSearchView from './views/location-data-device-activation-search'
 

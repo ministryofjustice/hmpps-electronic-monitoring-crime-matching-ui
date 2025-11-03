@@ -1,27 +1,32 @@
-import { MojMap } from 'hmpps-open-layers-map'
-import { LocationsLayer, TracksLayer, CirclesLayer, NumberingLayer } from 'hmpps-open-layers-map/layers'
+import { EmMap } from '@ministryofjustice/hmpps-electronic-monitoring-components/map'
+import {
+  LocationsLayer,
+  TracksLayer,
+  CirclesLayer,
+  NumberingLayer,
+} from '@ministryofjustice/hmpps-electronic-monitoring-components/map/layers'
 import { isEmpty } from 'ol/extent'
 import createLayerVisibilityToggle from './controls/layerVisibilityToggle'
 import { queryElement } from '../../utils/utils'
 import initialiseDateFilterForm from '../../forms/date-filter-form'
 
 const initialiseLocationDataView = async () => {
-  const mojMap = queryElement(document, 'moj-map') as MojMap
+  const emMap = queryElement(document, 'em-map') as EmMap
 
   await new Promise<void>(resolve => {
-    mojMap.addEventListener('map:ready', () => resolve(), { once: true })
+    emMap.addEventListener('map:ready', () => resolve(), { once: true })
   })
 
-  const map = mojMap.olMapInstance!
-  const { positions } = mojMap
-  const locationsLayer = mojMap.addLayer(
+  const map = emMap.olMapInstance!
+  const { positions } = emMap
+  const locationsLayer = emMap.addLayer(
     new LocationsLayer({
       title: 'pointsLayer',
       positions,
     }),
   )!
 
-  const tracksLayer = mojMap.addLayer(
+  const tracksLayer = emMap.addLayer(
     new TracksLayer({
       title: 'tracksLayer',
       positions,
@@ -29,7 +34,7 @@ const initialiseLocationDataView = async () => {
     }),
   )!
 
-  const confidenceLayer = mojMap.addLayer(
+  const confidenceLayer = emMap.addLayer(
     new CirclesLayer({
       positions,
       id: 'confidence',
@@ -39,7 +44,7 @@ const initialiseLocationDataView = async () => {
     }),
   )
 
-  const numbersLayer = mojMap.addLayer(
+  const numbersLayer = emMap.addLayer(
     new NumberingLayer({
       positions,
       numberProperty: 'sequenceNumber',
@@ -49,7 +54,7 @@ const initialiseLocationDataView = async () => {
     }),
   )
 
-  mojMap.dispatchEvent(
+  emMap.dispatchEvent(
     new CustomEvent('app:map:layers:ready', {
       bubbles: true,
       composed: true,
@@ -71,8 +76,8 @@ const initialiseLocationDataView = async () => {
   }
 
   // Add controls
-  if (locationsLayer) createLayerVisibilityToggle('#locations', locationsLayer, mojMap)
-  if (tracksLayer) createLayerVisibilityToggle('#tracks', tracksLayer, mojMap)
+  if (locationsLayer) createLayerVisibilityToggle('#locations', locationsLayer, emMap)
+  if (tracksLayer) createLayerVisibilityToggle('#tracks', tracksLayer, emMap)
   if (confidenceLayer) createLayerVisibilityToggle('#confidence', confidenceLayer)
   if (numbersLayer) createLayerVisibilityToggle('#numbering', numbersLayer)
 
