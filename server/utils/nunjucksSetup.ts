@@ -32,7 +32,7 @@ export default function nunjucksSetup(app: express.Express): void {
       path.join(__dirname, '../../server/views'),
       'node_modules/govuk-frontend/dist/',
       'node_modules/@ministryofjustice/frontend/',
-      'node_modules/hmpps-open-layers-map/nunjucks/',
+      'node_modules/@ministryofjustice/hmpps-electronic-monitoring-components/dist/nunjucks/',
     ],
     {
       autoescape: true,

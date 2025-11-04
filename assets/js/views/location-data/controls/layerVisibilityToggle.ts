@@ -1,22 +1,22 @@
 import LayerGroup from 'ol/layer/Group'
 import Layer from 'ol/layer/Layer'
-import { MojMap } from 'hmpps-open-layers-map'
+import { EmMap } from '@ministryofjustice/hmpps-electronic-monitoring-components/map'
 
-const toggleVisibility = (layer: Layer | LayerGroup, mojMap?: MojMap) => () => {
+const toggleVisibility = (layer: Layer | LayerGroup, emMap?: EmMap) => () => {
   const visible = layer.getVisible()
 
-  if (visible && mojMap) {
-    mojMap.closeOverlay()
+  if (visible && emMap) {
+    emMap.closeOverlay()
   }
 
   layer.setVisible(!visible)
 }
 
-const createLayerVisibilityToggle = (selector: string, layer: Layer | LayerGroup, mojMap?: MojMap) => {
+const createLayerVisibilityToggle = (selector: string, layer: Layer | LayerGroup, emMap?: EmMap) => {
   const element = document.querySelector(selector) as HTMLElement
 
   if (element !== null) {
-    element.onchange = toggleVisibility(layer, mojMap)
+    element.onchange = toggleVisibility(layer, emMap)
   }
 }
 

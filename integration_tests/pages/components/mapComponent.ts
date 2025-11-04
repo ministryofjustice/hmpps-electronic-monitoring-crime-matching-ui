@@ -21,11 +21,11 @@ export default class MapComponent {
   }
 
   get mapComponent(): PageElement {
-    return this.element.get('moj-map')
+    return this.element.get('em-map')
   }
 
   get mapInstance(): Cypress.Chainable<Map> {
-    return cy.get('moj-map').then($el => {
+    return cy.get('em-map').then($el => {
       const el = $el[0] as HTMLElement & { olMapInstance?: Map }
 
       return new Cypress.Promise<Map>(resolve => {

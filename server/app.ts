@@ -1,7 +1,10 @@
 import express from 'express'
 
 import createError from 'http-errors'
-import { CacheClient, mojOrdnanceSurveyAuth } from 'hmpps-open-layers-map/ordnance-survey-auth'
+import {
+  CacheClient,
+  emOrdnanceSurveyAuth,
+} from '@ministryofjustice/hmpps-electronic-monitoring-components/map/ordnance-survey-auth'
 import config from './config'
 import nunjucksSetup from './utils/nunjucksSetup'
 import errorHandler from './errorHandler'
@@ -39,7 +42,7 @@ export default function createApp(services: Services): express.Application {
   }
 
   app.use(
-    mojOrdnanceSurveyAuth({
+    emOrdnanceSurveyAuth({
       apiKey: config.maps.apiKey,
       apiSecret: config.maps.apiSecret,
       redisClient,
