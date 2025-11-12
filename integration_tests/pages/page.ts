@@ -18,5 +18,21 @@ export default abstract class Page {
 
   signOut = (): PageElement => cy.get('[data-qa=signOut]')
 
-  manageDetails = (): PageElement => cy.get('[data-qa=manageDetails]')
+  manageDetails = (): PageElement => {
+    return cy.get('body').then($body => {
+      // HMPPS MOJ header pattern
+      if ($body.find('[data-qa=manageDetails]').length) {
+        return cy.get('[data-qa=manageDetails]')
+      }
+
+      // Probation Components header pattern
+      if ($body.find('a.probation-common-header__submenu-link').length) {
+        return cy.contains('a.probation-common-header__submenu-link', /account/i)
+      }
+
+      // Fallback header (no manage link)
+      cy.log('No manage details link found in current header variant')
+      return cy.wrap(null, { log: false })
+    })
+  }
 }

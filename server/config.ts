@@ -102,6 +102,14 @@ export default {
       agent: new AgentConfig(Number(get('CRIME_MATCHING_API_TIMEOUT_RESPONSE', 15000))),
       enabled: get('CRIME_MATCHING_API_ENABLED', 'false') === 'true',
     },
+    probationApi: {
+      url: get(
+        'COMPONENT_API_URL',
+        'https://probation-frontend-components-dev.hmpps.service.justice.gov.uk',
+        requiredInProduction,
+      ),
+      healthPath: '/health/ping',
+    },
   },
   maps: {
     apiKey: get('OS_MAPS_API_KEY', 'apikey'),
