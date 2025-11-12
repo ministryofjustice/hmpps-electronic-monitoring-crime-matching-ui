@@ -7,7 +7,7 @@ export default class NavigationComponent {
   private elementCacheId: string = uuidv4()
 
   constructor() {
-    cy.get('.govuk-service-navigation__container', { log: false }).as(`${this.elementCacheId}-element`)
+    cy.get('.moj-primary-navigation', { log: false }).as(`${this.elementCacheId}-element`)
   }
 
   // PROPERTIES
