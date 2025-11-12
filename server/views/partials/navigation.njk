@@ -1,8 +1,9 @@
-{% from "govuk/components/service-navigation/macro.njk" import govukServiceNavigation %}
+{%- from "moj/components/primary-navigation/macro.njk" import mojPrimaryNavigation -%}
 
 {{
-  govukServiceNavigation({
-    navigation: [
+  mojPrimaryNavigation({
+    label: "Primary navigation",
+    items: [
       {
         href: "/crime-mapping/crime-batches",
         text: "Crime mapping",

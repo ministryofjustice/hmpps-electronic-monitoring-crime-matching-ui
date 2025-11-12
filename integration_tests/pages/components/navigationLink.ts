@@ -9,13 +9,13 @@ export default class NavigationLink {
   // PROPERTIES
 
   get element(): PageElement {
-    return this.parent.contains('.govuk-service-navigation__item', this.text, { log: false })
+    return this.parent.contains('.moj-primary-navigation__item', this.text, { log: false })
   }
 
   // HELPERS
 
   shouldBeActive(): void {
-    this.element.should('have.class', 'govuk-service-navigation__item--active')
+    this.element.find('.moj-primary-navigation__link').should('have.attr', 'aria-current', 'page')
   }
 
   shouldExist(): void {
@@ -23,6 +23,6 @@ export default class NavigationLink {
   }
 
   shouldNotBeActive(): void {
-    this.element.should('not.have.class', 'govuk-service-navigation__item--active')
+    this.element.find('.moj-primary-navigation__link').should('not.have.attr', 'aria-current', 'page')
   }
 }

@@ -14,6 +14,7 @@ generic-service:
     ENVIRONMENT_NAME: DEV
     AUDIT_ENABLED: "false"
     EM_CRIME_MATCHING_API_URL: "https://electronic-monitoring-crime-matching-api-dev.hmpps.service.justice.gov.uk"
+    COMPONENT_API_URL: "https://probation-frontend-components-dev.hmpps.service.justice.gov.uk"
     OS_MAPS_TILE_CACHE_EXPIRY: "0"
 
 generic-prometheus-alerts:
