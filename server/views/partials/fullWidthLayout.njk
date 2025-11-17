@@ -1,4 +1,4 @@
-{% extends "govuk/template.njk" %}
+{% extends "moj/template.njk" %}
 
 {% block head %}
   <link href="{{ '/assets/css/app.css' | assetMap }}" rel="stylesheet" />
@@ -21,6 +21,7 @@
     <main
       class="govuk-main-wrapper {% if mainClasses %}{{ mainClasses }}{% endif %}"
       id="main-content"
+      data-page="{{ pageType | default('') }}"
       {%- if mainLang %}lang="{{ mainLang }}"{% endif %}
     >
       {% block content %}{% endblock %}

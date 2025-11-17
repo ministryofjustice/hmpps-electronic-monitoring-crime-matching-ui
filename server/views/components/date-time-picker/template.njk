@@ -12,11 +12,18 @@
       },
       errorMessage: params.errors,
       hint: {
-        text: "For example, 17/5/2024."
+        text: "For example, 17/11/2025."
       },
       value: params.value.date
     })
   }}
+
+  {# Hidden seconds field, always "00" #}
+  <input
+    type="hidden"
+    name="{{ params.name }}[second]"
+    value="{{ params.value.second | default('00') }}"
+  />
 
   <div class="govuk-date-input">
     <div class="govuk-date-input__item">
@@ -53,21 +60,5 @@
       </div>
     </div>
 
-    <div class="govuk-date-input__item">
-      <div class="govuk-form-group">
-        {{
-          govukInput({
-            label: {
-              text: "Second",
-              classes: "govuk-label--s"
-            },
-            classes: "govuk-date-input__input govuk-input--width-2",
-            id: params.id + "-second",
-            name: params.name + "[second]",
-            value: params.value.second
-          })
-        }}
-      </div>
-    </div>
   </div>
 </div>

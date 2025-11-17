@@ -8,6 +8,7 @@
 
 {% set pageTitle = applicationName + " - Home" %}
 {% set mainClasses = "app-container govuk-body location-data" %}
+{% set pageType = "subject" %}
 {% set activeLinkId = "location-data" %}
 
 
@@ -24,6 +25,7 @@
   {{
     govukCheckboxes({
       id: "locations",
+      classes: "govuk-radios--small",
       name: "locations",
       fieldset: {
         legend: {

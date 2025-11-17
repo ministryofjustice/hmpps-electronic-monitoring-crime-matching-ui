@@ -50,4 +50,11 @@ const formatDate = (datetime?: string | null): string => {
   return date.tz('Europe/London').format('DD/MM/YYYY HH:mm')
 }
 
-export { parseDateTimeFromComponents, parseDateTimeFromISOString, getDateComponents, formatDate }
+const formatDob = (dateString?: string | null): string => {
+  if (!dateString) return ''
+
+  const date = dayjs(dateString)
+  return date.isValid() ? date.format('DD/MM/YYYY') : ''
+}
+
+export { parseDateTimeFromComponents, parseDateTimeFromISOString, getDateComponents, formatDate, formatDob }

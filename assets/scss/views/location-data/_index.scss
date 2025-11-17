@@ -1,0 +1,43 @@
+.device-activation-search {
+
+  h1 {
+    padding: 0 15px;
+  }
+
+  .govuk-grid-column-full {
+    padding: 0;
+  }
+
+  .govuk-grid-row {
+    margin-right: 0;
+    margin-left: 0;
+  }
+
+  .person-table__head-radio {
+    padding: 10px;
+    width: 30px;
+  }
+
+  .person-table__head-address {
+    width: 33%;
+  }
+
+  .person-table__head-tag-start,
+  .person-table__head-tag-end {
+    width: 100px
+  }
+
+  .person-table__column-address {
+    width: 33%;
+    white-space: normal;
+    overflow-wrap: break-word;
+  }
+
+  .person-table__column-radio {
+    padding: 0 0 0 10px;
+
+    .govuk-radios__label {
+      padding: 0;
+    }
+  }
+}

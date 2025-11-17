@@ -1,7 +1,7 @@
 import DeviceActivation from '../../types/entities/deviceActivation'
 import Person from '../../types/entities/person'
 import Position from '../../types/entities/position'
-import { formatDate } from '../../utils/date'
+import { formatDate, formatDob } from '../../utils/date'
 import radToDeg from '../../utils/math'
 
 const getHeaders = (condensed: boolean): Array<string> => {
@@ -60,7 +60,7 @@ const getRow = (
     deviceWearer.nomisId,
     deviceWearer.pncRef,
     deviceWearer.address,
-    formatDate(deviceWearer.dateOfBirth),
+    formatDob(deviceWearer.dateOfBirth),
     deviceWearer.probationPractitioner,
     formatDate(deviceActivation.orderStart),
     formatDate(deviceActivation.orderEnd),
