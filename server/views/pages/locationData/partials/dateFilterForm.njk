@@ -1,7 +1,7 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "../../../components/date-time-picker/macro.njk" import dateTimePicker %}
 
-<form id="dateFilterForm" method="POST">
+<form id="dateFilterForm" class="date-filter" method="POST">
   <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
   <input type="hidden" name="origin" value="{{ origin }}" />
 
@@ -14,16 +14,20 @@
       id: "from-date",
       name: "fromDate",
       text: "Date from",
+      timeLabel: "Time from",
       value: formData.fromDate,
       errors: errors.fromDate
     })
   }}
+
+  <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible" />
 
   {{
     dateTimePicker({
       id: "to-date",
       name: "toDate",
       text: "Date to",
+      timeLabel: "Time to",
       value: formData.toDate,
       errors: errors.toDate
     })

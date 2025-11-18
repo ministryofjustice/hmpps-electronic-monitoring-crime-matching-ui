@@ -36,41 +36,48 @@
     {% set minuteClasses = minuteClasses + " govuk-input--error" %}
   {% endif %}
 
-  <div class="govuk-date-input">
+  <fieldset class="govuk-fieldset govuk-!-margin-top-2">
+    <legend class="govuk-fieldset__legend govuk-fieldset__legend--s date-filter__secondary-text">
+      {{ params.timeLabel }}
+    </legend>
 
-    <div class="govuk-date-input__item">
-      <div class="govuk-form-group{% if params.errors %} govuk-form-group--error{% endif %}">
-        {{
-          govukInput({
-            label: {
-              text: "Hour",
-              classes: "govuk-label--s"
-            },
-            classes: hourClasses,
-            id: params.id + "-hour",
-            name: params.name + "[hour]",
-            value: params.value.hour
-          })
-        }}
+    <div class="govuk-date-input">
+
+      <div class="govuk-date-input__item">
+        <div class="govuk-form-group{% if params.errors %} govuk-form-group--error{% endif %}">
+          {{
+            govukInput({
+              label: {
+                text: "Hour",
+                classes: "govuk-label--s"
+              },
+              classes: hourClasses,
+              id: params.id + "-hour",
+              name: params.name + "[hour]",
+              value: params.value.hour
+            })
+          }}
+        </div>
       </div>
-    </div>
 
-    <div class="govuk-date-input__item">
-      <div class="govuk-form-group">
-        {{
-          govukInput({
-            label: {
-              text: "Minute",
-              classes: "govuk-label--s"
-            },
-            classes: minuteClasses,
-            id: params.id + "-minute",
-            name: params.name + "[minute]",
-            value: params.value.minute
-          })
-        }}
+      <div class="govuk-date-input__item">
+        <div class="govuk-form-group">
+          {{
+            govukInput({
+              label: {
+                text: "Minute",
+                classes: "govuk-label--s"
+              },
+              classes: minuteClasses,
+              id: params.id + "-minute",
+              name: params.name + "[minute]",
+              value: params.value.minute
+            })
+          }}
+        </div>
       </div>
-    </div>
 
-  </div>
+    </div>
+  </fieldset>
+
 </div>
