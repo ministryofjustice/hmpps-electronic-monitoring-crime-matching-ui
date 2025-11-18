@@ -2,6 +2,7 @@
 {% from "govuk/components/input/macro.njk" import govukInput %}
 
 <div id="{{ params.id }}">
+
   {{
     mojDatePicker({
       id: params.id + "-date",
@@ -25,16 +26,27 @@
     value="{{ params.value.second | default('00') }}"
   />
 
+  {# If there is an error on the date-time, visually mark the time inputs too #}
+  {% set defaultTimeClasses = "govuk-date-input__input govuk-input--width-2" %}
+  {% set hourClasses = defaultTimeClasses %}
+  {% set minuteClasses = defaultTimeClasses %}
+
+  {% if params.errors %}
+    {% set hourClasses = hourClasses + " govuk-input--error" %}
+    {% set minuteClasses = minuteClasses + " govuk-input--error" %}
+  {% endif %}
+
   <div class="govuk-date-input">
+
     <div class="govuk-date-input__item">
-      <div class="govuk-form-group">
+      <div class="govuk-form-group{% if params.errors %} govuk-form-group--error{% endif %}">
         {{
           govukInput({
             label: {
               text: "Hour",
               classes: "govuk-label--s"
             },
-            classes: "govuk-date-input__input govuk-input--width-2",
+            classes: hourClasses,
             id: params.id + "-hour",
             name: params.name + "[hour]",
             value: params.value.hour
@@ -51,7 +63,7 @@
               text: "Minute",
               classes: "govuk-label--s"
             },
-            classes: "govuk-date-input__input govuk-input--width-2",
+            classes: minuteClasses,
             id: params.id + "-minute",
             name: params.name + "[minute]",
             value: params.value.minute

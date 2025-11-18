@@ -4,6 +4,11 @@
 <form id="dateFilterForm" method="POST">
   <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
   <input type="hidden" name="origin" value="{{ origin }}" />
+
+  {% if pageType == "index" %}
+    <h2 class="govuk-heading-m">Time</h2>
+  {% endif %}
+
   {{
     dateTimePicker({
       id: "from-date",
