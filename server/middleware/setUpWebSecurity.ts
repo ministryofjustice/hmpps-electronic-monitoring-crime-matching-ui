@@ -18,6 +18,7 @@ export default function setUpWebSecurity(): Router {
       crossOriginResourcePolicy: false,
       contentSecurityPolicy: {
         directives: {
+          connectSrc: [`'self' ${config.apis.probationApi.url}`],
           defaultSrc: ["'self'"],
           // This nonce allows us to use scripts with the use of the `cspNonce` local, e.g (in a Nunjucks template):
           // <script nonce="{{ cspNonce }}">
