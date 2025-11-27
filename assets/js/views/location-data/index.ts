@@ -3,7 +3,7 @@ import {
   LocationsLayer,
   TracksLayer,
   CirclesLayer,
-  NumberingLayer,
+  TextLayer,
 } from '@ministryofjustice/hmpps-electronic-monitoring-components/map/layers'
 import { isEmpty } from 'ol/extent'
 import createLayerVisibilityToggle from './controls/layerVisibilityToggle'
@@ -23,6 +23,15 @@ const initialiseLocationDataView = async () => {
     new LocationsLayer({
       title: 'pointsLayer',
       positions,
+      style: {
+        radius: 6,
+        fill: '#F5CA2C',
+        stroke: {
+          color: '#F5CA2C',
+          width: 0,
+        },
+      },
+      zIndex: 2,
     }),
   )!
 
@@ -31,6 +40,7 @@ const initialiseLocationDataView = async () => {
       title: 'tracksLayer',
       positions,
       visible: false,
+      zIndex: 1,
     }),
   )!
 
@@ -41,16 +51,24 @@ const initialiseLocationDataView = async () => {
       title: 'confidenceLayer',
       visible: false,
       zIndex: 20,
+      style: {
+        fill: null,
+        stroke: {
+          color: 'rgba(242, 201, 76, 1)',
+          lineDash: [8, 8],
+          width: 3,
+        },
+      },
     }),
   )
 
   const numbersLayer = emMap.addLayer(
-    new NumberingLayer({
+    new TextLayer({
       positions,
-      numberProperty: 'sequenceNumber',
+      textProperty: 'sequenceNumber',
       title: 'numberingLayer',
       visible: false,
-      zIndex: 30,
+      zIndex: 4,
     }),
   )
 
