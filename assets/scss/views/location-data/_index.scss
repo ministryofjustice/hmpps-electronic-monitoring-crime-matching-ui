@@ -40,4 +40,11 @@
       padding: 0;
     }
   }
+
+  .govuk-radios--small {
+
+    .govuk-input {
+      max-width: 228px;
+    }
+  }
 }

@@ -1,7 +1,9 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "../../../components/date-time-picker/macro.njk" import dateTimePicker %}
 
-<form id="dateFilterForm" class="date-filter" method="POST">
+{% set hideWithJs = hideWithJs | default(false) %}
+
+<form id="dateFilterForm" class="date-filter{% if hideWithJs %} date-filter--js-hidden{% endif %}" method="POST">
   <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
   <input type="hidden" name="origin" value="{{ origin }}" />
 

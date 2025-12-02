@@ -23,14 +23,6 @@ const initialiseLocationDataView = async () => {
     new LocationsLayer({
       title: 'pointsLayer',
       positions,
-      style: {
-        radius: 6,
-        fill: '#F5CA2C',
-        stroke: {
-          color: '#F5CA2C',
-          width: 0,
-        },
-      },
       zIndex: 2,
     }),
   )!

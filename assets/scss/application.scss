@@ -9,7 +9,6 @@ $govuk-page-width: $moj-page-width;
 @import '@ministryofjustice/hmpps-probation-frontend-components/dist/assets/footer';
 @import '@ministryofjustice/hmpps-probation-frontend-components/dist/assets/header';
 
-@import './components/date-filter';
 @import './components/map';
 @import './views/location-data/index';
 @import './views/location-data/subject';

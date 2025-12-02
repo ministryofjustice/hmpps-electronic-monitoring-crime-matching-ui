@@ -6,14 +6,13 @@ const handleRadioChange = (radio: HTMLElement, form: HTMLFormElement) => {
 
   if (form) {
     form.setAttribute('action', `/location-data/device-activations/${deviceActivationId}`)
-    form.setAttribute('style', 'display: block;')
+    form.classList.remove('date-filter--js-hidden')
   }
 }
 
 const initialiseLocationDataDeviceActivationSearchView = () => {
   const form = queryElement(document, '#dateFilterForm', HTMLFormElement)
   const radios = queryElementAll(document, 'input[type="radio"][name="deviceActivationId"]', HTMLInputElement)
-  form.setAttribute('style', 'display: none;')
 
   radios.forEach(radio => {
     radio.addEventListener('change', () => handleRadioChange(radio, form))
