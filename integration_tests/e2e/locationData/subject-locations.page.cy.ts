@@ -67,7 +67,8 @@ context('Location Data', () => {
 
       page.locationsForm.continueButton.should('not.be.visible')
       page.dataTable.selectRow('1')
-      page.locationsForm.continueButton.should('be.disabled')
+      page.locationsForm.continueButton.should('be.visible')
+      page.locationsForm.continueButton.should('not.be.disabled')
       page.locationsForm.fillInWith({
         fromDate: { date: '01/01/2025', hour: '09', minute: '00', second: '00' },
         toDate: { date: '02/01/2025', hour: '09', minute: '00', second: '00' },
@@ -137,8 +138,8 @@ context('Location Data', () => {
       page.dataTable.shouldHaveResults()
 
       page.dataTable.selectRow('1')
-      page.locationsForm.continueButton.should('be.disabled')
-      page.locationsForm.resetButton.should('be.disabled')
+      page.locationsForm.continueButton.should('not.be.disabled')
+      page.locationsForm.resetButton.should('not.be.disabled')
       page.locationsForm.fillInWith({
         fromDate: { date: '01/01/2025', hour: '09', minute: '00', second: '00' },
         toDate: { date: '02/01/2025', hour: '09', minute: '00', second: '00' },
@@ -149,15 +150,15 @@ context('Location Data', () => {
         date: '',
         hour: '',
         minute: '',
-        second: '',
+        second: '00',
       })
       page.locationsForm.toDateField.shouldHaveValue({
         date: '',
         hour: '',
         minute: '',
-        second: '',
+        second: '00',
       })
-      page.locationsForm.continueButton.should('be.disabled')
+      page.locationsForm.continueButton.should('not.be.disabled')
       page.locationsForm.resetButton.should('be.disabled')
     })
   })

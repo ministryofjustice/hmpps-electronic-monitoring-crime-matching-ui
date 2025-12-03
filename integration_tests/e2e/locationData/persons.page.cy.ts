@@ -112,8 +112,8 @@ context('Location Data', () => {
       ])
 
       page.dataTable.shouldHaveRows([
-        ['', 'Nomis 1', 'John', '01/12/2000 00:00', '123 Street', '123456', '01/12/2024 00:00', ''],
-        ['', 'Nomis 2', 'Lee', '01/12/2000 00:00', '456 Avenue', '654321', '01/12/2024 00:00', '01/12/2024 00:00'],
+        ['', 'Nomis 1', 'John', '01/12/2000', '123 Street', '123456', '01/12/2024 00:00', ''],
+        ['', 'Nomis 2', 'Lee', '01/12/2000', '456 Avenue', '654321', '01/12/2024 00:00', '01/12/2024 00:00'],
       ])
       page.dataTable.shouldNotHavePagination()
       page.form.personsSearchField.shouldHaveValue('name')
@@ -210,7 +210,7 @@ context('Location Data', () => {
         'Tag Period End',
       ])
       page.dataTable.shouldHaveRows([
-        ['', 'Nomis 1', 'John', '01/12/2000 00:00', '123 Street', '123456', '01/12/2024 00:00', ''],
+        ['', 'Nomis 1', 'John', '01/12/2000', '123 Street', '123456', '01/12/2024 00:00', ''],
       ])
       page.dataTable.shouldHavePagination()
       page.dataTable.pagination.shouldHaveCurrentPage('1')
@@ -227,7 +227,7 @@ context('Location Data', () => {
       page = Page.verifyOnPage(PersonsPage)
       page.dataTable.shouldHaveResults()
       page.dataTable.shouldHaveRows([
-        ['', 'Nomis 2', 'Lee', '01/12/2000 00:00', '456 Avenue', '654321', '01/12/2024 00:00', '01/12/2024 00:00'],
+        ['', 'Nomis 2', 'Lee', '01/12/2000', '456 Avenue', '654321', '01/12/2024 00:00', '01/12/2024 00:00'],
       ])
       page.dataTable.shouldHavePagination()
       page.dataTable.pagination.shouldHaveCurrentPage('2')
@@ -313,8 +313,8 @@ context('Location Data', () => {
       ])
 
       page.dataTable.shouldHaveRows([
-        ['', 'Nomis 1', 'John', '01/12/2000 00:00', '123 Street', '123456', '01/12/2024 00:00', ''],
-        ['', 'Nomis 2', 'Lee', '01/12/2000 00:00', '456 Avenue', '654321', '01/12/2024 00:00', '01/12/2024 00:00'],
+        ['', 'Nomis 1', 'John', '01/12/2000', '123 Street', '123456', '01/12/2024 00:00', ''],
+        ['', 'Nomis 2', 'Lee', '01/12/2000', '456 Avenue', '654321', '01/12/2024 00:00', '01/12/2024 00:00'],
       ])
       page.dataTable.shouldNotHavePagination()
       page.form.personsSearchField.shouldHaveValue('deviceId')

@@ -2,6 +2,7 @@ import { v4 as uuidv4 } from 'uuid'
 
 import { PageElement } from '../page'
 import FormInputComponent from './formInputComponent'
+import FormHiddenInputComponent from './formHiddenInputComponent'
 import FormDateComponent from './formDateComponent'
 
 export type FormDateTimeData = {
@@ -17,6 +18,7 @@ export default class FormDateTimeComponent {
   constructor(
     private readonly parent: PageElement,
     private readonly id: string,
+    private readonly name: string,
     private readonly label: string,
   ) {
     this.parent.get(this.id, { log: true }).as(`${this.elementCacheId}-element`)
@@ -41,8 +43,8 @@ export default class FormDateTimeComponent {
     return new FormInputComponent(this.element, 'Minute')
   }
 
-  get secondComponent(): FormInputComponent {
-    return new FormInputComponent(this.element, 'Second')
+  get secondComponent(): FormHiddenInputComponent {
+    return new FormHiddenInputComponent(this.element, `input[name="${this.name}[second]"]`)
   }
 
   // HELPERS
