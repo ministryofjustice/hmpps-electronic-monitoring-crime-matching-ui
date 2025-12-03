@@ -3,7 +3,7 @@
 
 {% set hideWithJs = hideWithJs | default(false) %}
 
-<form id="dateFilterForm" class="date-filter{% if hideWithJs %} date-filter--js-hidden{% endif %}" method="POST">
+<form id="dateFilterForm" class="date-filter{% if hideWithJs %}date-filter--js-hidden{% endif %}" method="POST">
   <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
   <input type="hidden" name="origin" value="{{ origin }}" />
 

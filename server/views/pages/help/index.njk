@@ -5,159 +5,155 @@
 {% set activeLinkId = "help" %}
 
 {% block content %}
-<h1>Help</h1>
+  <h1>Help</h1>
 
-<h2 class="govuk-heading-l">Using the map</h2>
-<div class="govuk-grid-row">
-  <div class="govuk-grid-column-two-thirds">
+  <h2 class="govuk-heading-l">Using the map</h2>
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <p class="govuk-body">This page explains how to use the map using a keyboard, mouse or trackpad. It covers:</p>
 
-    <p class="govuk-body">
-      This page explains how to use the map using a keyboard, mouse or trackpad.
-      It covers:
-    </p>
+      <ul class="govuk-list govuk-list--bullet">
+        <li><a class="govuk-link" href="#pan">Panning/dragging the map</a></li>
+        <li><a class="govuk-link" href="#zoom">Zooming in and out</a></li>
+        <li><a class="govuk-link" href="#rotate">Rotating the map</a></li>
+        <li><a class="govuk-link" href="#location-info">Viewing information about a location</a></li>
+        <li><a class="govuk-link" href="#accessibility">Accessibility and keyboard-only use</a></li>
+      </ul>
 
-    <ul class="govuk-list govuk-list--bullet">
-      <li><a class="govuk-link" href="#pan">Panning/dragging the map</a></li>
-      <li><a class="govuk-link" href="#zoom">Zooming in and out</a></li>
-      <li><a class="govuk-link" href="#rotate">Rotating the map</a></li>
-      <li><a class="govuk-link" href="#location-info">Viewing information about a location</a></li>
-      <li><a class="govuk-link" href="#accessibility">Accessibility and keyboard-only use</a></li>
-    </ul>
+      <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible" />
 
-    <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+      {# Pan #}
+      <h2 class="govuk-heading-l" id="pan">Panning/dragging the map</h2>
 
-    {# Pan #}
-    <h2 class="govuk-heading-l" id="pan">Panning/dragging the map</h2>
+      <p class="govuk-body">Panning moves the visible area of the map left, right, up or down.</p>
 
-    <p class="govuk-body">
-      Panning moves the visible area of the map left, right, up or down.
-    </p>
+      <h3 class="govuk-heading-m">Using a keyboard</h3>
+      <ul class="govuk-list govuk-list--bullet">
+        <li>Select the map area by clicking on it or pressing <kbd>Tab</kbd> until the map is focused.</li>
+        <li>Press the arrow keys to move the map up, down, left or right.</li>
+        <li>Press and hold an arrow key to continue panning in that direction.</li>
+      </ul>
 
-    <h3 class="govuk-heading-m">Using a keyboard</h3>
-    <ul class="govuk-list govuk-list--bullet">
-      <li>Select the map area by clicking on it or pressing <kbd>Tab</kbd> until the map is focused.</li>
-      <li>Press the arrow keys to move the map up, down, left or right.</li>
-      <li>Press and hold an arrow key to continue panning in that direction.</li>
-    </ul>
+      <h3 class="govuk-heading-m">Using a mouse</h3>
+      <ul class="govuk-list govuk-list--bullet">
+        <li>Move the pointer over the map.</li>
+        <li>Press and hold the left mouse button.</li>
+        <li>Drag in any direction to move the map.</li>
+        <li>Release the button when the map is in the position you want.</li>
+      </ul>
 
-    <h3 class="govuk-heading-m">Using a mouse</h3>
-    <ul class="govuk-list govuk-list--bullet">
-      <li>Move the pointer over the map.</li>
-      <li>Press and hold the left mouse button.</li>
-      <li>Drag in any direction to move the map.</li>
-      <li>Release the button when the map is in the position you want.</li>
-    </ul>
+      <h3 class="govuk-heading-m">Using a trackpad</h3>
+      <ul class="govuk-list govuk-list--bullet">
+        <li>Move the pointer over the map.</li>
+        <li>Press and hold on the trackpad (one finger), then drag to move the map.</li>
+      </ul>
 
-    <h3 class="govuk-heading-m">Using a trackpad</h3>
-    <ul class="govuk-list govuk-list--bullet">
-      <li>Move the pointer over the map.</li>
-      <li>Press and hold on the trackpad (one finger), then drag to move the map.</li>
-    </ul>
+      <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible" />
 
-    <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+      {# Zoom #}
+      <h2 class="govuk-heading-l" id="zoom">Zooming in and out</h2>
 
-    {# Zoom #}
-    <h2 class="govuk-heading-l" id="zoom">Zooming in and out</h2>
+      <p class="govuk-body">Zooming lets you see more detail (zoom in) or a larger area (zoom out).</p>
 
-    <p class="govuk-body">
-      Zooming lets you see more detail (zoom in) or a larger area (zoom out).
-    </p>
+      <h3 class="govuk-heading-m">Using the map control buttons</h3>
+      <ul class="govuk-list govuk-list--bullet">
+        <li>
+          Find the zoom controls on the map (usually plus <kbd>+</kbd> and minus <kbd>-</kbd> buttons, top left corner
+          of the map).
+        </li>
+        <li>Select the <kbd>+</kbd> button to zoom in.</li>
+        <li>Select the <kbd>-</kbd> button to zoom out.</li>
+        <li>Or, drag the slider up to zoom in and down to zoom out.</li>
+      </ul>
 
-    <h3 class="govuk-heading-m">Using the map control buttons</h3>
-    <ul class="govuk-list govuk-list--bullet">
-      <li>Find the zoom controls on the map (usually plus <kbd>+</kbd> and minus <kbd>-</kbd> buttons, top left corner of the map).</li>
-      <li>Select the <kbd>+</kbd> button to zoom in.</li>
-      <li>Select the <kbd>-</kbd> button to zoom out.</li>
-      <li>Or, drag the slider up to zoom in and down to zoom out.</li>
-    </ul>
+      <h3 class="govuk-heading-m">Using a keyboard</h3>
+      <ul class="govuk-list govuk-list--bullet">
+        <li>Press <kbd>+</kbd> to zoom in.</li>
+        <li>Press <kbd>-</kbd> to zoom out.</li>
+        <li>
+          Some keyboards (e.g. Macbooks) require you to hold <kbd>Shift</kbd> and press <kbd>=</kbd> for <kbd>+</kbd>.
+        </li>
+      </ul>
 
-    <h3 class="govuk-heading-m">Using a keyboard</h3>
-    <ul class="govuk-list govuk-list--bullet">
-      <li>Press <kbd>+</kbd> to zoom in.</li>
-      <li>Press <kbd>-</kbd> to zoom out.</li>
-      <li>Some keyboards (e.g. Macbooks) require you to hold <kbd>Shift</kbd> and press <kbd>=</kbd> for <kbd>+</kbd>.</li>
-    </ul>
+      <h3 class="govuk-heading-m">Using a mouse</h3>
+      <ul class="govuk-list govuk-list--bullet">
+        <li>Move the pointer over the map.</li>
+        <li>
+          Use the mouse wheel:
+          <ul class="govuk-list govuk-list--bullet">
+            <li>scroll up to zoom in</li>
+            <li>scroll down to zoom out</li>
+          </ul>
+        </li>
+        <li>Double-click the left mouse button to zoom in on a point.</li>
+        <li>Hold <kbd>Shift</kbd> and drag a box to zoom to a specific area (if enabled).</li>
+      </ul>
 
-    <h3 class="govuk-heading-m">Using a mouse</h3>
-    <ul class="govuk-list govuk-list--bullet">
-      <li>Move the pointer over the map.</li>
-      <li>Use the mouse wheel:
-        <ul class="govuk-list govuk-list--bullet">
-          <li>scroll up to zoom in</li>
-          <li>scroll down to zoom out</li>
-        </ul>
-      </li>
-      <li>Double-click the left mouse button to zoom in on a point.</li>
-      <li>Hold <kbd>Shift</kbd> and drag a box to zoom to a specific area (if enabled).</li>
-    </ul>
+      <h3 class="govuk-heading-m">Using a trackpad</h3>
+      <ul class="govuk-list govuk-list--bullet">
+        <li>Move the pointer over the map.</li>
+        <li>
+          Use a pinch gesture:
+          <ul class="govuk-list govuk-list--bullet">
+            <li>pinch in to zoom out</li>
+            <li>pinch out to zoom in</li>
+          </ul>
+        </li>
+        <li>On some devices, two-finger scrolling up or down will also zoom the map.</li>
+      </ul>
 
-    <h3 class="govuk-heading-m">Using a trackpad</h3>
-    <ul class="govuk-list govuk-list--bullet">
-      <li>Move the pointer over the map.</li>
-      <li>Use a pinch gesture:
-        <ul class="govuk-list govuk-list--bullet">
-          <li>pinch in to zoom out</li>
-          <li>pinch out to zoom in</li>
-        </ul>
-      </li>
-      <li>On some devices, two-finger scrolling up or down will also zoom the map.</li>
-    </ul>
+      <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible" />
 
-    <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+      {# Rotate #}
+      <h2 class="govuk-heading-l" id="rotate">Rotating the map</h2>
 
-    {# Rotate #}
-    <h2 class="govuk-heading-l" id="rotate">Rotating the map</h2>
+      <p class="govuk-body">Use the shortcuts below to rotate the map.</p>
 
-    <p class="govuk-body">
-      Use the shortcuts below to rotate the map.
-    </p>
+      <h3 class="govuk-heading-m">Using a keyboard and mouse</h3>
+      <ul class="govuk-list govuk-list--bullet">
+        <li>Move the pointer over the map.</li>
+        <li>Hold down <kbd>Ctrl</kbd>.</li>
+        <li>While holding <kbd>Ctrl</kbd>, drag with the left mouse button to rotate the map.</li>
+        <li>Alternatively, right-click and drag to rotate the map.</li>
+      </ul>
 
-    <h3 class="govuk-heading-m">Using a keyboard and mouse</h3>
-    <ul class="govuk-list govuk-list--bullet">
-      <li>Move the pointer over the map.</li>
-      <li>Hold down <kbd>Ctrl</kbd>.</li>
-      <li>While holding <kbd>Ctrl</kbd>, drag with the left mouse button to rotate the map.</li>
-      <li>Alternatively, right-click and drag to rotate the map.</li>
-    </ul>
+      <h3 class="govuk-heading-m">Using a trackpad</h3>
+      <ul class="govuk-list govuk-list--bullet">
+        <li>Move the pointer over the map.</li>
+        <li>Hold down <kbd>Ctrl</kbd>.</li>
+        <li>While holding <kbd>Ctrl</kbd>, drag on the trackpad to rotate the map.</li>
+      </ul>
 
-    <h3 class="govuk-heading-m">Using a trackpad</h3>
-    <ul class="govuk-list govuk-list--bullet">
-      <li>Move the pointer over the map.</li>
-      <li>Hold down <kbd>Ctrl</kbd>.</li>
-      <li>While holding <kbd>Ctrl</kbd>, drag on the trackpad to rotate the map.</li>
-    </ul>
+      <p class="govuk-inset-text">
+        To reset the map so that north is at the top again, select the “reset rotation” or compass control button or
+        refresh the page.
+      </p>
 
-    <p class="govuk-inset-text">
-      To reset the map so that north is at the top again, select the
-      “reset rotation” or compass control button or refresh the page.
-    </p>
+      <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible" />
 
-    <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+      {# Location info #}
+      <h2 class="govuk-heading-l" id="location-info">Viewing information about a location</h2>
 
-    {# Location info #}
-    <h2 class="govuk-heading-l" id="location-info">Viewing information about a location</h2>
+      <p class="govuk-body">
+        The map shows locations as points (sometimes called markers or features). You can open more information about a
+        location from the map.
+      </p>
 
-    <p class="govuk-body">
-      The map shows locations as points (sometimes called markers or features).
-      You can open more information about a location from the map.
-    </p>
+      <h3 class="govuk-heading-m">Using a mouse or trackpad</h3>
+      <ul class="govuk-list govuk-list--bullet">
+        <li>Move the pointer over the location point on the map.</li>
+        <li>Click once to open the information panel or popup for that location.</li>
+        <li>Use the “Close” button or click anywhere on the map to close it.</li>
+      </ul>
 
-    <h3 class="govuk-heading-m">Using a mouse or trackpad</h3>
-    <ul class="govuk-list govuk-list--bullet">
-      <li>Move the pointer over the location point on the map.</li>
-      <li>Click once to open the information panel or popup for that location.</li>
-      <li>Use the “Close” button or click anywhere on the map to close it.</li>
-    </ul>
+      <h3 class="govuk-heading-m">Using a keyboard</h3>
+      <ul class="govuk-list govuk-list--bullet">
+        <li>Press <kbd>Tab</kbd> to move focus onto the map controls.</li>
+        <li>When the information panel is open, press <kbd>Tab</kbd> to move to the Close button.</li>
+        <li>Press <kbd>Enter</kbd> to activate the Close button and close the panel.</li>
+      </ul>
 
-    <h3 class="govuk-heading-m">Using a keyboard</h3>
-    <ul class="govuk-list govuk-list--bullet">
-      <li>Press <kbd>Tab</kbd> to move focus onto the map controls.</li>
-      <li>When the information panel is open, press <kbd>Tab</kbd> to move to the Close button.</li>
-      <li>Press <kbd>Enter</kbd> to activate the Close button and close the panel.</li>
-    </ul>
-
-    <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
-
+      <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible" />
+    </div>
   </div>
-</div>
 {% endblock %}
