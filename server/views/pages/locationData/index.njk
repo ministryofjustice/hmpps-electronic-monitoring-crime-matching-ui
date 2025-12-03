@@ -23,28 +23,37 @@
   {% set deviceId = searchTerm %}
 {% endif %}
 
+
 {% set nameHtml %}
-  {{ govukInput({
-    id: "name",
-    name: "name",
-    value: name
-  }) }}
+  {{
+    govukInput({
+      id: "name",
+      name: "name",
+      value: name
+    })
+  }}
 {% endset %}
+
 
 {% set nomisIdHtml %}
-{{ govukInput({
-  id: "nomis-id",
-  name: "nomisId",
-  value: nomisId
-}) }}
+  {{
+    govukInput({
+      id: "nomis-id",
+      name: "nomisId",
+      value: nomisId
+    })
+  }}
 {% endset %}
 
+
 {% set deviceIdHtml %}
-{{ govukInput({
-  id: "device-id",
-  name: "deviceId",
-  value: deviceId
-}) }}
+  {{
+    govukInput({
+      id: "device-id",
+      name: "deviceId",
+      value: deviceId
+    })
+  }}
 {% endset %}
 
 {% for person in persons %}
@@ -95,43 +104,45 @@
     <div class="govuk-grid-column-one-quarter">
       <form method="post" novalidate id="person-search-form">
         <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
-        {{ govukRadios({
-          classes: "govuk-radios--small",
-          name: "searchField",
-          fieldset: {
-            legend: {
-              text: "Search",
-              classes: "govuk-fieldset__legend--s"
-            }
-          },
-          errorMessage: errors.searchField,
-          items: [
-            {
-              value: "name",
-              text: "Name",
-              checked: searchField === 'name',
-              conditional: {
-                html: nameHtml
+        {{
+          govukRadios({
+            classes: "govuk-radios--small",
+            name: "searchField",
+            fieldset: {
+              legend: {
+                text: "Search",
+                classes: "govuk-fieldset__legend--s"
               }
             },
-            {
-              value: "nomisId",
-              text: "NOMIS ID",
-              checked: searchField === 'nomisId',
-              conditional: {
-                html: nomisIdHtml
+            errorMessage: errors.searchField,
+            items: [
+              {
+                value: "name",
+                text: "Name",
+                checked: searchField === 'name',
+                conditional: {
+                  html: nameHtml
+                }
+              },
+              {
+                value: "nomisId",
+                text: "NOMIS ID",
+                checked: searchField === 'nomisId',
+                conditional: {
+                  html: nomisIdHtml
+                }
+              },
+              {
+                value: "deviceId",
+                text: "Device ID",
+                checked: searchField === 'deviceId',
+                conditional: {
+                  html: deviceIdHtml
+                }
               }
-            },
-            {
-              value: "deviceId",
-              text: "Device ID",
-              checked: searchField === 'deviceId',
-              conditional: {
-                html: deviceIdHtml
-              }
-            }
-          ]
-        }) }}
+            ]
+          })
+        }}
 
         {{
           govukButton({
@@ -147,9 +158,7 @@
     </div>
 
     <div class="govuk-grid-column-three-quarters">
-      <h2 class="govuk-heading-s">
-        Results
-      </h2>
+      <h2 class="govuk-heading-s">Results</h2>
       {{
         dataTable({
           classes: "person-table",

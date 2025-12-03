@@ -25,7 +25,7 @@ jobs:
       - name: update npm
         shell: bash
         run: |
-          sudo npm install -g npm@latest
+          npm install -g npm@latest
       - name: restore cache
         id: restore-cache
         uses: actions/cache/restore@v4
@@ -43,5 +43,4 @@ jobs:
           npm ci --no-audit
       - name: check nunjucks file formatting
         shell: bash
-        run: |
-          npx prettier server/**/*.njk --check
+        run: npx prettier "server/**/*.njk" --check
