@@ -8,6 +8,7 @@
 
 {% set pageTitle = applicationName + " - Home" %}
 {% set mainClasses = "app-container govuk-body location-data" %}
+{% set pageType = "subject" %}
 {% set activeLinkId = "location-data" %}
 
 
@@ -24,6 +25,7 @@
   {{
     govukCheckboxes({
       id: "locations",
+      classes: "govuk-checkboxes--small",
       name: "locations",
       fieldset: {
         legend: {
@@ -45,6 +47,7 @@
   {{
     govukCheckboxes({
       id: "confidence",
+      classes: "govuk-checkboxes--small",
       name: "confidence",
       fieldset: {
         legend: {
@@ -66,6 +69,7 @@
   {{
     govukCheckboxes({
       id: "tracks",
+      classes: "govuk-checkboxes--small",
       name: "tracks",
       fieldset: {
         legend: {
@@ -87,6 +91,7 @@
   {{
     govukCheckboxes({
       id: "numbering",
+      classes: "govuk-checkboxes--small",
       name: "numbering",
       fieldset: {
         legend: {

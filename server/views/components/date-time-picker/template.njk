@@ -2,6 +2,7 @@
 {% from "govuk/components/input/macro.njk" import govukInput %}
 
 <div id="{{ params.id }}">
+
   {{
     mojDatePicker({
       id: params.id + "-date",
@@ -12,62 +13,80 @@
       },
       errorMessage: params.errors,
       hint: {
-        text: "For example, 17/5/2024."
+        text: "For example, 17/11/2025."
       },
       value: params.value.date
     })
   }}
 
-  <div class="govuk-date-input">
-    <div class="govuk-date-input__item">
-      <div class="govuk-form-group">
-        {{
-          govukInput({
-            label: {
-              text: "Hour",
-              classes: "govuk-label--s"
-            },
-            classes: "govuk-date-input__input govuk-input--width-2",
-            id: params.id + "-hour",
-            name: params.name + "[hour]",
-            value: params.value.hour
-          })
-        }}
-      </div>
+  {# Hidden seconds field, always "00" #}
+  <input
+    type="hidden"
+    name="{{ params.name }}[second]"
+    value="{{ params.value.second | default('00') }}"
+  />
+
+  {# If there is an error on the date-time, visually mark the time inputs too #}
+  {% set defaultTimeClasses = "govuk-date-input__input govuk-input--width-2" %}
+  {% set hourClasses = defaultTimeClasses %}
+  {% set minuteClasses = defaultTimeClasses %}
+
+  {% if params.errors %}
+    {% set hourClasses = hourClasses + " govuk-input--error" %}
+    {% set minuteClasses = minuteClasses + " govuk-input--error" %}
+  {% endif %}
+
+  <div class="govuk-form-group govuk-!-margin-top-2{% if params.errors %} govuk-form-group--error{% endif %}">
+    <div class="govuk-label-wrapper">
+      <h3 class="govuk-label govuk-label--s" id="{{ params.id }}-time-label">
+        {{ params.timeLabel }}
+      </h3>
     </div>
 
-    <div class="govuk-date-input__item">
-      <div class="govuk-form-group">
-        {{
-          govukInput({
-            label: {
-              text: "Minute",
-              classes: "govuk-label--s"
-            },
-            classes: "govuk-date-input__input govuk-input--width-2",
-            id: params.id + "-minute",
-            name: params.name + "[minute]",
-            value: params.value.minute
-          })
-        }}
-      </div>
-    </div>
+    {# Keep a fieldset for grouping, but hide the legend visually #}
+    <fieldset class="govuk-fieldset" role="group" aria-labelledby="{{ params.id }}-time-label">
+      <legend class="govuk-fieldset__legend govuk-visually-hidden">
+        {{ params.timeLabel }}
+      </legend>
 
-    <div class="govuk-date-input__item">
-      <div class="govuk-form-group">
-        {{
-          govukInput({
-            label: {
-              text: "Second",
-              classes: "govuk-label--s"
-            },
-            classes: "govuk-date-input__input govuk-input--width-2",
-            id: params.id + "-second",
-            name: params.name + "[second]",
-            value: params.value.second
-          })
-        }}
+      <div class="govuk-date-input">
+
+        <div class="govuk-date-input__item">
+          <div class="govuk-form-group{% if params.errors %} govuk-form-group--error{% endif %}">
+            {{
+              govukInput({
+                label: {
+                  text: "Hour",
+                  classes: "govuk-label--s"
+                },
+                classes: hourClasses,
+                id: params.id + "-hour",
+                name: params.name + "[hour]",
+                value: params.value.hour
+              })
+            }}
+          </div>
+        </div>
+
+        <div class="govuk-date-input__item">
+          <div class="govuk-form-group">
+            {{
+              govukInput({
+                label: {
+                  text: "Minute",
+                  classes: "govuk-label--s"
+                },
+                classes: minuteClasses,
+                id: params.id + "-minute",
+                name: params.name + "[minute]",
+                value: params.value.minute
+              })
+            }}
+          </div>
+        </div>
+
       </div>
-    </div>
+    </fieldset>
   </div>
+
 </div>

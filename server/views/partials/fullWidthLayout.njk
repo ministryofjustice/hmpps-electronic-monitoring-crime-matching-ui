@@ -21,6 +21,7 @@
     <main
       class="govuk-main-wrapper {% if mainClasses %}{{ mainClasses }}{% endif %}"
       id="main-content"
+      data-page="{{ pageType | default('') }}"
       {%- if mainLang %}lang="{{ mainLang }}"{% endif %}
     >
       {% block content %}{% endblock %}

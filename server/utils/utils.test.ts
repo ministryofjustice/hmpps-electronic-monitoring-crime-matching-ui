@@ -2,7 +2,7 @@ import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
 import timezone from 'dayjs/plugin/timezone'
 import { convertToTitleCase, initialiseName } from './utils'
-import { formatDate } from './date'
+import { formatDate, formatDob } from './date'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
@@ -45,5 +45,19 @@ describe('formatDate', () => {
     ['BST', '2025-08-01T12:15:00.000Z', '01/08/2025 13:15'],
   ])('%s formatDate(%s)', (_: string, datetime: string | undefined | null, expected: string) => {
     expect(formatDate(datetime)).toEqual(expected)
+  })
+})
+
+describe('formatDob', () => {
+  it.each([
+    ['Undefined', undefined, ''],
+    ['Null', null, ''],
+    ['Empty string', '', ''],
+    ['Invalid date', 'foo', ''],
+    ['ISO date only', '2000-12-01', '01/12/2000'],
+    ['Midnight UTC (date of birth stored as timestamp)', '2000-12-01T00:00:00.000Z', '01/12/2000'],
+    ['Midnight UTC during BST', '2000-08-01T00:00:00.000Z', '01/08/2000'],
+  ])('%s formatDob(%s)', (_: string, datetime: string | undefined | null, expected: string) => {
+    expect(formatDob(datetime)).toEqual(expected)
   })
 })

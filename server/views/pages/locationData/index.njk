@@ -1,4 +1,4 @@
-{% extends "../../partials/layout.njk" %}
+{% extends "../../partials/fullWidthLayout.njk" %}
 {% from "govuk/components/input/macro.njk" import govukInput %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
@@ -8,6 +8,7 @@
 
 {% set pageTitle = applicationName + " - Persons Search" %}
 {% set mainClasses = "app-container govuk-body device-activation-search" %}
+{% set pageType = "index" %}
 {% set rows = [] %}
 {% set pageSize = 10 %}
 {% set currentPage = 1 %}
@@ -26,8 +27,7 @@
   {{ govukInput({
     id: "name",
     name: "name",
-    value: name,
-    classes: "govuk-!-width-two-thirds"
+    value: name
   }) }}
 {% endset %}
 
@@ -35,8 +35,7 @@
 {{ govukInput({
   id: "nomis-id",
   name: "nomisId",
-  value: nomisId,
-  classes: "govuk-!-width-two-thirds"
+  value: nomisId
 }) }}
 {% endset %}
 
@@ -44,8 +43,7 @@
 {{ govukInput({
   id: "device-id",
   name: "deviceId",
-  value: deviceId,
-  classes: "govuk-!-width-two-thirds"
+  value: deviceId
 }) }}
 {% endset %}
 
@@ -60,7 +58,8 @@
                     <input type="radio" class="govuk-radios__input" name="deviceActivationId" id="' + deviceActivation.deviceActivationId + '" value="' + deviceActivation.deviceActivationId + '" autocomplete="off"' + selected +'>
                     <label class="govuk-label govuk-radios__label" for="' + deviceActivation.deviceActivationId + '">
                     </label>
-                  </div>'
+                  </div>',
+            classes: "person-table__column-radio"
           },
           {
             text: person.nomisId
@@ -69,10 +68,11 @@
             text: person.name
           },
           {
-            text: person.dateOfBirth | formatDate
+            text: person.dateOfBirth | formatDob
           },
           {
-            text: person.address
+            text: person.address,
+            classes: "person-table__column-address"
           },
           {
             text: deviceActivation.deviceId
@@ -90,20 +90,17 @@
 {% endfor %}
 
 {% block content %}
+  <h1 class="govuk-heading-m">Search Location Data</h1>
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-one-quarter">
-      <h1 class="govuk-heading-m">Search Location Data</h1>
       <form method="post" novalidate id="person-search-form">
         <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
         {{ govukRadios({
+          classes: "govuk-radios--small",
           name: "searchField",
-          hint: {
-            text: "Select one option"
-          },
           fieldset: {
             legend: {
               text: "Search",
-              isPageHeading: true,
               classes: "govuk-fieldset__legend--s"
             }
           },
@@ -145,19 +142,21 @@
         }}
       </form>
       <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible" />
+      {% set hideWithJs = true %}
       {% include "./partials/dateFilterForm.njk" %}
     </div>
 
     <div class="govuk-grid-column-three-quarters">
-      <h2 class="govuk-heading-m">
+      <h2 class="govuk-heading-s">
         Results
-        <span class="govuk-caption-m">Select a row before applying dates and time</span>
       </h2>
       {{
         dataTable({
+          classes: "person-table",
           columns: [
             {
-              text: ""
+              text: "",
+              classes: "person-table__head-radio"
             },
             {
               text: "NOMIS ID"
@@ -169,16 +168,19 @@
               text: "Date of Birth"
             },
             {
-              text: "Address"
+              text: "Address",
+              classes: "person-table__head-address"
             },
             {
               text: "Device ID"
             },
             {
-              text: "Tag Period Start"
+              text: "Tag Period Start",
+              classes: "person-table__head-tag-start"
             },
             {
-              text: "Tag Period End"
+              text: "Tag Period End",
+              classes: "person-table__head-tag-end"
             }
           ],
           rows: rows,

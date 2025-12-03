@@ -15,11 +15,11 @@ export default class SearchDeviceActivationPositionsFormComponent extends FormCo
   // FIELDS
 
   get fromDateField(): FormDateTimeComponent {
-    return new FormDateTimeComponent(this.form, '#from-date', 'Date from')
+    return new FormDateTimeComponent(this.form, '#from-date', 'fromDate', 'Date from')
   }
 
   get toDateField(): FormDateTimeComponent {
-    return new FormDateTimeComponent(this.form, '#to-date', 'Date to')
+    return new FormDateTimeComponent(this.form, '#to-date', 'toDate', 'Date to')
   }
 
   get continueButton(): PageElement {

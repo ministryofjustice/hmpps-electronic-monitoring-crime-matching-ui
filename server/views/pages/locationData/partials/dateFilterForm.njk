@@ -1,24 +1,35 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "../../../components/date-time-picker/macro.njk" import dateTimePicker %}
 
-<form id="dateFilterForm" method="POST">
+{% set hideWithJs = hideWithJs | default(false) %}
+
+<form id="dateFilterForm" class="date-filter{% if hideWithJs %} date-filter--js-hidden{% endif %}" method="POST">
   <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
   <input type="hidden" name="origin" value="{{ origin }}" />
+
+  {% if pageType == "index" %}
+    <h2 class="govuk-heading-m">Time</h2>
+  {% endif %}
+
   {{
     dateTimePicker({
       id: "from-date",
       name: "fromDate",
       text: "Date from",
+      timeLabel: "Time from",
       value: formData.fromDate,
       errors: errors.fromDate
     })
   }}
+
+  <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible" />
 
   {{
     dateTimePicker({
       id: "to-date",
       name: "toDate",
       text: "Date to",
+      timeLabel: "Time to",
       value: formData.toDate,
       errors: errors.toDate
     })

@@ -15,5 +15,13 @@
       border-left: none;
       border-bottom: none;
     }
+
+    .govuk-form-group {
+      @include govuk-responsive-margin(4, "bottom");
+    }
+
+    .govuk-fieldset__legend  {
+      margin-bottom: 0;
+    }
   }
 }

@@ -23,6 +23,7 @@ const initialiseLocationDataView = async () => {
     new LocationsLayer({
       title: 'pointsLayer',
       positions,
+      zIndex: 2,
     }),
   )!
 
@@ -31,6 +32,7 @@ const initialiseLocationDataView = async () => {
       title: 'tracksLayer',
       positions,
       visible: false,
+      zIndex: 1,
     }),
   )!
 
@@ -58,7 +60,7 @@ const initialiseLocationDataView = async () => {
       textProperty: 'sequenceNumber',
       title: 'numberingLayer',
       visible: false,
-      zIndex: 30,
+      zIndex: 4,
     }),
   )
 
