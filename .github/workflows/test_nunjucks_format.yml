@@ -43,4 +43,4 @@ jobs:
           npm ci --no-audit
       - name: check nunjucks file formatting
         shell: bash
-        run: npx prettier server/**/*.njk --check
+        run: npx prettier server/**/*.njk --check --log-level debug
