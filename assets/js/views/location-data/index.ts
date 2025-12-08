@@ -23,7 +23,7 @@ const initialiseLocationDataView = async () => {
     new LocationsLayer({
       title: 'pointsLayer',
       positions,
-      zIndex: 2,
+      zIndex: 4,
     }),
   )!
 
@@ -42,13 +42,13 @@ const initialiseLocationDataView = async () => {
       id: 'confidence',
       title: 'confidenceLayer',
       visible: false,
-      zIndex: 20,
+      zIndex: 3,
       style: {
         fill: null,
         stroke: {
           color: 'rgba(242, 201, 76, 1)',
           lineDash: [8, 8],
-          width: 3,
+          width: 2,
         },
       },
     }),
@@ -60,7 +60,7 @@ const initialiseLocationDataView = async () => {
       textProperty: 'sequenceNumber',
       title: 'numberingLayer',
       visible: false,
-      zIndex: 4,
+      zIndex: 3,
     }),
   )
 

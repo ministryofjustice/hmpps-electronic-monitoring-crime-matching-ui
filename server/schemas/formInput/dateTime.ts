@@ -8,7 +8,7 @@ const DateTimeInputModel = z
     date: z.string(),
     hour: z.string(),
     minute: z.string(),
-    second: z.string(),
+    second: z.string().optional().default('00'),
   })
   .check(ctx => {
     if (Object.values(ctx.value).some(value => value === '' || value === undefined)) {
@@ -25,7 +25,7 @@ const DateTimeInputModel = z
       ctx.value.date,
       ctx.value.hour,
       ctx.value.minute,
-      ctx.value.second,
+      ctx.value.second ?? '00',
     )
 
     if (!formattedDateTime.isValid()) {
