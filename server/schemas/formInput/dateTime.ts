@@ -8,7 +8,7 @@ const DateTimeInputModel = z
     date: z.string(),
     hour: z.string(),
     minute: z.string(),
-    second: z.string(),
+    second: z.string().optional(),
   })
   .check(ctx => {
     if (Object.values(ctx.value).some(value => value === '' || value === undefined)) {

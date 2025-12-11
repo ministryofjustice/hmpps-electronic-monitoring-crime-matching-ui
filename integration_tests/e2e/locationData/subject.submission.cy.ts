@@ -47,7 +47,7 @@ context('Location Data', () => {
       page.map.sidebar.form.continueButton.click()
 
       page = Page.verifyOnPage(SubjectPage)
-      cy.url().should('contain', '?from=2025-01-03T01:02:03.000Z&to=2025-01-04T04:05:06.000Z')
+      cy.url().should('contain', '?from=2025-01-03T01:02:00.000Z&to=2025-01-04T04:05:00.000Z')
 
       page.map.sidebar.form.fromDateField.shouldHaveValue({
         date: '03/01/2025',

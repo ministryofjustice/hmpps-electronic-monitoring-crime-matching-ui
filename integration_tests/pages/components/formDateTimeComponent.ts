@@ -2,14 +2,13 @@ import { v4 as uuidv4 } from 'uuid'
 
 import { PageElement } from '../page'
 import FormInputComponent from './formInputComponent'
-import FormHiddenInputComponent from './formHiddenInputComponent'
 import FormDateComponent from './formDateComponent'
 
 export type FormDateTimeData = {
   date: string
   hour: string
   minute: string
-  second: string
+  second?: string
 }
 
 export default class FormDateTimeComponent {
@@ -43,38 +42,30 @@ export default class FormDateTimeComponent {
     return new FormInputComponent(this.element, 'Minute')
   }
 
-  get secondComponent(): FormHiddenInputComponent {
-    return new FormHiddenInputComponent(this.element, `input[name="${this.name}[second]"]`)
-  }
-
   // HELPERS
 
   set(data: FormDateTimeData) {
     this.dateComponent.set(data.date)
     this.hourComponent.set(data.hour)
     this.minuteComponent.set(data.minute)
-    this.secondComponent.set(data.second)
   }
 
   shouldBeDisabled() {
     this.dateComponent.shouldBeDisabled()
     this.hourComponent.shouldBeDisabled()
     this.minuteComponent.shouldBeDisabled()
-    this.secondComponent.shouldBeDisabled()
   }
 
   shouldNotBeDisabled(): void {
     this.dateComponent.shouldNotBeDisabled()
     this.hourComponent.shouldNotBeDisabled()
     this.minuteComponent.shouldNotBeDisabled()
-    this.secondComponent.shouldNotBeDisabled()
   }
 
   shouldHaveValue(data: FormDateTimeData) {
     this.dateComponent.shouldHaveValue(data.date)
     this.hourComponent.shouldHaveValue(data.hour)
     this.minuteComponent.shouldHaveValue(data.minute)
-    this.secondComponent.shouldHaveValue(data.second)
   }
 
   shouldHaveValidationMessage(message: string) {
