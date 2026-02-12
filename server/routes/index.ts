@@ -10,6 +10,7 @@ import HelpController from '../controllers/help'
 import PersonsController from '../controllers/locationData/persons'
 import populateSessionData from '../middleware/populateSessionData'
 import locationDataRoutes from './location-data'
+import proximityAlertRoutes from './proximity-alert'
 
 export default function routes(services: Services): Router {
   const { auditService, crimeBatchesService, crimeMappingService, personsService } = services
@@ -43,6 +44,12 @@ export default function routes(services: Services): Router {
   post('/location-data/persons', personsController.search)
 
   router.use('/location-data', locationDataRoutes(services))
+
+  router.get('/proximity-alert', (req, res) => {
+    res.redirect('/proximity-alert/1')
+  })
+
+  router.use('/proximity-alert/:id', proximityAlertRoutes())
 
   return router
 }

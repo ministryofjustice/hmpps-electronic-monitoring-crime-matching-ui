@@ -1,0 +1,75 @@
+{% extends "../../partials/fullWidthLayout.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "../../components/map/macro.njk" import appMap %}
+
+{% set mainClasses = "app-container govuk-body proximity-alert" %}
+{% set pageType = "proximity-alert" %}
+{% set activeLinkId = "proximity-alert" %}
+
+{% set sidebarHtml %}
+  <div class="govuk-!-padding-3">
+
+    <div class="govuk-!-margin-bottom-4">
+      <button type="button" class="govuk-button govuk-button--secondary govuk-!-width-full" id="preset-default">
+        Default map view
+      </button>
+
+      <button type="button" class="govuk-button govuk-button--secondary govuk-!-width-full" id="preset-image-1">
+        Proximity Alert: Image 1
+      </button>
+
+      <button type="button" class="govuk-button govuk-button--secondary govuk-!-width-full" id="preset-image-2">
+        Proximity Alert: Image 2
+      </button>
+    </div>
+
+    <h3 class="govuk-heading-s">Test data</h3>
+
+    <div class="govuk-radios govuk-radios--small" data-module="govuk-radios">
+      <div class="govuk-radios__item">
+        <input class="govuk-radios__input" id="fixture-a" name="fixture" type="radio" value="clustered" {% if selectedFixture == "clustered" %}checked{% endif %}>
+        <label class="govuk-label govuk-radios__label" for="fixture-a">
+          Scenario A - Clustered
+        </label>
+      </div>
+
+      <div class="govuk-radios__item">
+        <input class="govuk-radios__input" id="fixture-b" name="fixture" type="radio" value="opposite" {% if selectedFixture == "opposite" %}checked{% endif %}>
+        <label class="govuk-label govuk-radios__label" for="fixture-b">
+          Scenario B - Opposite sides
+        </label>
+      </div>
+
+      <div class="govuk-radios__item">
+        <input class="govuk-radios__input" id="fixture-c" name="fixture" type="radio" value="sparse" {% if selectedFixture == "sparse" %}checked{% endif %}>
+        <label class="govuk-label govuk-radios__label" for="fixture-c">
+          Scenario C - Sparse
+        </label>
+      </div>
+    </div>
+
+    <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible" />
+
+    {{ govukButton({
+      text: "Export map images (ZIP)",
+      attributes: {
+        id: "export-map-images",
+        type: "button"
+      }
+    }) }}
+    <p class="govuk-body" id="export-status"></p>
+  </div>
+{% endset %}
+
+{% block content %}
+  {{
+    appMap({
+      apiKey: apiKey,
+      cspNonce: cspNonce,
+      positions: positions,
+      alerts: alerts,
+      usesInternalOverlays: usesInternalOverlays,
+      sidebarHtml: sidebarHtml
+    })
+  }}
+{% endblock %}

@@ -1,0 +1,62 @@
+{
+  "crimeVersion": {
+    "crimeVersionId": "252a9a57-337f-4208-908b-2874b75fa10f",
+    "crimeReference": "CR-2026-000123",
+    "crimeType": "Burglary",
+    "fromDateTime": "2026-01-16T08:00:00Z",
+    "toDateTime": "2026-01-16T09:00:00Z",
+    "latitude": 51.5745,
+    "longitude": 0.060299,
+    "crimeText": "Suspect seen near address shortly after break-in."
+  },
+  "matchedDeviceWearers": [
+    {
+      "deviceWearerId": "604008982",
+      "name": "Richard Gibbons",
+      "nomisId": "A5128CZ",
+      "deviceId": 604008982,
+      "positions": [
+        {
+          "positionId": "A1",
+          "capturedDateTime": "2026-01-16T08:13:03Z",
+          "sequenceLabel": "A1",
+          "latitude": 51.57495,
+          "longitude": 0.06075,
+          "confidenceCircle": 40
+        },
+        {
+          "positionId": "A2",
+          "capturedDateTime": "2026-01-16T08:14:03Z",
+          "sequenceLabel": "A2",
+          "latitude": 51.5748,
+          "longitude": 0.06062,
+          "confidenceCircle": 30
+        }
+      ]
+    },
+    {
+      "deviceWearerId": "704008982",
+      "name": "Steven Jones",
+      "nomisId": "B5128CZ",
+      "deviceId": 704008982,
+      "positions": [
+        {
+          "positionId": "B1",
+          "capturedDateTime": "2026-01-16T08:13:30Z",
+          "sequenceLabel": "B1",
+          "latitude": 51.57405,
+          "longitude": 0.05984,
+          "confidenceCircle": 50
+        },
+        {
+          "positionId": "B2",
+          "capturedDateTime": "2026-01-16T08:14:30Z",
+          "sequenceLabel": "B2",
+          "latitude": 51.5742,
+          "longitude": 0.05998,
+          "confidenceCircle": 40
+        }
+      ]
+    }
+  ]
+}

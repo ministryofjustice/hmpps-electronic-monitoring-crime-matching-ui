@@ -12,6 +12,7 @@ $govuk-page-width: $moj-page-width;
 @import './components/map';
 @import './views/location-data/index';
 @import './views/location-data/subject';
+@import './views/proximity-alert/matching-results';
 @import './local';
 
 .govuk-full-width-container {

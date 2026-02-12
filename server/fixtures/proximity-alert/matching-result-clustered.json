@@ -1,0 +1,94 @@
+{
+  "crimeVersion": {
+    "crimeVersionId": "252a9a57-337f-4208-908b-2874b75fa10f",
+    "crimeReference": "CR-2026-000123",
+    "crimeType": "Burglary",
+    "fromDateTime": "2026-01-16T08:00:00Z",
+    "toDateTime": "2026-01-16T09:00:00Z",
+    "latitude": 51.5745,
+    "longitude": 0.060499,
+    "crimeText": "Suspect seen near address shortly after break-in."
+  },
+  "matchedDeviceWearers": [
+    {
+      "deviceWearerId": "604008982",
+      "name": "Richard Gibbons",
+      "nomisId": "A5128CZ",
+      "deviceId": 604008982,
+      "positions": [
+        {
+          "positionId": "A1",
+          "capturedDateTime": "2026-01-16T08:12:03Z",
+          "sequenceLabel": "A1",
+          "latitude": 51.57478,
+          "longitude": 0.06032,
+          "confidenceCircle": 30
+        },
+        {
+          "positionId": "A2",
+          "capturedDateTime": "2026-01-16T08:13:03Z",
+          "sequenceLabel": "A2",
+          "latitude": 51.57462,
+          "longitude": 0.06012,
+          "confidenceCircle": 52
+        },
+        {
+          "positionId": "A3",
+          "capturedDateTime": "2026-01-16T08:14:03Z",
+          "sequenceLabel": "A3",
+          "latitude": 51.57446,
+          "longitude": 0.05986,
+          "confidenceCircle": 40
+        },
+        {
+          "positionId": "A4",
+          "capturedDateTime": "2026-01-16T08:15:03Z",
+          "sequenceLabel": "A4",
+          "latitude": 51.57434,
+          "longitude": 0.05972,
+          "confidenceCircle": 35
+        }
+      ]
+    },
+    {
+      "deviceWearerId": "704008982",
+      "name": "Steven Jones",
+      "nomisId": "B5128CZ",
+      "deviceId": 704008982,
+      "positions": [
+        {
+          "positionId": "B1",
+          "capturedDateTime": "2026-01-16T08:12:30Z",
+          "sequenceLabel": "B1",
+          "latitude": 51.57422,
+          "longitude": 0.05992,
+          "confidenceCircle": 45
+        },
+        {
+          "positionId": "B2",
+          "capturedDateTime": "2026-01-16T08:13:30Z",
+          "sequenceLabel": "B2",
+          "latitude": 51.57436,
+          "longitude": 0.06018,
+          "confidenceCircle": 55
+        },
+        {
+          "positionId": "B3",
+          "capturedDateTime": "2026-01-16T08:14:30Z",
+          "sequenceLabel": "B3",
+          "latitude": 51.57454,
+          "longitude": 0.06034,
+          "confidenceCircle": 60
+        },
+        {
+          "positionId": "B4",
+          "capturedDateTime": "2026-01-16T08:15:30Z",
+          "sequenceLabel": "B4",
+          "latitude": 51.57467,
+          "longitude": 0.06006,
+          "confidenceCircle": 50
+        }
+      ]
+    }
+  ]
+}

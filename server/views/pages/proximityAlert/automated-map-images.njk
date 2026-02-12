@@ -1,0 +1,19 @@
+{% extends "../partials/fullWidthLayout.njk" %}
+{% from "../components/map/macro.njk" import appMap %}
+
+{% set mainClasses = "app-container govuk-body proximity-alert proximity-alert-map-images" %}
+{% set pageType = "proximity-alert-map-images" %}
+
+{% block content %}
+  <div class="proximity-alert__map-capture-frame" id="map-capture-frame">
+    {{
+      appMap({
+        apiKey: apiKey,
+        cspNonce: cspNonce,
+        positions: positions,
+        alerts: alerts,
+        usesInternalOverlays: usesInternalOverlays
+      })
+    }}
+  </div>
+{% endblock %}
