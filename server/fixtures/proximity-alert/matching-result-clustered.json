@@ -22,7 +22,7 @@
           "sequenceLabel": "A1",
           "latitude": 51.57478,
           "longitude": 0.06032,
-          "confidenceCircle": 30
+          "confidenceCircle": 5
         },
         {
           "positionId": "A2",
@@ -30,7 +30,7 @@
           "sequenceLabel": "A2",
           "latitude": 51.57462,
           "longitude": 0.06012,
-          "confidenceCircle": 52
+          "confidenceCircle": 3
         },
         {
           "positionId": "A3",
@@ -38,7 +38,7 @@
           "sequenceLabel": "A3",
           "latitude": 51.57446,
           "longitude": 0.05986,
-          "confidenceCircle": 40
+          "confidenceCircle": 8
         },
         {
           "positionId": "A4",
@@ -46,7 +46,7 @@
           "sequenceLabel": "A4",
           "latitude": 51.57434,
           "longitude": 0.05972,
-          "confidenceCircle": 35
+          "confidenceCircle": 11
         }
       ]
     },
@@ -62,7 +62,7 @@
           "sequenceLabel": "B1",
           "latitude": 51.57422,
           "longitude": 0.05992,
-          "confidenceCircle": 45
+          "confidenceCircle": 9
         },
         {
           "positionId": "B2",
@@ -70,7 +70,7 @@
           "sequenceLabel": "B2",
           "latitude": 51.57436,
           "longitude": 0.06018,
-          "confidenceCircle": 55
+          "confidenceCircle": 12
         },
         {
           "positionId": "B3",
@@ -78,7 +78,7 @@
           "sequenceLabel": "B3",
           "latitude": 51.57454,
           "longitude": 0.06034,
-          "confidenceCircle": 60
+          "confidenceCircle": 7
         },
         {
           "positionId": "B4",
@@ -86,7 +86,7 @@
           "sequenceLabel": "B4",
           "latitude": 51.57467,
           "longitude": 0.06006,
-          "confidenceCircle": 50
+          "confidenceCircle": 9
         }
       ]
     }

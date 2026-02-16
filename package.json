@@ -87,6 +87,7 @@
     "@types/qs": "^6.9.18",
     "agentkeepalive": "^4.6.0",
     "applicationinsights": "^2.9.6",
+    "archiver": "7.0.1",
     "axios": "^1.9.0",
     "body-parser": "^1.20.3",
     "bunyan": "^1.8.15",
@@ -107,6 +108,7 @@
     "ol": "^10.5.0",
     "passport": "^0.7.0",
     "passport-oauth2": "^1.8.0",
+    "playwright": "1.58.2",
     "redis": "^4.7.0",
     "superagent": "^10.2.0",
     "zod": "^3.25.3"
@@ -116,6 +118,7 @@
     "@ministryofjustice/eslint-config-hmpps": "1.0.1",
     "@ministryofjustice/hmpps-npm-script-allowlist": "0.0.3",
     "@tsconfig/node22": "^22.0.0",
+    "@types/archiver": "7.0.0",
     "@types/bunyan": "^1.8.11",
     "@types/bunyan-format": "^0.2.9",
     "@types/compression": "^1.7.5",

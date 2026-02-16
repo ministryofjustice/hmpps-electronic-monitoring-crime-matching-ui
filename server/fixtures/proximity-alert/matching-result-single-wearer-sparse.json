@@ -22,7 +22,7 @@
           "sequenceLabel": "A1",
           "latitude": 51.57414,
           "longitude": 0.06001,
-          "confidenceCircle": 30
+          "confidenceCircle": 10
         },
         {
           "positionId": "A2",
@@ -30,7 +30,7 @@
           "sequenceLabel": "A2",
           "latitude": 51.57416,
           "longitude": 0.06003,
-          "confidenceCircle": 35
+          "confidenceCircle": 8
         },
         {
           "positionId": "A3",
@@ -38,7 +38,7 @@
           "sequenceLabel": "A3",
           "latitude": 51.57412,
           "longitude": 0.05999,
-          "confidenceCircle": 40
+          "confidenceCircle": 13
         }
       ]
     }

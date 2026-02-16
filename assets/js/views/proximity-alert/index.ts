@@ -78,7 +78,7 @@ const addCrimeLayers = (emMap: EmMap, crime: CrimePosition): { centre: Coordinat
   const map = emMap.olMapInstance!
   const centre = fromLonLat([crime.longitude, crime.latitude])
 
-  // Crime diamond marker
+  // Crime square marker
   const crimeMarker = new Feature({
     geometry: new Point(centre),
   })
@@ -137,6 +137,29 @@ const setCrimeDefaultView = (emMap: EmMap, centre: Coordinate) => {
   map.getView().setZoom(16.5)
 }
 
+// Hide zoom slider as we don't want it in generated images + move compass icon to the top.
+const applyHideZoomSliderAndMoveCompass = (emMap: EmMap) => {
+  const root = emMap.shadowRoot
+  if (!root) return
+
+  // Hide the zoom slider (if present)
+  const zoomSlider = root.querySelector<HTMLElement>('.ol-zoom')
+  if (zoomSlider) {
+    zoomSlider.style.display = 'none'
+  }
+
+  const zoomSliderThumb = root.querySelector<HTMLElement>('.ol-zoomslider-thumb')
+  if (zoomSliderThumb) {
+    zoomSliderThumb.style.display = 'none'
+  }
+
+  // Move rotate/compass to the top
+  const rotateCtrl = root.querySelector<HTMLElement>('.ol-control.ol-rotate')
+  if (rotateCtrl) {
+    rotateCtrl.style.top = '0'
+  }
+}
+
 // Proximity Alert Image 1: zoom to 100m crime circle extent with small margin
 const fitToCrimeCircle = (emMap: EmMap, radiusFeature: Feature<CircleGeom>) => {
   const map = emMap.olMapInstance!
@@ -188,6 +211,10 @@ const initialiseProximityAlertMapImagesView = async () => {
   await new Promise<void>(resolve => {
     emMap.addEventListener('map:ready', () => resolve(), { once: true })
   })
+
+  if (window.headlessMapCapture === true) {
+    applyHideZoomSliderAndMoveCompass(emMap)
+  }
 
   const map = emMap.olMapInstance!
   const allPositions = emMap.positions as ProximityAlertMapPosition[]
@@ -293,7 +320,7 @@ const initialiseProximityAlertMapImagesView = async () => {
     }),
   )
 
-  // Expose deterministic control for Playwright + manual UI buttons
+  // Expose control for Playwright + manual UI buttons
   window.mapImages = {
     defaultView,
     proximityAlertImage1,

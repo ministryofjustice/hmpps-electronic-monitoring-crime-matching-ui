@@ -22,7 +22,7 @@
           "sequenceLabel": "A1",
           "latitude": 51.57495,
           "longitude": 0.06075,
-          "confidenceCircle": 40
+          "confidenceCircle": 10
         },
         {
           "positionId": "A2",
@@ -30,7 +30,7 @@
           "sequenceLabel": "A2",
           "latitude": 51.5748,
           "longitude": 0.06062,
-          "confidenceCircle": 30
+          "confidenceCircle": 6
         }
       ]
     },
@@ -46,7 +46,7 @@
           "sequenceLabel": "B1",
           "latitude": 51.57405,
           "longitude": 0.05984,
-          "confidenceCircle": 50
+          "confidenceCircle": 3
         },
         {
           "positionId": "B2",
@@ -54,7 +54,7 @@
           "sequenceLabel": "B2",
           "latitude": 51.5742,
           "longitude": 0.05998,
-          "confidenceCircle": 40
+          "confidenceCircle": 8
         }
       ]
     }

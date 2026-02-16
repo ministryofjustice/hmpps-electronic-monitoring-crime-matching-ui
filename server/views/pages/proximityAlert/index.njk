@@ -50,13 +50,15 @@
 
     <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible" />
 
-    {{ govukButton({
-      text: "Export map images (ZIP)",
-      attributes: {
-        id: "export-map-images",
-        type: "button"
-      }
-    }) }}
+    <form id="generateMapImagesForm" method="post" action="{{ generateMapImagesForm.url }}">
+      <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+      {{
+        govukButton({
+          text: "Generate map images (ZIP)"
+        })
+      }}
+    </form>
+
     <p class="govuk-body" id="export-status"></p>
   </div>
 {% endset %}

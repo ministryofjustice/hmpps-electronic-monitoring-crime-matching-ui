@@ -10,6 +10,7 @@ export declare module 'express-session' {
     formData: unknown
     validationErrors: ValidationResult
     queryId: string
+    proximityAlertExportMapImagesError?: string
   }
 }
 
