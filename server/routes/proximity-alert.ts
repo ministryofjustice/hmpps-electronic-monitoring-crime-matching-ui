@@ -1,10 +1,11 @@
 import { Router, type Request, type Response } from 'express'
 import asyncMiddleware from '../middleware/asyncMiddleware'
 import ProximityAlertController from '../controllers/proximityAlert'
+import type { Services } from '../services'
 
-const proximityAlertRoutes = (): Router => {
+const proximityAlertRoutes = ({ playwrightBrowserService }: Services): Router => {
   const router = Router({ mergeParams: true })
-  const controller = new ProximityAlertController()
+  const controller = new ProximityAlertController(playwrightBrowserService)
 
   router.get('/', asyncMiddleware(controller.view))
 

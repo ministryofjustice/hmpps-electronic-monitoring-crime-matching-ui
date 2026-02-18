@@ -49,7 +49,7 @@ export default function routes(services: Services): Router {
     res.redirect('/proximity-alert/1')
   })
 
-  router.use('/proximity-alert/:id', proximityAlertRoutes())
+  router.use('/proximity-alert/:id', proximityAlertRoutes(services))
 
   return router
 }

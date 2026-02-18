@@ -1,9 +1,11 @@
+/* eslint-disable no-console */
 import type { RequestHandler } from 'express'
 import archiver from 'archiver'
 import config from '../../config'
 import toProximityAlertMapPositions from '../../presenters/proximityAlert/mapPositions'
 import { loadProximityAlertFixtureById } from '../../services/proximityAlert/proximityAlertData'
 import { renderProximityAlertMapImages } from '../../services/proximityAlert/mapImageRenderer'
+import type PlaywrightBrowserService from '../../services/proximityAlert/playwrightBrowserManager'
 
 // Spike: hardcode local URL for now
 // The real UI will need to work in deployed environments
@@ -11,6 +13,8 @@ const LOCAL_BASE_URL = 'http://localhost:3000'
 const EXPORT_ERROR_MESSAGE = 'Map image generation failed. Please try again (see server logs for details).'
 
 export default class ProximityAlertController {
+  constructor(private readonly playwrightBrowserService: PlaywrightBrowserService) {}
+
   view: RequestHandler = async (req, res) => {
     const id = String(req.params.id)
 
@@ -49,9 +53,12 @@ export default class ProximityAlertController {
 
     console.log('[generateMapImages] start', { id, pageUrl })
 
+    const browser = await this.playwrightBrowserService.getBrowser()
+
     try {
       // Render images
       const { image1Jpg, image2Jpg } = await renderProximityAlertMapImages({
+        browser,
         pageUrl,
         baseUrlForCookies: LOCAL_BASE_URL,
         cookieHeader: req.headers.cookie,

@@ -1,4 +1,5 @@
-import { chromium, type Browser, type Page } from 'playwright'
+/* eslint-disable no-console */
+import { type Browser, type Page } from 'playwright'
 
 export type ProximityAlertMapImages = {
   image1Jpg: Buffer
@@ -6,6 +7,7 @@ export type ProximityAlertMapImages = {
 }
 
 export type RenderProximityAlertImagesArgs = {
+  browser: Browser
   pageUrl: string
   baseUrlForCookies: string
   cookieHeader: string | undefined
@@ -21,6 +23,28 @@ const DEFAULT_TIMEOUT_MS = 30_000
 const DEFAULT_JPEG_QUALITY = 85
 
 type MapPresetName = 'proximityAlertImage1' | 'proximityAlertImage2'
+
+//
+function makeTimers(label: string, meta?: Record<string, unknown>) {
+  const startTime = Date.now()
+  let last = startTime
+
+  const sinceStart = () => Date.now() - startTime
+  const sinceLast = () => {
+    const now = Date.now()
+    const d = now - last
+    last = now
+    return d
+  }
+
+  const log = (step: string, extra?: Record<string, unknown>) => {
+    const totalMs = sinceStart()
+    const stepMs = sinceLast()
+    console.log(`[${label}] +${stepMs}ms (total ${totalMs}ms) ${step}`, { ...(meta ?? {}), ...(extra ?? {}) })
+  }
+
+  return { log, sinceStart }
+}
 
 // Convert the incoming HTTP Cookie header into Playwright cookie objects
 // so the headless browser can reuse the user's authenticated session.
@@ -93,6 +117,7 @@ export async function renderProximityAlertMapImages(
   args: RenderProximityAlertImagesArgs,
 ): Promise<ProximityAlertMapImages> {
   const {
+    browser,
     pageUrl,
     baseUrlForCookies,
     cookieHeader,
@@ -103,68 +128,111 @@ export async function renderProximityAlertMapImages(
     jpegQuality = DEFAULT_JPEG_QUALITY,
   } = args
 
-  console.log('[mapImageRenderer] start', { pageUrl })
-
-  let browser: Browser | undefined
+  const timers = makeTimers('mapImageRenderer', { pageUrl })
+  timers.log('start', { viewport, deviceScaleFactor, timeoutMs, jpegQuality })
+  let context: Awaited<ReturnType<Browser['newContext']>> | undefined
 
   try {
-    browser = await chromium.launch({ headless: true })
-
-    const context = await browser.newContext({
+    // New browser context
+    const contextStart = Date.now()
+    context = await browser.newContext({
       viewport,
       deviceScaleFactor,
       ignoreHTTPSErrors,
     })
+    timers.log('context created', { contextMs: Date.now() - contextStart })
 
+    // Cookies
     if (cookieHeader) {
+      const cookieStart = Date.now()
       const sessionCookies = cookiesFromHeader(cookieHeader, baseUrlForCookies)
+      timers.log('cookies parsed', { cookieCount: sessionCookies.length, parseMs: Date.now() - cookieStart })
+
       if (sessionCookies.length > 0) {
+        const addCookiesStart = Date.now()
         await context.addCookies(sessionCookies)
+        timers.log('cookies added to context', { addCookiesMs: Date.now() - addCookiesStart })
       }
+    } else {
+      timers.log('no cookie header provided')
     }
 
+    // New page
+    const pageStart = Date.now()
     const page = await context.newPage()
     page.setDefaultTimeout(timeoutMs)
     page.setDefaultNavigationTimeout(timeoutMs)
+    timers.log('page created', { pageMs: Date.now() - pageStart })
 
     page.on('console', msg => console.log('[browser console]', msg.type(), msg.text()))
     page.on('pageerror', err => console.error('[browser pageerror]', err))
     page.on('requestfailed', request => console.warn('[browser requestfailed]', request.url(), request.failure()))
 
+    // Mark headless mode
+    const initScriptStart = Date.now()
     await page.addInitScript(() => {
       const root = globalThis as unknown as { headlessMapCapture?: boolean }
       root.headlessMapCapture = true
     })
+    timers.log('init script added', { initScriptMs: Date.now() - initScriptStart })
 
+    // Navigate
+    const gotoStart = Date.now()
     await page.goto(pageUrl, { waitUntil: 'domcontentloaded' })
-    console.log('[mapImageRenderer] landed on', page.url(), '|', await page.title())
+    timers.log('page.goto complete', {
+      gotoMs: Date.now() - gotoStart,
+      finalUrl: page.url(),
+      title: await page.title(),
+    })
 
+    // Wait for map ready flag
+    const readyStart = Date.now()
     await waitForMapImagesReady(page)
-    console.log('[mapImageRenderer] mapImages.ready === true')
+    timers.log('mapImages.ready === true', { readyWaitMs: Date.now() - readyStart })
 
     const screenshotMapForPreset = async (presetName: MapPresetName): Promise<Buffer> => {
-      console.log('[mapImageRenderer] applying preset', presetName)
-      await applyImagePreset(page, presetName)
-      await waitForOlRenderComplete(page)
+      timers.log('preset start', { presetName })
 
+      const applyStart = Date.now()
+      await applyImagePreset(page, presetName)
+      timers.log('preset applied', { presetName, applyMs: Date.now() - applyStart })
+
+      const renderStart = Date.now()
+      await waitForOlRenderComplete(page)
+      timers.log('ol rendercomplete', { presetName, renderWaitMs: Date.now() - renderStart })
+
+      const elementStart = Date.now()
       const mapElementHandle = await page.$('em-map')
+      timers.log('em-map element selected', { presetName, selectMs: Date.now() - elementStart })
+
       if (!mapElementHandle) throw new Error('Map element <em-map> not found for screenshot')
 
+      const screenshotStart = Date.now()
       const jpg = await mapElementHandle.screenshot({
         type: 'jpeg',
         quality: jpegQuality,
       })
+      timers.log('screenshot captured', { presetName, screenshotMs: Date.now() - screenshotStart, bytes: jpg.length })
 
-      console.log('[mapImageRenderer] screenshot captured', presetName, jpg.length)
       return jpg
     }
 
     const image1Jpg = await screenshotMapForPreset('proximityAlertImage1')
-    const image2Jpg = await screenshotMapForPreset('proximityAlertImage2')
+    timers.log('image 1 done', { bytes: image1Jpg.length })
 
-    await context.close()
+    const image2Jpg = await screenshotMapForPreset('proximityAlertImage2')
+    timers.log('image 2 done', { bytes: image2Jpg.length })
+
+    timers.log('complete', { totalMs: timers.sinceStart() })
     return { image1Jpg, image2Jpg }
+  } catch (err) {
+    timers.log('failed', { totalMs: timers.sinceStart(), error: err instanceof Error ? err.message : String(err) })
+    throw err
   } finally {
-    if (browser) await browser.close()
+    if (context) {
+      const closeStart = Date.now()
+      await context.close()
+      timers.log('context closed', { closeMs: Date.now() - closeStart })
+    }
   }
 }
