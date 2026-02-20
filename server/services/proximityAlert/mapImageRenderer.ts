@@ -188,40 +188,36 @@ export async function renderProximityAlertMapImages(
   timers.log('start', { viewport, deviceScaleFactor, timeoutMs, jpegQuality })
 
   // Start resource sampling for this export
-  startResourceSampler(browser, 'export-map-images')
-
-  const contextStart = Date.now()
-  const context = await browser.newContext({ viewport, deviceScaleFactor, ignoreHTTPSErrors })
-  timers.log('context created', { contextMs: Date.now() - contextStart })
+  const sampler = startResourceSampler(browser, 'export-map-images')
 
   // Cookies
-  try {
-    if (cookieHeader) {
-      const cookieStart = Date.now()
-      const sessionCookies = cookiesFromHeader(cookieHeader, baseUrlForCookies)
-      timers.log('cookies parsed', { cookieCount: sessionCookies.length, parseMs: Date.now() - cookieStart })
+  const sessionCookies = cookieHeader ? cookiesFromHeader(cookieHeader, baseUrlForCookies) : []
 
+  const screenshotPresetInNewContext = async (preset: PresetParam): Promise<Buffer> => {
+    const contextStart = Date.now()
+    const context = await browser.newContext({ viewport, deviceScaleFactor, ignoreHTTPSErrors })
+    timers.log('context created', { preset, contextMs: Date.now() - contextStart })
+
+    try {
       if (sessionCookies.length > 0) {
         const addCookiesStart = Date.now()
         await context.addCookies(sessionCookies)
-        timers.log('cookies added to context', { addCookiesMs: Date.now() - addCookiesStart })
+        timers.log('cookies added to context', { preset, addCookiesMs: Date.now() - addCookiesStart })
+      } else {
+        timers.log('no cookie header provided', { preset })
       }
-    } else {
-      timers.log('no cookie header provided')
-    }
 
-    // New page
-    const pageStart = Date.now()
-    const page = await context.newPage()
-    page.setDefaultTimeout(timeoutMs)
-    page.setDefaultNavigationTimeout(timeoutMs)
-    timers.log('page created', { pageMs: Date.now() - pageStart })
+      // New page
+      const pageStart = Date.now()
+      const page = await context.newPage()
+      page.setDefaultTimeout(timeoutMs)
+      page.setDefaultNavigationTimeout(timeoutMs)
+      timers.log('page created', { preset, pageMs: Date.now() - pageStart })
 
-    page.on('console', msg => console.log('[browser console]', msg.type(), msg.text()))
-    page.on('pageerror', err => console.error('[browser pageerror]', err))
-    page.on('requestfailed', request => console.warn('[browser requestfailed]', request.url(), request.failure()))
+      page.on('console', msg => console.log('[browser console]', msg.type(), msg.text()))
+      page.on('pageerror', err => console.error('[browser pageerror]', err))
+      page.on('requestfailed', request => console.warn('[browser requestfailed]', request.url(), request.failure()))
 
-    const screenshotPreset = async (preset: PresetParam): Promise<Buffer> => {
       const targetUrl = pageUrlForPreset(pageUrl, preset)
       timers.log('preset navigate start', { preset, targetUrl })
 
@@ -254,12 +250,26 @@ export async function renderProximityAlertMapImages(
       timers.log('screenshot captured', { preset, screenshotMs: Date.now() - screenshotStart, bytes: jpg.length })
 
       return jpg
+    } finally {
+      const closeStart = Date.now()
+      await context.close()
+      timers.log('context closed', { preset, closeMs: Date.now() - closeStart })
     }
+  }
 
-    const image1Jpg = await screenshotPreset('image-1')
+  try {
+    const [image1Result, image2Result] = await Promise.allSettled([
+      screenshotPresetInNewContext('image-1'),
+      screenshotPresetInNewContext('image-2'),
+    ])
+
+    if (image1Result.status === 'rejected') throw image1Result.reason
+    if (image2Result.status === 'rejected') throw image2Result.reason
+
+    const image1Jpg = image1Result.value
     timers.log('image 1 done', { bytes: image1Jpg.length })
 
-    const image2Jpg = await screenshotPreset('image-2')
+    const image2Jpg = image2Result.value
     timers.log('image 2 done', { bytes: image2Jpg.length })
 
     timers.log('complete', { totalMs: timers.sinceStart() })
@@ -268,10 +278,6 @@ export async function renderProximityAlertMapImages(
     timers.log('failed', { totalMs: timers.sinceStart(), error: err instanceof Error ? err.message : String(err) })
     throw err
   } finally {
-    if (context) {
-      const closeStart = Date.now()
-      await context.close()
-      timers.log('context closed', { closeMs: Date.now() - closeStart })
-    }
+    await sampler.stop()
   }
 }
