@@ -1,5 +1,7 @@
 /* eslint-disable no-console */
 import pidusage from 'pidusage'
+import pidtree from 'pidtree'
+import { execFileSync } from 'node:child_process'
 import { type Browser, type Page } from 'playwright'
 
 export type ProximityAlertMapImages = {
@@ -123,22 +125,62 @@ async function waitForOlRenderComplete(page: Page): Promise<void> {
 }
 
 // Start sampling Chromium + Node resource usage and track peaks
-function startResourceSampler(browser: Browser, label: string, intervalMs = 200) {
-  const pid = (browser as unknown as { process?: () => { pid?: number } }).process?.()?.pid
-  const peak: PeakResources = { chromiumPid: pid }
+function startResourceSampler(_browser: Browser, label: string, intervalMs = 200) {
+  const peak: PeakResources = {}
 
   let stopped = false
+
+  const getCommand = (pid: number): string => {
+    try {
+      return execFileSync('ps', ['-p', String(pid), '-o', 'command='], { encoding: 'utf8' }).trim()
+    } catch {
+      return ''
+    }
+  }
+
+  const isChromiumLike = (cmd: string): boolean => {
+    const s = cmd.toLowerCase()
+    return (
+      s.includes('chromium') ||
+      s.includes('chrome') ||
+      s.includes('headless_shell') ||
+      s.includes('chrome-headless-shell')
+    )
+  }
 
   const sampleOnce = async () => {
     // Node RSS
     const nodeRssMB = mb(process.memoryUsage().rss)
     if (!peak.nodeRssMB || nodeRssMB > peak.nodeRssMB) peak.nodeRssMB = nodeRssMB
 
-    // Chromium
-    if (!pid) return
-    const stats = await pidusage(pid)
-    const chromiumRssMB = mb(stats.memory)
-    const chromiumCpuPct = Math.round(stats.cpu * 10) / 10
+    // Find descendant processes and aggregate Chromium usage
+    const pids = await pidtree(process.pid, { root: true })
+
+    let totalChromiumRssBytes = 0
+    let totalChromiumCpuPct = 0
+    let foundAny = false
+
+    const chromiumPids = pids.filter(pid => {
+      const cmd = getCommand(pid)
+      return Boolean(cmd) && isChromiumLike(cmd)
+    })
+
+    foundAny = chromiumPids.length > 0
+    if (!foundAny) return
+
+    const results = await Promise.allSettled(chromiumPids.map(pid => pidusage(pid)))
+
+    for (const result of results) {
+      if (result.status === 'fulfilled') {
+        totalChromiumRssBytes += result.value.memory
+        totalChromiumCpuPct += result.value.cpu
+      }
+    }
+
+    if (!foundAny) return
+
+    const chromiumRssMB = mb(totalChromiumRssBytes)
+    const chromiumCpuPct = Math.round(totalChromiumCpuPct * 10) / 10
 
     if (!peak.chromiumRssMB || chromiumRssMB > peak.chromiumRssMB) peak.chromiumRssMB = chromiumRssMB
     if (!peak.chromiumCpuPct || chromiumCpuPct > peak.chromiumCpuPct) peak.chromiumCpuPct = chromiumCpuPct
@@ -159,8 +201,7 @@ function startResourceSampler(browser: Browser, label: string, intervalMs = 200)
 
   const stop = async () => {
     stopped = true
-    if (timer) clearInterval(timer)
-    // One last sample to catch final peak
+    clearInterval(timer)
     await tick()
     console.log(`[resources:${label}] peak`, peak)
     return peak
@@ -188,7 +229,7 @@ export async function renderProximityAlertMapImages(
   timers.log('start', { viewport, deviceScaleFactor, timeoutMs, jpegQuality })
 
   // Start resource sampling for this export
-  startResourceSampler(browser, 'export-map-images')
+  const sampler = startResourceSampler(browser, 'export-map-images')
 
   const contextStart = Date.now()
   const context = await browser.newContext({ viewport, deviceScaleFactor, ignoreHTTPSErrors })
@@ -268,6 +309,8 @@ export async function renderProximityAlertMapImages(
     timers.log('failed', { totalMs: timers.sinceStart(), error: err instanceof Error ? err.message : String(err) })
     throw err
   } finally {
+    await sampler.stop()
+
     if (context) {
       const closeStart = Date.now()
       await context.close()
