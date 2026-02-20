@@ -16,17 +16,6 @@ import type { Coordinate } from 'ol/coordinate'
 import { createEmpty, extend as extendExtent, isEmpty as isEmptyExtent } from 'ol/extent'
 import { queryElement } from '../../utils/utils'
 
-declare global {
-  interface Window {
-    mapImages?: {
-      defaultView: () => void
-      proximityAlertImage1: () => void
-      proximityAlertImage2: () => void
-      ready: boolean
-    }
-  }
-}
-
 type WearerPosition = {
   positionType: 'wearer'
   latitude: number
@@ -71,7 +60,22 @@ type CircleInput = {
   precision: number
 }
 
+type PresetParam = 'default' | 'image-1' | 'image-2'
+
 const palette = ['rgba(255, 214, 10, 1)', 'rgba(139, 69, 19, 1)']
+
+function getPresetFromUrl(): PresetParam | null {
+  const params = new URLSearchParams(window.location.search)
+  const preset = params.get('preset')
+  if (preset === 'default' || preset === 'image-1' || preset === 'image-2') return preset
+  return null
+}
+
+// Are we in Playwright headless browser mode
+function isHeadlessCapture(): boolean {
+  const params = new URLSearchParams(window.location.search)
+  return params.get('headless') === 'true'
+}
 
 // Add a Crime marker (for spike just drawing a square). Will need to be a marker with label.
 const addCrimeLayers = (emMap: EmMap, crime: CrimePosition): { centre: Coordinate; crimeLayers: CrimeLayers } => {
@@ -175,9 +179,7 @@ const fitToCrimeCircle = (emMap: EmMap, radiusFeature: Feature<CircleGeom>) => {
 
 // Proximity Alert Image 2: zoom to cluster of wearer positions + crime with small margin (dynamic radius)
 const fitToPositionsCluster = (emMap: EmMap, layersByWearer: Map<string, WearerLayers>, crimeCentre: Coordinate) => {
-  const map = emMap.olMapInstance!
-  const view = map.getView()
-
+  const view = emMap.olMapInstance!.getView()
   const combined = createEmpty()
 
   // Always include crime centre
@@ -212,11 +214,10 @@ const initialiseProximityAlertMapImagesView = async () => {
     emMap.addEventListener('map:ready', () => resolve(), { once: true })
   })
 
-  if (window.headlessMapCapture === true) {
+  if (isHeadlessCapture()) {
     applyHideZoomSliderAndMoveCompass(emMap)
   }
 
-  const map = emMap.olMapInstance!
   const allPositions = emMap.positions as ProximityAlertMapPosition[]
 
   const crime = allPositions.find(p => p.positionType === 'crime') as CrimePosition | undefined
@@ -296,7 +297,6 @@ const initialiseProximityAlertMapImagesView = async () => {
     }
   }
 
-  // UI Map state change buttons
   const defaultView = () => {
     setTracksVisible(true)
     setCrimeDefaultView(emMap, centre)
@@ -312,26 +312,18 @@ const initialiseProximityAlertMapImagesView = async () => {
     fitToPositionsCluster(emMap, layersByWearer, centre)
   }
 
-  // Signal ready for Playwright
+  // Apply URL-declared preset automatically
+  const preset = getPresetFromUrl()
+  if (preset === 'default') defaultView()
+  if (preset === 'image-1') proximityAlertImage1()
+  if (preset === 'image-2') proximityAlertImage2()
+
   emMap.dispatchEvent(
     new CustomEvent('app:map:layers:ready', {
       bubbles: true,
       composed: true,
     }),
   )
-
-  // Expose control for Playwright + manual UI buttons
-  window.mapImages = {
-    defaultView,
-    proximityAlertImage1,
-    proximityAlertImage2,
-    ready: true,
-  }
-
-  // Wire up sidebar buttons for demo/spike UI
-  document.getElementById('preset-default')?.addEventListener('click', defaultView)
-  document.getElementById('preset-image-1')?.addEventListener('click', proximityAlertImage1)
-  document.getElementById('preset-image-2')?.addEventListener('click', proximityAlertImage2)
 
   // Wire up fixture radio buttons for demo/spike UI
   const fixtureToId: Record<string, string> = {

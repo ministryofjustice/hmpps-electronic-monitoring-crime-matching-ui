@@ -39,6 +39,7 @@ export default class ProximityAlertController {
       positions,
       alerts,
       selectedFixture: fixtureName,
+      selectedFixtureId: id,
       generateMapImagesForm: {
         url: `/proximity-alert/${id}/generate-map-images`,
       },

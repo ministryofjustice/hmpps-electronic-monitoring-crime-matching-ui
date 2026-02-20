@@ -22,9 +22,9 @@ const DEFAULT_VIEWPORT = { width: 1200, height: 800 }
 const DEFAULT_TIMEOUT_MS = 30_000
 const DEFAULT_JPEG_QUALITY = 85
 
-type MapPresetName = 'proximityAlertImage1' | 'proximityAlertImage2'
+type PresetParam = 'image-1' | 'image-2'
 
-//
+// Helper to log performance times at key steps i the process
 function makeTimers(label: string, meta?: Record<string, unknown>) {
   const startTime = Date.now()
   let last = startTime
@@ -61,25 +61,27 @@ function cookiesFromHeader(cookieHeader: string, baseUrlForCookies: string) {
     })
 }
 
-// Wait until the client-side map initialisation has completed
-async function waitForMapImagesReady(page: Page): Promise<void> {
-  await page.waitForFunction(() => {
-    const root = globalThis as unknown as { mapImages?: { ready?: boolean } }
-    return root.mapImages?.ready === true
-  })
+function pageUrlForPreset(baseUrl: string, preset: PresetParam): string {
+  const url = new URL(baseUrl)
+  url.searchParams.set('preset', preset)
+  url.searchParams.set('headless', 'true')
+  return url.toString()
 }
 
-// Call one of the exposed map image preset functions inside the page to generate Image 1 or Image 2
-async function applyImagePreset(page: Page, presetName: MapPresetName): Promise<void> {
-  await page.evaluate((name: MapPresetName) => {
-    const root = globalThis as unknown as { mapImages?: Record<string, unknown> }
-    const api = root.mapImages
-    if (!api) throw new Error('globalThis.mapImages not found')
+// Wait until the map component signals that layers are ready.
+// This listens for the custom event dispatched in initialiseProximityAlertMapImagesView.
+async function waitForAppLayersReady(page: Page): Promise<void> {
+  await page.evaluate(() => {
+    type DocumentLike = {
+      addEventListener: (type: string, listener: () => void, options?: { once?: boolean }) => void
+    }
 
-    const presetFunction = api[name]
-    if (typeof presetFunction !== 'function') throw new Error(`mapImages.${name} not found`)
-    presetFunction()
-  }, presetName)
+    const root = globalThis as unknown as { document: DocumentLike }
+
+    return new Promise<void>(resolve => {
+      root.document.addEventListener('app:map:layers:ready', () => resolve(), { once: true })
+    })
+  })
 }
 
 // Wait for OpenLayers to finish a render cycle by listening to `rendercomplete` on em-map.olMapInstance.
@@ -94,15 +96,10 @@ async function waitForOlRenderComplete(page: Page): Promise<void> {
     const doc = (globalThis as unknown as { document?: unknown }).document
     if (!doc) throw new Error('document not available')
 
-    const mapElement = (
-      doc as {
-        querySelector: (selector: string) => unknown
-      }
-    ).querySelector('em-map') as EmMapLike | null
-
-    if (!mapElement?.olMapInstance) {
-      throw new Error('em-map.olMapInstance not found')
-    }
+    const mapElement = (doc as { querySelector: (selector: string) => unknown }).querySelector(
+      'em-map',
+    ) as EmMapLike | null
+    if (!mapElement?.olMapInstance) throw new Error('em-map.olMapInstance not found')
 
     const map = mapElement.olMapInstance as OlMapLike
 
@@ -130,19 +127,13 @@ export async function renderProximityAlertMapImages(
 
   const timers = makeTimers('mapImageRenderer', { pageUrl })
   timers.log('start', { viewport, deviceScaleFactor, timeoutMs, jpegQuality })
-  let context: Awaited<ReturnType<Browser['newContext']>> | undefined
 
+  const contextStart = Date.now()
+  const context = await browser.newContext({ viewport, deviceScaleFactor, ignoreHTTPSErrors })
+  timers.log('context created', { contextMs: Date.now() - contextStart })
+
+  // Cookies
   try {
-    // New browser context
-    const contextStart = Date.now()
-    context = await browser.newContext({
-      viewport,
-      deviceScaleFactor,
-      ignoreHTTPSErrors,
-    })
-    timers.log('context created', { contextMs: Date.now() - contextStart })
-
-    // Cookies
     if (cookieHeader) {
       const cookieStart = Date.now()
       const sessionCookies = cookiesFromHeader(cookieHeader, baseUrlForCookies)
@@ -168,59 +159,45 @@ export async function renderProximityAlertMapImages(
     page.on('pageerror', err => console.error('[browser pageerror]', err))
     page.on('requestfailed', request => console.warn('[browser requestfailed]', request.url(), request.failure()))
 
-    // Mark headless mode
-    const initScriptStart = Date.now()
-    await page.addInitScript(() => {
-      const root = globalThis as unknown as { headlessMapCapture?: boolean }
-      root.headlessMapCapture = true
-    })
-    timers.log('init script added', { initScriptMs: Date.now() - initScriptStart })
+    const screenshotPreset = async (preset: PresetParam): Promise<Buffer> => {
+      const targetUrl = pageUrlForPreset(pageUrl, preset)
+      timers.log('preset navigate start', { preset, targetUrl })
 
-    // Navigate
-    const gotoStart = Date.now()
-    await page.goto(pageUrl, { waitUntil: 'domcontentloaded' })
-    timers.log('page.goto complete', {
-      gotoMs: Date.now() - gotoStart,
-      finalUrl: page.url(),
-      title: await page.title(),
-    })
+      const gotoStart = Date.now()
+      await page.goto(targetUrl, { waitUntil: 'domcontentloaded' })
+      timers.log('page.goto complete', {
+        preset,
+        gotoMs: Date.now() - gotoStart,
+        finalUrl: page.url(),
+        title: await page.title(),
+      })
 
-    // Wait for map ready flag
-    const readyStart = Date.now()
-    await waitForMapImagesReady(page)
-    timers.log('mapImages.ready === true', { readyWaitMs: Date.now() - readyStart })
-
-    const screenshotMapForPreset = async (presetName: MapPresetName): Promise<Buffer> => {
-      timers.log('preset start', { presetName })
-
-      const applyStart = Date.now()
-      await applyImagePreset(page, presetName)
-      timers.log('preset applied', { presetName, applyMs: Date.now() - applyStart })
+      // Wait for map ready flag
+      const readyStart = Date.now()
+      await waitForAppLayersReady(page)
+      timers.log('mapImages.ready === true', { preset, readyWaitMs: Date.now() - readyStart })
 
       const renderStart = Date.now()
       await waitForOlRenderComplete(page)
-      timers.log('ol rendercomplete', { presetName, renderWaitMs: Date.now() - renderStart })
+      timers.log('ol rendercomplete', { preset, renderWaitMs: Date.now() - renderStart })
 
-      const elementStart = Date.now()
+      const selectStart = Date.now()
       const mapElementHandle = await page.$('em-map')
-      timers.log('em-map element selected', { presetName, selectMs: Date.now() - elementStart })
+      timers.log('em-map element selected', { preset, selectMs: Date.now() - selectStart })
 
       if (!mapElementHandle) throw new Error('Map element <em-map> not found for screenshot')
 
       const screenshotStart = Date.now()
-      const jpg = await mapElementHandle.screenshot({
-        type: 'jpeg',
-        quality: jpegQuality,
-      })
-      timers.log('screenshot captured', { presetName, screenshotMs: Date.now() - screenshotStart, bytes: jpg.length })
+      const jpg = await mapElementHandle.screenshot({ type: 'jpeg', quality: jpegQuality })
+      timers.log('screenshot captured', { preset, screenshotMs: Date.now() - screenshotStart, bytes: jpg.length })
 
       return jpg
     }
 
-    const image1Jpg = await screenshotMapForPreset('proximityAlertImage1')
+    const image1Jpg = await screenshotPreset('image-1')
     timers.log('image 1 done', { bytes: image1Jpg.length })
 
-    const image2Jpg = await screenshotMapForPreset('proximityAlertImage2')
+    const image2Jpg = await screenshotPreset('image-2')
     timers.log('image 2 done', { bytes: image2Jpg.length })
 
     timers.log('complete', { totalMs: timers.sinceStart() })
