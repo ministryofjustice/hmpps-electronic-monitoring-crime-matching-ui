@@ -1,4 +1,5 @@
 /* eslint-disable no-console */
+import pidusage from 'pidusage'
 import { type Browser, type Page } from 'playwright'
 
 export type ProximityAlertMapImages = {
@@ -24,7 +25,18 @@ const DEFAULT_JPEG_QUALITY = 85
 
 type PresetParam = 'image-1' | 'image-2'
 
-// Helper to log performance times at key steps i the process
+type PeakResources = {
+  chromiumPid?: number
+  chromiumCpuPct?: number
+  chromiumRssMB?: number
+  nodeRssMB?: number
+}
+
+function mb(bytes: number): number {
+  return Math.round((bytes / 1024 / 1024) * 10) / 10
+}
+
+// Helper to log performance times at key steps in the process
 function makeTimers(label: string, meta?: Record<string, unknown>) {
   const startTime = Date.now()
   let last = startTime
@@ -110,6 +122,53 @@ async function waitForOlRenderComplete(page: Page): Promise<void> {
   })
 }
 
+// Start sampling Chromium + Node resource usage and track peaks
+function startResourceSampler(browser: Browser, label: string, intervalMs = 200) {
+  const pid = (browser as unknown as { process?: () => { pid?: number } }).process?.()?.pid
+  const peak: PeakResources = { chromiumPid: pid }
+
+  let stopped = false
+
+  const sampleOnce = async () => {
+    // Node RSS
+    const nodeRssMB = mb(process.memoryUsage().rss)
+    if (!peak.nodeRssMB || nodeRssMB > peak.nodeRssMB) peak.nodeRssMB = nodeRssMB
+
+    // Chromium
+    if (!pid) return
+    const stats = await pidusage(pid)
+    const chromiumRssMB = mb(stats.memory)
+    const chromiumCpuPct = Math.round(stats.cpu * 10) / 10
+
+    if (!peak.chromiumRssMB || chromiumRssMB > peak.chromiumRssMB) peak.chromiumRssMB = chromiumRssMB
+    if (!peak.chromiumCpuPct || chromiumCpuPct > peak.chromiumCpuPct) peak.chromiumCpuPct = chromiumCpuPct
+  }
+
+  const tick = async () => {
+    try {
+      await sampleOnce()
+    } catch {
+      // ignore sampling errors
+    }
+  }
+
+  const timer = setInterval(() => {
+    if (stopped) return
+    tick()
+  }, intervalMs)
+
+  const stop = async () => {
+    stopped = true
+    if (timer) clearInterval(timer)
+    // One last sample to catch final peak
+    await tick()
+    console.log(`[resources:${label}] peak`, peak)
+    return peak
+  }
+
+  return { stop, peak }
+}
+
 export async function renderProximityAlertMapImages(
   args: RenderProximityAlertImagesArgs,
 ): Promise<ProximityAlertMapImages> {
@@ -127,6 +186,9 @@ export async function renderProximityAlertMapImages(
 
   const timers = makeTimers('mapImageRenderer', { pageUrl })
   timers.log('start', { viewport, deviceScaleFactor, timeoutMs, jpegQuality })
+
+  // Start resource sampling for this export
+  startResourceSampler(browser, 'export-map-images')
 
   const contextStart = Date.now()
   const context = await browser.newContext({ viewport, deviceScaleFactor, ignoreHTTPSErrors })
@@ -175,7 +237,7 @@ export async function renderProximityAlertMapImages(
       // Wait for map ready flag
       const readyStart = Date.now()
       await waitForAppLayersReady(page)
-      timers.log('mapImages.ready === true', { preset, readyWaitMs: Date.now() - readyStart })
+      timers.log('app layers ready', { preset, readyWaitMs: Date.now() - readyStart })
 
       const renderStart = Date.now()
       await waitForOlRenderComplete(page)
