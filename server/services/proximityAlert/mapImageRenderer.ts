@@ -153,22 +153,20 @@ function startResourceSampler(_browser: Browser, label: string, intervalMs = 200
     const nodeRssMB = mb(process.memoryUsage().rss)
     if (!peak.nodeRssMB || nodeRssMB > peak.nodeRssMB) peak.nodeRssMB = nodeRssMB
 
-    // Find descendant processes and aggregate Chromium usage
+    // Need to aggregate all Child processes that Chromium uses
     const pids = await pidtree(process.pid, { root: true })
-
-    let totalChromiumRssBytes = 0
-    let totalChromiumCpuPct = 0
-    let foundAny = false
 
     const chromiumPids = pids.filter(pid => {
       const cmd = getCommand(pid)
       return Boolean(cmd) && isChromiumLike(cmd)
     })
 
-    foundAny = chromiumPids.length > 0
-    if (!foundAny) return
+    if (chromiumPids.length === 0) return
 
     const results = await Promise.allSettled(chromiumPids.map(pid => pidusage(pid)))
+
+    let totalChromiumRssBytes = 0
+    let totalChromiumCpuPct = 0
 
     for (const result of results) {
       if (result.status === 'fulfilled') {
@@ -176,8 +174,6 @@ function startResourceSampler(_browser: Browser, label: string, intervalMs = 200
         totalChromiumCpuPct += result.value.cpu
       }
     }
-
-    if (!foundAny) return
 
     const chromiumRssMB = mb(totalChromiumRssBytes)
     const chromiumCpuPct = Math.round(totalChromiumCpuPct * 10) / 10
@@ -231,38 +227,34 @@ export async function renderProximityAlertMapImages(
   // Start resource sampling for this export
   const sampler = startResourceSampler(browser, 'export-map-images')
 
-  const contextStart = Date.now()
-  const context = await browser.newContext({ viewport, deviceScaleFactor, ignoreHTTPSErrors })
-  timers.log('context created', { contextMs: Date.now() - contextStart })
-
   // Cookies
-  try {
-    if (cookieHeader) {
-      const cookieStart = Date.now()
-      const sessionCookies = cookiesFromHeader(cookieHeader, baseUrlForCookies)
-      timers.log('cookies parsed', { cookieCount: sessionCookies.length, parseMs: Date.now() - cookieStart })
+  const sessionCookies = cookieHeader ? cookiesFromHeader(cookieHeader, baseUrlForCookies) : []
 
+  const screenshotPresetInNewContext = async (preset: PresetParam): Promise<Buffer> => {
+    const contextStart = Date.now()
+    const context = await browser.newContext({ viewport, deviceScaleFactor, ignoreHTTPSErrors })
+    timers.log('context created', { preset, contextMs: Date.now() - contextStart })
+
+    try {
       if (sessionCookies.length > 0) {
         const addCookiesStart = Date.now()
         await context.addCookies(sessionCookies)
-        timers.log('cookies added to context', { addCookiesMs: Date.now() - addCookiesStart })
+        timers.log('cookies added to context', { preset, addCookiesMs: Date.now() - addCookiesStart })
+      } else {
+        timers.log('no cookie header provided', { preset })
       }
-    } else {
-      timers.log('no cookie header provided')
-    }
 
-    // New page
-    const pageStart = Date.now()
-    const page = await context.newPage()
-    page.setDefaultTimeout(timeoutMs)
-    page.setDefaultNavigationTimeout(timeoutMs)
-    timers.log('page created', { pageMs: Date.now() - pageStart })
+      // New page
+      const pageStart = Date.now()
+      const page = await context.newPage()
+      page.setDefaultTimeout(timeoutMs)
+      page.setDefaultNavigationTimeout(timeoutMs)
+      timers.log('page created', { preset, pageMs: Date.now() - pageStart })
 
-    page.on('console', msg => console.log('[browser console]', msg.type(), msg.text()))
-    page.on('pageerror', err => console.error('[browser pageerror]', err))
-    page.on('requestfailed', request => console.warn('[browser requestfailed]', request.url(), request.failure()))
+      page.on('console', msg => console.log('[browser console]', msg.type(), msg.text()))
+      page.on('pageerror', err => console.error('[browser pageerror]', err))
+      page.on('requestfailed', request => console.warn('[browser requestfailed]', request.url(), request.failure()))
 
-    const screenshotPreset = async (preset: PresetParam): Promise<Buffer> => {
       const targetUrl = pageUrlForPreset(pageUrl, preset)
       timers.log('preset navigate start', { preset, targetUrl })
 
@@ -295,12 +287,26 @@ export async function renderProximityAlertMapImages(
       timers.log('screenshot captured', { preset, screenshotMs: Date.now() - screenshotStart, bytes: jpg.length })
 
       return jpg
+    } finally {
+      const closeStart = Date.now()
+      await context.close()
+      timers.log('context closed', { preset, closeMs: Date.now() - closeStart })
     }
+  }
 
-    const image1Jpg = await screenshotPreset('image-1')
+  try {
+    const [image1Result, image2Result] = await Promise.allSettled([
+      screenshotPresetInNewContext('image-1'),
+      screenshotPresetInNewContext('image-2'),
+    ])
+
+    if (image1Result.status === 'rejected') throw image1Result.reason
+    if (image2Result.status === 'rejected') throw image2Result.reason
+
+    const image1Jpg = image1Result.value
     timers.log('image 1 done', { bytes: image1Jpg.length })
 
-    const image2Jpg = await screenshotPreset('image-2')
+    const image2Jpg = image2Result.value
     timers.log('image 2 done', { bytes: image2Jpg.length })
 
     timers.log('complete', { totalMs: timers.sinceStart() })
@@ -310,11 +316,5 @@ export async function renderProximityAlertMapImages(
     throw err
   } finally {
     await sampler.stop()
-
-    if (context) {
-      const closeStart = Date.now()
-      await context.close()
-      timers.log('context closed', { closeMs: Date.now() - closeStart })
-    }
   }
 }
