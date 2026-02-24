@@ -1,0 +1,173 @@
+{% extends "../../partials/layout.njk" %}
+
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "moj/components/date-picker/macro.njk" import mojDatePicker %}
+{% from "../../components/datatable/macro.njk" import dataTable %}
+
+
+{% set pageTitle = applicationName + " - Home" %}
+{% set mainClasses = "app-container govuk-body" %}
+{% set activeLinkId = "data-ingestion" %}
+{% set rows = [] %}
+
+{% for ingestionAttempt in ingestionAttempts %}
+  {% set rows = (rows.push(
+    [
+      {
+        text: ""
+      },
+      {
+        text: ingestionAttempt.ingestionStatus
+      },
+      {
+        text: ingestionAttempt.policeForceArea
+      },
+      {
+        text: ingestionAttempt.batchId
+      },
+      {
+        text: ingestionAttempt.matches
+      },
+      {
+        text: ingestionAttempt.createdAt
+      },
+      {
+        text: ""
+      }
+    ]
+  ), rows) %}
+{% endfor %}
+
+{% if rows.length == 0 %}
+  {% set rows = [
+    [
+      {
+        text: ""
+      },
+      {
+        text: "No results found for applied filters.",
+        colspan: 6
+      }
+    ]
+  ] %}
+{% endif %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+      <h1 class="govuk-!-static-margin-top-0">Data ingestion / export</h1>
+    </div>
+  </div>
+
+  <div class="police-data-dashboard-filters govuk-!-static-padding-5 govuk-!-static-margin-bottom-5">
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-one-third">
+        {{ govukInput({
+          label: {
+              text: "Police force area",
+              classes: "govuk-label--s"
+          },
+          hint: {
+            text: "Example: Metropolitan"
+          },
+          errorMessage: { text: validationErrors.policeForceArea } if validationErrors.policeForceArea,
+          id: "policeForceArea",
+          name: "policeForceArea",
+          value: policeForceArea
+        }) }}
+      </div>
+      <div class="govuk-grid-column-one-third">
+        {{ govukInput({
+          label: {
+              text: "Batch ID",
+              classes: "govuk-label--s"
+          },
+          hint: {
+            text: "Example: MPS20251110"
+          },
+          errorMessage: { text: validationErrors.batchId } if validationErrors.batchId,
+          id: "batchId",
+          name: "batchId",
+          value: batchId
+        }) }}
+      </div>
+    </div>
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-one-third">
+        {{ mojDatePicker({
+          id: "fromDate",
+          name: "fromDate",
+          label: {
+            text: "Date from",
+            classes: "govuk-label--s"
+          },
+          errorMessage: { text: validationErrors.fromDate } if validationErrors.fromDate,
+          value: fromDate
+        }) }}
+      </div>
+      <div class="govuk-grid-column-one-third">
+        {{ mojDatePicker({
+          id: "toDate",
+          name: "toDate",
+          label: {
+            text: "Date to",
+            classes: "govuk-label--s"
+          },
+          errorMessage: { text: validationErrors.toDate } if validationErrors.toDate,
+          value: toDate
+        }) }}
+      </div>
+    </div>
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-full">
+        {{ govukButton({
+          text: "Search",
+          classes: "govuk-!-static-margin-bottom-0"
+        }) }}
+      </div>
+    </div>
+  </div>
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+      {{ govukButton({
+        text: "Export"
+      }) }}
+    </div>
+  </div>
+
+  {{ dataTable({
+    classes: "ingestion-attempts-table",
+    columns: [
+      {
+        text: ""
+      },
+      {
+        text: "Status"
+      },
+      {
+        text: "Police force area"
+      },
+      {
+        text: "Batch"
+      },
+      {
+        text: "Matches"
+      },
+      {
+        text: "Date"
+      },
+      {
+        text: "Time"
+      }
+    ],
+    rows: rows,
+    pagination: {
+      pageCount: pageCount,
+      currentPage: pageNumber,
+      hrefPrefix: ""
+    }
+  }) }}
+
+{% endblock %}
