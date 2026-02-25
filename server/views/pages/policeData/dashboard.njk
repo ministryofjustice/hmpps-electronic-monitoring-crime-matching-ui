@@ -1,6 +1,7 @@
 {% extends "../../partials/layout.njk" %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/select/macro.njk" import govukSelect %}
 {% from "moj/components/date-picker/macro.njk" import mojDatePicker %}
 {% from "../../components/datatable/macro.njk" import dataTable %}
 
@@ -62,83 +63,168 @@
     </div>
   </div>
 
-  <div class="police-data-dashboard-filters govuk-!-static-padding-5 govuk-!-static-margin-bottom-5">
-    <div class="govuk-grid-row">
-      <div class="govuk-grid-column-one-third">
-        {{
-          govukInput({
-            label: {
+  <div class="police-data-dashboard-filters govuk-!-static-padding-5 govuk-!-static-margin-bottom-7">
+    <form method="POST" novalidate>
+      <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+      <div class="govuk-grid-row">
+        <div class="govuk-grid-column-one-third">
+          {{
+            govukSelect({
+              id: "policeForceArea",
+              name: "policeForceArea",
+              label: {
                 text: "Police force area",
                 classes: "govuk-label--s"
-            },
-            hint: {
-              text: "Example: Metropolitan"
-            },
-            errorMessage: { text: validationErrors.policeForceArea } if validationErrors.policeForceArea,
-            id: "policeForceArea",
-            name: "policeForceArea",
-            value: policeForceArea
-          })
-        }}
+              },
+              hint: {
+                text: "Example: Metropolitan"
+              },
+              errorMessage: { text: validationErrors.policeForceArea } if validationErrors.policeForceArea,
+              items: [
+                {
+                  value: "",
+                  text: ""
+                },
+                {
+                  value: "AVON_AND_SOMERSET",
+                  text: "Avon and Somerset"
+                },
+                {
+                  value: "BEDFORDSHIRE",
+                  text: "Bedfordshire"
+                },
+                {
+                  value: "CHESHIRE",
+                  text: "Cheshire"
+                },
+                {
+                  value: "CUMBRIA",
+                  text: "Cumbria"
+                },
+                {
+                  value: "DERBYSHIRE",
+                  text: "Derbyshire"
+                },
+                {
+                  value: "DURHAM",
+                  text: "Durham"
+                },
+                {
+                  value: "ESSEX",
+                  text: "Essex"
+                },
+                {
+                  value: "GLOUCESTERSHIRE",
+                  text: "Gloucestershire"
+                },
+                {
+                  value: "GWENT",
+                  text: "Gwent"
+                },
+                {
+                  value: "HAMPSHIRE",
+                  text: "Hampshire"
+                },
+                {
+                  value: "HERTFORDSHIRE",
+                  text: "Hertfordshire"
+                },
+                {
+                  value: "HUMBERSIDE",
+                  text: "Humberside"
+                },
+                {
+                  value: "KENT",
+                  text: "Kent"
+                },
+                {
+                  value: "METROPOLITAN",
+                  text: "Metropolitan"
+                },
+                {
+                  value: "NORTH_WALES",
+                  text: "North Wales"
+                },
+                {
+                  value: "NOTTINGHAMSHIRE",
+                  text: "Nottinghamshire"
+                },
+                {
+                  value: "SUSSEX",
+                  text: "Sussex"
+                },
+                {
+                  value: "WEST_MIDLANDS",
+                  text: "West Midlands"
+                }
+              ],
+              value: policeForceArea
+            })
+          }}
+        </div>
+        <div class="govuk-grid-column-one-third">
+          {{
+            govukInput({
+              label: {
+                  text: "Batch ID",
+                  classes: "govuk-label--s"
+              },
+              hint: {
+                text: "Example: MPS20251110"
+              },
+              classes: "govuk-input--width-10",
+              errorMessage: { text: validationErrors.batchId } if validationErrors.batchId,
+              id: "batchId",
+              name: "batchId",
+              value: batchId
+            })
+          }}
+        </div>
       </div>
-      <div class="govuk-grid-column-one-third">
-        {{
-          govukInput({
-            label: {
-                text: "Batch ID",
+      <div class="govuk-grid-row">
+        <div class="govuk-grid-column-one-third">
+          {{
+            mojDatePicker({
+              id: "fromDate",
+              name: "fromDate",
+              label: {
+                text: "Date from",
                 classes: "govuk-label--s"
-            },
-            hint: {
-              text: "Example: MPS20251110"
-            },
-            errorMessage: { text: validationErrors.batchId } if validationErrors.batchId,
-            id: "batchId",
-            name: "batchId",
-            value: batchId
-          })
-        }}
+              },
+              formGroup: {
+                classes: 'govuk-!-static-margin-bottom-7'
+              },
+              errorMessage: { text: validationErrors.fromDate } if validationErrors.fromDate,
+              value: fromDate
+            })
+          }}
+        </div>
+        <div class="govuk-grid-column-one-third">
+          {{
+            mojDatePicker({
+              id: "toDate",
+              name: "toDate",
+              label: {
+                text: "Date to",
+                classes: "govuk-label--s"
+              },
+              errorMessage: { text: validationErrors.toDate } if validationErrors.toDate,
+              value: toDate
+            })
+          }}
+        </div>
       </div>
-    </div>
-    <div class="govuk-grid-row">
-      <div class="govuk-grid-column-one-third">
-        {{
-          mojDatePicker({
-            id: "fromDate",
-            name: "fromDate",
-            label: {
-              text: "Date from",
-              classes: "govuk-label--s"
-            },
-            errorMessage: { text: validationErrors.fromDate } if validationErrors.fromDate,
-            value: fromDate
-          })
-        }}
+      <div class="govuk-grid-row">
+        <div class="govuk-grid-column-full">
+          {{
+            govukButton({
+              text: "Search",
+              classes: "govuk-!-static-margin-bottom-0"
+            })
+          }}
+        </div>
       </div>
-      <div class="govuk-grid-column-one-third">
-        {{
-          mojDatePicker({
-            id: "toDate",
-            name: "toDate",
-            label: {
-              text: "Date to",
-              classes: "govuk-label--s"
-            },
-            errorMessage: { text: validationErrors.toDate } if validationErrors.toDate,
-            value: toDate
-          })
-        }}
-      </div>
-    </div>
-    <div class="govuk-grid-row">
-      <div class="govuk-grid-column-full">
-        {{
-          govukButton({
-            text: "Search",
-            classes: "govuk-!-static-margin-bottom-0"
-          })
-        }}
-      </div>
-    </div>
+    </form>
   </div>
 
   <div class="govuk-grid-row">
