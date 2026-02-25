@@ -11,6 +11,7 @@ import PersonsController from '../controllers/locationData/persons'
 import PoliceDataDashboardController from '../controllers/policeData/dashboard'
 import populateSessionData from '../middleware/populateSessionData'
 import locationDataRoutes from './location-data'
+import PoliceDataIngestionAttemptController from '../controllers/policeData/ingestionAttempt'
 
 export default function routes(services: Services): Router {
   const { auditService, crimeBatchesService, crimeMappingService, personsService, policeDataService } = services
@@ -30,6 +31,7 @@ export default function routes(services: Services): Router {
   const legalController = new LegalController()
   const personsController = new PersonsController(personsService)
   const policeDataDashboardController = new PoliceDataDashboardController(policeDataService)
+  const policeDataIngestionAttemptController = new PoliceDataIngestionAttemptController(policeDataService)
 
   router.use(populateSessionData)
 
@@ -45,6 +47,7 @@ export default function routes(services: Services): Router {
   post('/location-data/persons', personsController.search)
 
   get('/police-data/dashboard', policeDataDashboardController.view)
+  get('/police-data/ingestion-attempts/:ingestionAttemptId', policeDataIngestionAttemptController.view)
 
   router.use('/location-data', locationDataRoutes(services))
 
