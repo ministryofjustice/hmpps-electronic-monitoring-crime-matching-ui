@@ -1,0 +1,110 @@
+{% extends "../../partials/layout.njk" %}
+
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/table/macro.njk" import govukTable %}
+
+{% set pageTitle = applicationName + " - Home" %}
+{% set mainClasses = "app-container govuk-body" %}
+{% set activeLinkId = "data-ingestion" %}
+{% set rows = [] %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+      <h1 class="govuk-!-static-margin-top-0">Batch details</h1>
+    </div>
+  </div>
+
+  <div class="govuk-grid-row govuk-!-static-margin-bottom-3">
+    <div class="govuk-grid-column-full">
+      {{ govukTable({
+        caption: "Summary",
+        captionClasses: "govuk-table__caption--m",
+        head: [
+          {
+            text: "Status"
+          },
+          {
+            text: "Police force area"
+          },
+          {
+            text: "Batch"
+          },
+          {
+            text: "Filename"
+          },
+          {
+            text: "Matches"
+          },
+          {
+            text: "Date"
+          },
+          {
+            text: "Time"
+          }
+        ],
+        rows: []
+      }) }}
+    </div>
+  </div>
+
+  <div class="govuk-grid-row govuk-!-static-margin-bottom-3">
+    <div class="govuk-grid-column-full">
+      {{ govukTable({
+        caption: "Breakdown by crime type",
+        captionClasses: "govuk-table__caption--m",
+        head: [
+          {
+            text: "Crime type"
+          },
+          {
+            text: "Submitted"
+          },
+          {
+            text: "Ingested"
+          },
+          {
+            text: "Failed validation"
+          }
+        ],
+        rows: []
+      }) }}
+    </div>
+  </div>
+
+  <div class="govuk-grid-row govuk-!-static-margin-bottom-3">
+    <div class="govuk-grid-column-full">
+      {{ govukTable({
+        caption: "Failed validation",
+        captionClasses: "govuk-table__caption--m",
+        head: [
+          {
+            text: "Crime reference"
+          },
+          {
+            text: "Error type"
+          },
+          {
+            text: "Required action"
+          }
+        ],
+        rows: []
+      }) }}
+    </div>
+    <div class="govuk-grid-column-full">
+      {{
+        govukButton({
+          text: "Export"
+        })
+      }}
+    </div>
+  </div>
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+      <h2 class="govuk-heading-m">Failed ingestion</h2>
+      <p>No crimes have been ingested. Please refer to email "MoJ Acquisitive Crime - Ingestion - Failure -" for details.
+    </div>
+  </div>
+
+{% endblock %}
