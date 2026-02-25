@@ -5,6 +5,21 @@ import PoliceDataService from '../../services/policeDataService'
 export default class PoliceDataDashboardController {
   constructor(private readonly policeDataService: PoliceDataService) {}
 
+  search: RequestHandler = async (req, res) => {
+    const { batchId, policeForceArea, fromDate, toDate } = policeDataDashboardQuerySchema.parse(req.body)
+
+    const searchParams = new URLSearchParams({
+      ...(batchId && { batchId }),
+      ...(policeForceArea && { policeForceArea }),
+      ...(fromDate && { fromDate }),
+      ...(toDate && { toDate }),
+    })
+
+    const query = searchParams.toString()
+
+    return res.redirect(303, `/police-data/dashboard${query ? `?${query}` : ''}`)
+  }
+
   view: RequestHandler = async (req, res) => {
     const { query } = req
     const { batchId, policeForceArea, fromDate, toDate } = policeDataDashboardQuerySchema.parse(query)
