@@ -8,11 +8,12 @@ import CrimeBatchesController from '../controllers/crimeMapping/crimeBatches'
 import LegalController from '../controllers/legal'
 import HelpController from '../controllers/help'
 import PersonsController from '../controllers/locationData/persons'
+import PoliceDataDashboardController from '../controllers/policeData/dashboard'
 import populateSessionData from '../middleware/populateSessionData'
 import locationDataRoutes from './location-data'
 
 export default function routes(services: Services): Router {
-  const { auditService, crimeBatchesService, crimeMappingService, personsService } = services
+  const { auditService, crimeBatchesService, crimeMappingService, personsService, policeDataService } = services
   const router = Router()
   const get = (path: string | string[], handler: RequestHandler) => router.get(path, asyncMiddleware(handler))
   const post = (path: string | string[], handler: RequestHandler) => router.post(path, asyncMiddleware(handler))
@@ -28,6 +29,7 @@ export default function routes(services: Services): Router {
   const helpController = new HelpController()
   const legalController = new LegalController()
   const personsController = new PersonsController(personsService)
+  const policeDataDashboardController = new PoliceDataDashboardController(policeDataService)
 
   router.use(populateSessionData)
 
@@ -41,6 +43,8 @@ export default function routes(services: Services): Router {
 
   get('/location-data/persons', personsController.view)
   post('/location-data/persons', personsController.search)
+
+  get('/police-data/dashboard', policeDataDashboardController.view)
 
   router.use('/location-data', locationDataRoutes(services))
 
