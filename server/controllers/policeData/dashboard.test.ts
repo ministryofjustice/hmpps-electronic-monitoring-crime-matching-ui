@@ -63,4 +63,51 @@ describe('PoliceDataDashboardController', () => {
       expect(next).not.toHaveBeenCalled()
     })
   })
+
+  describe('view', () => {
+    it.each([
+      [{ policeForceArea: 'INVALID' }, { policeForceArea: 'Please select a valid police force area.' }],
+      [{ fromDate: 'abc' }, { fromDate: 'Please enter a valid date.' }],
+      [{ toDate: 'abc' }, { toDate: 'Please enter a valid date.' }],
+      [
+        {
+          policeForceArea: 'INVALID',
+          fromDate: 'abc',
+          toDate: 'abc',
+        },
+        {
+          policeForceArea: 'Please select a valid police force area.',
+          fromDate: 'Please enter a valid date.',
+          toDate: 'Please enter a valid date.',
+        },
+      ],
+    ])(
+      'should send validation errors to the view engine when the query contains invalid parameters %o',
+      async (query, expectedValidationErrors) => {
+        // Given
+        const req = createMockRequest({ query })
+        const res = createMockResponse()
+        const next = jest.fn()
+        const service = new PoliceDataService()
+        const controller = new PoliceDataDashboardController(service)
+
+        // When
+        await controller.view(req, res, next)
+
+        // Then
+        expect(res.render).toHaveBeenCalledWith('pages/policeData/dashboard', {
+          batchId: '',
+          policeForceArea: '',
+          fromDate: '',
+          toDate: '',
+          ...query,
+          ingestionAttempts: [],
+          pageCount: 1,
+          pageNumber: 1,
+          validationErrors: expectedValidationErrors,
+        })
+        expect(next).not.toHaveBeenCalled()
+      },
+    )
+  })
 })

@@ -1,0 +1,23 @@
+const policeForceAreas = new Set([
+  'AVON_AND_SOMERSET',
+  'BEDFORDSHIRE',
+  'CHESHIRE',
+  'CITY_OF_LONDON',
+  'CUMBRIA',
+  'DERBYSHIRE',
+  'DURHAM',
+  'ESSEX',
+  'GLOUCESTERSHIRE',
+  'GWENT',
+  'HAMPSHIRE',
+  'HERTFORDSHIRE',
+  'HUMBERSIDE',
+  'KENT',
+  'METROPOLITAN',
+  'NORTH_WALES',
+  'NOTTINGHAMSHIRE',
+  'SUSSEX',
+  'WEST_MIDLANDS',
+])
+
+export default policeForceAreas
