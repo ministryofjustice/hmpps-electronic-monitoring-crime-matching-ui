@@ -4,9 +4,11 @@ import pidtree from 'pidtree'
 import { execFileSync } from 'node:child_process'
 import { type Browser, type Page } from 'playwright'
 
-export type ProximityAlertMapImages = {
+export type ProximityAlertReportImages = {
   image1Jpg: Buffer
   image2Jpg: Buffer
+  wearerImage1JpgById: Record<string, Buffer>
+  wearerImage2JpgById: Record<string, Buffer>
 }
 
 export type RenderProximityAlertImagesArgs = {
@@ -14,6 +16,8 @@ export type RenderProximityAlertImagesArgs = {
   pageUrl: string
   baseUrlForCookies: string
   cookieHeader: string | undefined
+  selectedDeviceWearerIds: string[]
+  image1StateJson?: string
   viewport?: { width: number; height: number }
   deviceScaleFactor?: number
   timeoutMs?: number
@@ -21,14 +25,24 @@ export type RenderProximityAlertImagesArgs = {
   jpegQuality?: number
 }
 
-const DEFAULT_VIEWPORT = { width: 1200, height: 800 }
+const DEFAULT_VIEWPORT = { width: 1200, height: 650 }
 const DEFAULT_TIMEOUT_MS = 30_000
 const DEFAULT_JPEG_QUALITY = 85
 
-type PresetParam = 'image-1' | 'image-2'
+type PresetParam = 'image-2' | 'wearer-image-1' | 'wearer-image-2'
+
+type Image1CaptureState = {
+  mapWidthPx: number
+  mapHeightPx: number
+  devicePixelRatio: number
+  view: {
+    center: [number, number]
+    resolution: number
+    rotation: number
+  }
+}
 
 type PeakResources = {
-  chromiumPid?: number
   chromiumCpuPct?: number
   chromiumRssMB?: number
   nodeRssMB?: number
@@ -38,7 +52,6 @@ function mb(bytes: number): number {
   return Math.round((bytes / 1024 / 1024) * 10) / 10
 }
 
-// Helper to log performance times at key steps in the process
 function makeTimers(label: string, meta?: Record<string, unknown>) {
   const startTime = Date.now()
   let last = startTime
@@ -60,8 +73,6 @@ function makeTimers(label: string, meta?: Record<string, unknown>) {
   return { log, sinceStart }
 }
 
-// Convert the incoming HTTP Cookie header into Playwright cookie objects
-// so the headless browser can reuse the user's authenticated session.
 function cookiesFromHeader(cookieHeader: string, baseUrlForCookies: string) {
   return cookieHeader
     .split(';')
@@ -75,21 +86,53 @@ function cookiesFromHeader(cookieHeader: string, baseUrlForCookies: string) {
     })
 }
 
-function pageUrlForPreset(baseUrl: string, preset: PresetParam): string {
+function pageUrlForHeadless(baseUrl: string, selectedDeviceWearerIds: string[]): string {
   const url = new URL(baseUrl)
-  url.searchParams.set('preset', preset)
   url.searchParams.set('headless', 'true')
+
+  if (selectedDeviceWearerIds.length > 0) {
+    url.searchParams.set('wearerIds', selectedDeviceWearerIds.join(','))
+  }
+
   return url.toString()
 }
 
-// Wait until the map component signals that layers are ready.
-// This listens for the custom event dispatched in initialiseProximityAlertMapImagesView.
+function tryParseImage1State(json: string | undefined): Image1CaptureState | null {
+  if (!json) return null
+  try {
+    const parsed = JSON.parse(json) as Image1CaptureState
+    if (
+      !parsed ||
+      typeof parsed.mapWidthPx !== 'number' ||
+      typeof parsed.mapHeightPx !== 'number' ||
+      typeof parsed.devicePixelRatio !== 'number' ||
+      !parsed.view ||
+      !Array.isArray(parsed.view.center) ||
+      parsed.view.center.length !== 2 ||
+      typeof parsed.view.center[0] !== 'number' ||
+      typeof parsed.view.center[1] !== 'number' ||
+      typeof parsed.view.resolution !== 'number' ||
+      typeof parsed.view.rotation !== 'number'
+    ) {
+      return null
+    }
+    if (parsed.mapWidthPx <= 0 || parsed.mapHeightPx <= 0) return null
+    return parsed
+  } catch {
+    return null
+  }
+}
+
+// eslint-friendly sequential runner (keeps deterministic / low-memory behaviour)
+async function forEachSequential<T>(items: readonly T[], fn: (item: T, index: number) => Promise<void>): Promise<void> {
+  await items.reduce<Promise<void>>((p, item, index) => p.then(() => fn(item, index)), Promise.resolve())
+}
+
 async function waitForAppLayersReady(page: Page): Promise<void> {
   await page.evaluate(() => {
     type DocumentLike = {
       addEventListener: (type: string, listener: () => void, options?: { once?: boolean }) => void
     }
-
     const root = globalThis as unknown as { document: DocumentLike }
 
     return new Promise<void>(resolve => {
@@ -98,7 +141,6 @@ async function waitForAppLayersReady(page: Page): Promise<void> {
   })
 }
 
-// Wait for OpenLayers to finish a render cycle by listening to `rendercomplete` on em-map.olMapInstance.
 async function waitForOlRenderComplete(page: Page): Promise<void> {
   await page.evaluate(() => {
     type EmMapLike = { olMapInstance?: unknown }
@@ -124,10 +166,22 @@ async function waitForOlRenderComplete(page: Page): Promise<void> {
   })
 }
 
-// Start sampling Chromium + Node resource usage and track peaks
+// fast “toggle applied” wait (no tile barrier)
+async function waitForNextPaint(page: Page): Promise<void> {
+  await page.evaluate(() => {
+    const raf = (globalThis as unknown as { requestAnimationFrame?: (cb: () => void) => void }).requestAnimationFrame
+    return new Promise<void>(resolve => {
+      if (!raf) {
+        setTimeout(() => resolve(), 0)
+        return
+      }
+      raf(() => raf(resolve))
+    })
+  })
+}
+
 function startResourceSampler(_browser: Browser, label: string, intervalMs = 200) {
   const peak: PeakResources = {}
-
   let stopped = false
 
   const getCommand = (pid: number): string => {
@@ -149,13 +203,10 @@ function startResourceSampler(_browser: Browser, label: string, intervalMs = 200
   }
 
   const sampleOnce = async () => {
-    // Node RSS
     const nodeRssMB = mb(process.memoryUsage().rss)
     if (!peak.nodeRssMB || nodeRssMB > peak.nodeRssMB) peak.nodeRssMB = nodeRssMB
 
-    // Need to aggregate all Child processes that Chromium uses
     const pids = await pidtree(process.pid, { root: true })
-
     const chromiumPids = pids.filter(pid => {
       const cmd = getCommand(pid)
       return Boolean(cmd) && isChromiumLike(cmd)
@@ -206,14 +257,42 @@ function startResourceSampler(_browser: Browser, label: string, intervalMs = 200
   return { stop, peak }
 }
 
-export async function renderProximityAlertMapImages(
+async function applyPreset(page: Page, preset: PresetParam, wearerId?: string): Promise<void> {
+  await page.evaluate(
+    ({ preset: p, wearerId: w }) => {
+      const win = globalThis as unknown as {
+        mapImages?: { applyPreset?: (preset: string, wearerId?: string) => void }
+      }
+      if (!win.mapImages?.applyPreset) throw new Error('window.mapImages.applyPreset not found')
+      win.mapImages.applyPreset(p, w)
+    },
+    { preset, wearerId },
+  )
+}
+
+async function applyImage1State(page: Page, state: Image1CaptureState): Promise<void> {
+  await page.evaluate(
+    ({ s }) => {
+      const win = globalThis as unknown as {
+        mapImages?: { applyImage1CaptureState?: (state: unknown) => void }
+      }
+      if (!win.mapImages?.applyImage1CaptureState) throw new Error('window.mapImages.applyImage1CaptureState not found')
+      win.mapImages.applyImage1CaptureState(s)
+    },
+    { s: state },
+  )
+}
+
+export async function renderProximityAlertReportImages(
   args: RenderProximityAlertImagesArgs,
-): Promise<ProximityAlertMapImages> {
+): Promise<ProximityAlertReportImages> {
   const {
     browser,
     pageUrl,
     baseUrlForCookies,
     cookieHeader,
+    selectedDeviceWearerIds,
+    image1StateJson,
     viewport = DEFAULT_VIEWPORT,
     deviceScaleFactor = 2,
     timeoutMs = DEFAULT_TIMEOUT_MS,
@@ -222,99 +301,155 @@ export async function renderProximityAlertMapImages(
   } = args
 
   const timers = makeTimers('mapImageRenderer', { pageUrl })
-  timers.log('start', { viewport, deviceScaleFactor, timeoutMs, jpegQuality })
+  timers.log('start', {
+    viewport,
+    deviceScaleFactor,
+    timeoutMs,
+    jpegQuality,
+    selectedDeviceWearerIdsCount: selectedDeviceWearerIds.length,
+  })
 
-  // Start resource sampling for this export
-  const sampler = startResourceSampler(browser, 'export-map-images')
-
-  // Cookies
+  const sampler = startResourceSampler(browser, 'export-proximity-alert')
   const sessionCookies = cookieHeader ? cookiesFromHeader(cookieHeader, baseUrlForCookies) : []
 
-  const screenshotPresetInNewContext = async (preset: PresetParam): Promise<Buffer> => {
-    const contextStart = Date.now()
-    const context = await browser.newContext({ viewport, deviceScaleFactor, ignoreHTTPSErrors })
-    timers.log('context created', { preset, contextMs: Date.now() - contextStart })
+  const parsedImage1State = tryParseImage1State(image1StateJson)
+  const headlessDeviceScaleFactor = parsedImage1State ? parsedImage1State.devicePixelRatio : deviceScaleFactor
 
-    try {
-      if (sessionCookies.length > 0) {
-        const addCookiesStart = Date.now()
-        await context.addCookies(sessionCookies)
-        timers.log('cookies added to context', { preset, addCookiesMs: Date.now() - addCookiesStart })
-      } else {
-        timers.log('no cookie header provided', { preset })
-      }
+  const contextStart = Date.now()
+  const context = await browser.newContext({
+    viewport,
+    deviceScaleFactor: headlessDeviceScaleFactor,
+    ignoreHTTPSErrors,
+  })
+  timers.log('context created', { contextMs: Date.now() - contextStart, headlessDeviceScaleFactor })
 
-      // New page
-      const pageStart = Date.now()
-      const page = await context.newPage()
-      page.setDefaultTimeout(timeoutMs)
-      page.setDefaultNavigationTimeout(timeoutMs)
-      timers.log('page created', { preset, pageMs: Date.now() - pageStart })
+  try {
+    if (sessionCookies.length > 0) {
+      const addCookiesStart = Date.now()
+      await context.addCookies(sessionCookies)
+      timers.log('cookies added to context', { addCookiesMs: Date.now() - addCookiesStart })
+    } else {
+      timers.log('no cookie header provided')
+    }
 
-      page.on('console', msg => console.log('[browser console]', msg.type(), msg.text()))
-      page.on('pageerror', err => console.error('[browser pageerror]', err))
-      page.on('requestfailed', request => console.warn('[browser requestfailed]', request.url(), request.failure()))
+    const pageStart = Date.now()
+    const page = await context.newPage()
+    page.setDefaultTimeout(timeoutMs)
+    page.setDefaultNavigationTimeout(timeoutMs)
+    timers.log('page created', { pageMs: Date.now() - pageStart })
 
-      const targetUrl = pageUrlForPreset(pageUrl, preset)
-      timers.log('preset navigate start', { preset, targetUrl })
+    page.on('console', msg => console.log('[browser console]', msg.type(), msg.text()))
+    page.on('pageerror', err => console.error('[browser pageerror]', err))
+    page.on('requestfailed', request => console.warn('[browser requestfailed]', request.url(), request.failure()))
 
-      const gotoStart = Date.now()
-      await page.goto(targetUrl, { waitUntil: 'domcontentloaded' })
-      timers.log('page.goto complete', {
-        preset,
-        gotoMs: Date.now() - gotoStart,
-        finalUrl: page.url(),
-        title: await page.title(),
+    let targetUrl = pageUrlForHeadless(pageUrl, selectedDeviceWearerIds)
+
+    if (parsedImage1State) {
+      const url = new URL(targetUrl)
+      url.searchParams.set('mapW', String(parsedImage1State.mapWidthPx))
+      url.searchParams.set('mapH', String(parsedImage1State.mapHeightPx))
+      targetUrl = url.toString()
+    }
+
+    timers.log('navigate start', { targetUrl })
+
+    const gotoStart = Date.now()
+    await page.goto(targetUrl, { waitUntil: 'domcontentloaded' })
+    timers.log('page.goto complete', {
+      gotoMs: Date.now() - gotoStart,
+      finalUrl: page.url(),
+      title: await page.title(),
+    })
+
+    const readyStart = Date.now()
+    await waitForAppLayersReady(page)
+    timers.log('app layers ready', { readyWaitMs: Date.now() - readyStart })
+
+    const initRenderStart = Date.now()
+    await waitForOlRenderComplete(page)
+    timers.log('initial ol rendercomplete', { renderWaitMs: Date.now() - initRenderStart })
+
+    const mapElementHandle = await page.$('em-map')
+    if (!mapElementHandle) throw new Error('Map element <em-map> not found for screenshot')
+
+    const screenshot = async (extra?: Record<string, unknown>): Promise<Buffer> => {
+      const screenshotStart = Date.now()
+      const jpg = await mapElementHandle.screenshot({ type: 'jpeg', quality: jpegQuality })
+      timers.log('screenshot captured', {
+        ...(extra ?? {}),
+        screenshotMs: Date.now() - screenshotStart,
+        bytes: jpg.length,
       })
+      return jpg
+    }
 
-      // Wait for map ready flag
-      const readyStart = Date.now()
-      await waitForAppLayersReady(page)
-      timers.log('app layers ready', { preset, readyWaitMs: Date.now() - readyStart })
+    // -------------------------
+    // Image 1 phase (apply captured view once, then toggle-only per wearer)
+    // -------------------------
+    let image1Jpg: Buffer
+
+    if (parsedImage1State) {
+      const applyStart = Date.now()
+      await applyImage1State(page, parsedImage1State)
+      timers.log('image1 state applied', { applyMs: Date.now() - applyStart })
 
       const renderStart = Date.now()
       await waitForOlRenderComplete(page)
-      timers.log('ol rendercomplete', { preset, renderWaitMs: Date.now() - renderStart })
+      timers.log('ol rendercomplete (image1 state)', { renderWaitMs: Date.now() - renderStart })
 
-      const selectStart = Date.now()
-      const mapElementHandle = await page.$('em-map')
-      timers.log('em-map element selected', { preset, selectMs: Date.now() - selectStart })
-
-      if (!mapElementHandle) throw new Error('Map element <em-map> not found for screenshot')
-
-      const screenshotStart = Date.now()
-      const jpg = await mapElementHandle.screenshot({ type: 'jpeg', quality: jpegQuality })
-      timers.log('screenshot captured', { preset, screenshotMs: Date.now() - screenshotStart, bytes: jpg.length })
-
-      return jpg
-    } finally {
-      const closeStart = Date.now()
-      await context.close()
-      timers.log('context closed', { preset, closeMs: Date.now() - closeStart })
+      image1Jpg = await screenshot({ phase: 'image-1-overview' })
+    } else {
+      image1Jpg = await screenshot({ phase: 'image-1-overview-fallback' })
     }
-  }
 
-  try {
-    const [image1Result, image2Result] = await Promise.allSettled([
-      screenshotPresetInNewContext('image-1'),
-      screenshotPresetInNewContext('image-2'),
-    ])
+    const wearerImage1JpgById: Record<string, Buffer> = {}
+    await forEachSequential(selectedDeviceWearerIds, async wearerId => {
+      const applyStart = Date.now()
+      await applyPreset(page, 'wearer-image-1', wearerId)
+      timers.log('preset applied', { preset: 'wearer-image-1', wearerId, applyMs: Date.now() - applyStart })
 
-    if (image1Result.status === 'rejected') throw image1Result.reason
-    if (image2Result.status === 'rejected') throw image2Result.reason
+      const paintStart = Date.now()
+      await waitForNextPaint(page)
+      timers.log('next paint', { preset: 'wearer-image-1', wearerId, paintWaitMs: Date.now() - paintStart })
 
-    const image1Jpg = image1Result.value
-    timers.log('image 1 done', { bytes: image1Jpg.length })
+      wearerImage1JpgById[wearerId] = await screenshot({ preset: 'wearer-image-1', wearerId })
+    })
 
-    const image2Jpg = image2Result.value
-    timers.log('image 2 done', { bytes: image2Jpg.length })
+    // -------------------------
+    // Image 2 phase (fit once, then toggle-only per wearer)
+    // -------------------------
+    const apply2Start = Date.now()
+    await applyPreset(page, 'image-2')
+    timers.log('preset applied', { preset: 'image-2', applyMs: Date.now() - apply2Start })
+
+    const render2Start = Date.now()
+    await waitForOlRenderComplete(page)
+    timers.log('ol rendercomplete (image-2)', { renderWaitMs: Date.now() - render2Start })
+
+    const image2Jpg = await screenshot({ preset: 'image-2' })
+
+    const wearerImage2JpgById: Record<string, Buffer> = {}
+    await forEachSequential(selectedDeviceWearerIds, async wearerId => {
+      const applyStart = Date.now()
+      await applyPreset(page, 'wearer-image-2', wearerId)
+      timers.log('preset applied', { preset: 'wearer-image-2', wearerId, applyMs: Date.now() - applyStart })
+
+      const paintStart = Date.now()
+      await waitForNextPaint(page)
+      timers.log('next paint', { preset: 'wearer-image-2', wearerId, paintWaitMs: Date.now() - paintStart })
+
+      wearerImage2JpgById[wearerId] = await screenshot({ preset: 'wearer-image-2', wearerId })
+    })
 
     timers.log('complete', { totalMs: timers.sinceStart() })
-    return { image1Jpg, image2Jpg }
+    return { image1Jpg, image2Jpg, wearerImage1JpgById, wearerImage2JpgById }
   } catch (err) {
     timers.log('failed', { totalMs: timers.sinceStart(), error: err instanceof Error ? err.message : String(err) })
     throw err
   } finally {
+    const closeStart = Date.now()
+    await context.close()
+    timers.log('context closed', { closeMs: Date.now() - closeStart })
     await sampler.stop()
   }
 }

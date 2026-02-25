@@ -50,39 +50,72 @@ type WearerLayers = {
   labels?: LayerWithSource
 }
 
-type CrimeLayers = {
-  radiusFeatureForExtent: Feature<CircleGeom>
-}
-
 type CircleInput = {
   latitude: number
   longitude: number
   precision: number
 }
 
-type PresetParam = 'default' | 'image-1' | 'image-2'
+type PresetParam = 'default' | 'image-2' | 'wearer-image-1' | 'wearer-image-2'
+
+type Image1CaptureState = {
+  mapWidthPx: number
+  mapHeightPx: number
+  devicePixelRatio: number
+  view: {
+    center: [number, number]
+    resolution: number
+    rotation: number
+  }
+}
 
 const palette = ['rgba(255, 214, 10, 1)', 'rgba(139, 69, 19, 1)']
 
 function getPresetFromUrl(): PresetParam | null {
   const params = new URLSearchParams(window.location.search)
   const preset = params.get('preset')
-  if (preset === 'default' || preset === 'image-1' || preset === 'image-2') return preset
+  if (preset === 'default' || preset === 'image-2' || preset === 'wearer-image-1' || preset === 'wearer-image-2')
+    return preset
   return null
 }
 
-// Are we in Playwright headless browser mode
+function getWearerIdFromUrl(): string | null {
+  const params = new URLSearchParams(window.location.search)
+  const wearerId = params.get('wearerId')
+  return wearerId || null
+}
+
+function getWearerIdsFromUrl(): string[] | null {
+  const params = new URLSearchParams(window.location.search)
+  const raw = params.get('wearerIds')
+  if (!raw) return null
+  const ids = raw
+    .split(',')
+    .map(s => s.trim())
+    .filter(Boolean)
+  return ids.length ? ids : null
+}
+
 function isHeadlessCapture(): boolean {
   const params = new URLSearchParams(window.location.search)
   return params.get('headless') === 'true'
 }
 
-// Add a Crime marker (for spike just drawing a square). Will need to be a marker with label.
-const addCrimeLayers = (emMap: EmMap, crime: CrimePosition): { centre: Coordinate; crimeLayers: CrimeLayers } => {
+function getHeadlessMapSizeFromUrl(): { widthPx: number; heightPx: number } | null {
+  const params = new URLSearchParams(window.location.search)
+  const w = params.get('mapW')
+  const h = params.get('mapH')
+  if (!w || !h) return null
+  const widthPx = Number(w)
+  const heightPx = Number(h)
+  if (!Number.isFinite(widthPx) || !Number.isFinite(heightPx) || widthPx <= 0 || heightPx <= 0) return null
+  return { widthPx, heightPx }
+}
+
+const addCrimeLayers = (emMap: EmMap, crime: CrimePosition): Coordinate => {
   const map = emMap.olMapInstance!
   const centre = fromLonLat([crime.longitude, crime.latitude])
 
-  // Crime square marker
   const crimeMarker = new Feature({
     geometry: new Point(centre),
   })
@@ -105,7 +138,6 @@ const addCrimeLayers = (emMap: EmMap, crime: CrimePosition): { centre: Coordinat
   crimeMarkerLayer.setZIndex(10)
   map.addLayer(crimeMarkerLayer)
 
-  // Add a Crime 100m radius circle
   const circlePos: CircleInput = {
     latitude: crime.latitude,
     longitude: crime.longitude,
@@ -126,66 +158,35 @@ const addCrimeLayers = (emMap: EmMap, crime: CrimePosition): { centre: Coordinat
     }),
   )
 
-  // Create a feature with the crime radius geometry for later calculating extent when fitting to the crime circle
-  const radiusFeatureForExtent = new Feature({
-    geometry: new CircleGeom(centre, crime.radiusMeters),
-  })
-
-  return { centre, crimeLayers: { radiusFeatureForExtent } }
+  return centre
 }
 
-// Default map view
 const setCrimeDefaultView = (emMap: EmMap, centre: Coordinate) => {
   const map = emMap.olMapInstance!
   map.getView().setCenter(centre)
   map.getView().setZoom(16.5)
 }
 
-// Hide zoom slider as we don't want it in generated images + move compass icon to the top.
 const applyHideZoomSliderAndMoveCompass = (emMap: EmMap) => {
   const root = emMap.shadowRoot
   if (!root) return
 
-  // Hide the zoom slider (if present)
   const zoomSlider = root.querySelector<HTMLElement>('.ol-zoom')
-  if (zoomSlider) {
-    zoomSlider.style.display = 'none'
-  }
+  if (zoomSlider) zoomSlider.style.display = 'none'
 
   const zoomSliderThumb = root.querySelector<HTMLElement>('.ol-zoomslider-thumb')
-  if (zoomSliderThumb) {
-    zoomSliderThumb.style.display = 'none'
-  }
+  if (zoomSliderThumb) zoomSliderThumb.style.display = 'none'
 
-  // Move rotate/compass to the top
   const rotateCtrl = root.querySelector<HTMLElement>('.ol-control.ol-rotate')
-  if (rotateCtrl) {
-    rotateCtrl.style.top = '0'
-  }
+  if (rotateCtrl) rotateCtrl.style.top = '0'
 }
 
-// Proximity Alert Image 1: zoom to 100m crime circle extent with small margin
-const fitToCrimeCircle = (emMap: EmMap, radiusFeature: Feature<CircleGeom>) => {
-  const map = emMap.olMapInstance!
-  const extent = radiusFeature.getGeometry()?.getExtent()
-  if (!extent || isEmptyExtent(extent)) return
-
-  map.getView().fit(extent, {
-    padding: [80, 80, 80, 80],
-    maxZoom: 20,
-    size: map.getSize(),
-  })
-}
-
-// Proximity Alert Image 2: zoom to cluster of wearer positions + crime with small margin (dynamic radius)
 const fitToPositionsCluster = (emMap: EmMap, layersByWearer: Map<string, WearerLayers>, crimeCentre: Coordinate) => {
   const view = emMap.olMapInstance!.getView()
   const combined = createEmpty()
 
-  // Always include crime centre
   extendExtent(combined, [crimeCentre[0], crimeCentre[1], crimeCentre[0], crimeCentre[1]])
 
-  // Fit to wearer positions extent
   for (const { locations } of layersByWearer.values()) {
     const extent = locations?.getSource?.()?.getExtent?.()
     if (extent && !isEmptyExtent(extent)) {
@@ -200,14 +201,13 @@ const fitToPositionsCluster = (emMap: EmMap, layersByWearer: Map<string, WearerL
     maxZoom: 20,
   })
 
-  // Zoom out to more closely match Figma images.
   const res = view.getResolution()
   if (typeof res === 'number') {
     view.setResolution(res * 1.3)
   }
 }
 
-const initialiseProximityAlertMapImagesView = async () => {
+const initialiseProximityAlertView = async () => {
   const emMap = queryElement(document, 'em-map') as EmMap
 
   await new Promise<void>(resolve => {
@@ -216,6 +216,14 @@ const initialiseProximityAlertMapImagesView = async () => {
 
   if (isHeadlessCapture()) {
     applyHideZoomSliderAndMoveCompass(emMap)
+
+    const headlessSize = getHeadlessMapSizeFromUrl()
+    if (headlessSize) {
+      const el = emMap as unknown as HTMLElement
+      el.style.width = `${headlessSize.widthPx}px`
+      el.style.height = `${headlessSize.heightPx}px`
+      emMap.olMapInstance?.updateSize()
+    }
   }
 
   const allPositions = emMap.positions as ProximityAlertMapPosition[]
@@ -225,10 +233,9 @@ const initialiseProximityAlertMapImagesView = async () => {
 
   const wearerPositions = allPositions.filter(p => p.positionType === 'wearer') as WearerPosition[]
 
-  const { centre, crimeLayers } = addCrimeLayers(emMap, crime)
+  const centre = addCrimeLayers(emMap, crime)
   setCrimeDefaultView(emMap, centre)
 
-  // Group wearer positions by device wearer
   const positionsByWearer = new Map<string, WearerPosition[]>()
   for (const pos of wearerPositions) {
     const key = pos.deviceWearerId
@@ -297,26 +304,167 @@ const initialiseProximityAlertMapImagesView = async () => {
     }
   }
 
+  const setTracksVisibleForWearer = (wearerId: string, visible: boolean) => {
+    const layers = layersByWearer.get(wearerId)
+    layers?.tracks?.setVisible?.(visible)
+  }
+
+  const setTracksVisibleByAllowList = (wearerIds: string[], visibleForAllowed: boolean) => {
+    const allowed = new Set(wearerIds.map(String))
+    for (const [id, layers] of layersByWearer.entries()) {
+      const on = allowed.has(String(id))
+      layers.tracks?.setVisible?.(on ? visibleForAllowed : false)
+    }
+  }
+
+  const setAllWearerLayersVisible = (visible: boolean) => {
+    for (const layers of layersByWearer.values()) {
+      layers.locations?.setVisible?.(visible)
+      layers.tracks?.setVisible?.(visible)
+      layers.circles?.setVisible?.(visible)
+      layers.labels?.setVisible?.(visible)
+    }
+  }
+
+  const setWearerOnlyVisible = (wearerId: string) => {
+    for (const [id, layers] of layersByWearer.entries()) {
+      const on = id === wearerId
+      layers.locations?.setVisible?.(on)
+      layers.tracks?.setVisible?.(on)
+      layers.circles?.setVisible?.(on)
+      layers.labels?.setVisible?.(on)
+    }
+  }
+
+  const setWearersVisibleByAllowList = (wearerIds: string[]) => {
+    const allowed = new Set(wearerIds.map(String))
+    for (const [id, layers] of layersByWearer.entries()) {
+      const on = allowed.has(String(id))
+      layers.locations?.setVisible?.(on)
+      layers.tracks?.setVisible?.(on)
+      layers.circles?.setVisible?.(on)
+      layers.labels?.setVisible?.(on)
+    }
+  }
+
   const defaultView = () => {
-    setTracksVisible(true)
+    setAllWearerLayersVisible(true)
     setCrimeDefaultView(emMap, centre)
   }
 
-  const proximityAlertImage1 = () => {
-    setTracksVisible(true)
-    fitToCrimeCircle(emMap, crimeLayers.radiusFeatureForExtent)
+  const getSelectedWearerIds = (): string[] | null => getWearerIdsFromUrl()
+
+  const applySelectedWearersIfPresentOrAll = () => {
+    const selected = getSelectedWearerIds()
+    if (selected) setWearersVisibleByAllowList(selected)
+    else setAllWearerLayersVisible(true)
   }
 
+  // Overview Image 1 semantics (no fit here; view is set by applyImage1CaptureState)
+  const proximityAlertImage1 = () => {
+    const selected = getSelectedWearerIds()
+    if (selected) {
+      setWearersVisibleByAllowList(selected)
+      setTracksVisibleByAllowList(selected, true)
+    } else {
+      setAllWearerLayersVisible(true)
+      setTracksVisible(true)
+    }
+  }
+
+  // Overview Image 2 semantics (this is the only “fit” in the flow)
   const proximityAlertImage2 = () => {
+    applySelectedWearersIfPresentOrAll()
     setTracksVisible(false)
     fitToPositionsCluster(emMap, layersByWearer, centre)
   }
 
-  // Apply URL-declared preset automatically
+  // Wearer image 1: toggle only; tracks ON for that wearer
+  const wearerImage1 = (wearerId: string) => {
+    setWearerOnlyVisible(wearerId)
+    setTracksVisible(false)
+    setTracksVisibleForWearer(wearerId, true)
+  }
+
+  // Wearer image 2: toggle only; tracks OFF
+  const wearerImage2 = (wearerId: string) => {
+    setWearerOnlyVisible(wearerId)
+    setTracksVisible(false)
+  }
+
+  const getImage1CaptureState = (): Image1CaptureState => {
+    const map = emMap.olMapInstance!
+    const view = map.getView()
+
+    const el = emMap as unknown as HTMLElement
+    const rect = el.getBoundingClientRect()
+
+    const center = view.getCenter()
+    const resolution = view.getResolution()
+    const rotation = view.getRotation()
+
+    if (!center || typeof resolution !== 'number' || typeof rotation !== 'number') {
+      throw new Error('Could not read map view state for export')
+    }
+
+    return {
+      mapWidthPx: Math.round(rect.width),
+      mapHeightPx: Math.round(rect.height),
+      devicePixelRatio: window.devicePixelRatio || 1,
+      view: {
+        center: [center[0], center[1]],
+        resolution,
+        rotation,
+      },
+    }
+  }
+
+  const applyImage1CaptureState = (state: Image1CaptureState) => {
+    // ensure layers match overview image-1 semantics first
+    proximityAlertImage1()
+
+    const map = emMap.olMapInstance!
+    const view = map.getView()
+
+    view.setRotation(state.view.rotation)
+    view.setResolution(state.view.resolution)
+    view.setCenter(state.view.center)
+
+    map.renderSync()
+  }
+
+  ;(
+    window as unknown as {
+      mapImages?: {
+        applyPreset: (preset: PresetParam, wearerId?: string) => void
+        getImage1CaptureState: () => Image1CaptureState
+        applyImage1CaptureState: (state: Image1CaptureState) => void
+      }
+    }
+  ).mapImages = {
+    applyPreset: (preset: PresetParam, wearerId?: string) => {
+      if (preset === 'default') defaultView()
+      if (preset === 'image-2') proximityAlertImage2()
+      if (preset === 'wearer-image-1') {
+        if (!wearerId) throw new Error('wearer-image-1 preset requires wearerId')
+        wearerImage1(wearerId)
+      }
+      if (preset === 'wearer-image-2') {
+        if (!wearerId) throw new Error('wearer-image-2 preset requires wearerId')
+        wearerImage2(wearerId)
+      }
+    },
+    getImage1CaptureState,
+    applyImage1CaptureState,
+  }
+
   const preset = getPresetFromUrl()
-  if (preset === 'default') defaultView()
-  if (preset === 'image-1') proximityAlertImage1()
-  if (preset === 'image-2') proximityAlertImage2()
+  const wearerId = getWearerIdFromUrl()
+  if (preset) {
+    ;(
+      window as unknown as { mapImages?: { applyPreset: (p: PresetParam, w?: string) => void } }
+    ).mapImages?.applyPreset(preset, wearerId ?? undefined)
+  }
 
   emMap.dispatchEvent(
     new CustomEvent('app:map:layers:ready', {
@@ -325,23 +473,20 @@ const initialiseProximityAlertMapImagesView = async () => {
     }),
   )
 
-  // Wire up fixture radio buttons for demo/spike UI
-  const fixtureToId: Record<string, string> = {
-    clustered: '1',
-    opposite: '2',
-    sparse: '3',
-  }
+  // Capture Image 1 state at submit time
+  const exportForm = document.querySelector<HTMLFormElement>('#exportProximityAlertForm')
+  const image1StateInput = document.querySelector<HTMLInputElement>('#image1State')
 
-  const fixtureRadios = Array.from(document.querySelectorAll<HTMLInputElement>('input[name="fixture"]'))
-
-  for (const radio of fixtureRadios) {
-    radio.addEventListener('change', () => {
-      if (!radio.checked) return
-
-      const id = fixtureToId[radio.value] ?? '1'
-      window.location.href = `/proximity-alert/${id}`
+  if (exportForm && image1StateInput) {
+    exportForm.addEventListener('submit', () => {
+      try {
+        const state = getImage1CaptureState()
+        image1StateInput.value = JSON.stringify(state)
+      } catch {
+        image1StateInput.value = ''
+      }
     })
   }
 }
 
-export default initialiseProximityAlertMapImagesView
+export default initialiseProximityAlertView

@@ -15,14 +15,9 @@
         Default map view
       </a>
 
-      <a href="/proximity-alert/{{ selectedFixtureId }}?preset=image-1"
-        class="govuk-button govuk-button--secondary govuk-!-width-full">
-        Proximity Alert: Image 1
-      </a>
-
       <a href="/proximity-alert/{{ selectedFixtureId }}?preset=image-2"
         class="govuk-button govuk-button--secondary govuk-!-width-full">
-        Proximity Alert: Image 2
+        Proximity Alert: Image 2 (overview)
       </a>
     </div>
 
@@ -53,13 +48,43 @@
 
     <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible" />
 
-    <form id="generateMapImagesForm" method="post" action="{{ generateMapImagesForm.url }}">
+    <form id="exportProximityAlertForm" method="post" action="{{ exportProximityAlertForm.url }}">
       <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
-      {{
-        govukButton({
-          text: "Generate map images (ZIP)"
-        })
-      }}
+
+      {# Image 1 state (user's current view) captured client-side at submit time #}
+      <input type="hidden" id="image1State" name="image1State" value="" />
+
+      <h3 class="govuk-heading-s govuk-!-margin-bottom-2">Include people</h3>
+
+      {% if matchedDeviceWearers and matchedDeviceWearers.length %}
+        <div class="govuk-checkboxes govuk-checkboxes--small" data-module="govuk-checkboxes">
+          {% for wearer in matchedDeviceWearers %}
+            <div class="govuk-checkboxes__item">
+              <input
+                class="govuk-checkboxes__input"
+                id="wearer-{{ wearer.deviceWearerId }}"
+                name="deviceWearerIds"
+                type="checkbox"
+                value="{{ wearer.deviceWearerId }}"
+                checked
+              >
+              <label class="govuk-label govuk-checkboxes__label" for="wearer-{{ wearer.deviceWearerId }}">
+                {{ wearer.name }} ({{ wearer.deviceWearerId }})
+              </label>
+            </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <p class="govuk-body">No device wearers found.</p>
+      {% endif %}
+
+      <div class="govuk-!-margin-top-4">
+        {{
+          govukButton({
+            text: "Export proximity alert"
+          })
+        }}
+      </div>
     </form>
 
     <p class="govuk-body" id="export-status"></p>

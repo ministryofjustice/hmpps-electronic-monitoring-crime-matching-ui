@@ -10,11 +10,11 @@ const proximityAlertRoutes = ({ playwrightBrowserService }: Services): Router =>
   router.get('/', asyncMiddleware(controller.view))
 
   // Ensure that when signing in, the redirected route doesn't land the user on the export route
-  router.get('/generate-map-images', (req: Request<{ id: string }>, res: Response) => {
+  router.get('/export-proximity-alert', (req: Request<{ id: string }>, res: Response) => {
     res.redirect(`/proximity-alert/${encodeURIComponent(req.params.id)}`)
   })
 
-  router.post('/generate-map-images', asyncMiddleware(controller.generateMapImages))
+  router.post('/export-proximity-alert', asyncMiddleware(controller.exportProximityAlert))
 
   return router
 }

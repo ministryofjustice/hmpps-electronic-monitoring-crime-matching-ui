@@ -3,14 +3,13 @@ import { ValidationResult } from '../../models/ValidationResult'
 import DeviceActivation from '../../types/entities/deviceActivation'
 
 export declare module 'express-session' {
-  // Declare that the session will potentially contain these additional fields
   interface SessionData {
     returnTo: string
     nowInMinutes: number
     formData: unknown
     validationErrors: ValidationResult
     queryId: string
-    proximityAlertExportMapImagesError?: string
+    proximityAlertExportProximityAlertError?: string
   }
 }
 
