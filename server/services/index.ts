@@ -16,7 +16,7 @@ export const services = () => {
   const deviceActivationsService = new DeviceActivationsService(crimeMatchingApiClient)
   const validationService = new ValidationService(deviceActivationsService)
   const personsService = new PersonsService(crimeMatchingApiClient)
-  const policeDataService = new PoliceDataService()
+  const policeDataService = new PoliceDataService(crimeMatchingApiClient)
 
   return {
     applicationInfo,

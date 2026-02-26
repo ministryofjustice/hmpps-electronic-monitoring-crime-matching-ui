@@ -1,5 +1,5 @@
 import { RequestHandler } from 'express'
-import policeDataDashboardQuerySchema from '../../schemas/policeData/dashboard'
+import { policeDataDashboardQuerySchema } from '../../schemas/policeData/dashboard'
 import PoliceDataService from '../../services/policeDataService'
 
 export default class PoliceDataDashboardController {
@@ -22,8 +22,15 @@ export default class PoliceDataDashboardController {
 
   view: RequestHandler = async (req, res) => {
     const { query } = req
+    const { username } = res.locals.user
     const { batchId, policeForceArea, fromDate, toDate } = policeDataDashboardQuerySchema.parse(query)
-    const result = await this.policeDataService.getIngestionAttemptSummaries(batchId, policeForceArea, fromDate, toDate)
+    const result = await this.policeDataService.getIngestionAttemptSummaries(
+      username,
+      batchId,
+      policeForceArea,
+      fromDate,
+      toDate,
+    )
 
     if (result.ok) {
       res.render('pages/policeData/dashboard', {

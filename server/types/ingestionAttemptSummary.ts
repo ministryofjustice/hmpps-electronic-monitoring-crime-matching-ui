@@ -3,7 +3,7 @@ type IngestionAttemptSummary = {
   ingestionStatus: string
   policeForceArea: string
   batchId: string
-  matches?: number
+  matches: number | null
   createdAt: string
 }
 
