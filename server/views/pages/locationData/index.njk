@@ -77,7 +77,7 @@
             text: person.name
           },
           {
-            text: person.dateOfBirth | formatDob
+            text: person.dateOfBirth | formatDateTime("DD/MM/YYYY")
           },
           {
             text: person.address,
@@ -87,10 +87,10 @@
             text: deviceActivation.deviceId
           },
           {
-            text: deviceActivation.deviceActivationDate | formatDate
+            text: deviceActivation.deviceActivationDate | formatDateTime("DD/MM/YYYY HH:mm")
           },
           {
-            text: deviceActivation.deviceDeactivationDate | formatDate
+            text: deviceActivation.deviceDeactivationDate | formatDateTime("DD/MM/YYYY HH:mm")
           }
         ]
       ), rows)

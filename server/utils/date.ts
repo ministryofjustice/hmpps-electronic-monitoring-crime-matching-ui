@@ -45,25 +45,18 @@ const getDateComponents = (date: Dayjs) => {
   }
 }
 
-const formatDate = (datetime?: string | null): string => {
-  if (!datetime) {
+const formatDateTime = (dateString: string | null | undefined, format: string): string => {
+  if (!dateString) {
     return ''
   }
 
-  const date = dayjs(datetime)
+  const date = dayjs(dateString)
 
   if (!date.isValid()) {
     return ''
   }
 
-  return date.tz('Europe/London').format('DD/MM/YYYY HH:mm')
+  return date.tz('Europe/London').format(format)
 }
 
-const formatDob = (dateString?: string | null): string => {
-  if (!dateString) return ''
-
-  const date = dayjs(dateString)
-  return date.isValid() ? date.format('DD/MM/YYYY') : ''
-}
-
-export { parseDateTimeFromComponents, parseDateTimeFromISOString, getDateComponents, formatDate, formatDob }
+export { parseDateTimeFromComponents, parseDateTimeFromISOString, getDateComponents, formatDateTime }

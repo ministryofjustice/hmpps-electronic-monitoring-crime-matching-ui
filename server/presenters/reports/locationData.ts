@@ -1,7 +1,7 @@
 import DeviceActivation from '../../types/entities/deviceActivation'
 import Person from '../../types/entities/person'
 import Position from '../../types/entities/position'
-import { formatDate, formatDob } from '../../utils/date'
+import { formatDateTime } from '../../utils/date'
 import radToDeg from '../../utils/math'
 
 const getHeaders = (condensed: boolean): Array<string> => {
@@ -44,7 +44,7 @@ const getRow = (
   condensed: boolean,
 ): Array<string> => {
   const condensedColumns = [
-    formatDate(position.timestamp),
+    formatDateTime(position.timestamp, 'DD/MM/YYYY HH:mm'),
     position.latitude.toString(),
     position.longitude.toString(),
     position.precision.toString(),
@@ -60,10 +60,10 @@ const getRow = (
     deviceWearer.nomisId,
     deviceWearer.pncRef,
     deviceWearer.address,
-    formatDob(deviceWearer.dateOfBirth),
+    formatDateTime(deviceWearer.dateOfBirth, 'DD/MM/YYYY'),
     deviceWearer.probationPractitioner,
-    formatDate(deviceActivation.orderStart),
-    formatDate(deviceActivation.orderEnd),
+    formatDateTime(deviceActivation.orderStart, 'DD/MM/YYYY HH:mm'),
+    formatDateTime(deviceActivation.orderEnd, 'DD/MM/YYYY HH:mm'),
     ...condensedColumns,
   ]
 

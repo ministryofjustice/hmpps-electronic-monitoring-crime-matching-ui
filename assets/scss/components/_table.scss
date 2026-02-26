@@ -1,0 +1,7 @@
+.table-cell--red {
+    color: govuk-colour("red");
+}
+
+.table-cell--bold {
+  @include govuk-font($size: false, $weight: "bold");
+}
