@@ -1,49 +1,64 @@
+import { asSystem } from '@ministryofjustice/hmpps-rest-client'
+import CrimeMatchingClient from '../data/crimeMatchingClient'
 import policeForceAreas from '../data/policeForceAreas'
 import IngestionAttemptSummary from '../types/ingestionAttemptSummary'
 import PaginatedServiceResult from '../types/service'
 import { parseDateTimeFromComponents } from '../utils/date'
+import { getIngestionAttemptDtoSchema } from '../schemas/policeData/dashboard'
+import Result from '../types/result'
 
 class PoliceDataService {
-  constructor() {}
+  constructor(private readonly crimeMatchingApiClient: CrimeMatchingClient) {}
 
-  private isValidPoliceForceArea(policeForceArea: string) {
+  private parsePoliceForceArea(policeForceArea: string): Result<string, string> {
     const area = policeForceArea.trim()
 
-    if (area) {
-      return policeForceAreas.has(area)
+    if (area.length === 0 || policeForceAreas.has(area)) {
+      return { ok: true, data: area }
     }
 
-    return true
+    return { ok: false, error: 'Please select a valid police force area.' }
   }
 
-  private isValidDate(dateString: string) {
-    const date = dateString.trim()
+  private parseDateToISOString(dateString: string): Result<string, string> {
+    const trimmed = dateString.trim()
 
-    if (date) {
-      return parseDateTimeFromComponents(date, '0', '0').isValid()
+    if (trimmed.length === 0) {
+      return { ok: true, data: trimmed }
     }
 
-    return true
+    const date = parseDateTimeFromComponents(trimmed, '0', '0')
+
+    if (date.isValid()) {
+      return { ok: true, data: date.toISOString() }
+    }
+
+    return { ok: false, error: 'Please enter a valid date.' }
   }
 
   async getIngestionAttemptSummaries(
+    username: string,
     batchId: string,
     policeForceArea: string,
     fromDate: string,
     toDate: string,
   ): Promise<PaginatedServiceResult<IngestionAttemptSummary>> {
     const validationErrors: Record<string, string> = {}
+    const parsedBatchId = batchId.trim()
+    const parsedPoliceForceArea = this.parsePoliceForceArea(policeForceArea)
+    const parsedFromDate = this.parseDateToISOString(fromDate)
+    const parsedToDate = this.parseDateToISOString(toDate)
 
-    if (!this.isValidPoliceForceArea(policeForceArea)) {
-      validationErrors.policeForceArea = 'Please select a valid police force area.'
+    if (!parsedPoliceForceArea.ok) {
+      validationErrors.policeForceArea = parsedPoliceForceArea.error
     }
 
-    if (!this.isValidDate(fromDate)) {
-      validationErrors.fromDate = 'Please enter a valid date.'
+    if (!parsedFromDate.ok) {
+      validationErrors.fromDate = parsedFromDate.error
     }
 
-    if (!this.isValidDate(toDate)) {
-      validationErrors.toDate = 'Please enter a valid date.'
+    if (!parsedToDate.ok) {
+      validationErrors.toDate = parsedToDate.error
     }
 
     if (Object.keys(validationErrors).length > 0) {
@@ -53,13 +68,18 @@ class PoliceDataService {
       }
     }
 
-    return Promise.resolve({
+    const response = await this.crimeMatchingApiClient.getIngestionAttempts(
+      asSystem(username),
+      parsedBatchId,
+      parsedPoliceForceArea.ok ? parsedPoliceForceArea.data : '',
+      parsedFromDate.ok ? parsedFromDate.data : '',
+      parsedToDate.ok ? parsedToDate.data : '',
+    )
+
+    return {
       ok: true,
-      data: [],
-      pageCount: 1,
-      pageNumber: 1,
-      pageSize: 0,
-    })
+      ...getIngestionAttemptDtoSchema.parse(response),
+    }
   }
 }
 

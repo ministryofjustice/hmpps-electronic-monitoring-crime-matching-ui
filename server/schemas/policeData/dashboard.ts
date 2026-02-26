@@ -1,4 +1,5 @@
 import { z } from 'zod/v4'
+import { paginatedDtoSchema } from '../pagination'
 
 const policeDataDashboardQuerySchema = z.object({
   policeForceArea: z.string().default(''),
@@ -7,4 +8,17 @@ const policeDataDashboardQuerySchema = z.object({
   toDate: z.string().default(''),
 })
 
-export default policeDataDashboardQuerySchema
+const getIngestionAttemptDtoSchema = paginatedDtoSchema.extend({
+  data: z.array(
+    z.object({
+      ingestionAttemptId: z.string(),
+      ingestionStatus: z.string(),
+      policeForceArea: z.string(),
+      batchId: z.string(),
+      matches: z.number().nullable(),
+      createdAt: z.string(),
+    }),
+  ),
+})
+
+export { getIngestionAttemptDtoSchema, policeDataDashboardQuerySchema }
