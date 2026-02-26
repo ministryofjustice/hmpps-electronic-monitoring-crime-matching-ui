@@ -47,6 +47,7 @@ export default function routes(services: Services): Router {
   post('/location-data/persons', personsController.search)
 
   get('/police-data/dashboard', policeDataDashboardController.view)
+  post('/police-data/dashboard', policeDataDashboardController.search)
   get('/police-data/ingestion-attempts/:ingestionAttemptId', policeDataIngestionAttemptController.view)
 
   router.use('/location-data', locationDataRoutes(services))
