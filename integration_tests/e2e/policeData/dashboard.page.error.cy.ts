@@ -14,7 +14,7 @@ context('Police Data Dashboard', () => {
       // Given an API response with no results
       cy.stubGetIngestionAttempts()
 
-      // When the user loads the page with no query params
+      // When the user loads the page with invalid query params
       cy.visit('/police-data/dashboard?&policeForceArea=MET&fromDate=abc&toDate=abc')
 
       const page = Page.verifyOnPage(PoliceDataDashboardPage)
@@ -34,16 +34,17 @@ context('Police Data Dashboard', () => {
     })
 
     it('should display an error if the api returns 500 when creating a query', () => {
-      // Stub the api to simulate an error in the get ingestion attempts request
+      // Given a failing get ingestion attempts request
       cy.stubGetIngestionAttempts({
         query: '.*',
         status: 500,
         response: 'Internal Server Error',
       })
 
+      // When the user loads the page
       cy.visit('/police-data/dashboard', { failOnStatusCode: false })
 
-      // User should be redirected to an error page
+      // Then they should be shown an error page
       Page.verifyOnPage(ErrorPage, 'Internal Server Error')
     })
   })

@@ -80,7 +80,7 @@ context('Police Data Dashboard', () => {
       page.searchForm.fromDateField.shouldHaveValue('')
       page.searchForm.toDateField.shouldHaveValue('')
 
-      // And the table should have 1 row
+      // And the table should have 3 rows
       page.dataTable.shouldHaveColumns(['', 'Status', 'Police force area', 'Batch', 'Matches', 'Date', 'Time'])
       page.dataTable.shouldHaveRows([
         ['', 'Ingested', 'City of London', 'MPS20251110', '5', '01/01/2025', '11:23:34'],
