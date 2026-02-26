@@ -56,7 +56,7 @@ const formatDateTime = (dateString: string | null | undefined, format: string): 
     return ''
   }
 
-  return date.format(format)
+  return date.tz('Europe/London').format(format)
 }
 
 export { parseDateTimeFromComponents, parseDateTimeFromISOString, getDateComponents, formatDateTime }
