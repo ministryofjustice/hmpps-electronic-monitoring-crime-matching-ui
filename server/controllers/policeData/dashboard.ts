@@ -1,6 +1,7 @@
 import { RequestHandler } from 'express'
 import { policeDataDashboardQuerySchema } from '../../schemas/policeData/dashboard'
 import PoliceDataService from '../../services/policeDataService'
+import presentIngestionAttemptSummaries from '../../presenters/ingestionAttemptSummaries'
 
 export default class PoliceDataDashboardController {
   constructor(private readonly policeDataService: PoliceDataService) {}
@@ -38,7 +39,7 @@ export default class PoliceDataDashboardController {
         policeForceArea,
         fromDate,
         toDate,
-        ingestionAttempts: result.data,
+        ingestionAttempts: presentIngestionAttemptSummaries(result.data),
         pageCount: result.pageCount,
         pageNumber: result.pageNumber,
         validationErrors: {},

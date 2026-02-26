@@ -31,8 +31,8 @@ context('Police Data Dashboard', () => {
       page.dataTable.shouldHaveRows([['', 'No results found for applied filters.']])
     })
 
-    it('should display an ingestion attempt', () => {
-      // Given an API response with a single ingestion attempt
+    it('should display ingestion attempts', () => {
+      // Given an API response with three ingestion attempts
       cy.stubGetIngestionAttempts({
         status: 200,
         query: '?batchId=&policeForceArea=&fromDate=&toDate=',
@@ -41,9 +41,25 @@ context('Police Data Dashboard', () => {
             {
               ingestionAttemptId: '6664c855-cd76-4674-8f38-34244ad77c5a',
               ingestionStatus: 'SUCCESSFUL',
-              policeForceArea: 'METROPOLITAN',
+              policeForceArea: 'CITY_OF_LONDON',
               batchId: 'MPS20251110',
               matches: 5,
+              createdAt: '2025-01-01T11:23:34.000Z',
+            },
+            {
+              ingestionAttemptId: '6664c855-cd76-4674-8f38-34244ad77c5a',
+              ingestionStatus: 'PARTIAL',
+              policeForceArea: 'AVON_AND_SOMERSET',
+              batchId: 'MPS20251110',
+              matches: 0,
+              createdAt: '2025-01-01T11:23:34.000Z',
+            },
+            {
+              ingestionAttemptId: '6664c855-cd76-4674-8f38-34244ad77c5a',
+              ingestionStatus: 'FAILED',
+              policeForceArea: 'METROPOLITAN',
+              batchId: 'MPS20251110',
+              matches: null,
               createdAt: '2025-01-01T11:23:34.000Z',
             },
           ],
@@ -66,7 +82,11 @@ context('Police Data Dashboard', () => {
 
       // And the table should have 1 row
       page.dataTable.shouldHaveColumns(['', 'Status', 'Police force area', 'Batch', 'Matches', 'Date', 'Time'])
-      page.dataTable.shouldHaveRows([['', 'Successful', 'Metropolitan', 'MPS20251110', '5', '01/01/2025', '11:23:34']])
+      page.dataTable.shouldHaveRows([
+        ['', 'Ingested', 'City of London', 'MPS20251110', '5', '01/01/2025', '11:23:34'],
+        ['', 'Partially ingested', 'Avon and Somerset', 'MPS20251110', '0', '01/01/2025', '11:23:34'],
+        ['', 'Failed ingestion', 'Metropolitan', 'MPS20251110', 'N/A', '01/01/2025', '11:23:34'],
+      ])
     })
 
     it('should populate the form with query parameters', () => {

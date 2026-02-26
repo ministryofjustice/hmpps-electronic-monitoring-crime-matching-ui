@@ -27,10 +27,19 @@ const expectedAuthOptions = {
   },
 }
 
-const expectedIngestionAttemptSummary = {
+const ingestionAttemptSummary = {
   ingestionAttemptId: '1234',
   ingestionStatus: 'SUCCESSFUL',
   policeForceArea: 'METROPOLITAN',
+  batchId: 'MPS20251110',
+  matches: 0,
+  createdAt: '2025-01-01T00:00:00.000Z',
+}
+
+const expectedIngestionAttemptSummary = {
+  ingestionAttemptId: '1234',
+  ingestionStatus: 'SUCCESSFUL',
+  policeForceArea: 'Metropolitan',
   batchId: 'MPS20251110',
   matches: 0,
   createdAt: '2025-01-01T00:00:00.000Z',
@@ -176,7 +185,7 @@ describe('PoliceDataDashboardController', () => {
       const controller = new PoliceDataDashboardController(service)
 
       mockRestClient.getIngestionAttempts.mockResolvedValue({
-        data: [expectedIngestionAttemptSummary],
+        data: [ingestionAttemptSummary],
         pageCount: 1,
         pageNumber: 1,
         pageSize: 10,
