@@ -66,4 +66,25 @@ const formatDob = (dateString?: string | null): string => {
   return date.isValid() ? date.format('DD/MM/YYYY') : ''
 }
 
-export { parseDateTimeFromComponents, parseDateTimeFromISOString, getDateComponents, formatDate, formatDob }
+const formatDateTime = (dateString: string | null | undefined, format: string): string => {
+  if (!dateString) {
+    return ''
+  }
+
+  const date = dayjs(dateString)
+
+  if (!date.isValid()) {
+    return ''
+  }
+
+  return date.format(format)
+}
+
+export {
+  parseDateTimeFromComponents,
+  parseDateTimeFromISOString,
+  getDateComponents,
+  formatDate,
+  formatDob,
+  formatDateTime,
+}

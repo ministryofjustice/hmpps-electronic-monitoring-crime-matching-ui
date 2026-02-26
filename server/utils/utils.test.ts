@@ -2,7 +2,7 @@ import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
 import timezone from 'dayjs/plugin/timezone'
 import { convertToTitleCase, initialiseName } from './utils'
-import { formatDate, formatDob } from './date'
+import { formatDateTime } from './date'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
@@ -35,29 +35,18 @@ describe('initialise name', () => {
   })
 })
 
-describe('formatDate', () => {
+describe('formatDateTime', () => {
   it.each([
-    ['Undefined', undefined, ''],
-    ['Null', null, ''],
-    ['Empty string', '', ''],
-    ['Invalid date', 'foo', ''],
-    ['GMT', '2025-02-01T00:00:00.000Z', '01/02/2025 00:00'],
-    ['BST', '2025-08-01T12:15:00.000Z', '01/08/2025 13:15'],
-  ])('%s formatDate(%s)', (_: string, datetime: string | undefined | null, expected: string) => {
-    expect(formatDate(datetime)).toEqual(expected)
-  })
-})
-
-describe('formatDob', () => {
-  it.each([
-    ['Undefined', undefined, ''],
-    ['Null', null, ''],
-    ['Empty string', '', ''],
-    ['Invalid date', 'foo', ''],
-    ['ISO date only', '2000-12-01', '01/12/2000'],
-    ['Midnight UTC (date of birth stored as timestamp)', '2000-12-01T00:00:00.000Z', '01/12/2000'],
-    ['Midnight UTC during BST', '2000-08-01T00:00:00.000Z', '01/08/2000'],
-  ])('%s formatDob(%s)', (_: string, datetime: string | undefined | null, expected: string) => {
-    expect(formatDob(datetime)).toEqual(expected)
+    ['Undefined', undefined, 'DD/MM/YYYY HH:mm', ''],
+    ['Null', null, 'DD/MM/YYYY HH:mm', ''],
+    ['Empty string', '', 'DD/MM/YYYY HH:mm', ''],
+    ['Invalid date', 'foo', 'DD/MM/YYYY HH:mm', ''],
+    ['GMT', '2025-02-01T00:00:00.000Z', 'DD/MM/YYYY HH:mm', '01/02/2025 00:00'],
+    ['BST', '2025-08-01T12:15:00.000Z', 'DD/MM/YYYY HH:mm', '01/08/2025 13:15'],
+    ['ISO date only', '2000-12-01', 'DD/MM/YYYY', '01/12/2000'],
+    ['Midnight UTC (date of birth stored as timestamp)', '2000-12-01T00:00:00.000Z', 'DD/MM/YYYY', '01/12/2000'],
+    ['Midnight UTC during BST', '2000-08-01T00:00:00.000Z', 'DD/MM/YYYY', '01/08/2000'],
+  ])('%s formatDateTime(%s)', (_: string, datetime: string | undefined | null, format: string, expected: string) => {
+    expect(formatDateTime(datetime, format)).toEqual(expected)
   })
 })

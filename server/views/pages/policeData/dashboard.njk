@@ -2,6 +2,7 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/input/macro.njk" import govukInput %}
 {% from "govuk/components/select/macro.njk" import govukSelect %}
+{% from "govuk/components/tag/macro.njk" import govukTag %}
 {% from "moj/components/date-picker/macro.njk" import mojDatePicker %}
 {% from "../../components/datatable/macro.njk" import dataTable %}
 
@@ -11,6 +12,35 @@
 {% set rows = [] %}
 
 {% for ingestionAttempt in ingestionAttempts %}
+
+  {% if ingestionAttempt.ingestionStatus == 'SUCCESSFUL' %}
+    {% set colour = "green" %}
+    {% set statusText = "Ingested" %}
+  {% elif ingestionAttempt.ingestionStatus == 'PARTIAL' %}
+    {% set colour = "yellow" %}
+    {% set statusText = "Partially ingested" %}
+  {% elif ingestionAttempt.ingestionStatus == 'FAILED' %}
+    {% set colour = "red" %}
+    {% set statusText = "Failed ingestion" %}
+  {% endif %}
+
+
+  {% set status %}
+    {{
+      govukTag({
+        text: statusText,
+        classes: "govuk-tag--" + colour
+      })
+    }}
+  {% endset %}
+
+
+  {% set link %}
+    <a href="/police-data/ingestion-attempts/{{ ingestionAttempt.ingestionAttemptId }}"
+      >{{ ingestionAttempt.batchId }}</a
+    >
+  {% endset %}
+
   {%
     set rows = (rows.push(
       [
@@ -18,22 +48,22 @@
           text: ""
         },
         {
-          text: ingestionAttempt.ingestionStatus
+          html: status
         },
         {
           text: ingestionAttempt.policeForceArea
         },
         {
-          text: ingestionAttempt.batchId
+          html: link
         },
         {
           text: ingestionAttempt.matches
         },
         {
-          text: ingestionAttempt.createdAt
+          text: ingestionAttempt.createdAt | formatDateTime("DD/MM/YYYY")
         },
         {
-          text: ""
+          text: ingestionAttempt.createdAt | formatDateTime("HH:mm:ss")
         }
       ]
     ), rows)
