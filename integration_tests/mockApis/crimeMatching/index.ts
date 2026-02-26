@@ -3,6 +3,7 @@ import { stubCreateCrimeBatchesQuery, stubGetCrimeBatchesQuery } from './crimeBa
 import { stubGetPersons } from '../locationData/persons'
 import { stubGetDeviceActivation } from '../locationData/deviceActivation'
 import { stubGetDeviceActivationPositions } from '../locationData/deviceActivationPositions'
+import { stubGetIngestionAttempts } from './ingestionAttempts'
 import { stubGetPerson } from '../locationData/person'
 
 export default {
@@ -11,6 +12,7 @@ export default {
   stubGetCrimeBatchesQuery,
   stubGetDeviceActivation,
   stubGetDeviceActivationPositions,
+  stubGetIngestionAttempts,
   stubGetPersons,
   stubGetPerson,
 }
