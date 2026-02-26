@@ -41,6 +41,7 @@ export default class NavigationComponent {
   checkHasNavigation(): void {
     this.crimeMappingLink.shouldExist()
     this.locationDataLink.shouldExist()
+    this.dataIngestionLink.shouldExist()
     this.legalLink.shouldExist()
     this.helpLink.shouldExist()
   }
