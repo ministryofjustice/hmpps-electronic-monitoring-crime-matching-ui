@@ -47,6 +47,10 @@ export default class DataTableComponent {
 
   // HELPERS
 
+  cell(row: number, column: number): PageElement {
+    return this.element.find('table tbody tr').eq(row).find('td').eq(column)
+  }
+
   shouldHaveColumns(columns: Array<string>): void {
     this.columns.should('deep.equal', columns)
   }

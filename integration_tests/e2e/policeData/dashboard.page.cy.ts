@@ -47,7 +47,7 @@ context('Police Data Dashboard', () => {
               createdAt: '2025-01-01T11:23:34.000Z',
             },
             {
-              ingestionAttemptId: '6664c855-cd76-4674-8f38-34244ad77c5a',
+              ingestionAttemptId: '0078f3f7-74dc-4165-8e43-dca9e10a1a39',
               ingestionStatus: 'PARTIAL',
               policeForceArea: 'AVON_AND_SOMERSET',
               batchId: 'MPS20251110',
@@ -55,7 +55,7 @@ context('Police Data Dashboard', () => {
               createdAt: '2025-01-01T11:23:34.000Z',
             },
             {
-              ingestionAttemptId: '6664c855-cd76-4674-8f38-34244ad77c5a',
+              ingestionAttemptId: 'de5cd033-4a06-4f1b-b4af-c40879b1eda8',
               ingestionStatus: 'FAILED',
               policeForceArea: 'METROPOLITAN',
               batchId: 'MPS20251110',
@@ -87,6 +87,30 @@ context('Police Data Dashboard', () => {
         ['', 'Partially ingested', 'Avon and Somerset', 'MPS20251110', '0', '01/01/2025', '11:23:34'],
         ['', 'Failed ingestion', 'Metropolitan', 'MPS20251110', 'N/A', '01/01/2025', '11:23:34'],
       ])
+
+      // And the status column should have the correct tags
+      page.dataTable.cell(0, 1).find('.govuk-tag').should('have.class', 'govuk-tag--green')
+      page.dataTable.cell(1, 1).find('.govuk-tag').should('have.class', 'govuk-tag--yellow')
+      page.dataTable.cell(2, 1).find('.govuk-tag').should('have.class', 'govuk-tag--red')
+
+      // And the batches column should have the correct links
+      page.dataTable
+        .cell(0, 3)
+        .find('a')
+        .should('have.attr', 'href', '/police-data/ingestion-attempts/6664c855-cd76-4674-8f38-34244ad77c5a')
+      page.dataTable
+        .cell(1, 3)
+        .find('a')
+        .should('have.attr', 'href', '/police-data/ingestion-attempts/0078f3f7-74dc-4165-8e43-dca9e10a1a39')
+      page.dataTable
+        .cell(2, 3)
+        .find('a')
+        .should('have.attr', 'href', '/police-data/ingestion-attempts/de5cd033-4a06-4f1b-b4af-c40879b1eda8')
+
+      // And the matches column should have the correct formatting
+      page.dataTable.cell(0, 4).should('not.have.class', 'table-cell--red table-cell--bold')
+      page.dataTable.cell(1, 4).should('have.class', 'table-cell--red table-cell--bold')
+      page.dataTable.cell(2, 4).should('have.class', 'table-cell--red table-cell--bold')
     })
 
     it('should populate the form with query parameters', () => {
