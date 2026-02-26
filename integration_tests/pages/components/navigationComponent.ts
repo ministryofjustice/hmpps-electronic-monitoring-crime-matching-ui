@@ -24,6 +24,10 @@ export default class NavigationComponent {
     return new NavigationLink(this.element, 'Location data')
   }
 
+  get dataIngestionLink(): NavigationLink {
+    return new NavigationLink(this.element, 'Data ingestion')
+  }
+
   get legalLink(): NavigationLink {
     return new NavigationLink(this.element, 'Legal')
   }

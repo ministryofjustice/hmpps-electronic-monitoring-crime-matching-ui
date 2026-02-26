@@ -7,16 +7,17 @@ type StubGetIngestionAttempts200Options = {
   status: 200
   query: string
   response: {
-    data: [
-      {
-        ingestionAttemptId: string
-        ingestionStatus: string
-        policeForceArea: string
-        batchId: string
-        matches: number | null
-        createdAt: string
-      },
-    ]
+    data: Array<{
+      ingestionAttemptId: string
+      ingestionStatus: string
+      policeForceArea: string
+      batchId: string
+      matches: number | null
+      createdAt: string
+    }>
+    pageCount: number
+    pageNumber: number
+    pageSize: number
   }
 }
 
@@ -30,18 +31,12 @@ type StubGetIngestionAttemptsOptions = StubGetIngestionAttempts200Options | Stub
 
 const defaultGetIngestionAttemptsOptions: StubGetIngestionAttemptsOptions = {
   status: 200,
-  query: '',
+  query: '.*',
   response: {
-    data: [
-      {
-        ingestionAttemptId: '6664c855-cd76-4674-8f38-34244ad77c5a',
-        ingestionStatus: 'SUCCESSFUL',
-        policeForceArea: 'METROPOLITAN',
-        batchId: 'MPS20251110',
-        matches: 0,
-        createdAt: '2025-01-01T11:23:34.000Z',
-      },
-    ],
+    data: [],
+    pageCount: 1,
+    pageNumber: 1,
+    pageSize: 30,
   },
 }
 
@@ -49,7 +44,7 @@ const stubGetIngestionAttempts = (options: StubGetIngestionAttemptsOptions = def
   let urlPattern = `${baseUrl}/ingestion-attempts`
 
   if (options.query.length > 0) {
-    urlPattern += `\\?${options.query}`
+    urlPattern += `\\?${options.query.split(':').join('%3A')}`
   }
 
   return stubFor({

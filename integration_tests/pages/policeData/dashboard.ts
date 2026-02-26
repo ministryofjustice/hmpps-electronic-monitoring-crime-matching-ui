@@ -18,7 +18,7 @@ export default class PoliceDataDashboardPage extends AppPage {
   checkOnPage(): void {
     super.checkOnPage()
 
-    this.navigation.locationDataLink.shouldBeActive()
+    this.navigation.dataIngestionLink.shouldBeActive()
     this.searchForm.checkHasForm()
   }
 }
