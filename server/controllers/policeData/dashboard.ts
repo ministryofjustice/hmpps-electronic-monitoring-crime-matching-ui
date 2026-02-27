@@ -6,9 +6,7 @@ import presentIngestionAttemptSummaries from '../../presenters/ingestionAttemptS
 export default class PoliceDataDashboardController {
   constructor(private readonly policeDataService: PoliceDataService) {}
 
-  search: RequestHandler = async (req, res) => {
-    const { batchId, policeForceArea, fromDate, toDate } = policeDataDashboardQuerySchema.parse(req.body)
-
+  private getQueryString = (batchId: string, policeForceArea: string, fromDate: string, toDate: string): string => {
     const searchParams = new URLSearchParams({
       ...(batchId && { batchId }),
       ...(policeForceArea && { policeForceArea }),
@@ -16,7 +14,12 @@ export default class PoliceDataDashboardController {
       ...(toDate && { toDate }),
     })
 
-    const query = searchParams.toString()
+    return searchParams.toString()
+  }
+
+  search: RequestHandler = async (req, res) => {
+    const { batchId, policeForceArea, fromDate, toDate } = policeDataDashboardQuerySchema.parse(req.body)
+    const query = this.getQueryString(batchId, policeForceArea, fromDate, toDate)
 
     return res.redirect(303, `/police-data/dashboard${query ? `?${query}` : ''}`)
   }
@@ -24,16 +27,19 @@ export default class PoliceDataDashboardController {
   view: RequestHandler = async (req, res) => {
     const { query } = req
     const { username } = res.locals.user
-    const { batchId, policeForceArea, fromDate, toDate } = policeDataDashboardQuerySchema.parse(query)
+    const { batchId, policeForceArea, fromDate, toDate, page } = policeDataDashboardQuerySchema.parse(query)
     const result = await this.policeDataService.getIngestionAttemptSummaries(
       username,
       batchId,
       policeForceArea,
       fromDate,
       toDate,
+      page,
     )
 
     if (result.ok) {
+      const paginationHrefPrefix = this.getQueryString(batchId, policeForceArea, fromDate, toDate)
+
       res.render('pages/policeData/dashboard', {
         batchId,
         policeForceArea,
@@ -41,7 +47,8 @@ export default class PoliceDataDashboardController {
         toDate,
         ingestionAttempts: presentIngestionAttemptSummaries(result.data),
         pageCount: result.pageCount,
-        pageNumber: result.pageNumber,
+        pageNumber: result.pageNumber + 1,
+        paginationHrefPrefix,
         validationErrors: {},
       })
     } else {

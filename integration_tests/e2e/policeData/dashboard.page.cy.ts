@@ -29,13 +29,14 @@ context('Police Data Dashboard', () => {
       // And the table should have 1 row
       page.dataTable.shouldHaveColumns(['', 'Status', 'Police force area', 'Batch', 'Matches', 'Date', 'Time'])
       page.dataTable.shouldHaveRows([['', 'No results found for applied filters.']])
+      page.dataTable.shouldNotHavePagination()
     })
 
     it('should display ingestion attempts', () => {
       // Given an API response with three ingestion attempts
       cy.stubGetIngestionAttempts({
         status: 200,
-        query: '?batchId=&policeForceArea=&fromDate=&toDate=',
+        query: 'batchId=&policeForceArea=&fromDate=&toDate=',
         response: {
           data: [
             {
@@ -64,7 +65,7 @@ context('Police Data Dashboard', () => {
             },
           ],
           pageCount: 1,
-          pageNumber: 1,
+          pageNumber: 0,
           pageSize: 30,
         },
       })
@@ -87,6 +88,7 @@ context('Police Data Dashboard', () => {
         ['', 'Partially ingested', 'Avon and Somerset', 'MPS20251110', '0', '01/01/2025', '11:23:34'],
         ['', 'Failed ingestion', 'Metropolitan', 'MPS20251110', 'N/A', '01/01/2025', '11:23:34'],
       ])
+      page.dataTable.shouldNotHavePagination()
 
       // And the status column should have the correct tags
       page.dataTable.cell(0, 1).find('.govuk-tag').should('have.class', 'govuk-tag--green')
@@ -117,7 +119,7 @@ context('Police Data Dashboard', () => {
       // Given an API response with no results
       cy.stubGetIngestionAttempts()
 
-      // When the user loads the page with no query params
+      // When the user loads the page
       cy.visit(
         '/police-data/dashboard?batchId=abc&policeForceArea=METROPOLITAN&fromDate=19%2F2%2F2026&toDate=20%2F2%2F2026',
       )
@@ -133,6 +135,65 @@ context('Police Data Dashboard', () => {
       // And the table should have 1 row
       page.dataTable.shouldHaveColumns(['', 'Status', 'Police force area', 'Batch', 'Matches', 'Date', 'Time'])
       page.dataTable.shouldHaveRows([['', 'No results found for applied filters.']])
+      page.dataTable.shouldNotHavePagination()
+    })
+
+    it('should show allow the user to navigate to other pages in the result set', () => {
+      const response = {
+        data: [
+          {
+            ingestionAttemptId: '6664c855-cd76-4674-8f38-34244ad77c5a',
+            ingestionStatus: 'SUCCESSFUL',
+            policeForceArea: 'CITY_OF_LONDON',
+            batchId: 'MPS20251110',
+            matches: 5,
+            createdAt: '2025-01-01T11:23:34.000Z',
+          },
+        ],
+        pageCount: 2,
+        pageNumber: 0,
+        pageSize: 30,
+      }
+
+      // Stub first page response
+      cy.stubGetIngestionAttempts({
+        status: 200,
+        query: 'batchId=abc&policeForceArea=&fromDate=&toDate=',
+        response,
+      })
+
+      // Stub second page response
+      cy.stubGetIngestionAttempts({
+        status: 200,
+        query: 'batchId=abc&policeForceArea=&fromDate=&toDate=&page=1',
+        response: {
+          ...response,
+          pageNumber: 1,
+        },
+      })
+
+      // When the user loads the page
+      cy.visit('/police-data/dashboard?batchId=abc')
+
+      const page = Page.verifyOnPage(PoliceDataDashboardPage)
+
+      // Then the table should have pagination
+      page.dataTable.shouldHavePagination()
+      page.dataTable.pagination.shouldHaveCurrentPage('1')
+      page.dataTable.pagination.shouldHaveNextButton()
+      page.dataTable.pagination.shouldNotHavePrevButton()
+
+      // When the user navigates to the next page
+      page.dataTable.pagination.next.click()
+
+      // Then the url should include the page number and the original query
+      cy.url().should('include', '?batchId=abc&page=2')
+
+      // And the table should have pagination
+      page.dataTable.shouldHavePagination()
+      page.dataTable.pagination.shouldHaveCurrentPage('2')
+      page.dataTable.pagination.shouldNotHaveNextButton()
+      page.dataTable.pagination.shouldHavePrevButton()
     })
   })
 })

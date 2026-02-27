@@ -6,6 +6,7 @@ const policeDataDashboardQuerySchema = z.object({
   batchId: z.string().default(''),
   fromDate: z.string().default(''),
   toDate: z.string().default(''),
+  page: z.string().default(''),
 })
 
 const getIngestionAttemptDtoSchema = paginatedDtoSchema.extend({

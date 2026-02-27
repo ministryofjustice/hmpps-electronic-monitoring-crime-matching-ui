@@ -70,6 +70,7 @@ export default class CrimeMatchingClient extends RestClient {
     policeForceArea: string,
     fromDate: string,
     toDate: string,
+    page: string | undefined,
   ): Promise<unknown> {
     return this.get(
       {
@@ -79,6 +80,7 @@ export default class CrimeMatchingClient extends RestClient {
           policeForceArea,
           fromDate,
           toDate,
+          page,
         },
       },
       authOptions,

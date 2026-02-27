@@ -10,6 +10,17 @@ import Result from '../types/result'
 class PoliceDataService {
   constructor(private readonly crimeMatchingApiClient: CrimeMatchingClient) {}
 
+  private parsePageNumber(page: string): string | undefined {
+    const pageNumber = parseInt(page.trim(), 10)
+
+    if (!Number.isNaN(pageNumber)) {
+      // API is 0-indexed, UI is 1-indexed
+      return (pageNumber - 1).toString()
+    }
+
+    return undefined
+  }
+
   private parsePoliceForceArea(policeForceArea: string): Result<string, string> {
     const area = policeForceArea.trim()
 
@@ -42,12 +53,14 @@ class PoliceDataService {
     policeForceArea: string,
     fromDate: string,
     toDate: string,
+    page: string,
   ): Promise<PaginatedServiceResult<IngestionAttemptSummary>> {
     const validationErrors: Record<string, string> = {}
     const parsedBatchId = batchId.trim()
     const parsedPoliceForceArea = this.parsePoliceForceArea(policeForceArea)
     const parsedFromDate = this.parseDateToISOString(fromDate)
     const parsedToDate = this.parseDateToISOString(toDate)
+    const parsedPageNumber = this.parsePageNumber(page)
 
     if (!parsedPoliceForceArea.ok) {
       validationErrors.policeForceArea = parsedPoliceForceArea.error
@@ -74,6 +87,7 @@ class PoliceDataService {
       parsedPoliceForceArea.ok ? parsedPoliceForceArea.data : '',
       parsedFromDate.ok ? parsedFromDate.data : '',
       parsedToDate.ok ? parsedToDate.data : '',
+      parsedPageNumber,
     )
 
     return {

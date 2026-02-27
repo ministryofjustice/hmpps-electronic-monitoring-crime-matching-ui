@@ -163,10 +163,10 @@ describe('PoliceDataDashboardController', () => {
     )
 
     it.each([
-      [{ batchId: 'MPS20251110' }, ['MPS20251110', '', '', '']],
-      [{ policeForceArea: 'METROPOLITAN' }, ['', 'METROPOLITAN', '', '']],
-      [{ fromDate: '01/01/2026' }, ['', '', '2026-01-01T00:00:00.000Z', '']],
-      [{ toDate: '02/01/2026' }, ['', '', '', '2026-01-02T00:00:00.000Z']],
+      [{ batchId: 'MPS20251110' }, ['MPS20251110', '', '', ''], 'batchId=MPS20251110'],
+      [{ policeForceArea: 'METROPOLITAN' }, ['', 'METROPOLITAN', '', ''], 'policeForceArea=METROPOLITAN'],
+      [{ fromDate: '01/01/2026' }, ['', '', '2026-01-01T00:00:00.000Z', ''], 'fromDate=01%2F01%2F2026'],
+      [{ toDate: '02/01/2026' }, ['', '', '', '2026-01-02T00:00:00.000Z'], 'toDate=02%2F01%2F2026'],
       [
         {
           batchId: 'MPS20251110',
@@ -175,10 +175,54 @@ describe('PoliceDataDashboardController', () => {
           toDate: '02/01/2026',
         },
         ['MPS20251110', 'METROPOLITAN', '2026-01-01T00:00:00.000Z', '2026-01-02T00:00:00.000Z'],
+        'batchId=MPS20251110&policeForceArea=METROPOLITAN&fromDate=01%2F01%2F2026&toDate=02%2F01%2F2026',
       ],
-    ])('should query the api and send data to the view engine', async (query, expectedApiParams) => {
+    ])(
+      'should query the api and send data to the view engine',
+      async (query, expectedApiParams, expectedHrefPrefix) => {
+        // Given
+        const req = createMockRequest({ query })
+        const res = createMockResponse()
+        const next = jest.fn()
+        const service = new PoliceDataService(mockRestClient)
+        const controller = new PoliceDataDashboardController(service)
+
+        mockRestClient.getIngestionAttempts.mockResolvedValue({
+          data: [ingestionAttemptSummary],
+          pageCount: 1,
+          pageNumber: 0,
+          pageSize: 10,
+        })
+
+        // When
+        await controller.view(req, res, next)
+
+        // Then
+        expect(mockRestClient.getIngestionAttempts).toHaveBeenCalledWith(
+          expectedAuthOptions,
+          ...expectedApiParams,
+          undefined,
+        )
+        expect(res.render).toHaveBeenCalledWith('pages/policeData/dashboard', {
+          batchId: '',
+          policeForceArea: '',
+          fromDate: '',
+          toDate: '',
+          ...query,
+          ingestionAttempts: [expectedIngestionAttemptSummary],
+          paginationHrefPrefix: expectedHrefPrefix,
+          pageCount: 1,
+          pageNumber: 1,
+          validationErrors: {},
+        })
+        expect(next).not.toHaveBeenCalled()
+      },
+    )
+
+    it('should not include the current page number in the pagination href prefix', async () => {
       // Given
-      const req = createMockRequest({ query })
+      const pageNumber = 2
+      const req = createMockRequest({ query: { page: pageNumber.toString() } })
       const res = createMockResponse()
       const next = jest.fn()
       const service = new PoliceDataService(mockRestClient)
@@ -195,16 +239,23 @@ describe('PoliceDataDashboardController', () => {
       await controller.view(req, res, next)
 
       // Then
-      expect(mockRestClient.getIngestionAttempts).toHaveBeenCalledWith(expectedAuthOptions, ...expectedApiParams)
+      expect(mockRestClient.getIngestionAttempts).toHaveBeenCalledWith(
+        expectedAuthOptions,
+        '',
+        '',
+        '',
+        '',
+        (pageNumber - 1).toString(),
+      )
       expect(res.render).toHaveBeenCalledWith('pages/policeData/dashboard', {
         batchId: '',
         policeForceArea: '',
         fromDate: '',
         toDate: '',
-        ...query,
         ingestionAttempts: [expectedIngestionAttemptSummary],
+        paginationHrefPrefix: '',
         pageCount: 1,
-        pageNumber: 1,
+        pageNumber,
         validationErrors: {},
       })
       expect(next).not.toHaveBeenCalled()
