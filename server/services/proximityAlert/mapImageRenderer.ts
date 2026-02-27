@@ -48,20 +48,22 @@ type PeakResources = {
   nodeRssMB?: number
 }
 
-function mb(bytes: number): number {
+// Convert a byte to MB for logging.
+function byteToMB(bytes: number): number {
   return Math.round((bytes / 1024 / 1024) * 10) / 10
 }
 
+// Spike: temporary timer/logger for step-by-step performance tracing.
 function makeTimers(label: string, meta?: Record<string, unknown>) {
   const startTime = Date.now()
-  let last = startTime
+  let lastLogTime = startTime
 
   const sinceStart = () => Date.now() - startTime
   const sinceLast = () => {
     const now = Date.now()
-    const d = now - last
-    last = now
-    return d
+    const deltaMs = now - lastLogTime
+    lastLogTime = now
+    return deltaMs
   }
 
   const log = (step: string, extra?: Record<string, unknown>) => {
@@ -73,6 +75,7 @@ function makeTimers(label: string, meta?: Record<string, unknown>) {
   return { log, sinceStart }
 }
 
+// Parse a Cookie header into Playwright cookie objects.
 function cookiesFromHeader(cookieHeader: string, baseUrlForCookies: string) {
   return cookieHeader
     .split(';')
@@ -86,6 +89,7 @@ function cookiesFromHeader(cookieHeader: string, baseUrlForCookies: string) {
     })
 }
 
+// Build a URL for headless export, including headless flag and optional device wearer filtering.
 function pageUrlForHeadless(baseUrl: string, selectedDeviceWearerIds: string[]): string {
   const url = new URL(baseUrl)
   url.searchParams.set('headless', 'true')
@@ -97,6 +101,8 @@ function pageUrlForHeadless(baseUrl: string, selectedDeviceWearerIds: string[]):
   return url.toString()
 }
 
+// Try to parse the Image 1 view state from the form, returning null if invalid or not supplied.
+// Spike, probably use zod for this if we end up keeping it
 function tryParseImage1State(json: string | undefined): Image1CaptureState | null {
   if (!json) return null
   try {
@@ -123,11 +129,20 @@ function tryParseImage1State(json: string | undefined): Image1CaptureState | nul
   }
 }
 
-// eslint-friendly sequential runner (keeps deterministic / low-memory behaviour)
-async function forEachSequential<T>(items: readonly T[], fn: (item: T, index: number) => Promise<void>): Promise<void> {
-  await items.reduce<Promise<void>>((p, item, index) => p.then(() => fn(item, index)), Promise.resolve())
+// Execute async work sequentially to limit peak memory/CPU.
+async function forEachSequentially<T>(
+  items: readonly T[],
+  fn: (item: T, index: number) => Promise<void>,
+): Promise<void> {
+  let index = 0
+  for (const item of items) {
+    // eslint-disable-next-line no-await-in-loop -- Intentional: enforce sequential processing to limit peak CPU/RAM
+    await fn(item, index)
+    index += 1
+  }
 }
 
+// Wait until the client-side map code has added all custom layers (Playwright sync point).
 async function waitForAppLayersReady(page: Page): Promise<void> {
   await page.evaluate(() => {
     type DocumentLike = {
@@ -141,6 +156,7 @@ async function waitForAppLayersReady(page: Page): Promise<void> {
   })
 }
 
+// Wait for the OpenLayers map to complete a render after a view/layer change.
 async function waitForOlRenderComplete(page: Page): Promise<void> {
   await page.evaluate(() => {
     type EmMapLike = { olMapInstance?: unknown }
@@ -166,25 +182,12 @@ async function waitForOlRenderComplete(page: Page): Promise<void> {
   })
 }
 
-// fast “toggle applied” wait (no tile barrier)
-async function waitForNextPaint(page: Page): Promise<void> {
-  await page.evaluate(() => {
-    const raf = (globalThis as unknown as { requestAnimationFrame?: (cb: () => void) => void }).requestAnimationFrame
-    return new Promise<void>(resolve => {
-      if (!raf) {
-        setTimeout(() => resolve(), 0)
-        return
-      }
-      raf(() => raf(resolve))
-    })
-  })
-}
-
+// Sample peak CPU/RSS for Chromium and Node during export to aid spike performance analysis.
 function startResourceSampler(_browser: Browser, label: string, intervalMs = 200) {
   const peak: PeakResources = {}
   let stopped = false
 
-  const getCommand = (pid: number): string => {
+  const getCommandForPid = (pid: number): string => {
     try {
       return execFileSync('ps', ['-p', String(pid), '-o', 'command='], { encoding: 'utf8' }).trim()
     } catch {
@@ -192,24 +195,27 @@ function startResourceSampler(_browser: Browser, label: string, intervalMs = 200
     }
   }
 
-  const isChromiumLike = (cmd: string): boolean => {
-    const s = cmd.toLowerCase()
+  // Check whether a process command string looks like a Chromium/Chrome process.
+  const isChromiumLikeProcess = (command: string): boolean => {
+    const lowerCaseCommand = command.toLowerCase()
+
     return (
-      s.includes('chromium') ||
-      s.includes('chrome') ||
-      s.includes('headless_shell') ||
-      s.includes('chrome-headless-shell')
+      lowerCaseCommand.includes('chromium') ||
+      lowerCaseCommand.includes('chrome') ||
+      lowerCaseCommand.includes('headless_shell') ||
+      lowerCaseCommand.includes('chrome-headless-shell')
     )
   }
 
+  // Sample resource usage once, updating peak if higher than previous samples.
   const sampleOnce = async () => {
-    const nodeRssMB = mb(process.memoryUsage().rss)
+    const nodeRssMB = byteToMB(process.memoryUsage().rss)
     if (!peak.nodeRssMB || nodeRssMB > peak.nodeRssMB) peak.nodeRssMB = nodeRssMB
 
     const pids = await pidtree(process.pid, { root: true })
     const chromiumPids = pids.filter(pid => {
-      const cmd = getCommand(pid)
-      return Boolean(cmd) && isChromiumLike(cmd)
+      const cmd = getCommandForPid(pid)
+      return Boolean(cmd) && isChromiumLikeProcess(cmd)
     })
 
     if (chromiumPids.length === 0) return
@@ -226,7 +232,7 @@ function startResourceSampler(_browser: Browser, label: string, intervalMs = 200
       }
     }
 
-    const chromiumRssMB = mb(totalChromiumRssBytes)
+    const chromiumRssMB = byteToMB(totalChromiumRssBytes)
     const chromiumCpuPct = Math.round(totalChromiumCpuPct * 10) / 10
 
     if (!peak.chromiumRssMB || chromiumRssMB > peak.chromiumRssMB) peak.chromiumRssMB = chromiumRssMB
@@ -257,32 +263,49 @@ function startResourceSampler(_browser: Browser, label: string, intervalMs = 200
   return { stop, peak }
 }
 
+// Call the client-side preset API exposed on window.mapImages (headless export only).
 async function applyPreset(page: Page, preset: PresetParam, wearerId?: string): Promise<void> {
   await page.evaluate(
-    ({ preset: p, wearerId: w }) => {
+    ({ presetValue, wearerIdentifier }) => {
       const win = globalThis as unknown as {
         mapImages?: { applyPreset?: (preset: string, wearerId?: string) => void }
       }
-      if (!win.mapImages?.applyPreset) throw new Error('window.mapImages.applyPreset not found')
-      win.mapImages.applyPreset(p, w)
+
+      if (!win.mapImages?.applyPreset) {
+        throw new Error('window.mapImages.applyPreset not found')
+      }
+
+      win.mapImages.applyPreset(presetValue, wearerIdentifier)
     },
-    { preset, wearerId },
+    {
+      presetValue: preset,
+      wearerIdentifier: wearerId,
+    },
   )
 }
 
+// Apply the captured Image 1 view state so export replicates the user's interactive view.
 async function applyImage1State(page: Page, state: Image1CaptureState): Promise<void> {
   await page.evaluate(
-    ({ s }) => {
+    ({ captureState }) => {
       const win = globalThis as unknown as {
         mapImages?: { applyImage1CaptureState?: (state: unknown) => void }
       }
-      if (!win.mapImages?.applyImage1CaptureState) throw new Error('window.mapImages.applyImage1CaptureState not found')
-      win.mapImages.applyImage1CaptureState(s)
+
+      if (!win.mapImages?.applyImage1CaptureState) {
+        throw new Error('window.mapImages.applyImage1CaptureState not found')
+      }
+
+      win.mapImages.applyImage1CaptureState(captureState)
     },
-    { s: state },
+    {
+      captureState: state,
+    },
   )
 }
 
+// Main function to render the Proximity Alert report images in a headless browser,
+// with detailed timers and resource sampling for performance analysis.
 export async function renderProximityAlertReportImages(
   args: RenderProximityAlertImagesArgs,
 ): Promise<ProximityAlertReportImages> {
@@ -312,8 +335,8 @@ export async function renderProximityAlertReportImages(
   const sampler = startResourceSampler(browser, 'export-proximity-alert')
   const sessionCookies = cookieHeader ? cookiesFromHeader(cookieHeader, baseUrlForCookies) : []
 
-  const parsedImage1State = tryParseImage1State(image1StateJson)
-  const headlessDeviceScaleFactor = parsedImage1State ? parsedImage1State.devicePixelRatio : deviceScaleFactor
+  const image1State = tryParseImage1State(image1StateJson)
+  const headlessDeviceScaleFactor = image1State ? image1State.devicePixelRatio : deviceScaleFactor
 
   const contextStart = Date.now()
   const context = await browser.newContext({
@@ -344,10 +367,10 @@ export async function renderProximityAlertReportImages(
 
     let targetUrl = pageUrlForHeadless(pageUrl, selectedDeviceWearerIds)
 
-    if (parsedImage1State) {
+    if (image1State) {
       const url = new URL(targetUrl)
-      url.searchParams.set('mapW', String(parsedImage1State.mapWidthPx))
-      url.searchParams.set('mapH', String(parsedImage1State.mapHeightPx))
+      url.searchParams.set('mapW', String(image1State.mapWidthPx))
+      url.searchParams.set('mapH', String(image1State.mapHeightPx))
       targetUrl = url.toString()
     }
 
@@ -365,14 +388,10 @@ export async function renderProximityAlertReportImages(
     await waitForAppLayersReady(page)
     timers.log('app layers ready', { readyWaitMs: Date.now() - readyStart })
 
-    const initRenderStart = Date.now()
-    await waitForOlRenderComplete(page)
-    timers.log('initial ol rendercomplete', { renderWaitMs: Date.now() - initRenderStart })
-
     const mapElementHandle = await page.$('em-map')
     if (!mapElementHandle) throw new Error('Map element <em-map> not found for screenshot')
 
-    const screenshot = async (extra?: Record<string, unknown>): Promise<Buffer> => {
+    const screenshotMap = async (extra?: Record<string, unknown>): Promise<Buffer> => {
       const screenshotStart = Date.now()
       const jpg = await mapElementHandle.screenshot({ type: 'jpeg', quality: jpegQuality })
       timers.log('screenshot captured', {
@@ -383,41 +402,33 @@ export async function renderProximityAlertReportImages(
       return jpg
     }
 
-    // -------------------------
     // Image 1 phase (apply captured view once, then toggle-only per wearer)
-    // -------------------------
     let image1Jpg: Buffer
 
-    if (parsedImage1State) {
+    if (image1State) {
       const applyStart = Date.now()
-      await applyImage1State(page, parsedImage1State)
+      await applyImage1State(page, image1State)
       timers.log('image1 state applied', { applyMs: Date.now() - applyStart })
 
       const renderStart = Date.now()
       await waitForOlRenderComplete(page)
       timers.log('ol rendercomplete (image1 state)', { renderWaitMs: Date.now() - renderStart })
 
-      image1Jpg = await screenshot({ phase: 'image-1-overview' })
+      image1Jpg = await screenshotMap({ phase: 'image-1-overview' })
     } else {
-      image1Jpg = await screenshot({ phase: 'image-1-overview-fallback' })
+      image1Jpg = await screenshotMap({ phase: 'image-1-overview-fallback' })
     }
 
     const wearerImage1JpgById: Record<string, Buffer> = {}
-    await forEachSequential(selectedDeviceWearerIds, async wearerId => {
+    await forEachSequentially(selectedDeviceWearerIds, async wearerId => {
       const applyStart = Date.now()
       await applyPreset(page, 'wearer-image-1', wearerId)
       timers.log('preset applied', { preset: 'wearer-image-1', wearerId, applyMs: Date.now() - applyStart })
 
-      const paintStart = Date.now()
-      await waitForNextPaint(page)
-      timers.log('next paint', { preset: 'wearer-image-1', wearerId, paintWaitMs: Date.now() - paintStart })
-
-      wearerImage1JpgById[wearerId] = await screenshot({ preset: 'wearer-image-1', wearerId })
+      wearerImage1JpgById[wearerId] = await screenshotMap({ preset: 'wearer-image-1', wearerId })
     })
 
-    // -------------------------
-    // Image 2 phase (fit once, then toggle-only per wearer)
-    // -------------------------
+    // Image 2 phase (apply preset once, then toggle-only per wearer)
     const apply2Start = Date.now()
     await applyPreset(page, 'image-2')
     timers.log('preset applied', { preset: 'image-2', applyMs: Date.now() - apply2Start })
@@ -426,19 +437,15 @@ export async function renderProximityAlertReportImages(
     await waitForOlRenderComplete(page)
     timers.log('ol rendercomplete (image-2)', { renderWaitMs: Date.now() - render2Start })
 
-    const image2Jpg = await screenshot({ preset: 'image-2' })
+    const image2Jpg = await screenshotMap({ preset: 'image-2' })
 
     const wearerImage2JpgById: Record<string, Buffer> = {}
-    await forEachSequential(selectedDeviceWearerIds, async wearerId => {
+    await forEachSequentially(selectedDeviceWearerIds, async wearerId => {
       const applyStart = Date.now()
       await applyPreset(page, 'wearer-image-2', wearerId)
       timers.log('preset applied', { preset: 'wearer-image-2', wearerId, applyMs: Date.now() - applyStart })
 
-      const paintStart = Date.now()
-      await waitForNextPaint(page)
-      timers.log('next paint', { preset: 'wearer-image-2', wearerId, paintWaitMs: Date.now() - paintStart })
-
-      wearerImage2JpgById[wearerId] = await screenshot({ preset: 'wearer-image-2', wearerId })
+      wearerImage2JpgById[wearerId] = await screenshotMap({ preset: 'wearer-image-2', wearerId })
     })
 
     timers.log('complete', { totalMs: timers.sinceStart() })

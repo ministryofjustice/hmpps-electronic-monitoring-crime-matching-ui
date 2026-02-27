@@ -89,6 +89,486 @@
           "confidenceCircle": 9
         }
       ]
+    },
+    {
+      "deviceWearerId": "804000000",
+      "name": "Michael Bennett",
+      "nomisId": "C5128XY",
+      "deviceId": 804000000,
+      "positions": [
+        {
+          "positionId": "C1",
+          "capturedDateTime": "2026-01-16T08:10:00Z",
+          "sequenceLabel": "C1",
+          "latitude": 51.574713,
+          "longitude": 0.061284,
+          "confidenceCircle": 14
+        },
+        {
+          "positionId": "C2",
+          "capturedDateTime": "2026-01-16T08:10:30Z",
+          "sequenceLabel": "C2",
+          "latitude": 51.574641,
+          "longitude": 0.061282,
+          "confidenceCircle": 11
+        },
+        {
+          "positionId": "C3",
+          "capturedDateTime": "2026-01-16T08:11:00Z",
+          "sequenceLabel": "C3",
+          "latitude": 51.574687,
+          "longitude": 0.061221,
+          "confidenceCircle": 3
+        },
+        {
+          "positionId": "C4",
+          "capturedDateTime": "2026-01-16T08:11:30Z",
+          "sequenceLabel": "C4",
+          "latitude": 51.574748,
+          "longitude": 0.061239,
+          "confidenceCircle": 12
+        }
+      ]
+    },
+    {
+      "deviceWearerId": "804012345",
+      "name": "Daniel Clarke",
+      "nomisId": "D5129XY",
+      "deviceId": 804012345,
+      "positions": [
+        {
+          "positionId": "D1",
+          "capturedDateTime": "2026-01-16T08:11:00Z",
+          "sequenceLabel": "D1",
+          "latitude": 51.57456,
+          "longitude": 0.06023,
+          "confidenceCircle": 6
+        },
+        {
+          "positionId": "D2",
+          "capturedDateTime": "2026-01-16T08:11:30Z",
+          "sequenceLabel": "D2",
+          "latitude": 51.57474,
+          "longitude": 0.06018,
+          "confidenceCircle": 3
+        },
+        {
+          "positionId": "D3",
+          "capturedDateTime": "2026-01-16T08:12:00Z",
+          "sequenceLabel": "D3",
+          "latitude": 51.57494,
+          "longitude": 0.06038,
+          "confidenceCircle": 9
+        },
+        {
+          "positionId": "D4",
+          "capturedDateTime": "2026-01-16T08:12:30Z",
+          "sequenceLabel": "D4",
+          "latitude": 51.575053,
+          "longitude": 0.060517,
+          "confidenceCircle": 15
+        }
+      ]
+    },
+    {
+      "deviceWearerId": "804024690",
+      "name": "James Hughes",
+      "nomisId": "E5130XY",
+      "deviceId": 804024690,
+      "positions": [
+        {
+          "positionId": "E1",
+          "capturedDateTime": "2026-01-16T08:12:00Z",
+          "sequenceLabel": "E1",
+          "latitude": 51.57469,
+          "longitude": 0.06121,
+          "confidenceCircle": 12
+        },
+        {
+          "positionId": "E2",
+          "capturedDateTime": "2026-01-16T08:12:30Z",
+          "sequenceLabel": "E2",
+          "latitude": 51.574713,
+          "longitude": 0.061266,
+          "confidenceCircle": 10
+        },
+        {
+          "positionId": "E3",
+          "capturedDateTime": "2026-01-16T08:13:00Z",
+          "sequenceLabel": "E3",
+          "latitude": 51.574694,
+          "longitude": 0.061337,
+          "confidenceCircle": 9
+        },
+        {
+          "positionId": "E4",
+          "capturedDateTime": "2026-01-16T08:13:30Z",
+          "sequenceLabel": "E4",
+          "latitude": 51.574712,
+          "longitude": 0.061334,
+          "confidenceCircle": 13
+        }
+      ]
+    },
+    {
+      "deviceWearerId": "804037035",
+      "name": "Paul Miller",
+      "nomisId": "F5131XY",
+      "deviceId": 804037035,
+      "positions": [
+        {
+          "positionId": "F1",
+          "capturedDateTime": "2026-01-16T08:13:00Z",
+          "sequenceLabel": "F1",
+          "latitude": 51.573903,
+          "longitude": 0.060998,
+          "confidenceCircle": 3
+        },
+        {
+          "positionId": "F2",
+          "capturedDateTime": "2026-01-16T08:13:30Z",
+          "sequenceLabel": "F2",
+          "latitude": 51.57399,
+          "longitude": 0.06077,
+          "confidenceCircle": 10
+        },
+        {
+          "positionId": "F3",
+          "capturedDateTime": "2026-01-16T08:14:00Z",
+          "sequenceLabel": "F3",
+          "latitude": 51.57415,
+          "longitude": 0.06054,
+          "confidenceCircle": 8
+        },
+        {
+          "positionId": "F4",
+          "capturedDateTime": "2026-01-16T08:14:30Z",
+          "sequenceLabel": "F4",
+          "latitude": 51.57401,
+          "longitude": 0.06042,
+          "confidenceCircle": 14
+        }
+      ]
+    },
+    {
+      "deviceWearerId": "804049380",
+      "name": "Mark Turner",
+      "nomisId": "G5132XY",
+      "deviceId": 804049380,
+      "positions": [
+        {
+          "positionId": "G1",
+          "capturedDateTime": "2026-01-16T08:14:00Z",
+          "sequenceLabel": "G1",
+          "latitude": 51.57406,
+          "longitude": 0.05991,
+          "confidenceCircle": 14
+        },
+        {
+          "positionId": "G2",
+          "capturedDateTime": "2026-01-16T08:14:30Z",
+          "sequenceLabel": "G2",
+          "latitude": 51.57409,
+          "longitude": 0.0597,
+          "confidenceCircle": 7
+        },
+        {
+          "positionId": "G3",
+          "capturedDateTime": "2026-01-16T08:15:00Z",
+          "sequenceLabel": "G3",
+          "latitude": 51.573952,
+          "longitude": 0.059696,
+          "confidenceCircle": 15
+        },
+        {
+          "positionId": "G4",
+          "capturedDateTime": "2026-01-16T08:15:30Z",
+          "sequenceLabel": "G4",
+          "latitude": 51.57414,
+          "longitude": 0.05962,
+          "confidenceCircle": 3
+        }
+      ]
+    },
+    {
+      "deviceWearerId": "804061725",
+      "name": "Andrew Price",
+      "nomisId": "H5133XY",
+      "deviceId": 804061725,
+      "positions": [
+        {
+          "positionId": "H1",
+          "capturedDateTime": "2026-01-16T08:15:00Z",
+          "sequenceLabel": "H1",
+          "latitude": 51.57489,
+          "longitude": 0.05965,
+          "confidenceCircle": 12
+        },
+        {
+          "positionId": "H2",
+          "capturedDateTime": "2026-01-16T08:15:30Z",
+          "sequenceLabel": "H2",
+          "latitude": 51.574992,
+          "longitude": 0.059834,
+          "confidenceCircle": 13
+        },
+        {
+          "positionId": "H3",
+          "capturedDateTime": "2026-01-16T08:16:00Z",
+          "sequenceLabel": "H3",
+          "latitude": 51.57499,
+          "longitude": 0.05971,
+          "confidenceCircle": 13
+        },
+        {
+          "positionId": "H4",
+          "capturedDateTime": "2026-01-16T08:16:30Z",
+          "sequenceLabel": "H4",
+          "latitude": 51.575008,
+          "longitude": 0.059887,
+          "confidenceCircle": 6
+        }
+      ]
+    },
+    {
+      "deviceWearerId": "804074070",
+      "name": "Thomas Watson",
+      "nomisId": "I5134XY",
+      "deviceId": 804074070,
+      "positions": [
+        {
+          "positionId": "I1",
+          "capturedDateTime": "2026-01-16T08:16:00Z",
+          "sequenceLabel": "I1",
+          "latitude": 51.574457,
+          "longitude": 0.059735,
+          "confidenceCircle": 12
+        },
+        {
+          "positionId": "I2",
+          "capturedDateTime": "2026-01-16T08:16:30Z",
+          "sequenceLabel": "I2",
+          "latitude": 51.574574,
+          "longitude": 0.059763,
+          "confidenceCircle": 5
+        },
+        {
+          "positionId": "I3",
+          "capturedDateTime": "2026-01-16T08:17:00Z",
+          "sequenceLabel": "I3",
+          "latitude": 51.574658,
+          "longitude": 0.05994,
+          "confidenceCircle": 3
+        },
+        {
+          "positionId": "I4",
+          "capturedDateTime": "2026-01-16T08:17:30Z",
+          "sequenceLabel": "I4",
+          "latitude": 51.57491,
+          "longitude": 0.05962,
+          "confidenceCircle": 5
+        }
+      ]
+    },
+    {
+      "deviceWearerId": "804086415",
+      "name": "Robert Reed",
+      "nomisId": "J5135XY",
+      "deviceId": 804086415,
+      "positions": [
+        {
+          "positionId": "J1",
+          "capturedDateTime": "2026-01-16T08:17:00Z",
+          "sequenceLabel": "J1",
+          "latitude": 51.574786,
+          "longitude": 0.059848,
+          "confidenceCircle": 10
+        },
+        {
+          "positionId": "J2",
+          "capturedDateTime": "2026-01-16T08:17:30Z",
+          "sequenceLabel": "J2",
+          "latitude": 51.574821,
+          "longitude": 0.059933,
+          "confidenceCircle": 3
+        },
+        {
+          "positionId": "J3",
+          "capturedDateTime": "2026-01-16T08:18:00Z",
+          "sequenceLabel": "J3",
+          "latitude": 51.574938,
+          "longitude": 0.060004,
+          "confidenceCircle": 11
+        },
+        {
+          "positionId": "J4",
+          "capturedDateTime": "2026-01-16T08:18:30Z",
+          "sequenceLabel": "J4",
+          "latitude": 51.57476,
+          "longitude": 0.06002,
+          "confidenceCircle": 8
+        }
+      ]
+    },
+    {
+      "deviceWearerId": "804098760",
+      "name": "David Foster",
+      "nomisId": "K5136XY",
+      "deviceId": 804098760,
+      "positions": [
+        {
+          "positionId": "K1",
+          "capturedDateTime": "2026-01-16T08:18:00Z",
+          "sequenceLabel": "K1",
+          "latitude": 51.57456,
+          "longitude": 0.06038,
+          "confidenceCircle": 14
+        },
+        {
+          "positionId": "K2",
+          "capturedDateTime": "2026-01-16T08:18:30Z",
+          "sequenceLabel": "K2",
+          "latitude": 51.57456,
+          "longitude": 0.06016,
+          "confidenceCircle": 5
+        },
+        {
+          "positionId": "K3",
+          "capturedDateTime": "2026-01-16T08:19:00Z",
+          "sequenceLabel": "K3",
+          "latitude": 51.57467,
+          "longitude": 0.0604,
+          "confidenceCircle": 13
+        },
+        {
+          "positionId": "K4",
+          "capturedDateTime": "2026-01-16T08:19:30Z",
+          "sequenceLabel": "K4",
+          "latitude": 51.57456,
+          "longitude": 0.06025,
+          "confidenceCircle": 12
+        }
+      ]
+    },
+    {
+      "deviceWearerId": "804111105",
+      "name": "Kevin Collins",
+      "nomisId": "L5137XY",
+      "deviceId": 804111105,
+      "positions": [
+        {
+          "positionId": "L1",
+          "capturedDateTime": "2026-01-16T08:19:00Z",
+          "sequenceLabel": "L1",
+          "latitude": 51.57473,
+          "longitude": 0.06026,
+          "confidenceCircle": 11
+        },
+        {
+          "positionId": "L2",
+          "capturedDateTime": "2026-01-16T08:19:30Z",
+          "sequenceLabel": "L2",
+          "latitude": 51.57458,
+          "longitude": 0.05992,
+          "confidenceCircle": 10
+        },
+        {
+          "positionId": "L3",
+          "capturedDateTime": "2026-01-16T08:20:00Z",
+          "sequenceLabel": "L3",
+          "latitude": 51.57456,
+          "longitude": 0.05998,
+          "confidenceCircle": 15
+        },
+        {
+          "positionId": "L4",
+          "capturedDateTime": "2026-01-16T08:20:30Z",
+          "sequenceLabel": "L4",
+          "latitude": 51.57461,
+          "longitude": 0.0602,
+          "confidenceCircle": 12
+        }
+      ]
+    },
+    {
+      "deviceWearerId": "804123450",
+      "name": "Anthony Evans",
+      "nomisId": "M5138XY",
+      "deviceId": 804123450,
+      "positions": [
+        {
+          "positionId": "M1",
+          "capturedDateTime": "2026-01-16T08:20:00Z",
+          "sequenceLabel": "M1",
+          "latitude": 51.574653,
+          "longitude": 0.061247,
+          "confidenceCircle": 5
+        },
+        {
+          "positionId": "M2",
+          "capturedDateTime": "2026-01-16T08:20:30Z",
+          "sequenceLabel": "M2",
+          "latitude": 51.574645,
+          "longitude": 0.061208,
+          "confidenceCircle": 12
+        },
+        {
+          "positionId": "M3",
+          "capturedDateTime": "2026-01-16T08:21:00Z",
+          "sequenceLabel": "M3",
+          "latitude": 51.574728,
+          "longitude": 0.061235,
+          "confidenceCircle": 11
+        },
+        {
+          "positionId": "M4",
+          "capturedDateTime": "2026-01-16T08:21:30Z",
+          "sequenceLabel": "M4",
+          "latitude": 51.574604,
+          "longitude": 0.061172,
+          "confidenceCircle": 14
+        }
+      ]
+    },
+    {
+      "deviceWearerId": "804135795",
+      "name": "Gareth Morgan",
+      "nomisId": "N5139XY",
+      "deviceId": 804135795,
+      "positions": [
+        {
+          "positionId": "N1",
+          "capturedDateTime": "2026-01-16T08:21:00Z",
+          "sequenceLabel": "N1",
+          "latitude": 51.57457,
+          "longitude": 0.0609,
+          "confidenceCircle": 11
+        },
+        {
+          "positionId": "N2",
+          "capturedDateTime": "2026-01-16T08:21:30Z",
+          "sequenceLabel": "N2",
+          "latitude": 51.57475,
+          "longitude": 0.06091,
+          "confidenceCircle": 4
+        },
+        {
+          "positionId": "N3",
+          "capturedDateTime": "2026-01-16T08:22:00Z",
+          "sequenceLabel": "N3",
+          "latitude": 51.57467,
+          "longitude": 0.06069,
+          "confidenceCircle": 6
+        },
+        {
+          "positionId": "N4",
+          "capturedDateTime": "2026-01-16T08:22:30Z",
+          "sequenceLabel": "N4",
+          "latitude": 51.57468,
+          "longitude": 0.06102,
+          "confidenceCircle": 14
+        }
+      ]
     }
   ]
 }

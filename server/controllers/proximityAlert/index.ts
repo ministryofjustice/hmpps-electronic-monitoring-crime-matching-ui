@@ -8,6 +8,11 @@ import { loadProximityAlertFixtureById } from '../../services/proximityAlert/pro
 import { renderProximityAlertReportImages } from '../../services/proximityAlert/mapImageRenderer'
 import type PlaywrightBrowserService from '../../services/proximityAlert/playwrightBrowserManager'
 
+type ExportProximityAlertFormBody = {
+  deviceWearerIds?: string | string[]
+  image1State?: string
+}
+
 // Spike: hardcode local URL for now
 // The real UI will need to work in deployed environments
 const LOCAL_BASE_URL = 'http://localhost:3000'
@@ -15,16 +20,19 @@ const EXPORT_ERROR_MESSAGE = 'Could not export Proximity Alert report. Please tr
 
 const DOCX_CONTENT_TYPE = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
 
-function toStringArray(value: unknown): string[] {
-  if (Array.isArray(value)) return value.map(v => String(v)).filter(Boolean)
+// Spike: Helper functions for parsing form values (which can be string or string[] depending on how many checkboxes
+// were selected)
+// For actual ticket, use Zod schema parsing instead, with appropriate validation and error handling.
+function parseFormStringArray(value: unknown): string[] {
+  if (Array.isArray(value)) return value.map(arrayValue => String(arrayValue)).filter(Boolean)
   if (typeof value === 'string' && value.length > 0) return [value]
   return []
 }
 
-function toOptionalString(value: unknown): string | undefined {
+function parseFormOptionalString(value: unknown): string | undefined {
   if (typeof value !== 'string') return undefined
-  const s = value.trim()
-  return s.length ? s : undefined
+  const trimmed = value.trim()
+  return trimmed.length ? trimmed : undefined
 }
 
 export default class ProximityAlertController {
@@ -82,7 +90,9 @@ export default class ProximityAlertController {
 
     try {
       const { matchingResult } = loadProximityAlertFixtureById(id)
-      const selectedFromForm = toStringArray((req.body as unknown as { deviceWearerIds?: unknown })?.deviceWearerIds)
+
+      const body = req.body as ExportProximityAlertFormBody
+      const selectedWearerIdsFromForm = parseFormStringArray(body.deviceWearerIds)
 
       // Default to ALL wearers if none selected (spike-friendly)
       const allWearerIds =
@@ -92,9 +102,9 @@ export default class ProximityAlertController {
           }
         ).matchedDeviceWearers?.map(w => String(w.deviceWearerId)) ?? []
 
-      const selectedDeviceWearerIds = selectedFromForm.length > 0 ? selectedFromForm : allWearerIds
+      const selectedDeviceWearerIds = selectedWearerIdsFromForm.length > 0 ? selectedWearerIdsFromForm : allWearerIds
 
-      const image1State = toOptionalString((req.body as unknown as { image1State?: unknown })?.image1State)
+      const image1StateJson = parseFormOptionalString(body.image1State)
 
       // Render map images
       const images = await renderProximityAlertReportImages({
@@ -103,7 +113,7 @@ export default class ProximityAlertController {
         baseUrlForCookies: LOCAL_BASE_URL,
         cookieHeader: req.headers.cookie,
         selectedDeviceWearerIds,
-        image1StateJson: image1State,
+        image1StateJson,
       })
 
       // Build report data filtered to selected wearers

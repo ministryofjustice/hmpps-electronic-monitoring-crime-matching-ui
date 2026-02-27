@@ -30,51 +30,46 @@ export type BuildProximityAlertReportDocxArgs = {
 type AlignmentTypeValue = (typeof AlignmentType)[keyof typeof AlignmentType]
 type HeightRuleValue = (typeof HeightRule)[keyof typeof HeightRule]
 
-/**
- * Page geometry (A4 portrait) in twips (Word units)
- */
-const A4_WIDTH_TWIPS = 11906
-const A4_HEIGHT_TWIPS = 16838
-const MARGIN_TWIPS = 720 // 0.5"
-const USABLE_HEIGHT_TWIPS = A4_HEIGHT_TWIPS - MARGIN_TWIPS - MARGIN_TWIPS
+// Page geometry (A4 portrait) in Word units
+const A4_WIDTH_WORD_UNITS = 11906
+const A4_HEIGHT_WORD_UNITS = 16838
+const PAGE_MARGIN_WORD_UNITS = 720
+const USABLE_PAGE_HEIGHT_WORD_UNITS = A4_HEIGHT_WORD_UNITS - PAGE_MARGIN_WORD_UNITS - PAGE_MARGIN_WORD_UNITS
 
-/**
- * docx ImageRun sizing is effectively based on 96dpi
- * twips = (px / 96) * 1440  => px * 15
- */
-const pxToTwips = (px: number) => Math.round(px * 15)
+// docx ImageRun sizing is effectively based on 96dpi: px * 15.
+const pxToWordUnits = (px: number) => Math.round(px * 15)
 
 function fmtDateGb(iso: string): string {
-  const d = new Date(iso)
+  const date = new Date(iso)
   return new Intl.DateTimeFormat('en-GB', {
     day: '2-digit',
     month: '2-digit',
     year: 'numeric',
     timeZone: 'Europe/London',
-  }).format(d)
+  }).format(date)
 }
 
 function fmtDateTimeGb(iso: string): string {
-  const d = new Date(iso)
+  const dateObj = new Date(iso)
 
   const date = new Intl.DateTimeFormat('en-GB', {
     day: '2-digit',
     month: '2-digit',
     year: 'numeric',
     timeZone: 'Europe/London',
-  }).format(d)
+  }).format(dateObj)
 
   const time = new Intl.DateTimeFormat('en-GB', {
     hour: '2-digit',
     minute: '2-digit',
     hour12: false,
     timeZone: 'Europe/London',
-  }).format(d)
+  }).format(dateObj)
 
   return `${date} ${time}`
 }
 
-function cellPara(
+function cellParagraph(
   text: string,
   opts?: {
     bold?: boolean
@@ -100,6 +95,14 @@ function cellPara(
   })
 }
 
+function paragraph(text: string, opts?: { bold?: boolean; alignment?: AlignmentTypeValue; spacingAfter?: number }) {
+  return new Paragraph({
+    children: [new TextRun({ text, bold: opts?.bold })],
+    alignment: opts?.alignment,
+    spacing: { before: 0, after: opts?.spacingAfter ?? 120 },
+  })
+}
+
 function bulletPara(text: string, opts?: { spacingBefore?: number; spacingAfter?: number }): Paragraph {
   return new Paragraph({
     children: [new TextRun({ text })],
@@ -115,10 +118,7 @@ function spacer(lines = 1): Paragraph[] {
   return Array.from({ length: Math.max(0, lines) }, () => new Paragraph(''))
 }
 
-/**
- * Target borders: prominent black.
- * (Word renders border size in eighths of a point; 8 ≈ 1pt)
- */
+// Target borders: prominent black.
 function strongBlackBorders() {
   return {
     top: { style: BorderStyle.SINGLE, size: 8, color: '000000' },
@@ -138,10 +138,8 @@ function sectionHeaderShading() {
   return { type: ShadingType.CLEAR, color: 'auto', fill: 'E6E6E6' } as const
 }
 
-/**
- * Cell padding (margins) in twips
- */
-const CELL_PADDING = {
+// Cell padding (margins) in Word units
+const CELL_PADDING_WORD_UNITS = {
   top: 40,
   bottom: 40,
   left: 120,
@@ -150,20 +148,18 @@ const CELL_PADDING = {
 
 function cellArgsBase() {
   return {
-    margins: CELL_PADDING,
+    margins: CELL_PADDING_WORD_UNITS,
     verticalAlign: VerticalAlign.TOP,
   } as const
 }
 
-/**
- * Convenience: rows that shouldn't split across pages
- */
-function rowNoSplit(children: TableCell[], opts?: { heightTwips?: number; heightRule?: HeightRuleValue }) {
+// Rows that shouldn't split across pages.
+function rowNoSplit(children: TableCell[], opts?: { heightWordUnits?: number; heightRule?: HeightRuleValue }) {
   return new TableRow({
     cantSplit: true,
-    height: opts?.heightTwips
+    height: opts?.heightWordUnits
       ? {
-          value: opts.heightTwips,
+          value: opts.heightWordUnits,
           rule: opts.heightRule ?? HeightRule.ATLEAST,
         }
       : undefined,
@@ -173,37 +169,35 @@ function rowNoSplit(children: TableCell[], opts?: { heightTwips?: number; height
 
 function scaleToMaxWidth(jpg: Buffer, maxWidthPx: number): { widthPx: number; heightPx: number } {
   const size = imageSize(jpg)
-  const w = size.width
-  const h = size.height
-  if (!w || !h) throw new Error('Could not read image dimensions')
+  const originalWidthPx = size.width
+  const originalHeightPx = size.height
+  if (!originalWidthPx || !originalHeightPx) throw new Error('Could not read image dimensions')
 
-  const scale = maxWidthPx / w
+  const scale = maxWidthPx / originalWidthPx
   return {
-    widthPx: Math.round(w * scale),
-    heightPx: Math.round(h * scale),
+    widthPx: Math.round(originalWidthPx * scale),
+    heightPx: Math.round(originalHeightPx * scale),
   }
 }
 
-/**
- * -------- Top boxed table (Date + Title + Summary) --------
- */
+// Top boxed table: Date + Title + Summary.
 function topSummaryTable(report: ProximityAlertReportData): Table {
   const borders = strongBlackBorders()
-  const cv = report.crimeVersion
+  const { crimeVersion } = report
 
   const titlePara = new Paragraph({
     alignment: AlignmentType.CENTER,
     children: [
       new TextRun({ text: 'Acquisitive Crime Proximity Alert', bold: true }),
       new TextRun({ text: '\n', break: 1 }),
-      new TextRun({ text: `Crime Reference Number – ${cv.crimeReference}`, bold: true }),
+      new TextRun({ text: `Crime Reference Number – ${crimeVersion.crimeReference}`, bold: true }),
     ],
     spacing: { before: 120, after: 120 },
   })
 
-  const summaryP1 =
+  const summaryParagraph1 =
     'The report below documents the results of a proximity search for the above crime reference number utilising the MoJ Acquisitive Crime Mapping Tool.'
-  const summaryP2 =
+  const summaryParagraph2 =
     'This process is designed to identify persons who are tagged as part of the MoJ’s Acquisitive Crime Project being in proximity of an acquisitive crime during the window of opportunity. The MoJ EM Acquisitive Crime Hub have reviewed each match and based on accuracy of the data and the relevance to the enquiry, have qualified the following as proximity match(es).'
 
   return new Table({
@@ -216,10 +210,9 @@ function topSummaryTable(report: ProximityAlertReportData): Table {
           ...cellArgsBase(),
           borders,
           shading: sectionHeaderShading(),
-          children: [cellPara(`Date: ${fmtDateGb(report.generatedAtIso)}`, { bold: true })],
+          children: [cellParagraph(`Date: ${fmtDateGb(report.generatedAtIso)}`, { bold: true })],
         }),
       ]),
-
       rowNoSplit([
         new TableCell({
           ...cellArgsBase(),
@@ -227,30 +220,26 @@ function topSummaryTable(report: ProximityAlertReportData): Table {
           children: [titlePara],
         }),
       ]),
-
       rowNoSplit([
         new TableCell({
           ...cellArgsBase(),
           borders,
           shading: sectionHeaderShading(),
-          children: [cellPara('Summary', { bold: true })],
+          children: [cellParagraph('Summary', { bold: true })],
         }),
       ]),
-
       rowNoSplit([
         new TableCell({
           ...cellArgsBase(),
           borders,
-          children: [cellPara(summaryP1, { spacingAfter: 160 }), cellPara(summaryP2)],
+          children: [cellParagraph(summaryParagraph1, { spacingAfter: 160 }), cellParagraph(summaryParagraph2)],
         }),
       ]),
     ],
   })
 }
 
-/**
- * -------- Common header + key/value rows --------
- */
+// Common section header row spanning the whole table.
 function sectionHeaderRow(text: string, opts?: { columnSpan?: number; center?: boolean }): TableRow {
   const borders = strongBlackBorders()
   return rowNoSplit([
@@ -259,11 +248,12 @@ function sectionHeaderRow(text: string, opts?: { columnSpan?: number; center?: b
       borders,
       shading: sectionHeaderShading(),
       columnSpan: opts?.columnSpan ?? 2,
-      children: [cellPara(text, { bold: true, alignment: opts?.center ? AlignmentType.CENTER : undefined })],
+      children: [cellParagraph(text, { bold: true, alignment: opts?.center ? AlignmentType.CENTER : undefined })],
     }),
   ])
 }
 
+// Key/value row: used in person details tables and result/request summary tables, with various formatting options.
 function keyValueRow(
   key: string,
   value: string,
@@ -284,15 +274,15 @@ function keyValueRow(
   const valueLines = String(valueText).split('\n')
   const valueParas =
     valueLines.length === 1 && valueLines[0] === ''
-      ? [cellPara('', { alignment: opts?.valueAlign, bold: opts?.valueBold })]
-      : valueLines.map(line => cellPara(line, { alignment: opts?.valueAlign, bold: opts?.valueBold }))
+      ? [cellParagraph('', { alignment: opts?.valueAlign, bold: opts?.valueBold })]
+      : valueLines.map(line => cellParagraph(line, { alignment: opts?.valueAlign, bold: opts?.valueBold }))
 
   return rowNoSplit([
     new TableCell({
       ...cellArgsBase(),
       borders,
       width: { size: keyWidthPct, type: WidthType.PERCENTAGE },
-      children: [cellPara(key, { bold: opts?.keyBold ?? false })],
+      children: [cellParagraph(key, { bold: opts?.keyBold ?? false })],
     }),
     new TableCell({
       ...cellArgsBase(),
@@ -303,15 +293,13 @@ function keyValueRow(
   ])
 }
 
-/**
- * -------- Person-only table (NO result/request summary) --------
- */
+// Person-only table: no result/request summary, just the person key/value rows.
 function personOnlyTable(args: { personTitle: string; personRows: Array<[string, string]> }): Table {
   const borders = strongBlackBorders()
   const { personTitle, personRows } = args
 
-  const personKeyWidth = 33
-  const personValueWidth = 67
+  const personKeyWidthPct = 33
+  const personValueWidthPct = 67
 
   return new Table({
     width: { size: 100, type: WidthType.PERCENTAGE },
@@ -319,20 +307,18 @@ function personOnlyTable(args: { personTitle: string; personRows: Array<[string,
     borders,
     rows: [
       sectionHeaderRow(personTitle),
-      ...personRows.map(([k, v], i) =>
-        keyValueRow(k, v, {
-          keyWidthPct: personKeyWidth,
-          valueWidthPct: personValueWidth,
-          valueBold: i === 0, // full name bold
+      ...personRows.map(([key, value], rowIndex) =>
+        keyValueRow(key, value, {
+          keyWidthPct: personKeyWidthPct,
+          valueWidthPct: personValueWidthPct,
+          valueBold: rowIndex === 0,
         }),
       ),
     ],
   })
 }
 
-/**
- * -------- Result Summary (single instance) --------
- */
+// Result Summary (single instance).
 function resultSummaryTable(matchedCount: number): Table {
   const borders = strongBlackBorders()
 
@@ -352,22 +338,20 @@ function resultSummaryTable(matchedCount: number): Table {
   })
 }
 
-/**
- * -------- Request Summary (single instance) --------
- */
+// Request Summary (single instance).
 function requestSummaryTable(report: ProximityAlertReportData): Table {
   const borders = strongBlackBorders()
-  const cv = report.crimeVersion
+  const { crimeVersion } = report
 
   const rows: Array<[string, string]> = [
     ['Crime mapping Batch ID:', ''],
-    ['Crime Reference number:', cv.crimeReference],
-    ['Crime Type:', cv.crimeType],
-    ['Crime Date/Time from:', fmtDateTimeGb(cv.fromDateTime)],
-    ['Crime Date/Time to:', fmtDateTimeGb(cv.toDateTime)],
-    ['Latitude:', String(cv.latitude)],
-    ['Longitude:', String(cv.longitude)],
-    ['Crime Text:', cv.crimeText || ''],
+    ['Crime Reference number:', crimeVersion.crimeReference],
+    ['Crime Type:', crimeVersion.crimeType],
+    ['Crime Date/Time from:', fmtDateTimeGb(crimeVersion.fromDateTime)],
+    ['Crime Date/Time to:', fmtDateTimeGb(crimeVersion.toDateTime)],
+    ['Latitude:', String(crimeVersion.latitude)],
+    ['Longitude:', String(crimeVersion.longitude)],
+    ['Crime Text:', crimeVersion.crimeText || ''],
   ]
 
   return new Table({
@@ -376,30 +360,28 @@ function requestSummaryTable(report: ProximityAlertReportData): Table {
     borders,
     rows: [
       sectionHeaderRow('Request Summary'),
-      ...rows.map(([k, v]) =>
-        keyValueRow(k, v, { keyWidthPct: 50, valueWidthPct: 50, valueAlign: AlignmentType.CENTER }),
+      ...rows.map(([key, value]) =>
+        keyValueRow(key, value, { keyWidthPct: 50, valueWidthPct: 50, valueAlign: AlignmentType.CENTER }),
       ),
     ],
   })
 }
 
-/**
- * -------- Details of Allegation (nested table) --------
- */
+// Details of Allegation (nested table for map pages).
 function detailsOfAllegationTable(report: ProximityAlertReportData): Table {
   const borders = strongBlackBorders()
-  const cv = report.crimeVersion
+  const { crimeVersion } = report
 
-  const rows: Array<[string, string]> = [
-    ['Crime Type', cv.crimeType],
-    ['Crime Reference', cv.crimeReference],
+  const detailRows: Array<[string, string]> = [
+    ['Crime Type', crimeVersion.crimeType],
+    ['Crime Reference', crimeVersion.crimeReference],
     ['Crime Batch', ''],
-    ['From Date/Time', fmtDateTimeGb(cv.fromDateTime)],
-    ['To Date/Time', fmtDateTimeGb(cv.toDateTime)],
-    ['Crime Location\n(Lat/Long)', `${cv.latitude}\n${cv.longitude}`],
+    ['From Date/Time', fmtDateTimeGb(crimeVersion.fromDateTime)],
+    ['To Date/Time', fmtDateTimeGb(crimeVersion.toDateTime)],
+    ['Crime Location\n(Lat/Long)', `${crimeVersion.latitude}\n${crimeVersion.longitude}`],
   ]
 
-  const additionalInfoRowSpan = rows.length
+  const additionalInfoRowSpan = detailRows.length
 
   return new Table({
     width: { size: 100, type: WidthType.PERCENTAGE },
@@ -413,7 +395,7 @@ function detailsOfAllegationTable(report: ProximityAlertReportData): Table {
           shading: sectionHeaderShading(),
           columnSpan: 3,
           children: [
-            cellPara('Details of Allegation', {
+            cellParagraph('Details of Allegation', {
               bold: true,
               alignment: AlignmentType.CENTER,
             }),
@@ -426,38 +408,30 @@ function detailsOfAllegationTable(report: ProximityAlertReportData): Table {
           ...cellArgsBase(),
           borders,
           width: { size: 22, type: WidthType.PERCENTAGE },
-          children: [cellPara(rows[0][0])],
+          children: [cellParagraph(detailRows[0][0])],
         }),
         new TableCell({
           ...cellArgsBase(),
           borders,
           width: { size: 33, type: WidthType.PERCENTAGE },
-          children: [cellPara(rows[0][1], { alignment: AlignmentType.CENTER })],
+          children: [cellParagraph(detailRows[0][1], { alignment: AlignmentType.CENTER })],
         }),
         new TableCell({
           ...cellArgsBase(),
-          // Force a bottom border on the rowSpan cell so Word renders it consistently
-          borders: {
-            ...borders,
-            bottom: borders.bottom,
-          },
+          borders: { ...borders, bottom: borders.bottom },
           width: { size: 45, type: WidthType.PERCENTAGE },
           rowSpan: additionalInfoRowSpan,
-          children: [
-            cellPara('Additional Information', {
-              alignment: AlignmentType.CENTER,
-            }),
-          ],
+          children: [cellParagraph('Additional Information', { alignment: AlignmentType.CENTER })],
         }),
       ]),
 
-      ...rows.slice(1).map(([label, value]) =>
+      ...detailRows.slice(1).map(([label, value]) =>
         rowNoSplit([
           new TableCell({
             ...cellArgsBase(),
             borders,
             width: { size: 22, type: WidthType.PERCENTAGE },
-            children: [cellPara(label)],
+            children: [cellParagraph(label)],
           }),
           new TableCell({
             ...cellArgsBase(),
@@ -465,7 +439,7 @@ function detailsOfAllegationTable(report: ProximityAlertReportData): Table {
             width: { size: 33, type: WidthType.PERCENTAGE },
             children: String(value)
               .split('\n')
-              .map(line => cellPara(line, { alignment: AlignmentType.CENTER })),
+              .map(line => cellParagraph(line, { alignment: AlignmentType.CENTER })),
           }),
         ]),
       ),
@@ -473,11 +447,7 @@ function detailsOfAllegationTable(report: ProximityAlertReportData): Table {
   })
 }
 
-/**
- * -------- Map page “frame” table (outer big bordered table) --------
- *
- * Supports optional title row (second overview image in the target doc has no heading).
- */
+// Map page “frame” table: optional title row + image + allegation table + filler.
 function mapImagePageTable(args: {
   title?: string
   showTitleRow?: boolean
@@ -485,12 +455,12 @@ function mapImagePageTable(args: {
   imageWidthPx: number
   imageHeightPx: number
   report: ProximityAlertReportData
-  fillerHeightTwips: number
+  fillerHeightWordUnits: number
 }): Table {
-  const { title, showTitleRow = true, jpg, imageWidthPx, imageHeightPx, report, fillerHeightTwips } = args
+  const { title, showTitleRow = true, jpg, imageWidthPx, imageHeightPx, report, fillerHeightWordUnits } = args
 
   const borders = strongBlackBorders()
-  const IMAGE_CELL_PADDING = { top: 0, bottom: 0, left: 0, right: 0 } as const
+  const imageCellPadding = { top: 0, bottom: 0, left: 0, right: 0 } as const
 
   const imagePara = new Paragraph({
     alignment: AlignmentType.CENTER,
@@ -504,8 +474,7 @@ function mapImagePageTable(args: {
     ],
   })
 
-  const GAP_BEFORE_DETAILS_TWIPS = 360
-
+  const gapBeforeDetailsWordUnits = 360
   const rows: TableRow[] = []
 
   if (showTitleRow) {
@@ -515,39 +484,36 @@ function mapImagePageTable(args: {
           ...cellArgsBase(),
           borders,
           shading: sectionHeaderShading(),
-          children: [cellPara(title ?? '', { bold: true, alignment: AlignmentType.CENTER })],
+          children: [cellParagraph(title ?? '', { bold: true, alignment: AlignmentType.CENTER })],
         }),
       ]),
     )
   }
 
-  // Image row (no line below it)
   rows.push(
     rowNoSplit([
       new TableCell({
         verticalAlign: VerticalAlign.TOP,
-        margins: IMAGE_CELL_PADDING,
+        margins: imageCellPadding,
         borders: { ...borders, bottom: noBorder() },
         children: [imagePara],
       }),
     ]),
   )
 
-  // Details row (no line above or below)
   rows.push(
     rowNoSplit([
       new TableCell({
         ...cellArgsBase(),
         borders: { ...borders, top: noBorder(), bottom: noBorder() },
         children: [
-          new Paragraph({ children: [], spacing: { before: GAP_BEFORE_DETAILS_TWIPS, after: 0 } }),
+          new Paragraph({ children: [], spacing: { before: gapBeforeDetailsWordUnits, after: 0 } }),
           detailsOfAllegationTable(report),
         ],
       }),
     ]),
   )
 
-  // Filler (no line above)
   rows.push(
     rowNoSplit(
       [
@@ -557,7 +523,7 @@ function mapImagePageTable(args: {
           children: [new Paragraph({ children: [], spacing: { before: 0, after: 0 } })],
         }),
       ],
-      { heightTwips: fillerHeightTwips, heightRule: HeightRule.EXACT },
+      { heightWordUnits: fillerHeightWordUnits, heightRule: HeightRule.EXACT },
     ),
   )
 
@@ -572,46 +538,50 @@ function mapImagePageTable(args: {
 function positionsTable(wearer: ProximityAlertReportDeviceWearer): Table {
   const borders = strongBlackBorders()
 
-  const header = rowNoSplit([
+  const headerRow = rowNoSplit([
     new TableCell({
       ...cellArgsBase(),
       borders,
       shading: sectionHeaderShading(),
-      children: [cellPara('Seq', { bold: true })],
+      children: [cellParagraph('Seq', { bold: true })],
     }),
     new TableCell({
       ...cellArgsBase(),
       borders,
       shading: sectionHeaderShading(),
-      children: [cellPara('Captured date/time', { bold: true })],
+      children: [cellParagraph('Captured date/time', { bold: true })],
     }),
     new TableCell({
       ...cellArgsBase(),
       borders,
       shading: sectionHeaderShading(),
-      children: [cellPara('Latitude', { bold: true })],
+      children: [cellParagraph('Latitude', { bold: true })],
     }),
     new TableCell({
       ...cellArgsBase(),
       borders,
       shading: sectionHeaderShading(),
-      children: [cellPara('Longitude', { bold: true })],
+      children: [cellParagraph('Longitude', { bold: true })],
     }),
     new TableCell({
       ...cellArgsBase(),
       borders,
       shading: sectionHeaderShading(),
-      children: [cellPara('Confidence (m)', { bold: true })],
+      children: [cellParagraph('Confidence (m)', { bold: true })],
     }),
   ])
 
-  const rows = wearer.positions.map(p =>
+  const dataRows = wearer.positions.map(position =>
     rowNoSplit([
-      new TableCell({ ...cellArgsBase(), borders, children: [cellPara(p.sequenceLabel)] }),
-      new TableCell({ ...cellArgsBase(), borders, children: [cellPara(fmtDateTimeGb(p.capturedDateTime))] }),
-      new TableCell({ ...cellArgsBase(), borders, children: [cellPara(String(p.latitude))] }),
-      new TableCell({ ...cellArgsBase(), borders, children: [cellPara(String(p.longitude))] }),
-      new TableCell({ ...cellArgsBase(), borders, children: [cellPara(String(p.confidenceCircle))] }),
+      new TableCell({ ...cellArgsBase(), borders, children: [cellParagraph(position.sequenceLabel)] }),
+      new TableCell({
+        ...cellArgsBase(),
+        borders,
+        children: [cellParagraph(fmtDateTimeGb(position.capturedDateTime))],
+      }),
+      new TableCell({ ...cellArgsBase(), borders, children: [cellParagraph(String(position.latitude))] }),
+      new TableCell({ ...cellArgsBase(), borders, children: [cellParagraph(String(position.longitude))] }),
+      new TableCell({ ...cellArgsBase(), borders, children: [cellParagraph(String(position.confidenceCircle))] }),
     ]),
   )
 
@@ -619,20 +589,20 @@ function positionsTable(wearer: ProximityAlertReportDeviceWearer): Table {
     width: { size: 100, type: WidthType.PERCENTAGE },
     layout: TableLayoutType.FIXED,
     borders,
-    rows: [header, ...rows],
+    rows: [headerRow, ...dataRows],
   })
 }
 
 function disclaimerTable(): Table {
   const borders = strongBlackBorders()
 
-  const p1 =
+  const disclaimerParagraph1 =
     'The data disclosed in this report does not confirm that the tag wearer perpetrated or witnessed a crime. In addition, it does not rule out other EM tag wearers being in the vicinity of the crime during the window of opportunity. The results of this process are also limited to persons tagged as part of the MoJ’s Acquisitive Crime Project and only where there has been an ability to monitor the equipment during the window of opportunity of the crime.'
-  const p2 = 'Examples of an inability to monitor a person include:'
-  const b1 = 'Where the person has failed to charge the EM tag,'
-  const b2 = 'Where the tag has been removed from the person but is still able to transmit its location,'
-  const b3 = 'Where the equipment has failed due to a technical fault.'
-  const p3 =
+  const disclaimerParagraph2 = 'Examples of an inability to monitor a person include:'
+  const bullet1 = 'Where the person has failed to charge the EM tag,'
+  const bullet2 = 'Where the tag has been removed from the person but is still able to transmit its location,'
+  const bullet3 = 'Where the equipment has failed due to a technical fault.'
+  const disclaimerParagraph3 =
     'The technology used (radio frequency transmissions; GPS location monitoring and Location Based Services) has been proven to be reliable over many years. The monitoring equipment is extremely robust and reliable and meets the stringent specifications laid down by the Ministry of Justice. The monitoring equipment is also rigorously tested and audited by EMS, an independent body, and the Home Office Scientific Branch.'
 
   return new Table({
@@ -645,7 +615,7 @@ function disclaimerTable(): Table {
           ...cellArgsBase(),
           borders,
           shading: sectionHeaderShading(),
-          children: [cellPara('Disclaimer', { bold: true })],
+          children: [cellParagraph('Disclaimer', { bold: true })],
         }),
       ]),
       rowNoSplit([
@@ -653,12 +623,12 @@ function disclaimerTable(): Table {
           ...cellArgsBase(),
           borders,
           children: [
-            new Paragraph({ children: [new TextRun(p1)], spacing: { before: 0, after: 200 } }),
-            new Paragraph({ children: [new TextRun(p2)], spacing: { before: 0, after: 120 } }),
-            bulletPara(b1, { spacingAfter: 60 }),
-            bulletPara(b2, { spacingAfter: 60 }),
-            bulletPara(b3, { spacingAfter: 200 }),
-            new Paragraph({ children: [new TextRun(p3)], spacing: { before: 0, after: 0 } }),
+            new Paragraph({ children: [new TextRun(disclaimerParagraph1)], spacing: { before: 0, after: 200 } }),
+            new Paragraph({ children: [new TextRun(disclaimerParagraph2)], spacing: { before: 0, after: 120 } }),
+            bulletPara(bullet1, { spacingAfter: 60 }),
+            bulletPara(bullet2, { spacingAfter: 60 }),
+            bulletPara(bullet3, { spacingAfter: 200 }),
+            new Paragraph({ children: [new TextRun(disclaimerParagraph3)], spacing: { before: 0, after: 0 } }),
           ],
         }),
       ]),
@@ -666,53 +636,288 @@ function disclaimerTable(): Table {
   })
 }
 
-function witnessHeadingParas(): Paragraph[] {
-  return [
-    new Paragraph({ children: [new TextRun({ text: 'WITNESS STATEMENT', bold: true })] }),
-    new Paragraph({
+function witnessStatementTable(args: {
+  report: ProximityAlertReportData
+  wearer: ProximityAlertReportDeviceWearer
+}): Table {
+  const { report, wearer } = args
+  const borders = strongBlackBorders()
+  const { crimeVersion } = report
+
+  const statementOf = ''
+  const occupation = ''
+  const preferredEmail = ''
+  const address = ''
+
+  const firstPosition = wearer.positions[0]
+  const lastPosition = wearer.positions[wearer.positions.length - 1]
+  const firstDateTime = firstPosition ? fmtDateTimeGb(firstPosition.capturedDateTime) : ''
+  const lastDateTime = lastPosition ? fmtDateTimeGb(lastPosition.capturedDateTime) : ''
+
+  const witnessHeaderParas: Paragraph[] = [
+    paragraph('WITNESS STATEMENT', { bold: true, alignment: AlignmentType.CENTER, spacingAfter: 60 }),
+    paragraph('(CJ Act 1967, s.9; MC Act 1980, ss.5A(3) (a) and 5B; Criminal Procedure Rules 2005, Rule 27.1)', {
+      alignment: AlignmentType.CENTER,
+      spacingAfter: 0,
+    }),
+  ]
+
+  const statementRow = rowNoSplit([
+    new TableCell({
+      ...cellArgsBase(),
+      borders,
+      width: { size: 50, type: WidthType.PERCENTAGE },
       children: [
-        new TextRun({
-          text: '(CJ Act 1967, s.9; MC Act 1980, ss.5A(3) (a) and 5B; Criminal Procedure Rules 2005, Rule 27.1)',
+        new Paragraph({
+          children: [new TextRun({ text: 'Statement of: ', bold: true }), new TextRun({ text: statementOf })],
+          spacing: { before: 0, after: 0 },
         }),
       ],
     }),
-  ]
+    new TableCell({
+      ...cellArgsBase(),
+      borders,
+      width: { size: 50, type: WidthType.PERCENTAGE },
+      children: [
+        new Paragraph({
+          children: [new TextRun({ text: 'Occupation: ', bold: true }), new TextRun({ text: occupation })],
+          spacing: { before: 0, after: 0 },
+        }),
+      ],
+    }),
+  ])
+
+  const ageRow = rowNoSplit([
+    new TableCell({
+      ...cellArgsBase(),
+      borders,
+      columnSpan: 2,
+      children: [
+        new Paragraph({
+          children: [new TextRun({ text: 'Age: ', bold: true }), new TextRun({ text: 'Over 18' })],
+          spacing: { before: 0, after: 0 },
+        }),
+      ],
+    }),
+  ])
+
+  const declarationText =
+    'This statement consisting of ______ pages, signed by me, is true to the best of my knowledge and belief. I make it known that, if it is given in evidence, I shall be liable to prosecution if I have wilfully stated in it, anything that I know to be false or do not believe to be true.'
+
+  const declarationRow = rowNoSplit([
+    new TableCell({
+      ...cellArgsBase(),
+      borders,
+      columnSpan: 2,
+      children: [
+        new Paragraph({ children: [new TextRun(declarationText)], spacing: { before: 120, after: 120 } }),
+        new Paragraph({
+          children: [new TextRun({ text: 'Signature:', bold: true })],
+          spacing: { before: 0, after: 0 },
+        }),
+        ...spacer(3),
+        new Paragraph({
+          children: [new TextRun({ text: statementOf || ' ', bold: true })],
+          spacing: { before: 0, after: 0 },
+        }),
+        new Paragraph({
+          children: [new TextRun({ text: `Date: ${fmtDateGb(report.generatedAtIso)}`, bold: true })],
+          spacing: { before: 0, after: 0 },
+        }),
+      ],
+    }),
+  ])
+
+  const narrativeRow = rowNoSplit([
+    new TableCell({
+      ...cellArgsBase(),
+      borders,
+      columnSpan: 2,
+      children: [
+        new Paragraph({
+          children: [
+            new TextRun(
+              'I am currently employed by the Ministry of Justice (MoJ) as MoJ EM Hub Manager within the Electronic Monitoring Acquisitive Crime Hub (EMAC Hub).',
+            ),
+          ],
+          spacing: { before: 200, after: 200 },
+        }),
+        new Paragraph({
+          children: [
+            new TextRun(
+              `On ${fmtDateGb(report.generatedAtIso)} I reviewed a qualified match in relation to crime data supplied by `,
+            ),
+            new TextRun({ text: '', bold: true }),
+            new TextRun(
+              '. As a result of this process, I can confirm the attached match in relation to an allegation of ',
+            ),
+            new TextRun({ text: crimeVersion.crimeType, bold: true }),
+            new TextRun(' – Crime Reference No. '),
+            new TextRun({ text: crimeVersion.crimeReference, bold: true }),
+            new TextRun('.'),
+          ],
+          spacing: { before: 0, after: 200 },
+        }),
+      ],
+    }),
+  ])
+
+  const witnessMiniTable = new Table({
+    width: { size: 100, type: WidthType.PERCENTAGE },
+    layout: TableLayoutType.FIXED,
+    borders,
+    rows: [
+      rowNoSplit([
+        new TableCell({
+          ...cellArgsBase(),
+          borders,
+          shading: sectionHeaderShading(),
+          width: { size: 33, type: WidthType.PERCENTAGE },
+          children: [cellParagraph('Person name', { bold: true, alignment: AlignmentType.CENTER })],
+        }),
+        new TableCell({
+          ...cellArgsBase(),
+          borders,
+          shading: sectionHeaderShading(),
+          width: { size: 34, type: WidthType.PERCENTAGE },
+          children: [
+            cellParagraph('First location point in vicinity\ndate/time', {
+              bold: true,
+              alignment: AlignmentType.CENTER,
+            }),
+          ],
+        }),
+        new TableCell({
+          ...cellArgsBase(),
+          borders,
+          shading: sectionHeaderShading(),
+          width: { size: 33, type: WidthType.PERCENTAGE },
+          children: [
+            cellParagraph('Last location point in vicinity\ndate/time', {
+              bold: true,
+              alignment: AlignmentType.CENTER,
+            }),
+          ],
+        }),
+      ]),
+      rowNoSplit([
+        new TableCell({
+          ...cellArgsBase(),
+          borders,
+          children: [cellParagraph(wearer.name, { alignment: AlignmentType.CENTER, bold: true })],
+        }),
+        new TableCell({
+          ...cellArgsBase(),
+          borders,
+          children: [cellParagraph(firstDateTime, { alignment: AlignmentType.CENTER, bold: true })],
+        }),
+        new TableCell({
+          ...cellArgsBase(),
+          borders,
+          children: [cellParagraph(lastDateTime, { alignment: AlignmentType.CENTER, bold: true })],
+        }),
+      ]),
+    ],
+  })
+
+  const exhibitsRow = rowNoSplit([
+    new TableCell({
+      ...cellArgsBase(),
+      borders,
+      columnSpan: 2,
+      children: [
+        new Paragraph({
+          children: [
+            new TextRun(
+              'I further produce the attached screen shot which documents the subject’s movements within proximity of this allegation of crime:',
+            ),
+          ],
+          spacing: { before: 200, after: 200 },
+        }),
+        witnessMiniTable,
+        new Paragraph({ children: [], spacing: { before: 200, after: 0 } }),
+        bulletPara(`Exhibit EMAC/01 – Image of the tracks for ${wearer.name} on the data.`, { spacingAfter: 60 }),
+        bulletPara('Exhibit EMAC/02 – Key for interpreting symbols on crime map', { spacingAfter: 60 }),
+        bulletPara(`Exhibit EMAC/03 – Table of ${wearer.name}’s locations within the vicinity.`, { spacingAfter: 200 }),
+        new Paragraph({
+          children: [new TextRun({ text: 'SIGNATURE:', bold: true })],
+          spacing: { before: 0, after: 0 },
+        }),
+        ...spacer(3),
+        new Paragraph({
+          children: [new TextRun({ text: statementOf || ' ', bold: true })],
+          spacing: { before: 0, after: 0 },
+        }),
+        new Paragraph({
+          children: [new TextRun({ text: `Date: ${fmtDateGb(report.generatedAtIso)}`, bold: true })],
+          spacing: { before: 0, after: 0 },
+        }),
+        new Paragraph({ children: [], spacing: { before: 200, after: 0 } }),
+        new Paragraph({
+          children: [new TextRun({ text: `Email: ${preferredEmail}`, bold: true })],
+          spacing: { before: 0, after: 60 },
+        }),
+        new Paragraph({
+          children: [new TextRun({ text: `Address: ${address}`, bold: true })],
+          spacing: { before: 0, after: 0 },
+        }),
+      ],
+    }),
+  ])
+
+  return new Table({
+    width: { size: 100, type: WidthType.PERCENTAGE },
+    layout: TableLayoutType.FIXED,
+    borders,
+    rows: [
+      rowNoSplit([
+        new TableCell({
+          ...cellArgsBase(),
+          borders,
+          columnSpan: 2,
+          children: witnessHeaderParas,
+        }),
+      ]),
+      statementRow,
+      ageRow,
+      declarationRow,
+      narrativeRow,
+      exhibitsRow,
+    ],
+  })
 }
 
 export async function buildProximityAlertReportDocx(args: BuildProximityAlertReportDocxArgs): Promise<Buffer> {
   const { report, images } = args
 
-  /**
-   * Target: map image edges aligned to the frame edges.
-   * Usable width: (A4_WIDTH_TWIPS - 2*MARGIN_TWIPS) = 10466 twips => ~698px at 96dpi.
-   */
-  const MAP_W_MAX = 690
+  // Target: map image edges aligned to the frame edges. Usable width ≈ 698px at 96dpi.
+  const MAX_MAP_IMAGE_WIDTH_PX = 690
 
-  // We use two filler heights:
-  // - first overview image includes a title row
-  // - second overview image has NO title row (per target doc)
-  const headerRowTwips = 520
+  // Use two filler heights because overview image 1 has a title row, overview image 2 does not.
+  const mapTitleRowHeightWordUnits = 520
+  const detailsBlockHeightWordUnits = 3400
+  const safetyBufferHeightWordUnits = 500
 
-  const detailsBlockTwips = 3400
-  const safetyBufferTwips = 500
+  const fillerHeightForMapPage = (imageHeightPx: number, hasTitleRow: boolean) => {
+    const imageHeightWordUnits = pxToWordUnits(imageHeightPx)
+    const titleRowWordUnits = hasTitleRow ? mapTitleRowHeightWordUnits : 0
 
-  const fillerHeightsForImage = (imageHeightPx: number, hasTitleRow: boolean) => {
-    const imageHeightTwips = pxToTwips(imageHeightPx)
-    const titleTwips = hasTitleRow ? headerRowTwips : 0
-
-    return Math.max(0, USABLE_HEIGHT_TWIPS - (titleTwips + imageHeightTwips + detailsBlockTwips + safetyBufferTwips))
+    return Math.max(
+      0,
+      USABLE_PAGE_HEIGHT_WORD_UNITS -
+        (titleRowWordUnits + imageHeightWordUnits + detailsBlockHeightWordUnits + safetyBufferHeightWordUnits),
+    )
   }
 
   const children: Array<Paragraph | Table> = []
 
-  // --- Proximity Report (top summary + people grouped) ---
   children.push(topSummaryTable(report))
   children.push(...spacer(1))
 
-  report.matchedDeviceWearers.forEach((wearer, idx) => {
+  report.matchedDeviceWearers.forEach((wearer, index) => {
     children.push(
       personOnlyTable({
-        personTitle: `Person ${idx + 1}`,
+        personTitle: `Person ${index + 1}`,
         personRows: [
           ['Full name', wearer.name],
           ['DOB:', ''],
@@ -726,166 +931,81 @@ export async function buildProximityAlertReportDocx(args: BuildProximityAlertRep
     children.push(...spacer(1))
   })
 
-  // Single Result Summary + Request Summary (NOT repeated per person)
   children.push(resultSummaryTable(report.matchedDeviceWearers.length))
   children.push(requestSummaryTable(report))
 
-  // --- Overview images (2 total, once per report) ---
-  const overview1Size = scaleToMaxWidth(images.image1Jpg, MAP_W_MAX)
+  const overviewImage1Size = scaleToMaxWidth(images.image1Jpg, MAX_MAP_IMAGE_WIDTH_PX)
   children.push(new Paragraph({ children: [new PageBreak()] }))
   children.push(
     mapImagePageTable({
       title: 'Images of the crime map with all person’s proximity tracks',
       showTitleRow: true,
       jpg: images.image1Jpg,
-      imageWidthPx: overview1Size.widthPx,
-      imageHeightPx: overview1Size.heightPx,
+      imageWidthPx: overviewImage1Size.widthPx,
+      imageHeightPx: overviewImage1Size.heightPx,
       report,
-      fillerHeightTwips: fillerHeightsForImage(overview1Size.heightPx, true),
+      fillerHeightWordUnits: fillerHeightForMapPage(overviewImage1Size.heightPx, true),
     }),
   )
 
-  const overview2Size = scaleToMaxWidth(images.image2Jpg, MAP_W_MAX)
+  const overviewImage2Size = scaleToMaxWidth(images.image2Jpg, MAX_MAP_IMAGE_WIDTH_PX)
   children.push(new Paragraph({ children: [new PageBreak()] }))
   children.push(
     mapImagePageTable({
-      // Target doc: second overview image page has NO heading row
       showTitleRow: false,
       jpg: images.image2Jpg,
-      imageWidthPx: overview2Size.widthPx,
-      imageHeightPx: overview2Size.heightPx,
+      imageWidthPx: overviewImage2Size.widthPx,
+      imageHeightPx: overviewImage2Size.heightPx,
       report,
-      fillerHeightTwips: fillerHeightsForImage(overview2Size.heightPx, false),
+      fillerHeightWordUnits: fillerHeightForMapPage(overviewImage2Size.heightPx, false),
     }),
   )
 
-  // --- Disclaimer (mirror target doc: grey header row + bordered box + bullets) ---
   children.push(...spacer(1))
   children.push(disclaimerTable())
 
-  // --- Witness Statement section (per wearer, 2 images each) ---
   report.matchedDeviceWearers.forEach(wearer => {
     children.push(new Paragraph({ children: [new PageBreak()] }))
+    children.push(witnessStatementTable({ report, wearer }))
 
-    children.push(...witnessHeadingParas())
-    children.push(...spacer(1))
-
-    children.push(
-      new Paragraph({ children: [new TextRun({ text: 'Statement of ', bold: true }), new TextRun({ text: '' })] }),
-    )
-    children.push(
-      new Paragraph({ children: [new TextRun({ text: 'Occupation ', bold: true }), new TextRun({ text: '' })] }),
-    )
-    children.push(
-      new Paragraph({ children: [new TextRun({ text: 'Age: ', bold: true }), new TextRun({ text: 'Over 18' })] }),
-    )
-    children.push(...spacer(1))
-
-    children.push(
-      new Paragraph({
-        children: [
-          new TextRun(
-            'This statement consisting of ______ pages, signed by me, is true to the best of my knowledge and belief.',
-          ),
-        ],
-      }),
-    )
-
-    children.push(...spacer(1))
-    children.push(new Paragraph({ children: [new TextRun({ text: 'Signature:', bold: true })] }))
-    children.push(...spacer(3))
-    children.push(
-      new Paragraph({ children: [new TextRun({ text: `Date: ${fmtDateGb(report.generatedAtIso)}`, bold: true })] }),
-    )
-
-    children.push(...spacer(1))
-    children.push(
-      new Paragraph({
-        children: [
-          new TextRun(
-            'I am currently employed by the Ministry of Justice (MoJ) as MoJ EM Hub Manager within the Electronic Monitoring Acquisitive Crime Hub (EMAC Hub).',
-          ),
-        ],
-      }),
-    )
-
-    children.push(...spacer(1))
-    children.push(
-      new Paragraph({
-        children: [
-          new TextRun(
-            `On ${fmtDateGb(report.generatedAtIso)} I reviewed a qualified match in relation to crime data supplied by `,
-          ),
-          new TextRun({ text: '', bold: true }),
-          new TextRun(
-            '. As a result of this process, I can confirm the attached match in relation to an allegation of ',
-          ),
-          new TextRun({ text: report.crimeVersion.crimeType, bold: true }),
-          new TextRun(' – Crime Reference No. '),
-          new TextRun({ text: report.crimeVersion.crimeReference, bold: true }),
-          new TextRun('.'),
-        ],
-      }),
-    )
-
-    children.push(...spacer(1))
-    children.push(
-      new Paragraph({
-        children: [
-          new TextRun(
-            'I further produce the attached screen shot which documents the subject’s movements within proximity of this allegation of crime:',
-          ),
-        ],
-      }),
-    )
-
-    children.push(...spacer(1))
-    children.push(
-      new Paragraph({
-        children: [
-          new TextRun({ text: `Exhibit EMAC/01 – Image of the tracks for ${wearer.name} on the data.`, bold: true }),
-        ],
-      }),
-    )
-
-    // Exhibit EMAC/01 - Image 1 (wearer-specific)
-    const wearer1Jpg = images.wearerImage1JpgById[wearer.deviceWearerId]
-    const wearer1Size = scaleToMaxWidth(wearer1Jpg, MAP_W_MAX)
+    const wearerImage1Jpg = images.wearerImage1JpgById[wearer.deviceWearerId]
+    const wearerImage1Size = scaleToMaxWidth(wearerImage1Jpg, MAX_MAP_IMAGE_WIDTH_PX)
     children.push(new Paragraph({ children: [new PageBreak()] }))
     children.push(
       mapImagePageTable({
         title: `Exhibit EMAC/01 - Image of maps and tracks for ${wearer.name}`,
         showTitleRow: true,
-        jpg: wearer1Jpg,
-        imageWidthPx: wearer1Size.widthPx,
-        imageHeightPx: wearer1Size.heightPx,
+        jpg: wearerImage1Jpg,
+        imageWidthPx: wearerImage1Size.widthPx,
+        imageHeightPx: wearerImage1Size.heightPx,
         report,
-        fillerHeightTwips: fillerHeightsForImage(wearer1Size.heightPx, true),
+        fillerHeightWordUnits: fillerHeightForMapPage(wearerImage1Size.heightPx, true),
       }),
     )
 
-    // Exhibit EMAC/01 - Image 2 (wearer-specific)
-    const wearer2Jpg = images.wearerImage2JpgById[wearer.deviceWearerId]
-    const wearer2Size = scaleToMaxWidth(wearer2Jpg, MAP_W_MAX)
+    const wearerImage2Jpg = images.wearerImage2JpgById[wearer.deviceWearerId]
+    const wearerImage2Size = scaleToMaxWidth(wearerImage2Jpg, MAX_MAP_IMAGE_WIDTH_PX)
     children.push(new Paragraph({ children: [new PageBreak()] }))
     children.push(
       mapImagePageTable({
         title: `Exhibit EMAC/01 - Image of maps and tracks for ${wearer.name}`,
         showTitleRow: true,
-        jpg: wearer2Jpg,
-        imageWidthPx: wearer2Size.widthPx,
-        imageHeightPx: wearer2Size.heightPx,
+        jpg: wearerImage2Jpg,
+        imageWidthPx: wearerImage2Size.widthPx,
+        imageHeightPx: wearerImage2Size.heightPx,
         report,
-        fillerHeightTwips: fillerHeightsForImage(wearer2Size.heightPx, true),
+        fillerHeightWordUnits: fillerHeightForMapPage(wearerImage2Size.heightPx, true),
       }),
     )
 
-    // Exhibit EMAC/03 table
     children.push(new Paragraph({ children: [new PageBreak()] }))
     children.push(
       new Paragraph({
         children: [
-          new TextRun({ text: `Exhibit EMAC/03 – Table of ${wearer.name} locations within the vicinity`, bold: true }),
+          new TextRun({
+            text: `Exhibit EMAC/03 – Table of ${wearer.name} locations within the vicinity`,
+            bold: true,
+          }),
         ],
       }),
     )
@@ -906,7 +1026,7 @@ export async function buildProximityAlertReportDocx(args: BuildProximityAlertRep
     styles: {
       default: {
         document: {
-          run: { font: 'Arial', size: 22 }, // 11pt
+          run: { font: 'Arial', size: 22 },
           paragraph: { spacing: { after: 120 } },
         },
       },
@@ -915,8 +1035,13 @@ export async function buildProximityAlertReportDocx(args: BuildProximityAlertRep
       {
         properties: {
           page: {
-            size: { width: A4_WIDTH_TWIPS, height: A4_HEIGHT_TWIPS },
-            margin: { top: MARGIN_TWIPS, bottom: MARGIN_TWIPS, left: MARGIN_TWIPS, right: MARGIN_TWIPS },
+            size: { width: A4_WIDTH_WORD_UNITS, height: A4_HEIGHT_WORD_UNITS },
+            margin: {
+              top: PAGE_MARGIN_WORD_UNITS,
+              bottom: PAGE_MARGIN_WORD_UNITS,
+              left: PAGE_MARGIN_WORD_UNITS,
+              right: PAGE_MARGIN_WORD_UNITS,
+            },
           },
         },
         children,

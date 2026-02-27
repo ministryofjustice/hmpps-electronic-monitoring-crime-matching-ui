@@ -1,5 +1,3 @@
-// server/services/proximityAlert/proximityAlertReportData.ts
-
 import type { MatchingResultFixture } from '../../presenters/proximityAlert/mapPositions'
 
 export type ProximityAlertReportPositionRow = {
@@ -36,47 +34,39 @@ export type ProximityAlertReportData = {
 }
 
 export type ToProximityAlertReportDataOptions = {
-  /**
-   * If supplied, only include this device wearer in the report.
-   * (Legacy: kept for existing spike usage.)
-   */
   selectedDeviceWearerId?: string
-
-  /**
-   * If supplied, only include these device wearers in the report.
-   * This supports checkbox multi-select.
-   */
   selectedDeviceWearerIds?: string[]
+}
+
+function normaliseSelectedWearerIds(options: ToProximityAlertReportDataOptions): Set<string> | null {
+  if (Array.isArray(options.selectedDeviceWearerIds) && options.selectedDeviceWearerIds.length > 0) {
+    return new Set(options.selectedDeviceWearerIds.map(String))
+  }
+
+  if (options.selectedDeviceWearerId) {
+    return new Set([String(options.selectedDeviceWearerId)])
+  }
+
+  return null
 }
 
 export function toProximityAlertReportData(
   fixture: MatchingResultFixture,
   options: ToProximityAlertReportDataOptions = {},
 ): ProximityAlertReportData {
-  const { crimeVersion } = fixture
+  const selectedWearerIdSet = normaliseSelectedWearerIds(options)
 
-  const selectedIds =
-    Array.isArray(options.selectedDeviceWearerIds) && options.selectedDeviceWearerIds.length > 0
-      ? options.selectedDeviceWearerIds.map(String)
-      : undefined
-
-  const selectedId = options.selectedDeviceWearerId ? String(options.selectedDeviceWearerId) : undefined
-
-  const shouldInclude = (deviceWearerId: unknown): boolean => {
-    const id = String(deviceWearerId)
-    if (selectedIds) return selectedIds.includes(id)
-    if (selectedId) return id === selectedId
-    return true
-  }
-
-  const deviceWearers = fixture.matchedDeviceWearers
-    .filter(w => shouldInclude(w.deviceWearerId))
-    .map(w => ({
-      deviceWearerId: String(w.deviceWearerId),
-      deviceId: Number(w.deviceId),
-      name: w.name,
-      nomisId: w.nomisId,
-      positions: w.positions.map(p => ({
+  const matchedDeviceWearers: ProximityAlertReportDeviceWearer[] = fixture.matchedDeviceWearers
+    .filter(wearer => {
+      const id = String(wearer.deviceWearerId)
+      return selectedWearerIdSet ? selectedWearerIdSet.has(id) : true
+    })
+    .map(wearer => ({
+      deviceWearerId: String(wearer.deviceWearerId),
+      deviceId: Number(wearer.deviceId),
+      name: wearer.name,
+      nomisId: wearer.nomisId,
+      positions: wearer.positions.map(p => ({
         sequenceLabel: p.sequenceLabel,
         capturedDateTime: p.capturedDateTime,
         latitude: p.latitude,
@@ -84,6 +74,8 @@ export function toProximityAlertReportData(
         confidenceCircle: p.confidenceCircle,
       })),
     }))
+
+  const { crimeVersion } = fixture
 
   return {
     generatedAtIso: new Date().toISOString(),
@@ -97,6 +89,6 @@ export function toProximityAlertReportData(
       longitude: crimeVersion.longitude,
       crimeText: crimeVersion.crimeText,
     },
-    matchedDeviceWearers: deviceWearers,
+    matchedDeviceWearers,
   }
 }
