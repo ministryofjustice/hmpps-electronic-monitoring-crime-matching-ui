@@ -119,7 +119,7 @@ context('Police Data Dashboard', () => {
       // Given an API response with no results
       cy.stubGetIngestionAttempts()
 
-      // When the user loads the page with no query params
+      // When the user loads the page
       cy.visit(
         '/police-data/dashboard?batchId=abc&policeForceArea=METROPOLITAN&fromDate=19%2F2%2F2026&toDate=20%2F2%2F2026',
       )
@@ -172,7 +172,7 @@ context('Police Data Dashboard', () => {
         },
       })
 
-      // When the user loads the page with no query params
+      // When the user loads the page
       cy.visit('/police-data/dashboard?batchId=abc')
 
       const page = Page.verifyOnPage(PoliceDataDashboardPage)
@@ -186,7 +186,7 @@ context('Police Data Dashboard', () => {
       // When the user navigates to the next page
       page.dataTable.pagination.next.click()
 
-      // Then the url should include the page number
+      // Then the url should include the page number and the original query
       cy.url().should('include', '?batchId=abc&page=2')
 
       // And the table should have pagination
