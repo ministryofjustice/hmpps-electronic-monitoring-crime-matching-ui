@@ -24,6 +24,10 @@ export default class NavigationComponent {
     return new NavigationLink(this.element, 'Location data')
   }
 
+  get dataIngestionLink(): NavigationLink {
+    return new NavigationLink(this.element, 'Data ingestion')
+  }
+
   get legalLink(): NavigationLink {
     return new NavigationLink(this.element, 'Legal')
   }
@@ -37,6 +41,7 @@ export default class NavigationComponent {
   checkHasNavigation(): void {
     this.crimeMappingLink.shouldExist()
     this.locationDataLink.shouldExist()
+    this.dataIngestionLink.shouldExist()
     this.legalLink.shouldExist()
     this.helpLink.shouldExist()
   }
