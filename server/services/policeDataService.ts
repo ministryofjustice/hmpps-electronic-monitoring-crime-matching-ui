@@ -31,17 +31,17 @@ class PoliceDataService {
     return { ok: false, error: 'Please select a valid police force area.' }
   }
 
-  private parseDateToISOString(dateString: string): Result<string, string> {
+  private parseDateToLocalString(dateString: string, hour: string, minute: string): Result<string, string> {
     const trimmed = dateString.trim()
 
     if (trimmed.length === 0) {
       return { ok: true, data: trimmed }
     }
 
-    const date = parseDateTimeFromComponents(trimmed, '0', '0')
+    const date = parseDateTimeFromComponents(trimmed, hour, minute)
 
     if (date.isValid()) {
-      return { ok: true, data: date.toISOString() }
+      return { ok: true, data: date.format('YYYY-MM-DDTHH:mm:ss') }
     }
 
     return { ok: false, error: 'Please enter a valid date.' }
@@ -58,8 +58,8 @@ class PoliceDataService {
     const validationErrors: Record<string, string> = {}
     const parsedBatchId = batchId.trim()
     const parsedPoliceForceArea = this.parsePoliceForceArea(policeForceArea)
-    const parsedFromDate = this.parseDateToISOString(fromDate)
-    const parsedToDate = this.parseDateToISOString(toDate)
+    const parsedFromDate = this.parseDateToLocalString(fromDate, '0', '0')
+    const parsedToDate = this.parseDateToLocalString(toDate, '23', '59')
     const parsedPageNumber = this.parsePageNumber(page)
 
     if (!parsedPoliceForceArea.ok) {
