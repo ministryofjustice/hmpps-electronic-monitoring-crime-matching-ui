@@ -132,10 +132,10 @@ context('Police Data Dashboard', () => {
       // And the table should have 3 rows
       page.dataTable.shouldHaveColumns(['', 'Status', 'Police force area', 'Batch', 'Matches', 'Date', 'Time'])
       page.dataTable.shouldHaveRows([
-        ['', 'Ingested', 'Metropolitan', 'MPS20251110', '5', '01/01/2025', '11:23:34'],
+        ['Select batch-', 'Ingested', 'Metropolitan', 'MPS20251110', '5', '01/01/2025', '11:23:34'],
         ['', 'Ingested', 'Metropolitan', 'MPS20251110', '0', '01/01/2025', '11:23:34'],
         ['', 'Ingested', 'Metropolitan', 'MPS20251110', 'In progress', '01/01/2025', '11:23:34'],
-        ['', 'Partially ingested', 'Avon and Somerset', 'MPS20251110', '5', '01/01/2025', '11:23:34'],
+        ['Select batch-', 'Partially ingested', 'Avon and Somerset', 'MPS20251110', '5', '01/01/2025', '11:23:34'],
         ['', 'Partially ingested', 'Avon and Somerset', 'MPS20251110', '0', '01/01/2025', '11:23:34'],
         ['', 'Partially ingested', 'Avon and Somerset', 'MPS20251110', 'In progress', '01/01/2025', '11:23:34'],
         ['', 'Failed ingestion', 'City of London', 'MPS20251110', 'N/A', '01/01/2025', '11:23:34'],

@@ -64,4 +64,6 @@ export default class PoliceDataDashboardController {
       })
     }
   }
+
+  export: RequestHandler = async (req, res) => {}
 }

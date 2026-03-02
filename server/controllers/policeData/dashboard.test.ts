@@ -46,6 +46,7 @@ const expectedIngestionAttemptSummary = {
   statusColour: 'green',
   statusText: 'Ingested',
   createdAt: '2025-01-01T00:00:00.000Z',
+  canBeExported: false,
 }
 
 describe('PoliceDataDashboardController', () => {
@@ -371,6 +372,7 @@ describe('PoliceDataDashboardController', () => {
             statusText: 'Ingested',
             statusColour: 'green',
             createdAt: '2025-01-01T00:00:00.000Z',
+            canBeExported: true,
           },
           {
             ingestionAttemptId: '1234',
@@ -382,6 +384,7 @@ describe('PoliceDataDashboardController', () => {
             statusText: 'Ingested',
             statusColour: 'green',
             createdAt: '2025-01-01T00:00:00.000Z',
+            canBeExported: false,
           },
           {
             ingestionAttemptId: '1234',
@@ -393,6 +396,7 @@ describe('PoliceDataDashboardController', () => {
             statusColour: 'green',
             statusText: 'Ingested',
             createdAt: '2025-01-01T00:00:00.000Z',
+            canBeExported: false,
           },
           {
             ingestionAttemptId: '1234',
@@ -404,6 +408,7 @@ describe('PoliceDataDashboardController', () => {
             statusColour: 'yellow',
             statusText: 'Partially ingested',
             createdAt: '2025-01-01T00:00:00.000Z',
+            canBeExported: true,
           },
           {
             ingestionAttemptId: '1234',
@@ -415,6 +420,7 @@ describe('PoliceDataDashboardController', () => {
             statusColour: 'yellow',
             statusText: 'Partially ingested',
             createdAt: '2025-01-01T00:00:00.000Z',
+            canBeExported: false,
           },
           {
             ingestionAttemptId: '1234',
@@ -426,6 +432,7 @@ describe('PoliceDataDashboardController', () => {
             statusColour: 'yellow',
             statusText: 'Partially ingested',
             createdAt: '2025-01-01T00:00:00.000Z',
+            canBeExported: false,
           },
           {
             ingestionAttemptId: '1234',
@@ -437,6 +444,7 @@ describe('PoliceDataDashboardController', () => {
             statusColour: 'orange',
             statusText: 'Failed ingestion',
             createdAt: '2025-01-01T00:00:00.000Z',
+            canBeExported: false,
           },
           {
             ingestionAttemptId: '1234',
@@ -448,6 +456,7 @@ describe('PoliceDataDashboardController', () => {
             statusColour: 'red',
             statusText: 'Error',
             createdAt: '2025-01-01T00:00:00.000Z',
+            canBeExported: false,
           },
         ],
         paginationHrefPrefix: '',
