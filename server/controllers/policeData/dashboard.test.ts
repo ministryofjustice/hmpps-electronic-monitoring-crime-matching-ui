@@ -168,8 +168,8 @@ describe('PoliceDataDashboardController', () => {
     it.each([
       [{ batchId: 'MPS20251110' }, ['MPS20251110', '', '', ''], 'batchId=MPS20251110'],
       [{ policeForceArea: 'METROPOLITAN' }, ['', 'METROPOLITAN', '', ''], 'policeForceArea=METROPOLITAN'],
-      [{ fromDate: '01/01/2026' }, ['', '', '2026-01-01T00:00:00.000Z', ''], 'fromDate=01%2F01%2F2026'],
-      [{ toDate: '02/01/2026' }, ['', '', '', '2026-01-02T00:00:00.000Z'], 'toDate=02%2F01%2F2026'],
+      [{ fromDate: '01/01/2026' }, ['', '', '2026-01-01T00:00:00', ''], 'fromDate=01%2F01%2F2026'],
+      [{ toDate: '02/01/2026' }, ['', '', '', '2026-01-02T23:59:59'], 'toDate=02%2F01%2F2026'],
       [
         {
           batchId: 'MPS20251110',
@@ -177,7 +177,7 @@ describe('PoliceDataDashboardController', () => {
           fromDate: '01/01/2026',
           toDate: '02/01/2026',
         },
-        ['MPS20251110', 'METROPOLITAN', '2026-01-01T00:00:00.000Z', '2026-01-02T00:00:00.000Z'],
+        ['MPS20251110', 'METROPOLITAN', '2026-01-01T00:00:00', '2026-01-02T23:59:59'],
         'batchId=MPS20251110&policeForceArea=METROPOLITAN&fromDate=01%2F01%2F2026&toDate=02%2F01%2F2026',
       ],
     ])(
