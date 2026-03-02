@@ -43,6 +43,7 @@ const expectedIngestionAttemptSummary = {
   batchId: 'MPS20251110',
   matches: 0,
   matchesText: '0',
+  statusText: 'Ingested',
   createdAt: '2025-01-01T00:00:00.000Z',
 }
 
@@ -366,6 +367,7 @@ describe('PoliceDataDashboardController', () => {
             batchId: 'MPS20251110',
             matches: 5,
             matchesText: '5',
+            statusText: 'Ingested',
             createdAt: '2025-01-01T00:00:00.000Z',
           },
           {
@@ -375,6 +377,7 @@ describe('PoliceDataDashboardController', () => {
             batchId: 'MPS20251110',
             matches: 0,
             matchesText: '0',
+            statusText: 'Ingested',
             createdAt: '2025-01-01T00:00:00.000Z',
           },
           {
@@ -384,6 +387,7 @@ describe('PoliceDataDashboardController', () => {
             batchId: 'MPS20251110',
             matches: null,
             matchesText: 'In progress',
+            statusText: 'Ingested',
             createdAt: '2025-01-01T00:00:00.000Z',
           },
           {
@@ -393,6 +397,7 @@ describe('PoliceDataDashboardController', () => {
             batchId: 'MPS20251110',
             matches: 5,
             matchesText: '5',
+            statusText: 'Partially ingested',
             createdAt: '2025-01-01T00:00:00.000Z',
           },
           {
@@ -402,6 +407,7 @@ describe('PoliceDataDashboardController', () => {
             batchId: 'MPS20251110',
             matches: 0,
             matchesText: '0',
+            statusText: 'Partially ingested',
             createdAt: '2025-01-01T00:00:00.000Z',
           },
           {
@@ -411,6 +417,7 @@ describe('PoliceDataDashboardController', () => {
             batchId: 'MPS20251110',
             matches: null,
             matchesText: 'In progress',
+            statusText: 'Partially ingested',
             createdAt: '2025-01-01T00:00:00.000Z',
           },
           {
@@ -420,6 +427,7 @@ describe('PoliceDataDashboardController', () => {
             batchId: 'MPS20251110',
             matches: null,
             matchesText: 'N/A',
+            statusText: 'Failed ingestion',
             createdAt: '2025-01-01T00:00:00.000Z',
           },
           {
@@ -429,6 +437,7 @@ describe('PoliceDataDashboardController', () => {
             batchId: 'MPS20251110',
             matches: null,
             matchesText: 'N/A',
+            statusText: 'Failed',
             createdAt: '2025-01-01T00:00:00.000Z',
           },
         ],
