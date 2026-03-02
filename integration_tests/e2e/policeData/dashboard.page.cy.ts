@@ -39,14 +39,43 @@ context('Police Data Dashboard', () => {
         query: 'batchId=&policeForceArea=&fromDate=&toDate=',
         response: {
           data: [
+            // Successful with matches
             {
               ingestionAttemptId: '6664c855-cd76-4674-8f38-34244ad77c5a',
               ingestionStatus: 'SUCCESSFUL',
-              policeForceArea: 'CITY_OF_LONDON',
+              policeForceArea: 'METROPOLITAN',
               batchId: 'MPS20251110',
               matches: 5,
               createdAt: '2025-01-01T11:23:34.000Z',
             },
+            // Successful without matches
+            {
+              ingestionAttemptId: '6664c855-cd76-4674-8f38-34244ad77c5a',
+              ingestionStatus: 'SUCCESSFUL',
+              policeForceArea: 'METROPOLITAN',
+              batchId: 'MPS20251110',
+              matches: 0,
+              createdAt: '2025-01-01T11:23:34.000Z',
+            },
+            // Successful pending matching
+            {
+              ingestionAttemptId: '6664c855-cd76-4674-8f38-34244ad77c5a',
+              ingestionStatus: 'SUCCESSFUL',
+              policeForceArea: 'METROPOLITAN',
+              batchId: 'MPS20251110',
+              matches: null,
+              createdAt: '2025-01-01T11:23:34.000Z',
+            },
+            // Partial with matches
+            {
+              ingestionAttemptId: '0078f3f7-74dc-4165-8e43-dca9e10a1a39',
+              ingestionStatus: 'PARTIAL',
+              policeForceArea: 'AVON_AND_SOMERSET',
+              batchId: 'MPS20251110',
+              matches: 5,
+              createdAt: '2025-01-01T11:23:34.000Z',
+            },
+            // Partial without matches
             {
               ingestionAttemptId: '0078f3f7-74dc-4165-8e43-dca9e10a1a39',
               ingestionStatus: 'PARTIAL',
@@ -55,11 +84,30 @@ context('Police Data Dashboard', () => {
               matches: 0,
               createdAt: '2025-01-01T11:23:34.000Z',
             },
+            // Partial pending matching
+            {
+              ingestionAttemptId: '0078f3f7-74dc-4165-8e43-dca9e10a1a39',
+              ingestionStatus: 'PARTIAL',
+              policeForceArea: 'AVON_AND_SOMERSET',
+              batchId: 'MPS20251110',
+              matches: null,
+              createdAt: '2025-01-01T11:23:34.000Z',
+            },
+            // Failed
             {
               ingestionAttemptId: 'de5cd033-4a06-4f1b-b4af-c40879b1eda8',
               ingestionStatus: 'FAILED',
-              policeForceArea: 'METROPOLITAN',
+              policeForceArea: 'CITY_OF_LONDON',
               batchId: 'MPS20251110',
+              matches: null,
+              createdAt: '2025-01-01T11:23:34.000Z',
+            },
+            // Error
+            {
+              ingestionAttemptId: 'aae2d621-719d-4c53-b8cd-a2d847ee659d',
+              ingestionStatus: 'ERROR',
+              policeForceArea: 'CITY_OF_LONDON',
+              batchId: '',
               matches: null,
               createdAt: '2025-01-01T11:23:34.000Z',
             },
@@ -84,16 +132,26 @@ context('Police Data Dashboard', () => {
       // And the table should have 3 rows
       page.dataTable.shouldHaveColumns(['', 'Status', 'Police force area', 'Batch', 'Matches', 'Date', 'Time'])
       page.dataTable.shouldHaveRows([
-        ['', 'Ingested', 'City of London', 'MPS20251110', '5', '01/01/2025', '11:23:34'],
+        ['', 'Ingested', 'Metropolitan', 'MPS20251110', '5', '01/01/2025', '11:23:34'],
+        ['', 'Ingested', 'Metropolitan', 'MPS20251110', '0', '01/01/2025', '11:23:34'],
+        ['', 'Ingested', 'Metropolitan', 'MPS20251110', 'In progress', '01/01/2025', '11:23:34'],
+        ['', 'Partially ingested', 'Avon and Somerset', 'MPS20251110', '5', '01/01/2025', '11:23:34'],
         ['', 'Partially ingested', 'Avon and Somerset', 'MPS20251110', '0', '01/01/2025', '11:23:34'],
-        ['', 'Failed ingestion', 'Metropolitan', 'MPS20251110', 'N/A', '01/01/2025', '11:23:34'],
+        ['', 'Partially ingested', 'Avon and Somerset', 'MPS20251110', 'In progress', '01/01/2025', '11:23:34'],
+        ['', 'Failed ingestion', 'City of London', 'MPS20251110', 'N/A', '01/01/2025', '11:23:34'],
+        ['', 'Error', 'City of London', 'Failed', 'N/A', '01/01/2025', '11:23:34'],
       ])
       page.dataTable.shouldNotHavePagination()
 
       // And the status column should have the correct tags
       page.dataTable.cell(0, 1).find('.govuk-tag').should('have.class', 'govuk-tag--green')
-      page.dataTable.cell(1, 1).find('.govuk-tag').should('have.class', 'govuk-tag--yellow')
-      page.dataTable.cell(2, 1).find('.govuk-tag').should('have.class', 'govuk-tag--red')
+      page.dataTable.cell(1, 1).find('.govuk-tag').should('have.class', 'govuk-tag--green')
+      page.dataTable.cell(2, 1).find('.govuk-tag').should('have.class', 'govuk-tag--green')
+      page.dataTable.cell(3, 1).find('.govuk-tag').should('have.class', 'govuk-tag--yellow')
+      page.dataTable.cell(4, 1).find('.govuk-tag').should('have.class', 'govuk-tag--yellow')
+      page.dataTable.cell(5, 1).find('.govuk-tag').should('have.class', 'govuk-tag--yellow')
+      page.dataTable.cell(6, 1).find('.govuk-tag').should('have.class', 'govuk-tag--orange')
+      page.dataTable.cell(7, 1).find('.govuk-tag').should('have.class', 'govuk-tag--red')
 
       // And the batches column should have the correct links
       page.dataTable
@@ -103,16 +161,41 @@ context('Police Data Dashboard', () => {
       page.dataTable
         .cell(1, 3)
         .find('a')
-        .should('have.attr', 'href', '/police-data/ingestion-attempts/0078f3f7-74dc-4165-8e43-dca9e10a1a39')
+        .should('have.attr', 'href', '/police-data/ingestion-attempts/6664c855-cd76-4674-8f38-34244ad77c5a')
       page.dataTable
         .cell(2, 3)
         .find('a')
+        .should('have.attr', 'href', '/police-data/ingestion-attempts/6664c855-cd76-4674-8f38-34244ad77c5a')
+      page.dataTable
+        .cell(3, 3)
+        .find('a')
+        .should('have.attr', 'href', '/police-data/ingestion-attempts/0078f3f7-74dc-4165-8e43-dca9e10a1a39')
+      page.dataTable
+        .cell(4, 3)
+        .find('a')
+        .should('have.attr', 'href', '/police-data/ingestion-attempts/0078f3f7-74dc-4165-8e43-dca9e10a1a39')
+      page.dataTable
+        .cell(5, 3)
+        .find('a')
+        .should('have.attr', 'href', '/police-data/ingestion-attempts/0078f3f7-74dc-4165-8e43-dca9e10a1a39')
+      page.dataTable
+        .cell(6, 3)
+        .find('a')
         .should('have.attr', 'href', '/police-data/ingestion-attempts/de5cd033-4a06-4f1b-b4af-c40879b1eda8')
+      page.dataTable
+        .cell(7, 3)
+        .find('a')
+        .should('have.attr', 'href', '/police-data/ingestion-attempts/aae2d621-719d-4c53-b8cd-a2d847ee659d')
 
       // And the matches column should have the correct formatting
       page.dataTable.cell(0, 4).should('not.have.class', 'table-cell--red table-cell--bold')
       page.dataTable.cell(1, 4).should('have.class', 'table-cell--red table-cell--bold')
-      page.dataTable.cell(2, 4).should('have.class', 'table-cell--red table-cell--bold')
+      page.dataTable.cell(2, 4).should('not.have.class', 'table-cell--red table-cell--bold')
+      page.dataTable.cell(3, 4).should('not.have.class', 'table-cell--red table-cell--bold')
+      page.dataTable.cell(4, 4).should('have.class', 'table-cell--red table-cell--bold')
+      page.dataTable.cell(5, 4).should('not.have.class', 'table-cell--red table-cell--bold')
+      page.dataTable.cell(6, 4).should('have.class', 'table-cell--red table-cell--bold')
+      page.dataTable.cell(7, 4).should('have.class', 'table-cell--red table-cell--bold')
     })
 
     it('should populate the form with query parameters', () => {

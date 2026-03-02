@@ -13,23 +13,11 @@
 
 {% for ingestionAttempt in ingestionAttempts %}
 
-  {% if ingestionAttempt.ingestionStatus == 'SUCCESSFUL' %}
-    {% set statusColour = "green" %}
-    {% set statusText = "Ingested" %}
-  {% elif ingestionAttempt.ingestionStatus == 'PARTIAL' %}
-    {% set statusColour = "yellow" %}
-    {% set statusText = "Partially ingested" %}
-  {% elif ingestionAttempt.ingestionStatus == 'FAILED' %}
-    {% set statusColour = "red" %}
-    {% set statusText = "Failed ingestion" %}
-  {% endif %}
-
-
   {% set status %}
     {{
       govukTag({
-        text: statusText,
-        classes: "govuk-tag--" + statusColour
+        text: ingestionAttempt.statusText,
+        classes: "govuk-tag--" + ingestionAttempt.statusColour
       })
     }}
   {% endset %}
@@ -37,19 +25,16 @@
 
   {% set link %}
     <a href="/police-data/ingestion-attempts/{{ ingestionAttempt.ingestionAttemptId }}">
-      {{ ingestionAttempt.batchId }}
+      {{ 'Failed' if ingestionAttempt.batchId == '' else ingestionAttempt.batchId }}
     </a>
   {% endset %}
 
-  {% if ingestionAttempt.matches == null %}
+  {% if ingestionAttempt.matchesText == 'N/A' %}
     {% set matchesClasses = "table-cell--red table-cell--bold" %}
-    {% set matchesText = "N/A" %}
   {% elif ingestionAttempt.matches == 0 %}
     {% set matchesClasses = "table-cell--red table-cell--bold" %}
-    {% set matchesText = "0" %}
   {% else %}
     {% set matchesClasses = "" %}
-    {% set matchesText = ingestionAttempt.matches %}
   {% endif %}
 
   {%
@@ -68,7 +53,7 @@
           html: link
         },
         {
-          text: matchesText,
+          text: ingestionAttempt.matchesText,
           classes: matchesClasses
         },
         {
