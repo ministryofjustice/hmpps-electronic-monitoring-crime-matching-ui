@@ -1,10 +1,14 @@
 import { RequestHandler } from 'express'
 import { policeDataDashboardQuerySchema } from '../../schemas/policeData/dashboard'
+import CrimeMatchingResultsService from '../../services/crimeMatchingResultsService'
 import PoliceDataService from '../../services/policeDataService'
 import presentIngestionAttemptSummaries from '../../presenters/ingestionAttemptSummaries'
 
 export default class PoliceDataDashboardController {
-  constructor(private readonly policeDataService: PoliceDataService) {}
+  constructor(
+    private readonly policeDataService: PoliceDataService,
+    private readonly crimeMatchingResultsService: CrimeMatchingResultsService,
+  ) {}
 
   private getQueryString = (batchId: string, policeForceArea: string, fromDate: string, toDate: string): string => {
     const searchParams = new URLSearchParams({
@@ -65,5 +69,11 @@ export default class PoliceDataDashboardController {
     }
   }
 
-  export: RequestHandler = async (req, res) => {}
+  export: RequestHandler = async (req, res, next) => {
+    const { query } = req
+
+    console.log(query)
+
+    next(new Error('Failed to export csv'))
+  }
 }

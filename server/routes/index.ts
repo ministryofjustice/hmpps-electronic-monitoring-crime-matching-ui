@@ -8,13 +8,12 @@ import CrimeBatchesController from '../controllers/crimeMapping/crimeBatches'
 import LegalController from '../controllers/legal'
 import HelpController from '../controllers/help'
 import PersonsController from '../controllers/locationData/persons'
-import PoliceDataDashboardController from '../controllers/policeData/dashboard'
 import populateSessionData from '../middleware/populateSessionData'
 import locationDataRoutes from './location-data'
-import PoliceDataIngestionAttemptController from '../controllers/policeData/ingestionAttempt'
+import policeDataRoutes from './police-data'
 
 export default function routes(services: Services): Router {
-  const { auditService, crimeBatchesService, crimeMappingService, personsService, policeDataService } = services
+  const { auditService, crimeBatchesService, crimeMappingService, personsService } = services
   const router = Router()
   const get = (path: string | string[], handler: RequestHandler) => router.get(path, asyncMiddleware(handler))
   const post = (path: string | string[], handler: RequestHandler) => router.post(path, asyncMiddleware(handler))
@@ -30,8 +29,6 @@ export default function routes(services: Services): Router {
   const helpController = new HelpController()
   const legalController = new LegalController()
   const personsController = new PersonsController(personsService)
-  const policeDataDashboardController = new PoliceDataDashboardController(policeDataService)
-  const policeDataIngestionAttemptController = new PoliceDataIngestionAttemptController(policeDataService)
 
   router.use(populateSessionData)
 
@@ -46,11 +43,8 @@ export default function routes(services: Services): Router {
   get('/location-data/persons', personsController.view)
   post('/location-data/persons', personsController.search)
 
-  get('/police-data/dashboard', policeDataDashboardController.view)
-  post('/police-data/dashboard', policeDataDashboardController.search)
-  get('/police-data/ingestion-attempts/:ingestionAttemptId', policeDataIngestionAttemptController.view)
-
   router.use('/location-data', locationDataRoutes(services))
+  router.use('/police-data', policeDataRoutes(services))
 
   return router
 }

@@ -1,3 +1,13 @@
+type ServiceResult<T> =
+  | {
+      ok: true
+      data: T
+    }
+  | {
+      ok: false
+      validationErrors: Record<string, string>
+    }
+
 type PaginatedServiceResult<T> =
   | {
       ok: true
@@ -11,4 +21,4 @@ type PaginatedServiceResult<T> =
       validationErrors: Record<string, string>
     }
 
-export default PaginatedServiceResult
+export { PaginatedServiceResult, ServiceResult }
