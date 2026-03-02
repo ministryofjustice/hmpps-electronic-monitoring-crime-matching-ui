@@ -42,6 +42,9 @@ const expectedIngestionAttemptSummary = {
   policeForceArea: 'Metropolitan',
   batchId: 'MPS20251110',
   matches: 0,
+  matchesText: '0',
+  statusColour: 'green',
+  statusText: 'Ingested',
   createdAt: '2025-01-01T00:00:00.000Z',
 }
 
@@ -256,6 +259,200 @@ describe('PoliceDataDashboardController', () => {
         paginationHrefPrefix: '',
         pageCount: 1,
         pageNumber,
+        validationErrors: {},
+      })
+      expect(next).not.toHaveBeenCalled()
+    })
+
+    it('should correctly present the different ingestion attempt states to the view engine', async () => {
+      const req = createMockRequest({})
+      const res = createMockResponse()
+      const next = jest.fn()
+      const service = new PoliceDataService(mockRestClient)
+      const controller = new PoliceDataDashboardController(service)
+
+      // Given
+      mockRestClient.getIngestionAttempts.mockResolvedValue({
+        data: [
+          // Successful with matches
+          {
+            ingestionAttemptId: '1234',
+            ingestionStatus: 'SUCCESSFUL',
+            policeForceArea: 'METROPOLITAN',
+            batchId: 'MPS20251110',
+            matches: 5,
+            createdAt: '2025-01-01T00:00:00.000Z',
+          },
+          // Successful without matches
+          {
+            ingestionAttemptId: '1234',
+            ingestionStatus: 'SUCCESSFUL',
+            policeForceArea: 'METROPOLITAN',
+            batchId: 'MPS20251110',
+            matches: 0,
+            createdAt: '2025-01-01T00:00:00.000Z',
+          },
+          // Successful pending matching
+          {
+            ingestionAttemptId: '1234',
+            ingestionStatus: 'SUCCESSFUL',
+            policeForceArea: 'METROPOLITAN',
+            batchId: 'MPS20251110',
+            matches: null,
+            createdAt: '2025-01-01T00:00:00.000Z',
+          },
+          // Partial with matches
+          {
+            ingestionAttemptId: '1234',
+            ingestionStatus: 'PARTIAL',
+            policeForceArea: 'AVON_AND_SOMERSET',
+            batchId: 'MPS20251110',
+            matches: 5,
+            createdAt: '2025-01-01T00:00:00.000Z',
+          },
+          // Partial without matches
+          {
+            ingestionAttemptId: '1234',
+            ingestionStatus: 'PARTIAL',
+            policeForceArea: 'AVON_AND_SOMERSET',
+            batchId: 'MPS20251110',
+            matches: 0,
+            createdAt: '2025-01-01T00:00:00.000Z',
+          },
+          // Partial pending matching
+          {
+            ingestionAttemptId: '1234',
+            ingestionStatus: 'PARTIAL',
+            policeForceArea: 'AVON_AND_SOMERSET',
+            batchId: 'MPS20251110',
+            matches: null,
+            createdAt: '2025-01-01T00:00:00.000Z',
+          },
+          // Failed
+          {
+            ingestionAttemptId: '1234',
+            ingestionStatus: 'FAILED',
+            policeForceArea: 'CITY_OF_LONDON',
+            batchId: 'MPS20251110',
+            matches: null,
+            createdAt: '2025-01-01T00:00:00.000Z',
+          },
+          // Error
+          {
+            ingestionAttemptId: '1234',
+            ingestionStatus: 'ERROR',
+            policeForceArea: 'CITY_OF_LONDON',
+            batchId: 'MPS20251110',
+            matches: null,
+            createdAt: '2025-01-01T00:00:00.000Z',
+          },
+        ],
+        pageCount: 1,
+        pageNumber: 0,
+        pageSize: 10,
+      })
+
+      // When
+      await controller.view(req, res, next)
+
+      expect(res.render).toHaveBeenCalledWith('pages/policeData/dashboard', {
+        batchId: '',
+        policeForceArea: '',
+        fromDate: '',
+        toDate: '',
+        ingestionAttempts: [
+          {
+            ingestionAttemptId: '1234',
+            ingestionStatus: 'SUCCESSFUL',
+            policeForceArea: 'Metropolitan',
+            batchId: 'MPS20251110',
+            matches: 5,
+            matchesText: '5',
+            statusText: 'Ingested',
+            statusColour: 'green',
+            createdAt: '2025-01-01T00:00:00.000Z',
+          },
+          {
+            ingestionAttemptId: '1234',
+            ingestionStatus: 'SUCCESSFUL',
+            policeForceArea: 'Metropolitan',
+            batchId: 'MPS20251110',
+            matches: 0,
+            matchesText: '0',
+            statusText: 'Ingested',
+            statusColour: 'green',
+            createdAt: '2025-01-01T00:00:00.000Z',
+          },
+          {
+            ingestionAttemptId: '1234',
+            ingestionStatus: 'SUCCESSFUL',
+            policeForceArea: 'Metropolitan',
+            batchId: 'MPS20251110',
+            matches: null,
+            matchesText: 'In progress',
+            statusColour: 'green',
+            statusText: 'Ingested',
+            createdAt: '2025-01-01T00:00:00.000Z',
+          },
+          {
+            ingestionAttemptId: '1234',
+            ingestionStatus: 'PARTIAL',
+            policeForceArea: 'Avon and Somerset',
+            batchId: 'MPS20251110',
+            matches: 5,
+            matchesText: '5',
+            statusColour: 'yellow',
+            statusText: 'Partially ingested',
+            createdAt: '2025-01-01T00:00:00.000Z',
+          },
+          {
+            ingestionAttemptId: '1234',
+            ingestionStatus: 'PARTIAL',
+            policeForceArea: 'Avon and Somerset',
+            batchId: 'MPS20251110',
+            matches: 0,
+            matchesText: '0',
+            statusColour: 'yellow',
+            statusText: 'Partially ingested',
+            createdAt: '2025-01-01T00:00:00.000Z',
+          },
+          {
+            ingestionAttemptId: '1234',
+            ingestionStatus: 'PARTIAL',
+            policeForceArea: 'Avon and Somerset',
+            batchId: 'MPS20251110',
+            matches: null,
+            matchesText: 'In progress',
+            statusColour: 'yellow',
+            statusText: 'Partially ingested',
+            createdAt: '2025-01-01T00:00:00.000Z',
+          },
+          {
+            ingestionAttemptId: '1234',
+            ingestionStatus: 'FAILED',
+            policeForceArea: 'City of London',
+            batchId: 'MPS20251110',
+            matches: null,
+            matchesText: 'N/A',
+            statusColour: 'orange',
+            statusText: 'Failed ingestion',
+            createdAt: '2025-01-01T00:00:00.000Z',
+          },
+          {
+            ingestionAttemptId: '1234',
+            ingestionStatus: 'ERROR',
+            policeForceArea: 'City of London',
+            batchId: 'MPS20251110',
+            matches: null,
+            matchesText: 'N/A',
+            statusColour: 'red',
+            statusText: 'Error',
+            createdAt: '2025-01-01T00:00:00.000Z',
+          },
+        ],
+        paginationHrefPrefix: '',
+        pageCount: 1,
+        pageNumber: 1,
         validationErrors: {},
       })
       expect(next).not.toHaveBeenCalled()
