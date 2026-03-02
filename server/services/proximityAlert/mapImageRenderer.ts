@@ -22,12 +22,20 @@ export type RenderProximityAlertImagesArgs = {
   deviceScaleFactor?: number
   timeoutMs?: number
   ignoreHTTPSErrors?: boolean
+
+  imageType?: 'jpeg' | 'png'
   jpegQuality?: number
+  maxDeviceScaleFactor?: number
+  maxOutputPixels?: number
 }
 
 const DEFAULT_VIEWPORT = { width: 1200, height: 650 }
 const DEFAULT_TIMEOUT_MS = 30_000
 const DEFAULT_JPEG_QUALITY = 85
+
+const DEFAULT_IMAGE_TYPE: 'jpeg' | 'png' = 'jpeg'
+const DEFAULT_MAX_DEVICE_SCALE_FACTOR = 2
+const DEFAULT_MAX_OUTPUT_PIXELS = 2_500_000
 
 type PresetParam = 'image-2' | 'wearer-image-1' | 'wearer-image-2'
 
@@ -51,6 +59,43 @@ type PeakResources = {
 // Convert a byte to MB for logging.
 function byteToMB(bytes: number): number {
   return Math.round((bytes / 1024 / 1024) * 10) / 10
+}
+
+// Clamp a number to a specified range.
+function clampNumber(value: number, min: number, max: number): number {
+  return Math.max(min, Math.min(max, value))
+}
+
+// Compute an effective deviceScaleFactor that never exceeds maxDeviceScaleFactor and o
+// ptionally scales down further to keep total output pixels under maxOutputPixels
+function computeEffectiveDeviceScaleFactor(args: {
+  cssWidth: number
+  cssHeight: number
+  requestedDpr: number
+  maxDeviceScaleFactor: number
+  maxOutputPixels?: number
+}): { effectiveDpr: number; reason: string } {
+  const { cssWidth, cssHeight, requestedDpr, maxDeviceScaleFactor, maxOutputPixels } = args
+
+  const cappedByMaxDpr = Math.min(requestedDpr, maxDeviceScaleFactor)
+
+  if (!maxOutputPixels) {
+    return {
+      effectiveDpr: cappedByMaxDpr,
+      reason: cappedByMaxDpr !== requestedDpr ? 'capped-by-maxDeviceScaleFactor' : 'as-requested',
+    }
+  }
+
+  const cssPixels = cssWidth * cssHeight
+  if (cssPixels <= 0) return { effectiveDpr: cappedByMaxDpr, reason: 'invalid-css-size' }
+
+  const maxDprByPixels = Math.sqrt(maxOutputPixels / cssPixels)
+  const effectiveDpr = Math.min(cappedByMaxDpr, maxDprByPixels)
+  const finalDpr = clampNumber(effectiveDpr, 1, cappedByMaxDpr)
+
+  if (finalDpr < cappedByMaxDpr) return { effectiveDpr: finalDpr, reason: 'capped-by-maxOutputPixels' }
+  if (cappedByMaxDpr < requestedDpr) return { effectiveDpr: cappedByMaxDpr, reason: 'capped-by-maxDeviceScaleFactor' }
+  return { effectiveDpr: cappedByMaxDpr, reason: 'as-requested' }
 }
 
 // Spike: temporary timer/logger for step-by-step performance tracing.
@@ -320,23 +365,46 @@ export async function renderProximityAlertReportImages(
     deviceScaleFactor = 2,
     timeoutMs = DEFAULT_TIMEOUT_MS,
     ignoreHTTPSErrors = false,
+
+    imageType = DEFAULT_IMAGE_TYPE,
     jpegQuality = DEFAULT_JPEG_QUALITY,
+    maxDeviceScaleFactor = DEFAULT_MAX_DEVICE_SCALE_FACTOR,
+    maxOutputPixels = DEFAULT_MAX_OUTPUT_PIXELS,
   } = args
 
   const timers = makeTimers('mapImageRenderer', { pageUrl })
+
+  const image1State = tryParseImage1State(image1StateJson)
+
+  const requestedDpr = image1State ? image1State.devicePixelRatio : deviceScaleFactor
+  const cssWidth = image1State ? image1State.mapWidthPx : viewport.width
+  const cssHeight = image1State ? image1State.mapHeightPx : viewport.height
+
+  const { effectiveDpr: headlessDeviceScaleFactor, reason: dprReason } = computeEffectiveDeviceScaleFactor({
+    cssWidth,
+    cssHeight,
+    requestedDpr,
+    maxDeviceScaleFactor,
+    maxOutputPixels,
+  })
+
   timers.log('start', {
     viewport,
     deviceScaleFactor,
     timeoutMs,
-    jpegQuality,
+    imageType,
+    jpegQuality: imageType === 'jpeg' ? jpegQuality : undefined,
     selectedDeviceWearerIdsCount: selectedDeviceWearerIds.length,
+    requestedDpr,
+    headlessDeviceScaleFactor,
+    dprReason,
+    cssWidth,
+    cssHeight,
+    approxOutputPixels: Math.round(cssWidth * cssHeight * headlessDeviceScaleFactor * headlessDeviceScaleFactor),
   })
 
   const sampler = startResourceSampler(browser, 'export-proximity-alert')
   const sessionCookies = cookieHeader ? cookiesFromHeader(cookieHeader, baseUrlForCookies) : []
-
-  const image1State = tryParseImage1State(image1StateJson)
-  const headlessDeviceScaleFactor = image1State ? image1State.devicePixelRatio : deviceScaleFactor
 
   const contextStart = Date.now()
   const context = await browser.newContext({
@@ -393,13 +461,19 @@ export async function renderProximityAlertReportImages(
 
     const screenshotMap = async (extra?: Record<string, unknown>): Promise<Buffer> => {
       const screenshotStart = Date.now()
-      const jpg = await mapElementHandle.screenshot({ type: 'jpeg', quality: jpegQuality })
+
+      const img =
+        imageType === 'png'
+          ? await mapElementHandle.screenshot({ type: 'png' })
+          : await mapElementHandle.screenshot({ type: 'jpeg', quality: jpegQuality })
+
       timers.log('screenshot captured', {
         ...(extra ?? {}),
         screenshotMs: Date.now() - screenshotStart,
-        bytes: jpg.length,
+        bytes: img.length,
+        imageType,
       })
-      return jpg
+      return img
     }
 
     // Image 1 phase (apply captured view once, then toggle-only per wearer)
