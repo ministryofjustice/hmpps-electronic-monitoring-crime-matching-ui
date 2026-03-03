@@ -39,6 +39,29 @@ const USABLE_PAGE_HEIGHT_WORD_UNITS = A4_HEIGHT_WORD_UNITS - PAGE_MARGIN_WORD_UN
 // docx ImageRun sizing is effectively based on 96dpi: px * 15.
 const pxToWordUnits = (px: number) => Math.round(px * 15)
 
+// Spike: temporary timer/logger for DOCX performance tracing.
+function makeDocxTimers(label: string, meta?: Record<string, unknown>) {
+  const startTime = Date.now()
+  let lastLogTime = startTime
+
+  const sinceStart = () => Date.now() - startTime
+  const sinceLast = () => {
+    const now = Date.now()
+    const deltaMs = now - lastLogTime
+    lastLogTime = now
+    return deltaMs
+  }
+
+  const log = (step: string, extra?: Record<string, unknown>) => {
+    const totalMs = sinceStart()
+    const stepMs = sinceLast()
+    // eslint-disable-next-line no-console
+    console.log(`[${label}] +${stepMs}ms (total ${totalMs}ms) ${step}`, { ...(meta ?? {}), ...(extra ?? {}) })
+  }
+
+  return { log, sinceStart }
+}
+
 function fmtDateGb(iso: string): string {
   const date = new Date(iso)
   return new Intl.DateTimeFormat('en-GB', {
@@ -890,6 +913,15 @@ function witnessStatementTable(args: {
 export async function buildProximityAlertReportDocx(args: BuildProximityAlertReportDocxArgs): Promise<Buffer> {
   const { report, images } = args
 
+  const timers = makeDocxTimers('proximityAlertDocx', {
+    crimeReference: report.crimeVersion.crimeReference,
+    matchedDeviceWearersCount: report.matchedDeviceWearers.length,
+  })
+
+  timers.log('start')
+
+  const docxBuildStart = Date.now()
+
   // Target: map image edges aligned to the frame edges. Usable width ≈ 698px at 96dpi.
   const MAX_MAP_IMAGE_WIDTH_PX = 690
 
@@ -1049,5 +1081,12 @@ export async function buildProximityAlertReportDocx(args: BuildProximityAlertRep
     ],
   })
 
-  return Packer.toBuffer(doc)
+  timers.log('docx constructed', { docxBuildMs: Date.now() - docxBuildStart })
+
+  const packStart = Date.now()
+  const buffer = await Packer.toBuffer(doc)
+  timers.log('docx packed', { packMs: Date.now() - packStart, bytes: buffer.length })
+
+  timers.log('complete', { totalMs: timers.sinceStart() })
+  return buffer
 }
