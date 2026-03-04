@@ -1,8 +1,13 @@
 import { RequestHandler } from 'express'
-import { policeDataDashboardQuerySchema } from '../../schemas/policeData/dashboard'
+import dayjs from 'dayjs'
+import {
+  policeDataDashboardExportQuerySchema,
+  policeDataDashboardQuerySchema,
+} from '../../schemas/policeData/dashboard'
 import CrimeMatchingResultsService from '../../services/crimeMatchingResultsService'
 import PoliceDataService from '../../services/policeDataService'
 import presentIngestionAttemptSummaries from '../../presenters/ingestionAttemptSummaries'
+import generateCrimeMatchingResultExport from '../../presenters/reports/crimeMatchingResults'
 
 export default class PoliceDataDashboardController {
   constructor(
@@ -70,10 +75,20 @@ export default class PoliceDataDashboardController {
   }
 
   export: RequestHandler = async (req, res, next) => {
-    const { query } = req
+    const { username } = res.locals.user
+    const { batchIds } = policeDataDashboardExportQuerySchema.parse(req.query)
+    const result = await this.crimeMatchingResultsService.getCrimeMatchingResultsForBatches(username, batchIds)
 
-    console.log(query)
+    if (result.ok) {
+      const now = dayjs().format('YYYYMMDDHHmmss')
+      const csvData = generateCrimeMatchingResultExport(result.data)
+      const fileName = `crime-matching-results-${now}.csv`
 
-    next(new Error('Failed to export csv'))
+      res.setHeader('Content-Type', 'text/csv')
+      res.setHeader('Content-Disposition', `attachment; filename="${fileName}"`)
+      res.send(csvData)
+    } else {
+      next(new Error(result.validationErrors.batchIds || result.error))
+    }
   }
 }

@@ -6,6 +6,7 @@ type ServiceResult<T> =
   | {
       ok: false
       validationErrors: Record<string, string>
+      error?: string
     }
 
 type PaginatedServiceResult<T> =
