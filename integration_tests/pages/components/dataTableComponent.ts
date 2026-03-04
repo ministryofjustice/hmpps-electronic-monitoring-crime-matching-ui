@@ -81,7 +81,7 @@ export default class DataTableComponent {
     cy.get(`input[type=radio][value="${id}"]`).should('be.checked')
   }
 
-  selectRow(id: string): void {
-    cy.get(`input[type=radio][value="${id}"]`).check()
+  selectRow(id: string, type: string = 'radio'): void {
+    cy.get(`input[type=${type}][value="${id}"]`).check()
   }
 }

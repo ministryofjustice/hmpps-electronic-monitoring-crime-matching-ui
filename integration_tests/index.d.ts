@@ -4,6 +4,7 @@ import { StubGetDeviceActivationPositionsOptions } from './mockApis/locationData
 import { StubGetPersonsOptions } from './mockApis/locationData/persons'
 import { StubGetPersonOptions } from './mockApis/locationData/person'
 import { StubGetIngestionAttemptsOptions } from './mockApis/crimeMatching/ingestionAttempts'
+import { StubGetCrimeMatchingResultsOptions } from './mockApis/crimeMatching/crimeMatchingResults'
 
 declare global {
   namespace Cypress {
@@ -27,6 +28,16 @@ declare global {
       ) => Chainable<JQuery>
 
       /**
+       * Custom command to list downloads
+       */
+      getDownloads: (path: string) => Chainable<Array<string>>
+
+      /**
+       * Custom command to delete the downloads directory
+       */
+      resetDownloads: (path: string) => void
+
+      /**
        * Custom command to signIn. Set failOnStatusCode to false if you expect and non 200 return code
        * @example cy.signIn({ failOnStatusCode: boolean })
        */
@@ -36,6 +47,11 @@ declare global {
        * Stub a wiremock response for the crimeMatchingApi POST /crime-batches-query
        */
       stubCreateCrimeBatchesQuery(options?: StubCreateCrimeBatchQueryOptions): Chainable<void>
+
+      /**
+       * Stub a wiremock response for the crimeMatchingApi POST /crime-batches-query
+       */
+      stubGetCrimeMatchingResults(options?: StubGetCrimeMatchingResultsOptions): Chainable<void>
 
       /**
        * Stub a wiremock response for the crimeMatchingApi GET /crime-batches-query

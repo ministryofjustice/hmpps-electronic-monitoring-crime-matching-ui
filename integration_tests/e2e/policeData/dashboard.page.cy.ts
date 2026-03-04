@@ -7,8 +7,6 @@ context('Police Data Dashboard', () => {
       cy.task('reset')
       cy.task('stubSignIn')
       cy.signIn()
-
-      cy.stubMapMiddleware()
     })
 
     it('should display an empty table', () => {
@@ -33,7 +31,7 @@ context('Police Data Dashboard', () => {
     })
 
     it('should display ingestion attempts', () => {
-      // Given an API response with three ingestion attempts
+      // Given an API response with many ingestion attempts
       cy.stubGetIngestionAttempts({
         status: 200,
         query: 'batchId=&policeForceArea=&fromDate=&toDate=',

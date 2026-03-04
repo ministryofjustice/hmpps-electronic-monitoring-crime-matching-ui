@@ -1,5 +1,6 @@
 import AppPage from '../appPage'
 import DataTableComponent from '../components/dataTableComponent'
+import ExportCrimeMatchingResultsFormComponent from '../components/forms/exportCrimeMatchingResultsForm'
 import SearchIngestionAttemptsFormComponent from '../components/forms/searchIngestionAttemptsForm'
 
 export default class PoliceDataDashboardPage extends AppPage {
@@ -13,6 +14,10 @@ export default class PoliceDataDashboardPage extends AppPage {
 
   get searchForm(): SearchIngestionAttemptsFormComponent {
     return new SearchIngestionAttemptsFormComponent()
+  }
+
+  get exportForm(): ExportCrimeMatchingResultsFormComponent {
+    return new ExportCrimeMatchingResultsFormComponent()
   }
 
   checkOnPage(): void {

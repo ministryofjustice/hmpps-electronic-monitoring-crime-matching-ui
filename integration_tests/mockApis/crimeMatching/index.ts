@@ -1,5 +1,6 @@
 import ping from './ping'
 import { stubCreateCrimeBatchesQuery, stubGetCrimeBatchesQuery } from './crimeBatches'
+import { stubGetCrimeMatchingResults } from './crimeMatchingResults'
 import { stubGetPersons } from '../locationData/persons'
 import { stubGetDeviceActivation } from '../locationData/deviceActivation'
 import { stubGetDeviceActivationPositions } from '../locationData/deviceActivationPositions'
@@ -10,6 +11,7 @@ export default {
   stubCrimeMatchingPing: ping,
   stubCreateCrimeBatchesQuery,
   stubGetCrimeBatchesQuery,
+  stubGetCrimeMatchingResults,
   stubGetDeviceActivation,
   stubGetDeviceActivationPositions,
   stubGetIngestionAttempts,
