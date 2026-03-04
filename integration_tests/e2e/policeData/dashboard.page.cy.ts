@@ -138,10 +138,26 @@ context('Police Data Dashboard', () => {
       // And the table should have 3 rows
       page.dataTable.shouldHaveColumns(['', 'Status', 'Police force area', 'Batch', 'Matches', 'Date', 'Time'])
       page.dataTable.shouldHaveRows([
-        ['Select batch-', 'Ingested', 'Metropolitan', 'MPS20251110', '5', '01/01/2025', '11:23:34'],
+        [
+          'Select batch-3acc50a6-ecc4-4c40-8296-3fc8409c1765',
+          'Ingested',
+          'Metropolitan',
+          'MPS20251110',
+          '5',
+          '01/01/2025',
+          '11:23:34',
+        ],
         ['', 'Ingested', 'Metropolitan', 'MPS20251110', '0', '01/01/2025', '11:23:34'],
         ['', 'Ingested', 'Metropolitan', 'MPS20251110', 'In progress', '01/01/2025', '11:23:34'],
-        ['Select batch-', 'Partially ingested', 'Avon and Somerset', 'MPS20251110', '5', '01/01/2025', '11:23:34'],
+        [
+          'Select batch-a0fd61c2-c289-4acd-aef9-2d7d89a26d4f',
+          'Partially ingested',
+          'Avon and Somerset',
+          'MPS20251110',
+          '5',
+          '01/01/2025',
+          '11:23:34',
+        ],
         ['', 'Partially ingested', 'Avon and Somerset', 'MPS20251110', '0', '01/01/2025', '11:23:34'],
         ['', 'Partially ingested', 'Avon and Somerset', 'MPS20251110', 'In progress', '01/01/2025', '11:23:34'],
         ['', 'Failed ingestion', 'City of London', 'MPS20251110', 'N/A', '01/01/2025', '11:23:34'],
