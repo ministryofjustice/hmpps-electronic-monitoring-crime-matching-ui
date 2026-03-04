@@ -31,6 +31,8 @@ const getRow = (crimeMatchingResult: CrimeMatchingResult): Array<string> => {
     crimeMatchingResult.crimeType,
     formatDateTime(crimeMatchingResult.crimeDateTimeFrom, 'DD/MM/YYYY HH:mm'),
     formatDateTime(crimeMatchingResult.crimeDateTimeTo, 'DD/MM/YYYY HH:mm'),
+    crimeMatchingResult.crimeLatitude.toString(),
+    crimeMatchingResult.crimeLongitude.toString(),
     crimeMatchingResult.crimeText,
     crimeMatchingResult.deviceId.toString(),
     crimeMatchingResult.deviceName,

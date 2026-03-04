@@ -21,12 +21,12 @@
         <input
           type="checkbox"
           class="govuk-checkboxes__input"
-          id="batch-{{ ingestionAttempt.ingestionAttemptId }}"
+          id="batch-{{ ingestionAttempt.crimeBatchId }}"
           name="batchIds"
-          value="{{ ingestionAttempt.ingestionAttemptId }}"
+          value="{{ ingestionAttempt.crimeBatchId }}"
         />
-        <label class="govuk-label govuk-checkboxes__label" for="batch-{{ ingestionAttempt.batchUUID }}">
-          <span class="govuk-visually-hidden">Select batch-{{ ingestionAttempt.batchUUID }}</span>
+        <label class="govuk-label govuk-checkboxes__label" for="batch-{{ ingestionAttempt.crimeBatchId }}">
+          <span class="govuk-visually-hidden">Select batch-{{ ingestionAttempt.crimeBatchId }}</span>
         </label>
       </div>
     {% endset %}

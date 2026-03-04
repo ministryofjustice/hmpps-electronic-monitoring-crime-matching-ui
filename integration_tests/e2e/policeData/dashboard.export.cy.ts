@@ -23,6 +23,7 @@ context('Police Data Dashboard', () => {
               ingestionAttemptId: '6664c855-cd76-4674-8f38-34244ad77c5a',
               ingestionStatus: 'SUCCESSFUL',
               policeForceArea: 'METROPOLITAN',
+              crimeBatchId: '3acc50a6-ecc4-4c40-8296-3fc8409c1765',
               batchId: 'MPS20251110',
               matches: 5,
               createdAt: '2025-01-01T11:23:34.000Z',
@@ -32,6 +33,7 @@ context('Police Data Dashboard', () => {
               ingestionAttemptId: '0078f3f7-74dc-4165-8e43-dca9e10a1a39',
               ingestionStatus: 'PARTIAL',
               policeForceArea: 'AVON_AND_SOMERSET',
+              crimeBatchId: 'a0fd61c2-c289-4acd-aef9-2d7d89a26d4f',
               batchId: 'MPS20251110',
               matches: 5,
               createdAt: '2025-01-01T11:23:34.000Z',
@@ -81,7 +83,7 @@ context('Police Data Dashboard', () => {
       const page = Page.verifyOnPage(PoliceDataDashboardPage)
 
       // And selects a row
-      page.dataTable.selectRow('6664c855-cd76-4674-8f38-34244ad77c5a', 'checkbox')
+      page.dataTable.selectRow('3acc50a6-ecc4-4c40-8296-3fc8409c1765', 'checkbox')
 
       // And clicks the export button
       page.exportForm.exportButton.click()
@@ -123,7 +125,7 @@ context('Police Data Dashboard', () => {
       const page = Page.verifyOnPage(PoliceDataDashboardPage)
 
       // And selects a row
-      page.dataTable.selectRow('6664c855-cd76-4674-8f38-34244ad77c5a', 'checkbox')
+      page.dataTable.selectRow('3acc50a6-ecc4-4c40-8296-3fc8409c1765', 'checkbox')
 
       // And clicks the export button
       page.exportForm.exportButton.click()
@@ -133,7 +135,7 @@ context('Police Data Dashboard', () => {
     })
 
     it('should show an error if the api returns an error', () => {
-      // Given an API response no crime matching results
+      // Given a failed API request
       cy.stubGetCrimeMatchingResults({
         query: '.*',
         status: 500,
@@ -146,7 +148,7 @@ context('Police Data Dashboard', () => {
       const page = Page.verifyOnPage(PoliceDataDashboardPage)
 
       // And selects a row
-      page.dataTable.selectRow('6664c855-cd76-4674-8f38-34244ad77c5a', 'checkbox')
+      page.dataTable.selectRow('3acc50a6-ecc4-4c40-8296-3fc8409c1765', 'checkbox')
 
       // And clicks the export button
       page.exportForm.exportButton.click()
