@@ -13,18 +13,25 @@
 
 {% for ingestionAttempt in ingestionAttempts %}
 
-  {% set batch = ""%}
+  {% set batch = "" %}
 
   {% if ingestionAttempt.canBeExported %}
     {% set batch %}
-        <div class="govuk-checkboxes__item govuk-checkboxes--small">
-          <input type="checkbox" class="govuk-checkboxes__input" id="batch-{{ ingestionAttempt.ingestionAttemptId }}" name="batchIds" value="{{ ingestionAttempt.ingestionAttemptId }}">
-          <label class="govuk-label govuk-checkboxes__label" for="batch-{{ ingestionAttempt.batchUUID }}">
-            <span class="govuk-visually-hidden">Select batch-{{ ingestionAttempt.batchUUID }}</span>
-          </label>
-        </div>
-      {% endset %}
+      <div class="govuk-checkboxes__item govuk-checkboxes--small">
+        <input
+          type="checkbox"
+          class="govuk-checkboxes__input"
+          id="batch-{{ ingestionAttempt.ingestionAttemptId }}"
+          name="batchIds"
+          value="{{ ingestionAttempt.ingestionAttemptId }}"
+        />
+        <label class="govuk-label govuk-checkboxes__label" for="batch-{{ ingestionAttempt.batchUUID }}">
+          <span class="govuk-visually-hidden">Select batch-{{ ingestionAttempt.batchUUID }}</span>
+        </label>
+      </div>
+    {% endset %}
   {% endif %}
+
 
   {% set status %}
     {{
