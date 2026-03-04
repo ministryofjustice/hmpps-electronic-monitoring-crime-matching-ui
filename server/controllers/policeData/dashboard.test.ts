@@ -10,6 +10,7 @@ import PoliceDataService from '../../services/policeDataService'
 import createMockRequest from '../../testutils/createMockRequest'
 import createMockResponse from '../../testutils/createMockResponse'
 import PoliceDataDashboardController from './dashboard'
+import CrimeMatchingResultsService from '../../services/crimeMatchingResultsService'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
@@ -54,6 +55,8 @@ describe('PoliceDataDashboardController', () => {
 
   beforeEach(() => {
     mockRestClient = new CrimeMatchingClient(logger) as jest.Mocked<CrimeMatchingClient>
+    jest.useFakeTimers()
+    jest.setSystemTime(new Date('2026-01-01T00:00:00Z'))
   })
 
   afterEach(() => {
@@ -76,8 +79,9 @@ describe('PoliceDataDashboardController', () => {
       const req = createMockRequest({ body })
       const res = createMockResponse()
       const next = jest.fn()
-      const service = new PoliceDataService(mockRestClient)
-      const controller = new PoliceDataDashboardController(service)
+      const policeDataService = new PoliceDataService(mockRestClient)
+      const crimeMatchingResultService = new CrimeMatchingResultsService(mockRestClient)
+      const controller = new PoliceDataDashboardController(policeDataService, crimeMatchingResultService)
 
       // When
       await controller.search(req, res, next)
@@ -92,8 +96,9 @@ describe('PoliceDataDashboardController', () => {
       const req = createMockRequest({ body: { foo: 'bar' } })
       const res = createMockResponse()
       const next = jest.fn()
-      const service = new PoliceDataService(mockRestClient)
-      const controller = new PoliceDataDashboardController(service)
+      const policeDataService = new PoliceDataService(mockRestClient)
+      const crimeMatchingResultService = new CrimeMatchingResultsService(mockRestClient)
+      const controller = new PoliceDataDashboardController(policeDataService, crimeMatchingResultService)
 
       // When
       await controller.search(req, res, next)
@@ -108,8 +113,9 @@ describe('PoliceDataDashboardController', () => {
       const req = createMockRequest({ body: { batchId: 'A&B=C' } })
       const res = createMockResponse()
       const next = jest.fn()
-      const service = new PoliceDataService(mockRestClient)
-      const controller = new PoliceDataDashboardController(service)
+      const policeDataService = new PoliceDataService(mockRestClient)
+      const crimeMatchingResultService = new CrimeMatchingResultsService(mockRestClient)
+      const controller = new PoliceDataDashboardController(policeDataService, crimeMatchingResultService)
 
       // When
       await controller.search(req, res, next)
@@ -144,8 +150,9 @@ describe('PoliceDataDashboardController', () => {
         const req = createMockRequest({ query })
         const res = createMockResponse()
         const next = jest.fn()
-        const service = new PoliceDataService(mockRestClient)
-        const controller = new PoliceDataDashboardController(service)
+        const policeDataService = new PoliceDataService(mockRestClient)
+        const crimeMatchingResultService = new CrimeMatchingResultsService(mockRestClient)
+        const controller = new PoliceDataDashboardController(policeDataService, crimeMatchingResultService)
 
         // When
         await controller.view(req, res, next)
@@ -188,8 +195,9 @@ describe('PoliceDataDashboardController', () => {
         const req = createMockRequest({ query })
         const res = createMockResponse()
         const next = jest.fn()
-        const service = new PoliceDataService(mockRestClient)
-        const controller = new PoliceDataDashboardController(service)
+        const policeDataService = new PoliceDataService(mockRestClient)
+        const crimeMatchingResultService = new CrimeMatchingResultsService(mockRestClient)
+        const controller = new PoliceDataDashboardController(policeDataService, crimeMatchingResultService)
 
         mockRestClient.getIngestionAttempts.mockResolvedValue({
           data: [ingestionAttemptSummary],
@@ -229,8 +237,9 @@ describe('PoliceDataDashboardController', () => {
       const req = createMockRequest({ query: { page: pageNumber.toString() } })
       const res = createMockResponse()
       const next = jest.fn()
-      const service = new PoliceDataService(mockRestClient)
-      const controller = new PoliceDataDashboardController(service)
+      const policeDataService = new PoliceDataService(mockRestClient)
+      const crimeMatchingResultService = new CrimeMatchingResultsService(mockRestClient)
+      const controller = new PoliceDataDashboardController(policeDataService, crimeMatchingResultService)
 
       mockRestClient.getIngestionAttempts.mockResolvedValue({
         data: [ingestionAttemptSummary],
@@ -269,8 +278,9 @@ describe('PoliceDataDashboardController', () => {
       const req = createMockRequest({})
       const res = createMockResponse()
       const next = jest.fn()
-      const service = new PoliceDataService(mockRestClient)
-      const controller = new PoliceDataDashboardController(service)
+      const policeDataService = new PoliceDataService(mockRestClient)
+      const crimeMatchingResultService = new CrimeMatchingResultsService(mockRestClient)
+      const controller = new PoliceDataDashboardController(policeDataService, crimeMatchingResultService)
 
       // Given
       mockRestClient.getIngestionAttempts.mockResolvedValue({
@@ -465,6 +475,108 @@ describe('PoliceDataDashboardController', () => {
         validationErrors: {},
       })
       expect(next).not.toHaveBeenCalled()
+    })
+  })
+
+  describe('export', () => {
+    it('should export crime matching results', async () => {
+      // Given
+      const req = createMockRequest({
+        query: { batchIds: ['bccfe61c-adb0-4e50-b6e6-ce7a68866773', '93fa3424-d014-49ac-ae11-e5bcc2c53c9d'] },
+      })
+      const res = createMockResponse()
+      const next = jest.fn()
+      const policeDataService = new PoliceDataService(mockRestClient)
+      const crimeMatchingResultService = new CrimeMatchingResultsService(mockRestClient)
+      const controller = new PoliceDataDashboardController(policeDataService, crimeMatchingResultService)
+
+      mockRestClient.getCrimeMatchingResults.mockResolvedValue({
+        data: [
+          {
+            policeForce: 'METROPOLITAN',
+            batchId: 'MPS20260101',
+            crimeRef: '01/12345/23',
+            crimeType: 'BOTD',
+            crimeDateTimeFrom: '2026-01-01T00:00:00.000Z',
+            crimeDateTimeTo: '2026-01-01T01:00:00.000Z',
+            crimeLatitude: 0.0,
+            crimeLongitude: 0.0,
+            crimeText: 'Description',
+            deviceId: 1,
+            deviceName: 'deviceName',
+            subjectId: '123',
+            subjectName: 'John Smith',
+            subjectNomisId: 'nomisId',
+            subjectPncRef: 'pncRef',
+            subjectAddress: 'Street,City,Address',
+            subjectDateOfBirth: '01/01/1970',
+            subjectManager: '',
+          },
+        ],
+      })
+
+      // When
+      await controller.export(req, res, next)
+
+      // Then
+      expect(mockRestClient.getCrimeMatchingResults).toHaveBeenCalledWith(expectedAuthOptions, [
+        'bccfe61c-adb0-4e50-b6e6-ce7a68866773',
+        '93fa3424-d014-49ac-ae11-e5bcc2c53c9d',
+      ])
+      expect(res.setHeader).toHaveBeenNthCalledWith(1, 'Content-Type', 'text/csv')
+      expect(res.setHeader).toHaveBeenNthCalledWith(
+        2,
+        'Content-Disposition',
+        'attachment; filename="crime-matching-results-20260101000000.csv"',
+      )
+      expect(res.send).toHaveBeenCalledWith(
+        '"POLICE FORCE","BATCH ID","CRIME REF","CRIME TYPE","FROM DATE/TIME","TO DATE/TIME","CRIME LATITUDE","CRIME LONGITUDE","OTHER INFO","DEVICE ID","DEVICE NAME","SUBJECT IDENTIFIER","OFFENDER NAME","NOMIS ID","PNC REF","OFFENDER ADDRESS","OFFENDER DATE OF BIRTH","OFFENDER MANAGER"\n"METROPOLITAN","MPS20260101","01/12345/23","BOTD","01/01/2026 00:00","01/01/2026 01:00","Description","1","deviceName","123","John Smith","nomisId","pncRef","Street,City,Address","01/01/1970",""',
+      )
+      expect(next).not.toHaveBeenCalled()
+    })
+
+    it('should throw an error if no batches selected', async () => {
+      // Given
+      const req = createMockRequest({})
+      const res = createMockResponse()
+      const next = jest.fn()
+      const policeDataService = new PoliceDataService(mockRestClient)
+      const crimeMatchingResultService = new CrimeMatchingResultsService(mockRestClient)
+      const controller = new PoliceDataDashboardController(policeDataService, crimeMatchingResultService)
+
+      // When
+      await controller.export(req, res, next)
+
+      // Then
+      expect(mockRestClient.getCrimeMatchingResults).not.toHaveBeenCalled()
+      expect(res.setHeader).not.toHaveBeenCalled()
+      expect(res.send).not.toHaveBeenCalled()
+      expect(next).toHaveBeenCalledWith(new Error('At least one batch must be selected for export.'))
+    })
+
+    it('should throw an error if no data returned by API', async () => {
+      // Given
+      const req = createMockRequest({ query: { batchIds: ['bccfe61c-adb0-4e50-b6e6-ce7a68866773'] } })
+      const res = createMockResponse()
+      const next = jest.fn()
+      const policeDataService = new PoliceDataService(mockRestClient)
+      const crimeMatchingResultService = new CrimeMatchingResultsService(mockRestClient)
+      const controller = new PoliceDataDashboardController(policeDataService, crimeMatchingResultService)
+
+      mockRestClient.getCrimeMatchingResults.mockResolvedValue({
+        data: [],
+      })
+
+      // When
+      await controller.export(req, res, next)
+
+      // Then
+      expect(mockRestClient.getCrimeMatchingResults).toHaveBeenCalledWith(expectedAuthOptions, [
+        'bccfe61c-adb0-4e50-b6e6-ce7a68866773',
+      ])
+      expect(res.setHeader).not.toHaveBeenCalled()
+      expect(res.send).not.toHaveBeenCalled()
+      expect(next).toHaveBeenCalledWith(new Error('No results'))
     })
   })
 })

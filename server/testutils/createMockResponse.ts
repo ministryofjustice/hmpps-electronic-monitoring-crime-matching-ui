@@ -19,6 +19,7 @@ const createMockResponse = (): Response => {
     redirect: jest.fn(),
     render: jest.fn(),
     set: jest.fn(),
+    setHeader: jest.fn(),
     send: jest.fn(),
   }
 }
