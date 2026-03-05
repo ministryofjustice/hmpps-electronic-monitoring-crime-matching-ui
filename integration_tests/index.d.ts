@@ -1,4 +1,3 @@
-import { StubCreateCrimeBatchQueryOptions, StubGetCrimeBatchesOptions } from './mockApis/crimeMatching/crimeBatches'
 import { StubGetDeviceActivationOptions } from './mockApis/locationData/deviceActivation'
 import { StubGetDeviceActivationPositionsOptions } from './mockApis/locationData/deviceActivationPositions'
 import { StubGetPersonsOptions } from './mockApis/locationData/persons'
@@ -46,17 +45,7 @@ declare global {
       /**
        * Stub a wiremock response for the crimeMatchingApi POST /crime-batches-query
        */
-      stubCreateCrimeBatchesQuery(options?: StubCreateCrimeBatchQueryOptions): Chainable<void>
-
-      /**
-       * Stub a wiremock response for the crimeMatchingApi POST /crime-batches-query
-       */
       stubGetCrimeMatchingResults(options?: StubGetCrimeMatchingResultsOptions): Chainable<void>
-
-      /**
-       * Stub a wiremock response for the crimeMatchingApi GET /crime-batches-query
-       */
-      stubGetCrimeBatchesQuery(options?: StubGetCrimeBatchesOptions): Chainable<void>
 
       /**
        * Stub a wiremock response for the crimeMatchingApi GET /device-activations/{deviceActivationId}
