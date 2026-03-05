@@ -11,14 +11,6 @@ Cypress.Commands.add('resetDownloads', path => {
   cy.task('resetDownloads', path)
 })
 
-Cypress.Commands.add('stubCreateCrimeBatchesQuery', options => {
-  cy.task('stubCreateCrimeBatchesQuery', options)
-})
-
-Cypress.Commands.add('stubGetCrimeBatchesQuery', options => {
-  cy.task('stubGetCrimeBatchesQuery', options)
-})
-
 Cypress.Commands.add('stubGetCrimeMatchingResults', options => {
   cy.task('stubGetCrimeMatchingResults', options)
 })
