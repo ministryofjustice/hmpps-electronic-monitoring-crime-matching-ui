@@ -5,3 +5,8 @@
 .table-cell--bold {
   @include govuk-font($size: false, $weight: "bold");
 }
+
+.table-cell--middle {
+  vertical-align: middle;
+  padding: 5px 20px 5px 0;
+}

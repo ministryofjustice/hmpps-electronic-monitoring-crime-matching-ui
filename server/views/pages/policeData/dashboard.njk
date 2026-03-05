@@ -13,6 +13,25 @@
 
 {% for ingestionAttempt in ingestionAttempts %}
 
+  {% set batch = "" %}
+
+  {% if ingestionAttempt.canBeExported %}
+    {% set batch %}
+      <div class="govuk-checkboxes__item govuk-checkboxes--small">
+        <input
+          type="checkbox"
+          class="govuk-checkboxes__input"
+          id="batch-{{ ingestionAttempt.crimeBatchId }}"
+          name="batchIds"
+          value="{{ ingestionAttempt.crimeBatchId }}"
+        />
+        <label class="govuk-label govuk-checkboxes__label" for="batch-{{ ingestionAttempt.crimeBatchId }}">
+          <span class="govuk-visually-hidden">Select batch-{{ ingestionAttempt.crimeBatchId }}</span>
+        </label>
+      </div>
+    {% endset %}
+  {% endif %}
+
 
   {% set status %}
     {{
@@ -31,37 +50,43 @@
   {% endset %}
 
   {% if ingestionAttempt.matchesText == 'N/A' %}
-    {% set matchesClasses = "table-cell--red table-cell--bold" %}
+    {% set matchesClasses = "table-cell--middle table-cell--red table-cell--bold" %}
   {% elif ingestionAttempt.matches == 0 %}
-    {% set matchesClasses = "table-cell--red table-cell--bold" %}
+    {% set matchesClasses = "table-cell--middle table-cell--red table-cell--bold" %}
   {% else %}
-    {% set matchesClasses = "" %}
+    {% set matchesClasses = "table-cell--middle" %}
   {% endif %}
 
   {%
     set rows = (rows.push(
       [
         {
-          text: ""
+          html: batch,
+          classes: "table-cell--middle"
         },
         {
-          html: status
+          html: status,
+          classes: "table-cell--middle"
         },
         {
-          text: ingestionAttempt.policeForceArea
+          text: ingestionAttempt.policeForceArea,
+          classes: "table-cell--middle"
         },
         {
-          html: link
+          html: link,
+          classes: "table-cell--middle"
         },
         {
           text: ingestionAttempt.matchesText,
           classes: matchesClasses
         },
         {
-          text: ingestionAttempt.createdAt | formatDateTime("DD/MM/YYYY")
+          text: ingestionAttempt.createdAt | formatDateTime("DD/MM/YYYY"),
+          classes: "table-cell--middle"
         },
         {
-          text: ingestionAttempt.createdAt | formatDateTime("HH:mm:ss")
+          text: ingestionAttempt.createdAt | formatDateTime("HH:mm:ss"),
+          classes: "table-cell--middle"
         }
       ]
     ), rows)
@@ -255,48 +280,50 @@
     </form>
   </div>
 
-  <div class="govuk-grid-row">
-    <div class="govuk-grid-column-full">
-      {{
-        govukButton({
-          text: "Export"
-        })
-      }}
+  <form id="export-crime-matching-results-form" action="/police-data/dashboard/export">
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-full">
+        {{
+          govukButton({
+            text: "Export"
+          })
+        }}
+      </div>
     </div>
-  </div>
 
-  {{
-    dataTable({
-      classes: "ingestion-attempts-table",
-      columns: [
-        {
-          text: ""
-        },
-        {
-          text: "Status"
-        },
-        {
-          text: "Police force area"
-        },
-        {
-          text: "Batch"
-        },
-        {
-          text: "Matches"
-        },
-        {
-          text: "Date"
-        },
-        {
-          text: "Time"
+    {{
+      dataTable({
+        classes: "ingestion-attempts-table",
+        columns: [
+          {
+            text: ""
+          },
+          {
+            text: "Status"
+          },
+          {
+            text: "Police force area"
+          },
+          {
+            text: "Batch"
+          },
+          {
+            text: "Matches"
+          },
+          {
+            text: "Date"
+          },
+          {
+            text: "Time"
+          }
+        ],
+        rows: rows,
+        pagination: {
+          pageCount: pageCount,
+          currentPage: pageNumber,
+          hrefPrefix: "?" + paginationHrefPrefix
         }
-      ],
-      rows: rows,
-      pagination: {
-        pageCount: pageCount,
-        currentPage: pageNumber,
-        hrefPrefix: "?" + paginationHrefPrefix
-      }
-    })
-  }}
+      })
+    }}
+  </form>
 {% endblock %}

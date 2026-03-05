@@ -35,6 +35,12 @@ const getStatusColour = ({ ingestionStatus }: IngestionAttemptSummary): string =
   return statusColourMap.get(ingestionStatus) ?? ''
 }
 
+const exportableIngestionStatuses = ['SUCCESSFUL', 'PARTIAL']
+
+const canBeExported = ({ ingestionStatus, matches }: IngestionAttemptSummary): boolean => {
+  return exportableIngestionStatuses.includes(ingestionStatus) && (matches ?? 0) > 0
+}
+
 const presentIngestionAttemptSummary = (ingestionAttempt: IngestionAttemptSummary) => {
   return {
     ...ingestionAttempt,
@@ -42,6 +48,7 @@ const presentIngestionAttemptSummary = (ingestionAttempt: IngestionAttemptSummar
     policeForceArea: presentPoliceForceArea(ingestionAttempt.policeForceArea),
     statusColour: getStatusColour(ingestionAttempt),
     statusText: getStatusText(ingestionAttempt),
+    canBeExported: canBeExported(ingestionAttempt),
   }
 }
 

@@ -7,8 +7,6 @@ context('Police Data Dashboard', () => {
       cy.task('reset')
       cy.task('stubSignIn')
       cy.signIn()
-
-      cy.stubMapMiddleware()
     })
 
     it('should display an empty table', () => {
@@ -33,7 +31,7 @@ context('Police Data Dashboard', () => {
     })
 
     it('should display ingestion attempts', () => {
-      // Given an API response with three ingestion attempts
+      // Given an API response with many ingestion attempts
       cy.stubGetIngestionAttempts({
         status: 200,
         query: 'batchId=&policeForceArea=&fromDate=&toDate=',
@@ -44,6 +42,7 @@ context('Police Data Dashboard', () => {
               ingestionAttemptId: '6664c855-cd76-4674-8f38-34244ad77c5a',
               ingestionStatus: 'SUCCESSFUL',
               policeForceArea: 'METROPOLITAN',
+              crimeBatchId: '3acc50a6-ecc4-4c40-8296-3fc8409c1765',
               batchId: 'MPS20251110',
               matches: 5,
               createdAt: '2025-01-01T11:23:34.000Z',
@@ -53,6 +52,7 @@ context('Police Data Dashboard', () => {
               ingestionAttemptId: '6664c855-cd76-4674-8f38-34244ad77c5a',
               ingestionStatus: 'SUCCESSFUL',
               policeForceArea: 'METROPOLITAN',
+              crimeBatchId: '4f493763-fd59-41a3-9f2d-688d6dbd82c8',
               batchId: 'MPS20251110',
               matches: 0,
               createdAt: '2025-01-01T11:23:34.000Z',
@@ -62,6 +62,7 @@ context('Police Data Dashboard', () => {
               ingestionAttemptId: '6664c855-cd76-4674-8f38-34244ad77c5a',
               ingestionStatus: 'SUCCESSFUL',
               policeForceArea: 'METROPOLITAN',
+              crimeBatchId: '5494b24b-5972-492e-b3a0-e215fe0a9fc0',
               batchId: 'MPS20251110',
               matches: null,
               createdAt: '2025-01-01T11:23:34.000Z',
@@ -71,6 +72,7 @@ context('Police Data Dashboard', () => {
               ingestionAttemptId: '0078f3f7-74dc-4165-8e43-dca9e10a1a39',
               ingestionStatus: 'PARTIAL',
               policeForceArea: 'AVON_AND_SOMERSET',
+              crimeBatchId: 'a0fd61c2-c289-4acd-aef9-2d7d89a26d4f',
               batchId: 'MPS20251110',
               matches: 5,
               createdAt: '2025-01-01T11:23:34.000Z',
@@ -80,6 +82,7 @@ context('Police Data Dashboard', () => {
               ingestionAttemptId: '0078f3f7-74dc-4165-8e43-dca9e10a1a39',
               ingestionStatus: 'PARTIAL',
               policeForceArea: 'AVON_AND_SOMERSET',
+              crimeBatchId: '21c9124b-d90b-4830-bf6e-5327a690bff4',
               batchId: 'MPS20251110',
               matches: 0,
               createdAt: '2025-01-01T11:23:34.000Z',
@@ -89,6 +92,7 @@ context('Police Data Dashboard', () => {
               ingestionAttemptId: '0078f3f7-74dc-4165-8e43-dca9e10a1a39',
               ingestionStatus: 'PARTIAL',
               policeForceArea: 'AVON_AND_SOMERSET',
+              crimeBatchId: '9ff5fdf8-5c8c-4e3b-bd6a-d0fe1407f0d8',
               batchId: 'MPS20251110',
               matches: null,
               createdAt: '2025-01-01T11:23:34.000Z',
@@ -98,6 +102,7 @@ context('Police Data Dashboard', () => {
               ingestionAttemptId: 'de5cd033-4a06-4f1b-b4af-c40879b1eda8',
               ingestionStatus: 'FAILED',
               policeForceArea: 'CITY_OF_LONDON',
+              crimeBatchId: '6d869b08-7546-4ba7-8f26-2548f97f5a75',
               batchId: 'MPS20251110',
               matches: null,
               createdAt: '2025-01-01T11:23:34.000Z',
@@ -107,6 +112,7 @@ context('Police Data Dashboard', () => {
               ingestionAttemptId: 'aae2d621-719d-4c53-b8cd-a2d847ee659d',
               ingestionStatus: 'ERROR',
               policeForceArea: 'CITY_OF_LONDON',
+              crimeBatchId: '',
               batchId: '',
               matches: null,
               createdAt: '2025-01-01T11:23:34.000Z',
@@ -132,10 +138,26 @@ context('Police Data Dashboard', () => {
       // And the table should have 3 rows
       page.dataTable.shouldHaveColumns(['', 'Status', 'Police force area', 'Batch', 'Matches', 'Date', 'Time'])
       page.dataTable.shouldHaveRows([
-        ['', 'Ingested', 'Metropolitan', 'MPS20251110', '5', '01/01/2025', '11:23:34'],
+        [
+          'Select batch-3acc50a6-ecc4-4c40-8296-3fc8409c1765',
+          'Ingested',
+          'Metropolitan',
+          'MPS20251110',
+          '5',
+          '01/01/2025',
+          '11:23:34',
+        ],
         ['', 'Ingested', 'Metropolitan', 'MPS20251110', '0', '01/01/2025', '11:23:34'],
         ['', 'Ingested', 'Metropolitan', 'MPS20251110', 'In progress', '01/01/2025', '11:23:34'],
-        ['', 'Partially ingested', 'Avon and Somerset', 'MPS20251110', '5', '01/01/2025', '11:23:34'],
+        [
+          'Select batch-a0fd61c2-c289-4acd-aef9-2d7d89a26d4f',
+          'Partially ingested',
+          'Avon and Somerset',
+          'MPS20251110',
+          '5',
+          '01/01/2025',
+          '11:23:34',
+        ],
         ['', 'Partially ingested', 'Avon and Somerset', 'MPS20251110', '0', '01/01/2025', '11:23:34'],
         ['', 'Partially ingested', 'Avon and Somerset', 'MPS20251110', 'In progress', '01/01/2025', '11:23:34'],
         ['', 'Failed ingestion', 'City of London', 'MPS20251110', 'N/A', '01/01/2025', '11:23:34'],
@@ -228,6 +250,7 @@ context('Police Data Dashboard', () => {
             ingestionAttemptId: '6664c855-cd76-4674-8f38-34244ad77c5a',
             ingestionStatus: 'SUCCESSFUL',
             policeForceArea: 'CITY_OF_LONDON',
+            crimeBatchId: '5494b24b-5972-492e-b3a0-e215fe0a9fc0',
             batchId: 'MPS20251110',
             matches: 5,
             createdAt: '2025-01-01T11:23:34.000Z',

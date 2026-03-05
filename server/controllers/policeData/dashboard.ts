@@ -1,10 +1,19 @@
 import { RequestHandler } from 'express'
-import { policeDataDashboardQuerySchema } from '../../schemas/policeData/dashboard'
+import dayjs from 'dayjs'
+import {
+  policeDataDashboardExportQuerySchema,
+  policeDataDashboardQuerySchema,
+} from '../../schemas/policeData/dashboard'
+import CrimeMatchingResultsService from '../../services/crimeMatchingResultsService'
 import PoliceDataService from '../../services/policeDataService'
 import presentIngestionAttemptSummaries from '../../presenters/ingestionAttemptSummaries'
+import generateCrimeMatchingResultExport from '../../presenters/reports/crimeMatchingResults'
 
 export default class PoliceDataDashboardController {
-  constructor(private readonly policeDataService: PoliceDataService) {}
+  constructor(
+    private readonly policeDataService: PoliceDataService,
+    private readonly crimeMatchingResultsService: CrimeMatchingResultsService,
+  ) {}
 
   private getQueryString = (batchId: string, policeForceArea: string, fromDate: string, toDate: string): string => {
     const searchParams = new URLSearchParams({
@@ -62,6 +71,24 @@ export default class PoliceDataDashboardController {
         pageNumber: 1,
         validationErrors: result.validationErrors,
       })
+    }
+  }
+
+  export: RequestHandler = async (req, res, next) => {
+    const { username } = res.locals.user
+    const { batchIds } = policeDataDashboardExportQuerySchema.parse(req.query)
+    const result = await this.crimeMatchingResultsService.getCrimeMatchingResultsForBatches(username, batchIds)
+
+    if (result.ok) {
+      const now = dayjs().format('YYYYMMDDHHmmss')
+      const csvData = generateCrimeMatchingResultExport(result.data)
+      const fileName = `crime-matching-results-${now}.csv`
+
+      res.setHeader('Content-Type', 'text/csv')
+      res.setHeader('Content-Disposition', `attachment; filename="${fileName}"`)
+      res.send(csvData)
+    } else {
+      next(new Error(result.validationErrors.batchIds || result.error))
     }
   }
 }
