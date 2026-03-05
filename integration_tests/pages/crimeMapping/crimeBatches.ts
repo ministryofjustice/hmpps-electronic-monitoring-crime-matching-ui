@@ -18,7 +18,7 @@ export default class CrimeBatchesPage extends AppPage {
   checkOnPage(): void {
     super.checkOnPage()
 
-    this.navigation.crimeMappingLink.shouldBeActive()
+    this.navigation.proximityAlertLink.shouldBeActive()
     this.form.checkHasForm()
   }
 }

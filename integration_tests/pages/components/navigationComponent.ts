@@ -16,8 +16,8 @@ export default class NavigationComponent {
     return cy.get(`@${this.elementCacheId}-element`, { log: false })
   }
 
-  get crimeMappingLink(): NavigationLink {
-    return new NavigationLink(this.element, 'Crime mapping')
+  get proximityAlertLink(): NavigationLink {
+    return new NavigationLink(this.element, 'Proximity alert')
   }
 
   get locationDataLink(): NavigationLink {
@@ -39,7 +39,7 @@ export default class NavigationComponent {
   // HELPERS
 
   checkHasNavigation(): void {
-    this.crimeMappingLink.shouldExist()
+    this.proximityAlertLink.shouldExist()
     this.locationDataLink.shouldExist()
     this.dataIngestionLink.shouldExist()
     this.legalLink.shouldExist()
