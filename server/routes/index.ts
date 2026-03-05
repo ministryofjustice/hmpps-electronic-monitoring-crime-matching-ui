@@ -8,6 +8,7 @@ import PersonsController from '../controllers/locationData/persons'
 import populateSessionData from '../middleware/populateSessionData'
 import locationDataRoutes from './location-data'
 import policeDataRoutes from './police-data'
+import proximityAlertRoutes from './proximity-alert'
 
 export default function routes(services: Services): Router {
   const { auditService, personsService } = services
@@ -35,6 +36,7 @@ export default function routes(services: Services): Router {
 
   router.use('/location-data', locationDataRoutes(services))
   router.use('/police-data', policeDataRoutes(services))
+  router.use('/proximity-alert', proximityAlertRoutes(services))
 
   return router
 }
