@@ -1,0 +1,104 @@
+{% extends "../../partials/layout.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/select/macro.njk" import govukSelect %}
+{% from "govuk/components/tag/macro.njk" import govukTag %}
+{% from "moj/components/date-picker/macro.njk" import mojDatePicker %}
+{% from "../../components/datatable/macro.njk" import dataTable %}
+
+{% set pageTitle = applicationName + " - Home" %}
+{% set mainClasses = "app-container govuk-body" %}
+{% set activeLinkId = "proximity-alert" %}
+{% set rows = [] %}
+
+{% if rows.length == 0 %}
+  {%
+    set rows = [
+      [
+        {
+          text: "No results found with applied filters.",
+          colspan: 8
+        }
+      ]
+    ]
+  %}
+{% endif %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+      <h1 class="govuk-!-static-margin-top-0">Search crimes</h1>
+    </div>
+  </div>
+
+  <form id="search-crimes-form" method="POST" novalidate>
+    <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-one-third">
+        {{
+          govukInput({
+            label: {
+                text: "Crime number",
+                classes: "govuk-label--s"
+            },
+            hint: {
+              text: "Example: 12/1234567/12"
+            },
+            classes: "govuk-input--width-10",
+            errorMessage: { text: validationErrors.crimeReference } if validationErrors.crimeReference,
+            id: "crimeReference",
+            name: "crimeReference",
+            value: crimeReference
+          })
+        }}
+      </div>
+    </div>
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-full">
+        {{
+          govukButton({
+            text: "Search"
+          })
+        }}
+      </div>
+    </div>
+  </form>
+
+  {{
+    dataTable({
+      classes: "ingestion-attempts-table",
+      columns: [
+        {
+          text: "Matched"
+        },
+        {
+          text: "Crime number"
+        },
+        {
+          text: "Police force area, Batch ID"
+        },
+        {
+          text: "Crime type"
+        },
+        {
+          text: "Crime date"
+        },
+        {
+          text: "Ingestion date, time"
+        },
+        {
+          text: "Updates"
+        },
+        {
+          text: "Versions"
+        }
+      ],
+      rows: rows,
+      pagination: {
+        pageCount: pageCount,
+        currentPage: pageNumber,
+        hrefPrefix: ""
+      }
+    })
+  }}
+{% endblock %}
