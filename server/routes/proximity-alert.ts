@@ -8,6 +8,7 @@ const proximityAlertRoutes = ({ crimeService }: Services): Router => {
   const crimeSearchController = new CrimeSearchController(crimeService)
 
   router.get('/', asyncMiddleware(crimeSearchController.view))
+  router.post('/', asyncMiddleware(crimeSearchController.search))
 
   return router
 }

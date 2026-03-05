@@ -16,7 +16,7 @@
     set rows = [
       [
         {
-          text: "No results found with applied filters.",
+          text: "Enter a crime number and click search." if crimeReference == '' else "No results found for " + crimeReference + ".",
           colspan: 8
         }
       ]

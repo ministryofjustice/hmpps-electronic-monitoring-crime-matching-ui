@@ -5,6 +5,21 @@ import CrimeService from '../../services/crimeService'
 export default class CrimeSearchController {
   constructor(private readonly crimeService: CrimeService) {}
 
+  private getQueryString = (crimeReference: string): string => {
+    const searchParams = new URLSearchParams({
+      ...(crimeReference && { crimeReference }),
+    })
+
+    return searchParams.toString()
+  }
+
+  search: RequestHandler = async (req, res) => {
+    const { crimeReference } = crimeSearchQuerySchema.parse(req.body)
+    const query = this.getQueryString(crimeReference)
+
+    return res.redirect(303, `/proximity-alert${query ? `?${query}` : ''}`)
+  }
+
   view: RequestHandler = async (req, res) => {
     const { query } = req
     const { crimeReference } = crimeSearchQuerySchema.parse(query)
