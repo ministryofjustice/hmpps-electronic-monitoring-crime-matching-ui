@@ -7,6 +7,7 @@ describe('CrimeSearchController', () => {
   describe('search', () => {
     it.each([
       [{}, '/proximity-alert'],
+      [{ crimeReference: '' }, '/proximity-alert?crimeReference='],
       [{ crimeReference: 'abcdef' }, '/proximity-alert?crimeReference=abcdef'],
     ])('should correctly redirect for body %o to %s', async (body, expected) => {
       // Given
