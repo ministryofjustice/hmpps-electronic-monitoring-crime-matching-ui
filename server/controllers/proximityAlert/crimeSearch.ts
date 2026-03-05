@@ -5,9 +5,9 @@ import CrimeService from '../../services/crimeService'
 export default class CrimeSearchController {
   constructor(private readonly crimeService: CrimeService) {}
 
-  private getQueryString = (crimeReference: string): string => {
+  private getQueryString = (crimeReference: string | null): string => {
     const searchParams = new URLSearchParams({
-      ...(crimeReference && { crimeReference }),
+      ...(crimeReference != null && { crimeReference }),
     })
 
     return searchParams.toString()
