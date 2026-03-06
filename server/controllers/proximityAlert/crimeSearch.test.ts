@@ -8,6 +8,13 @@ import logger from '../../../logger'
 jest.mock('../../data/crimeMatchingClient')
 jest.mock('../../../logger')
 
+const expectedAuthOptions = {
+  tokenType: 'SYSTEM_TOKEN',
+  user: {
+    username: 'fakeUserName',
+  },
+}
+
 describe('CrimeSearchController', () => {
   let mockRestClient: jest.Mocked<CrimeMatchingClient>
 
@@ -88,6 +95,7 @@ describe('CrimeSearchController', () => {
         await controller.view(req, res, next)
 
         // Then
+        expect(mockRestClient.getCrimeVersions).not.toHaveBeenCalled()
         expect(res.render).toHaveBeenCalledWith('pages/proximityAlert/crimeSearch', {
           ...query,
           crimes: [],
@@ -111,9 +119,66 @@ describe('CrimeSearchController', () => {
       await controller.view(req, res, next)
 
       // Then
+      expect(mockRestClient.getCrimeVersions).not.toHaveBeenCalled()
       expect(res.render).toHaveBeenCalledWith('pages/proximityAlert/crimeSearch', {
         crimeReference: null,
         crimes: [],
+        pageCount: 1,
+        pageNumber: 1,
+        validationErrors: {},
+      })
+      expect(next).not.toHaveBeenCalled()
+    })
+
+    it('should present crime versions to the view engine', async () => {
+      // Given
+      const req = createMockRequest({ query: { crimeReference: 'abc' } })
+      const res = createMockResponse()
+      const next = jest.fn()
+      const service = new CrimeService(mockRestClient)
+      const controller = new CrimeSearchController(service)
+
+      mockRestClient.getCrimeVersions.mockResolvedValue({
+        data: [
+          {
+            crimeVersionId: '',
+            crimeReference: '',
+            policeForceArea: '',
+            crimeType: '',
+            crimeDate: '',
+            batchId: '',
+            ingestionDateTime: '',
+            matched: '',
+            versionLabel: '',
+            updates: '',
+          },
+        ],
+        pageCount: 1,
+        pageNumber: 0,
+        pageSize: 10,
+      })
+
+      // When
+      await controller.view(req, res, next)
+
+      // Then
+      expect(mockRestClient.getCrimeVersions).toHaveBeenCalledWith(expectedAuthOptions, 'abc')
+      expect(res.render).toHaveBeenCalledWith('pages/proximityAlert/crimeSearch', {
+        crimeReference: 'abc',
+        crimes: [
+          {
+            crimeVersionId: '',
+            crimeReference: '',
+            policeForceArea: '',
+            crimeType: '',
+            crimeDate: '',
+            batchId: '',
+            ingestionDateTime: '',
+            matched: '',
+            versionLabel: '',
+            updates: '',
+          },
+        ],
         pageCount: 1,
         pageNumber: 1,
         validationErrors: {},

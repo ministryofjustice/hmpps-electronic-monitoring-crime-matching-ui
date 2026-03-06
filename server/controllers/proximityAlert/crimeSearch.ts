@@ -31,7 +31,7 @@ export default class CrimeSearchController {
         crimeReference,
         crimes: result.data,
         pageCount: result.pageCount,
-        pageNumber: result.pageNumber,
+        pageNumber: result.pageNumber + 1,
         validationErrors: {},
       })
     } else {
