@@ -1,9 +1,24 @@
+import CrimeMatchingClient from '../../data/crimeMatchingClient'
 import CrimeService from '../../services/crimeService'
 import createMockRequest from '../../testutils/createMockRequest'
 import createMockResponse from '../../testutils/createMockResponse'
 import CrimeSearchController from './crimeSearch'
+import logger from '../../../logger'
+
+jest.mock('../../data/crimeMatchingClient')
+jest.mock('../../../logger')
 
 describe('CrimeSearchController', () => {
+  let mockRestClient: jest.Mocked<CrimeMatchingClient>
+
+  beforeEach(() => {
+    mockRestClient = new CrimeMatchingClient(logger) as jest.Mocked<CrimeMatchingClient>
+  })
+
+  afterEach(() => {
+    jest.resetAllMocks()
+  })
+
   describe('search', () => {
     it.each([
       [{}, '/proximity-alert'],
@@ -14,7 +29,7 @@ describe('CrimeSearchController', () => {
       const req = createMockRequest({ body })
       const res = createMockResponse()
       const next = jest.fn()
-      const service = new CrimeService()
+      const service = new CrimeService(mockRestClient)
       const controller = new CrimeSearchController(service)
 
       // When
@@ -30,7 +45,7 @@ describe('CrimeSearchController', () => {
       const req = createMockRequest({ body: { foo: 'bar' } })
       const res = createMockResponse()
       const next = jest.fn()
-      const service = new CrimeService()
+      const service = new CrimeService(mockRestClient)
       const controller = new CrimeSearchController(service)
 
       // When
@@ -46,7 +61,7 @@ describe('CrimeSearchController', () => {
       const req = createMockRequest({ body: { crimeReference: 'A&B=C' } })
       const res = createMockResponse()
       const next = jest.fn()
-      const service = new CrimeService()
+      const service = new CrimeService(mockRestClient)
       const controller = new CrimeSearchController(service)
 
       // When
@@ -66,7 +81,7 @@ describe('CrimeSearchController', () => {
         const req = createMockRequest({ query })
         const res = createMockResponse()
         const next = jest.fn()
-        const service = new CrimeService()
+        const service = new CrimeService(mockRestClient)
         const controller = new CrimeSearchController(service)
 
         // When
@@ -89,7 +104,7 @@ describe('CrimeSearchController', () => {
       const req = createMockRequest({})
       const res = createMockResponse()
       const next = jest.fn()
-      const service = new CrimeService()
+      const service = new CrimeService(mockRestClient)
       const controller = new CrimeSearchController(service)
 
       // When

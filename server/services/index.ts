@@ -11,7 +11,7 @@ export const services = () => {
   const { applicationInfo, hmppsAuditClient, crimeMatchingApiClient } = dataAccess()
 
   const auditService = new AuditService(hmppsAuditClient)
-  const crimeService = new CrimeService()
+  const crimeService = new CrimeService(crimeMatchingApiClient)
   const crimeMatchingResultsService = new CrimeMatchingResultsService(crimeMatchingApiClient)
   const deviceActivationsService = new DeviceActivationsService(crimeMatchingApiClient)
   const validationService = new ValidationService(deviceActivationsService)

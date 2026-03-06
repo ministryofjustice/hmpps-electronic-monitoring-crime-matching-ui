@@ -1,5 +1,5 @@
 import { RequestHandler } from 'express'
-import crimeSearchQuerySchema from '../../schemas/proximityAlert/crimeSearch'
+import { crimeSearchQuerySchema } from '../../schemas/proximityAlert/crimeSearch'
 import CrimeService from '../../services/crimeService'
 
 export default class CrimeSearchController {
@@ -22,8 +22,9 @@ export default class CrimeSearchController {
 
   view: RequestHandler = async (req, res) => {
     const { query } = req
+    const { username } = res.locals.user
     const { crimeReference } = crimeSearchQuerySchema.parse(query)
-    const result = await this.crimeService.getCrimes(crimeReference)
+    const result = await this.crimeService.getCrimeVersions(username, crimeReference)
 
     if (result.ok) {
       res.render('pages/proximityAlert/crimeSearch', {
