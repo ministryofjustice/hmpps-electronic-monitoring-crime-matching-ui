@@ -16,7 +16,7 @@
     set rows = [
       [
         {
-          text: "Enter a crime number and click search." if crimeReference == '' else "No results found for " + crimeReference + ".",
+          text: "No results found for " + crimeReference + "." if crimeReference else "Enter a crime number and click search.",
           colspan: 8
         }
       ]
@@ -38,7 +38,7 @@
         {{
           govukInput({
             label: {
-                text: "Crime number",
+                text: "Crime reference",
                 classes: "govuk-label--s"
             },
             hint: {
@@ -72,7 +72,7 @@
           text: "Matched"
         },
         {
-          text: "Crime number"
+          text: "Crime reference"
         },
         {
           text: "Police force area, Batch ID"
