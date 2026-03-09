@@ -1,40 +1,40 @@
-import CrimeSummary from '../types/crimeSummary'
-import Result from '../types/result'
+import { asSystem } from '@ministryofjustice/hmpps-rest-client'
+import CrimeMatchingClient from '../data/crimeMatchingClient'
+import CrimeVersionSummary from '../types/crimeVersionSummary'
 import { PaginatedServiceResult } from '../types/service'
+import { getCrimeVersionsDtoSchema } from '../schemas/proximityAlert/crimeSearch'
 
 class CrimeService {
-  constructor() {}
+  constructor(private readonly crimeMatchingApiClient: CrimeMatchingClient) {}
 
-  private parseCrimeReference(crimeReference: string | null): Result<string, string> {
+  async getCrimeVersions(
+    username: string,
+    crimeReference: string | null,
+  ): Promise<PaginatedServiceResult<CrimeVersionSummary>> {
     if (crimeReference === null) {
-      return { ok: true, data: '' }
+      return {
+        ok: true,
+        data: [],
+        pageCount: 1,
+        pageNumber: 0,
+        pageSize: 0,
+      }
     }
 
     if (crimeReference.trim().length === 0) {
-      return { ok: false, error: 'Enter a crime number.' }
-    }
-
-    return { ok: true, data: crimeReference }
-  }
-
-  async getCrimes(crimeReference: string | null): Promise<PaginatedServiceResult<CrimeSummary>> {
-    const parsedCrimeRef = this.parseCrimeReference(crimeReference)
-
-    if (!parsedCrimeRef.ok) {
       return {
         ok: false,
         validationErrors: {
-          crimeReference: parsedCrimeRef.error,
+          crimeReference: 'Enter a crime number.',
         },
       }
     }
 
+    const response = await this.crimeMatchingApiClient.getCrimeVersions(asSystem(username), crimeReference)
+
     return Promise.resolve({
       ok: true,
-      data: [],
-      pageCount: 1,
-      pageNumber: 1,
-      pageSize: 0,
+      ...getCrimeVersionsDtoSchema.parse(response),
     })
   }
 }
