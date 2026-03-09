@@ -24,7 +24,7 @@ export default class CrimeMatchingClient extends RestClient {
       {
         path: '/crime-versions',
         query: {
-          crimeReference,
+          crimeRef: crimeReference,
         },
       },
       authOptions,

@@ -6,7 +6,7 @@ type CrimeVersionSummary = {
   crimeDate: string
   batchId: string
   ingestionDateTime: string
-  matched: string
+  matched: boolean
   versionLabel: string
   updates: string
 }

@@ -15,7 +15,7 @@ const getCrimeVersionsDtoSchema = paginatedDtoSchema.extend({
       crimeDate: z.string(),
       batchId: z.string(),
       ingestionDateTime: z.string(),
-      matched: z.string(),
+      matched: z.boolean(),
       versionLabel: z.string(),
       updates: z.string(),
     }),
