@@ -155,5 +155,67 @@ context('Search Crimes', () => {
         .find('a')
         .should('have.attr', 'href', '/proximity-alert/fe1592c0-dc78-46c3-88cd-144f1f1ec022')
     })
+
+    it('should show allow the user to navigate to other pages in the result set', () => {
+      const response = {
+        data: [
+          {
+            crimeVersionId: 'b06a517b-666b-4052-8bdc-b735e022c7c5',
+            crimeReference: 'aaabbb',
+            policeForceArea: 'CHESHIRE',
+            crimeType: 'TOMV',
+            crimeDate: '2025-01-01T00:00',
+            batchId: 'CHS20260101',
+            ingestionDateTime: '2026-01-02T12:34:56',
+            matched: true,
+            versionLabel: 'Latest version',
+            updates: 'Crime type, Crime date, Crime time, Crime location',
+          },
+        ],
+        pageCount: 2,
+        pageNumber: 0,
+        pageSize: 30,
+      }
+
+      // Stub first page response
+      cy.stubGetCrimeVersions({
+        status: 200,
+        query: 'crimeRef=abc',
+        response,
+      })
+
+      // Stub second page response
+      cy.stubGetCrimeVersions({
+        status: 200,
+        query: 'crimeRef=abc&page=1',
+        response: {
+          ...response,
+          pageNumber: 1,
+        },
+      })
+
+      // When the user loads the page
+      cy.visit('/proximity-alert?crimeReference=abc')
+
+      const page = Page.verifyOnPage(CrimeSearchPage)
+
+      // Then the table should have pagination
+      page.dataTable.shouldHavePagination()
+      page.dataTable.pagination.shouldHaveCurrentPage('1')
+      page.dataTable.pagination.shouldHaveNextButton()
+      page.dataTable.pagination.shouldNotHavePrevButton()
+
+      // When the user navigates to the next page
+      page.dataTable.pagination.next.click()
+
+      // Then the url should include the page number and the original query
+      cy.url().should('include', '?crimeReference=abc&page=2')
+
+      // And the table should have pagination
+      page.dataTable.shouldHavePagination()
+      page.dataTable.pagination.shouldHaveCurrentPage('2')
+      page.dataTable.pagination.shouldNotHaveNextButton()
+      page.dataTable.pagination.shouldHavePrevButton()
+    })
   })
 })
