@@ -4,6 +4,7 @@ import { StubGetPersonsOptions } from './mockApis/locationData/persons'
 import { StubGetPersonOptions } from './mockApis/locationData/person'
 import { StubGetIngestionAttemptsOptions } from './mockApis/crimeMatching/ingestionAttempts'
 import { StubGetCrimeMatchingResultsOptions } from './mockApis/crimeMatching/crimeMatchingResults'
+import { StubGetCrimeVersionsOptions } from './mockApis/crimeMatching/crimeVersions'
 
 declare global {
   namespace Cypress {
@@ -46,6 +47,11 @@ declare global {
        * Stub a wiremock response for the crimeMatchingApi POST /crime-batches-query
        */
       stubGetCrimeMatchingResults(options?: StubGetCrimeMatchingResultsOptions): Chainable<void>
+
+      /**
+       * Stub a wiremock response for the crimeMatchingApi POST /crime-batches-query
+       */
+      stubGetCrimeVersions(options?: StubGetCrimeVersionsOptions): Chainable<void>
 
       /**
        * Stub a wiremock response for the crimeMatchingApi GET /device-activations/{deviceActivationId}

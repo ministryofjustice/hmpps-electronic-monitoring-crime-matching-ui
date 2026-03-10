@@ -1,6 +1,7 @@
 import { RequestHandler } from 'express'
 import { crimeSearchQuerySchema } from '../../schemas/proximityAlert/crimeSearch'
 import CrimeService from '../../services/crimeService'
+import presentCrimeVersionSummaries from '../../presenters/crimeVersionSummary'
 
 export default class CrimeSearchController {
   constructor(private readonly crimeService: CrimeService) {}
@@ -29,7 +30,7 @@ export default class CrimeSearchController {
     if (result.ok) {
       res.render('pages/proximityAlert/crimeSearch', {
         crimeReference,
-        crimes: result.data,
+        crimes: presentCrimeVersionSummaries(result.data),
         pageCount: result.pageCount,
         pageNumber: result.pageNumber + 1,
         validationErrors: {},

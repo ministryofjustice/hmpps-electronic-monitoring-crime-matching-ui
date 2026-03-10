@@ -11,6 +11,53 @@
 {% set activeLinkId = "proximity-alert" %}
 {% set rows = [] %}
 
+{% for crime in crimes %}
+  {% set link %}
+    <a href="/proximity-alert/{{ crime.crimeVersionId }}"> {{ crime.crimeReference }} </a>
+  {% endset %}
+
+
+  {% set versionTag %}
+    {{
+      govukTag({
+        text: crime.versionLabel,
+        classes: "govuk-tag--" + crime.versionColour
+      })
+    }}
+  {% endset %}
+
+  {%
+    set rows = (rows.push(
+      [
+      {
+          text: crime.matchedText
+        },
+        {
+          html: link
+        },
+        {
+          text: crime.policeForceArea + ", " + crime.batchId
+        },
+        {
+          text: crime.crimeType
+        },
+        {
+          text: crime.crimeDate | formatDateTime("DD/MM/YYYY")
+        },
+        {
+          text: crime.ingestionDateTime | formatDateTime("DD/MM/YYYY HH:mm:ss")
+        },
+        {
+          text: crime.updates
+        },
+        {
+          html: versionTag
+        }
+      ]
+    ), rows)
+  %}
+{% endfor %}
+
 {% if rows.length == 0 %}
   {%
     set rows = [
@@ -31,7 +78,7 @@
     </div>
   </div>
 
-  <form id="search-crimes-form" method="POST" novalidate>
+  <form id="search-crime-versions-form" method="POST" novalidate>
     <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
     <div class="govuk-grid-row">
       <div class="govuk-grid-column-one-third">
@@ -66,7 +113,7 @@
 
   {{
     dataTable({
-      classes: "ingestion-attempts-table",
+      classes: "crime-versions-table",
       columns: [
         {
           text: "Matched"
@@ -90,7 +137,8 @@
           text: "Updates"
         },
         {
-          text: "Versions"
+          text: "Versions",
+          classes: "govuk-!-width-one-eighth"
         }
       ],
       rows: rows,
