@@ -19,6 +19,7 @@ const presentCrimeVersionSummary = (crimeVersionSummary: CrimeVersionSummary) =>
     matchedText: getMatchedText(crimeVersionSummary),
     policeForceArea: presentPoliceForceArea(crimeVersionSummary.policeForceArea),
     versionColour: getVersionColour(crimeVersionSummary),
+    updates: crimeVersionSummary.updates.split(', ').join('</br>'),
   }
 }
 

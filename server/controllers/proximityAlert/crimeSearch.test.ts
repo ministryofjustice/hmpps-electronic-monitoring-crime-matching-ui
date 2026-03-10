@@ -190,7 +190,7 @@ describe('CrimeSearchController', () => {
             matchedText: 'Yes',
             versionLabel: 'Latest version',
             versionColour: 'green',
-            updates: 'Crime type, Crime date, Crime time, Crime location',
+            updates: 'Crime type</br>Crime date</br>Crime time</br>Crime location',
           },
           {
             crimeVersionId: 'fe1592c0-dc78-46c3-88cd-144f1f1ec022',

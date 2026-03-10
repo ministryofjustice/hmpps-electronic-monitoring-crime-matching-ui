@@ -27,10 +27,10 @@ context('Search Crimes', () => {
       page.dataTable.shouldHaveColumns([
         'Matched',
         'Crime reference',
-        'Police force area, Batch ID',
+        'Police force area,\nBatch ID',
         'Crime type',
         'Crime date',
-        'Ingestion date, time',
+        'Ingestion date,\ntime',
         'Updates',
         'Versions',
       ])

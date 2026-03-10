@@ -22,10 +22,10 @@ context('Search Crimes', () => {
       page.dataTable.shouldHaveColumns([
         'Matched',
         'Crime reference',
-        'Police force area, Batch ID',
+        'Police force area,\nBatch ID',
         'Crime type',
         'Crime date',
-        'Ingestion date, time',
+        'Ingestion date,\ntime',
         'Updates',
         'Versions',
       ])
@@ -49,10 +49,10 @@ context('Search Crimes', () => {
       page.dataTable.shouldHaveColumns([
         'Matched',
         'Crime reference',
-        'Police force area, Batch ID',
+        'Police force area,\nBatch ID',
         'Crime type',
         'Crime date',
-        'Ingestion date, time',
+        'Ingestion date,\ntime',
         'Updates',
         'Versions',
       ])
@@ -110,10 +110,10 @@ context('Search Crimes', () => {
       page.dataTable.shouldHaveColumns([
         'Matched',
         'Crime reference',
-        'Police force area, Batch ID',
+        'Police force area,\nBatch ID',
         'Crime type',
         'Crime date',
-        'Ingestion date, time',
+        'Ingestion date,\ntime',
         'Updates',
         'Versions',
       ])
@@ -121,14 +121,23 @@ context('Search Crimes', () => {
         [
           'Yes',
           'aaabbb',
-          'Cheshire, CHS20260101',
+          'Cheshire,\nCHS20260101',
           'TOMV',
           '01/01/2025',
-          '02/01/2026 12:34:56',
-          'Crime type, Crime date, Crime time, Crime location',
+          '02/01/2026\n12:34:56',
+          'Crime type\nCrime date\nCrime time\nCrime location',
           'Latest version',
         ],
-        ['No', 'aaabbb', 'City of London, CHS20260101', 'BOTD', '01/01/2025', '02/01/2026 12:34:56', 'NA', 'Version 2'],
+        [
+          'No',
+          'aaabbb',
+          'City of London,\nCHS20260101',
+          'BOTD',
+          '01/01/2025',
+          '02/01/2026\n12:34:56',
+          'NA',
+          'Version 2',
+        ],
       ])
       page.dataTable.shouldNotHavePagination()
 

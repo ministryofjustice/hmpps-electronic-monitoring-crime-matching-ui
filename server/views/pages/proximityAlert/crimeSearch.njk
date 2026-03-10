@@ -29,14 +29,14 @@
   {%
     set rows = (rows.push(
       [
-      {
+        {
           text: crime.matchedText
         },
         {
           html: link
         },
         {
-          text: crime.policeForceArea + ", " + crime.batchId
+          html: crime.policeForceArea + ",</br>" + crime.batchId
         },
         {
           text: crime.crimeType
@@ -45,10 +45,10 @@
           text: crime.crimeDate | formatDateTime("DD/MM/YYYY")
         },
         {
-          text: crime.ingestionDateTime | formatDateTime("DD/MM/YYYY HH:mm:ss")
+          html: crime.ingestionDateTime | formatDateTime("DD/MM/YYYY") + "</br>" + crime.ingestionDateTime | formatDateTime("HH:mm:ss")
         },
         {
-          text: crime.updates
+          html: crime.updates
         },
         {
           html: versionTag
@@ -122,7 +122,7 @@
           text: "Crime reference"
         },
         {
-          text: "Police force area, Batch ID"
+          html: "Police force area,</br>Batch ID"
         },
         {
           text: "Crime type"
@@ -131,7 +131,7 @@
           text: "Crime date"
         },
         {
-          text: "Ingestion date, time"
+          html: "Ingestion date,</br>time"
         },
         {
           text: "Updates"
