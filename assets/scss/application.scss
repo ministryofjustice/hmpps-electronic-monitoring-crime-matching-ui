@@ -21,9 +21,9 @@ $govuk-page-width: $moj-page-width;
 }
 
 .govuk-\!-width-one-eighth {
-    width: 100% !important;
+  width: 100% !important;
 
-    @media #{govuk-from-breakpoint(tablet)} {
-      width: 12.5% !important;
-    }
+  @media #{govuk-from-breakpoint(tablet)} {
+    width: 12.5% !important;
   }
+}
