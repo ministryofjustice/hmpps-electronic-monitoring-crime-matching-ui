@@ -181,7 +181,7 @@ describe('CrimeSearchController', () => {
           {
             crimeVersionId: 'b06a517b-666b-4052-8bdc-b735e022c7c5',
             crimeReference: 'aaabbb',
-            policeForceArea: 'CHESHIRE',
+            policeForceArea: 'Cheshire',
             crimeType: 'TOMV',
             crimeDate: '2025-01-01T00:00',
             batchId: 'CHS202601012',
@@ -195,7 +195,7 @@ describe('CrimeSearchController', () => {
           {
             crimeVersionId: 'fe1592c0-dc78-46c3-88cd-144f1f1ec022',
             crimeReference: 'aaabbb',
-            policeForceArea: 'CITY_OF_LONDON',
+            policeForceArea: 'City of London',
             crimeType: 'BOTD',
             crimeDate: '2025-01-01T00:00',
             batchId: 'CHS202601012',
