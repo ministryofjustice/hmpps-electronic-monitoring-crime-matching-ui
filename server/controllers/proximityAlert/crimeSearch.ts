@@ -24,13 +24,16 @@ export default class CrimeSearchController {
   view: RequestHandler = async (req, res) => {
     const { query } = req
     const { username } = res.locals.user
-    const { crimeReference } = crimeSearchQuerySchema.parse(query)
-    const result = await this.crimeService.getCrimeVersions(username, crimeReference)
+    const { crimeReference, page } = crimeSearchQuerySchema.parse(query)
+    const result = await this.crimeService.getCrimeVersions(username, crimeReference, page)
 
     if (result.ok) {
+      const paginationHrefPrefix = this.getQueryString(crimeReference)
+
       res.render('pages/proximityAlert/crimeSearch', {
         crimeReference,
         crimes: presentCrimeVersionSummaries(result.data),
+        paginationHrefPrefix,
         pageCount: result.pageCount,
         pageNumber: result.pageNumber + 1,
         validationErrors: {},

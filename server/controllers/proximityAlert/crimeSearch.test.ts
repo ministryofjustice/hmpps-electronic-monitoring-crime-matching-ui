@@ -123,6 +123,7 @@ describe('CrimeSearchController', () => {
       expect(res.render).toHaveBeenCalledWith('pages/proximityAlert/crimeSearch', {
         crimeReference: null,
         crimes: [],
+        paginationHrefPrefix: '',
         pageCount: 1,
         pageNumber: 1,
         validationErrors: {},
@@ -174,7 +175,7 @@ describe('CrimeSearchController', () => {
       await controller.view(req, res, next)
 
       // Then
-      expect(mockRestClient.getCrimeVersions).toHaveBeenCalledWith(expectedAuthOptions, 'abc')
+      expect(mockRestClient.getCrimeVersions).toHaveBeenCalledWith(expectedAuthOptions, 'abc', undefined)
       expect(res.render).toHaveBeenCalledWith('pages/proximityAlert/crimeSearch', {
         crimeReference: 'abc',
         crimes: [
@@ -207,8 +208,45 @@ describe('CrimeSearchController', () => {
             updates: 'NA',
           },
         ],
+        paginationHrefPrefix: 'crimeReference=abc',
         pageCount: 1,
         pageNumber: 1,
+        validationErrors: {},
+      })
+      expect(next).not.toHaveBeenCalled()
+    })
+
+    it('should not include the current page number in the pagination href prefix', async () => {
+      // Given
+      const pageNumber = 2
+      const req = createMockRequest({ query: { crimeReference: 'abc', page: pageNumber.toString() } })
+      const res = createMockResponse()
+      const next = jest.fn()
+      const service = new CrimeService(mockRestClient)
+      const controller = new CrimeSearchController(service)
+
+      mockRestClient.getCrimeVersions.mockResolvedValue({
+        data: [],
+        pageCount: 1,
+        pageNumber: 1,
+        pageSize: 10,
+      })
+
+      // When
+      await controller.view(req, res, next)
+
+      // Then
+      expect(mockRestClient.getCrimeVersions).toHaveBeenCalledWith(
+        expectedAuthOptions,
+        'abc',
+        (pageNumber - 1).toString(),
+      )
+      expect(res.render).toHaveBeenCalledWith('pages/proximityAlert/crimeSearch', {
+        crimeReference: 'abc',
+        crimes: [],
+        paginationHrefPrefix: 'crimeReference=abc',
+        pageCount: 1,
+        pageNumber,
         validationErrors: {},
       })
       expect(next).not.toHaveBeenCalled()

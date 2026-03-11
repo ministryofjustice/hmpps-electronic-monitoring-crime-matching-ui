@@ -3,6 +3,7 @@ import { paginatedDtoSchema } from '../pagination'
 
 const crimeSearchQuerySchema = z.object({
   crimeReference: z.string().nullable().default(null),
+  page: z.string().default(''),
 })
 
 const getCrimeVersionsDtoSchema = paginatedDtoSchema.extend({
