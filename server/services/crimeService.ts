@@ -39,7 +39,7 @@ class CrimeService {
       return {
         ok: false,
         validationErrors: {
-          crimeReference: 'Enter a crime number.',
+          crimeReference: 'Enter a crime reference.',
         },
       }
     }

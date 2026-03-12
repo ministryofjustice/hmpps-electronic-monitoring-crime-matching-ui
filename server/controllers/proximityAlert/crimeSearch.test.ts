@@ -81,7 +81,7 @@ describe('CrimeSearchController', () => {
   })
 
   describe('view', () => {
-    it.each([[{ crimeReference: '' }, { crimeReference: 'Enter a crime number.' }]])(
+    it.each([[{ crimeReference: '' }, { crimeReference: 'Enter a crime reference.' }]])(
       'should send validation errors to the view engine when the query contains invalid parameters %o',
       async (query, expectedValidationErrors) => {
         // Given
