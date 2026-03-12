@@ -21,7 +21,7 @@ context('Search Crimes', () => {
 
       // Then the filters should have validation errors
       page.searchForm.crimeReferenceField.shouldHaveValue('')
-      page.searchForm.crimeReferenceField.shouldHaveValidationMessage('Enter a crime number.')
+      page.searchForm.crimeReferenceField.shouldHaveValidationMessage('Enter a crime reference.')
 
       // And the table should have 1 row
       page.dataTable.shouldHaveColumns([
@@ -34,7 +34,7 @@ context('Search Crimes', () => {
         'Updates',
         'Versions',
       ])
-      page.dataTable.shouldHaveRows([['Enter a crime number and click search.']])
+      page.dataTable.shouldHaveRows([['Enter a crime reference and click search.']])
       page.dataTable.shouldNotHavePagination()
     })
 

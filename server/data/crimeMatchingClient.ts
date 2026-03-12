@@ -26,6 +26,7 @@ export default class CrimeMatchingClient extends RestClient {
         query: {
           crimeRef: crimeReference,
           page,
+          pageSize: 10
         },
       },
       authOptions,

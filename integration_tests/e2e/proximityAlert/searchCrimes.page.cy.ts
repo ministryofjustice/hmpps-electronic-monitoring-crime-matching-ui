@@ -29,7 +29,7 @@ context('Search Crimes', () => {
         'Updates',
         'Versions',
       ])
-      page.dataTable.shouldHaveRows([['Enter a crime number and click search.']])
+      page.dataTable.shouldHaveRows([['Enter a crime reference and click search.']])
       page.dataTable.shouldNotHavePagination()
     })
 
@@ -180,14 +180,14 @@ context('Search Crimes', () => {
       // Stub first page response
       cy.stubGetCrimeVersions({
         status: 200,
-        query: 'crimeRef=abc',
+        query: 'crimeRef=abc&pageSize=10',
         response,
       })
 
       // Stub second page response
       cy.stubGetCrimeVersions({
         status: 200,
-        query: 'crimeRef=abc&page=1',
+        query: 'crimeRef=abc&page=1&pageSize=10',
         response: {
           ...response,
           pageNumber: 1,
