@@ -3,28 +3,30 @@
 
 <div class="datatable govuk-grid-row">
   <div class="govuk-grid-column-full">
-    {% if params.rows.length %}
-      {{
-        govukTable({
-          head: params.columns,
-          rows: params.rows,
-          classes: params.classes
-        })
-      }}
-
-      {% if params.pagination.pageCount > 1 %}
+    <div class="moj-scrollable-pane" role="region" aria-label="Historic rainfall in June" tabindex="0">
+      {% if params.rows.length %}
         {{
-          govukPagination(
-            pagination(
-              params.pagination.currentPage,
-              params.pagination.pageCount,
-              params.pagination.hrefPrefix
-            )
-          )
+          govukTable({
+            head: params.columns,
+            rows: params.rows,
+            classes: params.classes
+          })
         }}
+
+        {% if params.pagination.pageCount > 1 %}
+          {{
+            govukPagination(
+              pagination(
+                params.pagination.currentPage,
+                params.pagination.pageCount,
+                params.pagination.hrefPrefix
+              )
+            )
+          }}
+        {% endif %}
+      {% else %}
+        <p class="govuk-body" data-qa="no-results-message">There are no results.</p>
       {% endif %}
-    {% else %}
-      <p class="govuk-body" data-qa="no-results-message">There are no results.</p>
-    {% endif %}
+    </div>
   </div>
 </div>
