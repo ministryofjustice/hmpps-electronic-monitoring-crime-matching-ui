@@ -120,7 +120,7 @@
     <form id="search-ingestion-attempts-form" method="POST" novalidate>
       <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
       <div class="govuk-grid-row">
-        <div class="govuk-grid-column-one-third">
+        <div class="govuk-grid-column-one-half govuk-grid-column-one-third-from-desktop">
           {{
             govukSelect({
               id: "policeForceArea",
@@ -215,7 +215,7 @@
             })
           }}
         </div>
-        <div class="govuk-grid-column-one-third">
+        <div class="govuk-grid-column-one-half govuk-grid-column-one-third-from-desktop">
           {{
             govukInput({
               label: {
@@ -235,7 +235,7 @@
         </div>
       </div>
       <div class="govuk-grid-row">
-        <div class="govuk-grid-column-one-third">
+        <div class="govuk-grid-column-one-half govuk-grid-column-one-third-from-desktop">
           {{
             mojDatePicker({
               id: "fromDate",
@@ -244,15 +244,12 @@
                 text: "Date from",
                 classes: "govuk-label--s"
               },
-              formGroup: {
-                classes: 'govuk-!-static-margin-bottom-7'
-              },
               errorMessage: { text: validationErrors.fromDate } if validationErrors.fromDate,
               value: fromDate
             })
           }}
         </div>
-        <div class="govuk-grid-column-one-third">
+        <div class="govuk-grid-column-one-half govuk-grid-column-one-third-from-desktop">
           {{
             mojDatePicker({
               id: "toDate",
@@ -260,6 +257,9 @@
               label: {
                 text: "Date to",
                 classes: "govuk-label--s"
+              },
+              formGroup: {
+                classes: 'govuk-!-static-margin-bottom-7'
               },
               errorMessage: { text: validationErrors.toDate } if validationErrors.toDate,
               value: toDate
@@ -293,6 +293,7 @@
 
     {{
       dataTable({
+        ariaLabel: "Ingestion attempts matching search term",
         classes: "ingestion-attempts-table",
         columns: [
           {
