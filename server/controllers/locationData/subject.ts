@@ -5,7 +5,6 @@ import {
   searchLocationsFormDataSchema,
   viewLocationsQueryParametersSchema,
 } from '../../schemas/locationData/subject'
-import config from '../../config'
 import { createMojAlertWarning } from '../../utils/alerts'
 import { MojAlert } from '../../types/govUk/mojAlert'
 import DeviceActivationsService from '../../services/deviceActivationsService'
@@ -119,7 +118,6 @@ export default class SubjectController {
           url: `/location-data/device-activations/${deviceActivation?.deviceActivationId}/download`,
         },
         origin: req.originalUrl,
-        apiKey: config.maps.apiKey,
         positions: positionsWithDeviceInfo,
         alerts,
         formData: {
@@ -134,7 +132,6 @@ export default class SubjectController {
           enabled: false,
         },
         origin: req.originalUrl,
-        apiKey: config.maps.apiKey,
         positions: [],
         alerts: [],
         formData: {
