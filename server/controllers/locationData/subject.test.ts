@@ -388,7 +388,6 @@ describe('SubjectController', () => {
             variant: 'warning',
           },
         ],
-        apiKey: 'apikey',
         deviceWearer: {
           personId: 1,
           name: 'Jane Doe',
@@ -512,7 +511,6 @@ describe('SubjectController', () => {
       )
       expect(res.render).toHaveBeenCalledWith('pages/locationData/subject', {
         alerts: [],
-        apiKey: 'apikey',
         deviceWearer: {
           personId: 1,
           name: 'Jane Doe',

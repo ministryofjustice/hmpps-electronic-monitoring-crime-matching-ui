@@ -1,0 +1,72 @@
+{% extends "../../partials/fullWidthLayout.njk" %}
+{% from "../../components/map/macro.njk" import appMap %}
+{% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
+{% from "govuk/components/tabs/macro.njk" import govukTabs %}
+
+{% set pageTitle = applicationName + " - Home" %}
+{% set mainClasses = "app-container govuk-body map-container" %}
+{% set activeLinkId = "proximity-alert" %}
+
+
+{% set reportsHtml %}
+{% endset %}
+
+
+{% set analysisHtml %}
+  {{
+    govukCheckboxes({
+      id: "analysis-toggles",
+      classes: "govuk-checkboxes--small",
+      name: "analysisToggles",
+      items: [
+        {
+          value: "on",
+          text: "Show confidence circles",
+          checked: true
+        },
+        {
+          value: "on",
+          text: "Show location numbering",
+          checked: true
+        }
+      ]
+    })
+  }}
+{% endset %}
+
+
+{% set sidebarHtml %}
+  {{
+    govukTabs({
+      items: [
+        {
+          label: "Reports",
+          id: "reports",
+          panel: {
+            html: reportsHtml
+          }
+        },
+        {
+          label: "Analysis",
+          id: "analysis",
+          panel: {
+            html: analysisHtml
+          }
+        }
+      ]
+    })
+  }}
+{% endset %}
+
+{% block content %}
+
+  {{
+    appMap({
+      cspNonce: cspNonce,
+      positions: positions,
+      alerts: alerts,
+      usesInternalOverlays: true,
+      sidebarHtml: sidebarHtml
+    })
+  }}
+{% endblock %}

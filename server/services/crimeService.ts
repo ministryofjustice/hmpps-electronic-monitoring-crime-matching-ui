@@ -1,7 +1,8 @@
 import { asSystem } from '@ministryofjustice/hmpps-rest-client'
 import CrimeMatchingClient from '../data/crimeMatchingClient'
 import CrimeVersionSummary from '../types/crimeVersionSummary'
-import { PaginatedServiceResult } from '../types/service'
+import CrimeVersion from '../types/crimeVersion'
+import { PaginatedServiceResult, ServiceResult } from '../types/service'
 import { getCrimeVersionsDtoSchema } from '../schemas/proximityAlert/crimeSearch'
 
 class CrimeService {
@@ -16,6 +17,18 @@ class CrimeService {
     }
 
     return undefined
+  }
+
+  async getCrimeVersion(
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    username: string,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    crimeVersionId: string,
+  ): Promise<ServiceResult<CrimeVersion>> {
+    return {
+      ok: true,
+      data: {},
+    }
   }
 
   async getCrimeVersions(

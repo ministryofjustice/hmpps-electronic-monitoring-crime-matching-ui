@@ -2,13 +2,17 @@ import { Router } from 'express'
 import type { Services } from '../services'
 import asyncMiddleware from '../middleware/asyncMiddleware'
 import CrimeSearchController from '../controllers/proximityAlert/crimeSearch'
+import CrimeVersionController from '../controllers/proximityAlert/crimeVersion'
 
 const proximityAlertRoutes = ({ crimeService }: Services): Router => {
   const router = Router()
   const crimeSearchController = new CrimeSearchController(crimeService)
+  const crimeVersionController = new CrimeVersionController(crimeService)
 
   router.get('/', asyncMiddleware(crimeSearchController.view))
   router.post('/', asyncMiddleware(crimeSearchController.search))
+
+  router.get('/:crimeVersionId', asyncMiddleware(crimeVersionController.view))
 
   return router
 }
