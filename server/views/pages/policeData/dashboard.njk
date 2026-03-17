@@ -44,7 +44,7 @@
 
 
   {% set link %}
-    <a href="/police-data/ingestion-attempts/{{ ingestionAttempt.ingestionAttemptId }}">
+    <a href="/police-data/ingestion-attempts/{{ ingestionAttempt.ingestionAttemptId }}?returnTo={{ returnTo }}">
       {{ 'Failed' if ingestionAttempt.batchId == '' else ingestionAttempt.batchId }}
     </a>
   {% endset %}

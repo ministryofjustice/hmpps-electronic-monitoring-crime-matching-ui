@@ -58,6 +58,7 @@ export default class PoliceDataDashboardController {
         pageCount: result.pageCount,
         pageNumber: result.pageNumber + 1,
         paginationHrefPrefix,
+        returnTo: encodeURIComponent(paginationHrefPrefix),
         validationErrors: {},
       })
     } else {

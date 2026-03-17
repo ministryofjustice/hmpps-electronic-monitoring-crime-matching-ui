@@ -4,7 +4,7 @@ import policeForceAreas from '../data/policeForceAreas'
 import IngestionAttemptSummary from '../types/ingestionAttemptSummary'
 import { PaginatedServiceResult } from '../types/service'
 import { parseDateTimeFromComponents } from '../utils/date'
-import { getIngestionAttemptDtoSchema } from '../schemas/policeData/dashboard'
+import { getIngestionAttemptDtoSchema, ingestionAttemptDetailDtoSchema, type IngestionAttemptDetail } from '../schemas/policeData/dashboard'
 import Result from '../types/result'
 
 class PoliceDataService {
@@ -50,6 +50,19 @@ class PoliceDataService {
     }
 
     return { ok: false, error: 'Please enter a valid date.' }
+  }
+
+  async getIngestionAttempt(username: string, ingestionAttemptId: string): Promise<IngestionAttemptDetail> {
+    const response = await this.crimeMatchingApiClient.getIngestionAttempt(asSystem(username), ingestionAttemptId)
+    return ingestionAttemptDetailDtoSchema.parse(response)
+  }
+
+  async getValidationErrorCsv(username: string, ingestionAttemptId: string): Promise<string> {
+    const response = await this.crimeMatchingApiClient.getValidationErrorCsv(asSystem(username), ingestionAttemptId)
+    if (typeof response !== 'string') {
+      throw new Error(`Expected string response for validation errors CSV, got ${typeof response}`)
+    }
+    return response
   }
 
   async getIngestionAttemptSummaries(

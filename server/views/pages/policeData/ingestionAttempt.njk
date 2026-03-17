@@ -1,13 +1,83 @@
 {% extends "../../partials/layout.njk" %}
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/table/macro.njk" import govukTable %}
+{% from "govuk/components/tag/macro.njk" import govukTag %}
+{% from "govuk/components/notification-banner/macro.njk" import govukNotificationBanner %}
 
-{% set pageTitle = applicationName + " - Home" %}
+{% set pageTitle = applicationName + " - Batch details" %}
 {% set mainClasses = "app-container govuk-body" %}
 {% set activeLinkId = "data-ingestion" %}
-{% set rows = [] %}
+
+{% set summaryRows = [] %}
+{% set breakdownRows = [] %}
+{% set failedValidationRows = [] %}
+
+{# --- Build summary row --- #}
+{% set statusHtml %}
+  {{
+    govukTag({
+      text: ingestionAttempt,statusText,
+      classes: "govuk-tag--" + ingestionAttempt.statusColour
+    })
+  }}
+{% endset %}
+
+{%
+  set summaryRows = (summaryRows.push(
+    [
+      { html: statusHtml },
+      { text: ingestionAttempt.policeForceArea },
+      { text: ingestionAttempt.batchId if ingestionAttempt.batchId else "-" },
+      { text: ingestionAttempt.filename if ingestionAttempt.filename else "-" },
+      { text: ingestionAttempt.matchesText if ingestionAttempt.matchesText else "-" },
+      { text: ingestionAttempt.createdAt | formatDateTime("DD/MM/YYYY") },
+      { text: ingestionAttempt.createdAt | formatDateTime("HH:mm:ss")}
+    ]
+  ), summaryRows)
+%}
+
+{# --- Build breakdown rows (partially ingested only) --- #}
+{% if ingestionAttempt.status === "PARTIALLY_INGESTED" %}
+  {% for breakdown in ingestionAttempt.breakdownByCrimeType %}
+    {%
+      set breakdownRows = (breakdown.push(
+        [
+          { text: breakdown.crimeType },
+          { text: breakdown.submitted },
+          { text: breakdown.ingested },
+          { text: breakdown.failedValidation },
+        ]
+      ), breakdownRows)
+    %}
+  {% endfor %}
+{% endif %}
+
+{# --- Build failed validation rows (partially ingested only, for export section) --- #}
+{% if ingestionAttempt.status === "PARTIALLY_INGESTED" %}
+  {% for error in ingestionAttempt.validationErrors %}
+    {%
+      set failedValidationRows = (failedValidationRows.push(
+        [
+          { text: error.crimeReference },
+          { text: error.errorType },
+          { text: error.requiredAction },
+        ]
+      ), failedValidationRows)
+    %}
+  {% endfor %}
+{% endif %}
 
 {% block content %}
+
+{# Back link preserving prior URL state (filters + page) #}
+  {{
+    govukBackLink({
+      text: "Back to list",
+      href: "/police-data/dashboard?" + dashboardQueryString if dashboardQueryString else "/police-data/dashboard"
+    })
+  }}
+
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
       <h1 class="govuk-!-static-margin-top-0">Batch details</h1>
@@ -21,96 +91,103 @@
           caption: "Summary",
           captionClasses: "govuk-table__caption--m",
           head: [
-            {
-              text: "Status"
-            },
-            {
-              text: "Police force area"
-            },
-            {
-              text: "Batch"
-            },
-            {
-              text: "Filename"
-            },
-            {
-              text: "Matches"
-            },
-            {
-              text: "Date"
-            },
-            {
-              text: "Time"
-            }
+            { text: "Status" },
+            { text: "Police force area" },
+            { text: "Batch" },
+            { text: "Filename" },
+            { text: "Matches" },
+            { text: "Date" },
+            { text: "Time" }
           ],
-          rows: []
+          rows: summaryRows
         })
       }}
     </div>
   </div>
+  
+  {% if ingestionAttempt.status === "PARTIALLY_INGESTED" %}
+    <div class="govuk-grid-row govuk-!-static-margin-bottom-3">
+      <div class="govuk-grid-column-full">
+        {{
+          govukTable({
+            caption: "Breakdown by crime type",
+            captionClasses: "govuk-table__caption--m",
+            head: [
+              { text: "Crime type" },
+              { text: "Submitted" },
+              { text: "Ingested" },
+              { text: "Failed validation" }
+            ],
+            rows: breakdownRows
+          })
+        }}
+      </div>
+    </div>
 
-  <div class="govuk-grid-row govuk-!-static-margin-bottom-3">
-    <div class="govuk-grid-column-full">
-      {{
-        govukTable({
-          caption: "Breakdown by crime type",
-          captionClasses: "govuk-table__caption--m",
-          head: [
-            {
-              text: "Crime type"
-            },
-            {
-              text: "Submitted"
-            },
-            {
-              text: "Ingested"
-            },
-            {
-              text: "Failed validation"
-            }
-          ],
-          rows: []
-        })
-      }}
-    </div>
-  </div>
+    {% Validation error table + export (crime batches only) %}
+    <div class="govuk-grid-row govuk-!-static-margin-bottom-3">
+      <div class="govuk-grid-column-full">
+        {{
+          govukTable({
+            caption: "Failed validation",
+            captionClasses: "govuk-table__caption--m",
+            head: [
+              { text: "Crime reference" },
+              { text: "Error type" },
+              { text: "Required action" }
+            ],
+            rows: failedValidationRows
+          })
+        }}
+      </div>
 
-  <div class="govuk-grid-row govuk-!-static-margin-bottom-3">
-    <div class="govuk-grid-column-full">
-      {{
-        govukTable({
-          caption: "Failed validation",
-          captionClasses: "govuk-table__caption--m",
-          head: [
-            {
-              text: "Crime reference"
-            },
-            {
-              text: "Error type"
-            },
-            {
-              text: "Required action"
-            }
-          ],
-          rows: []
-        })
-      }}
+      {% if ingestionAttempt.isCrimeBatch %}
+        <div class="govuk-grid-column-full">
+          <form method="GET" action="/police-data/ingestion-attempts/{{ ingestionAttempt.ingestionAttemptId }}/export-validation-errors">
+            {{
+              govukButton({
+                text: "Export validation errors",
+                classesL "govukButton--secondary"
+              })
+            }}
+          </form>
+        </div>
+      {% endif %}
     </div>
-    <div class="govuk-grid-column-full">
-      {{
-        govukButton({
-          text: "Export"
-        })
-      }}
-    </div>
-  </div>
+  {% endif %}
 
-  <div class="govuk-grid-row">
-    <div class="govuk-grid-column-full">
-      <h2 class="govuk-heading-m">Failed ingestion</h2>
-      <p>
-        No crimes have been ingested. Please refer to email "MoJ Acquisitive Crime - Ingestion - Failure -" for details.
-      </p>
+  {% if ingestionAttempt.status === "FAILED_INGESTION" %}
+    <div class="govuk-grid-row govuk-!-static-margin-bottom-3">
+      <div class="govuk-grid-column-full">
+        <h2 class="govuk-heading-m">Failed ingestion</h2>
+
+        {% if ingestionAttempt.failureSubCategory %}
+          <dl class="govuk-summary-list govuk-summary-list--no-border govuk-!-static-margin-bottom-4">
+            <div class="govuk-summary-list__row">
+              <dt class=govuk-summary__key">Failure reason</dt>
+              <dd class=govuk-summary__value">
+                {% if ingestionAttempt.failureSubCategory === "VALIDATION" %}
+                  Validation failure
+                {% elif ingestionAttempt.failureSubCategory === "FILE_TYPE" %}
+                  Invalid file type
+                {% else %}
+                  {{ ingestionAttempt.failureSubCategory }}
+                {% endif %}
+              </dd>
+            </div>
+          </dl>
+        {% endif %}
+
+        {% set emailSubject = "crime - ingestion - FAILIRE - " + (ingestionAttempt.batchId if ingestionAttempt.batchId else ingestionAttempt.ingestionAttemptId) %}
+
+        {{
+          govukNotificationBanner({
+            titleText: "Action required",
+            html: "<p class=\"govuk-body\">No crimes have been ingested. Please refer to email "MoJ Acquisitive Crime - Ingestion - Failure -" for details."</p>
+          })
+        }}
+      </div>
     </div>
-  </div>
+  {% endif %}
+
 {% endblock %}

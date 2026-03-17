@@ -1,6 +1,7 @@
 import { AuthOptions, AuthenticationClient, RestClient } from '@ministryofjustice/hmpps-rest-client'
 import Logger from 'bunyan'
 import config from '../config'
+import { IngestionAttemptDetail } from '../schemas/policeData/dashboard'
 
 export default class CrimeMatchingClient extends RestClient {
   constructor(logger: Logger, authenticationClient?: AuthenticationClient) {
@@ -90,6 +91,27 @@ export default class CrimeMatchingClient extends RestClient {
     )
   }
 
+  getIngestionAttempt(authOptions: AuthOptions, ingestionAttemptId: string): Promise<IngestionAttemptDetail> {
+    return this.get(
+      {
+        path: `/ingestion-attempts/${ingestionAttemptId}`,
+      },
+      authOptions,
+    )
+  }
+
+  getValidationErrorCsv(authOptions: AuthOptions, ingestionAttemptId: string): Promise<unknown> {
+    return this.get(
+      {
+        path: `/ingestion-attempts/${ingestionAttemptId}/validation-errors`,
+        headers: {
+          Accept: 'text/csv',
+        },
+      },
+      authOptions,
+    )
+  }
+
   getIngestionAttempts(
     authOptions: AuthOptions,
     batchId: string | undefined,
@@ -100,7 +122,7 @@ export default class CrimeMatchingClient extends RestClient {
   ): Promise<unknown> {
     return this.get(
       {
-        path: '/ingestion-attempts',
+        path: `/ingestion-attempts`,
         query: {
           batchId,
           policeForceArea,
