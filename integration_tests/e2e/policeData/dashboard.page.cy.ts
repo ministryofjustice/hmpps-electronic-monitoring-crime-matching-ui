@@ -34,7 +34,7 @@ context('Police Data Dashboard', () => {
       // Given an API response with many ingestion attempts
       cy.stubGetIngestionAttempts({
         status: 200,
-        query: 'batchId=&policeForceArea=&fromDate=&toDate=',
+        query: '',
         response: {
           data: [
             // Successful with matches
@@ -222,7 +222,17 @@ context('Police Data Dashboard', () => {
 
     it('should populate the form with query parameters', () => {
       // Given an API response with no results
-      cy.stubGetIngestionAttempts()
+      cy.stubGetIngestionAttempts({
+        query:
+          'batchId=abc&policeForceArea=METROPOLITAN&fromDate=2026-02-19T00%3A00%3A00&toDate=2026-02-20T23%3A59%3A59',
+        response: {
+          data: [],
+          pageCount: 1,
+          pageNumber: 1,
+          pageSize: 30,
+        },
+        status: 200,
+      })
 
       // When the user loads the page
       cy.visit(
@@ -264,14 +274,14 @@ context('Police Data Dashboard', () => {
       // Stub first page response
       cy.stubGetIngestionAttempts({
         status: 200,
-        query: 'batchId=abc&policeForceArea=&fromDate=&toDate=',
+        query: 'batchId=abc',
         response,
       })
 
       // Stub second page response
       cy.stubGetIngestionAttempts({
         status: 200,
-        query: 'batchId=abc&policeForceArea=&fromDate=&toDate=&page=1',
+        query: 'batchId=abc&page=1',
         response: {
           ...response,
           pageNumber: 1,

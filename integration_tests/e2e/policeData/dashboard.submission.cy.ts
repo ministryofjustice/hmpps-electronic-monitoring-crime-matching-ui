@@ -7,12 +7,33 @@ context('Police Data Dashboard', () => {
       cy.task('reset')
       cy.task('stubSignIn')
       cy.signIn()
+
+      // Given an API response with no results for no query params
+      cy.stubGetIngestionAttempts({
+        query: '',
+        response: {
+          data: [],
+          pageCount: 1,
+          pageNumber: 1,
+          pageSize: 30,
+        },
+        status: 200,
+      })
+
+      // Given an API response with no results for any query params
+      cy.stubGetIngestionAttempts({
+        query: '.*',
+        response: {
+          data: [],
+          pageCount: 1,
+          pageNumber: 1,
+          pageSize: 30,
+        },
+        status: 200,
+      })
     })
 
     it('should reload the page when the form is submitted with a police force area', () => {
-      // Given an API response with no results
-      cy.stubGetIngestionAttempts()
-
       // When the user loads the page with no query params
       cy.visit('/police-data/dashboard')
 
@@ -30,9 +51,6 @@ context('Police Data Dashboard', () => {
     })
 
     it('should reload the page when the form is submitted with a batch id', () => {
-      // Given an API response with no results
-      cy.stubGetIngestionAttempts()
-
       // When the user loads the page with no query params
       cy.visit('/police-data/dashboard')
 
@@ -50,9 +68,6 @@ context('Police Data Dashboard', () => {
     })
 
     it('should reload the page when the form is submitted with a from date', () => {
-      // Given an API response with no results
-      cy.stubGetIngestionAttempts()
-
       // When the user loads the page with no query params
       cy.visit('/police-data/dashboard')
 
@@ -70,9 +85,6 @@ context('Police Data Dashboard', () => {
     })
 
     it('should reload the page when the form is submitted with a to date', () => {
-      // Given an API response with no results
-      cy.stubGetIngestionAttempts()
-
       // When the user loads the page with no query params
       cy.visit('/police-data/dashboard')
 
@@ -90,9 +102,6 @@ context('Police Data Dashboard', () => {
     })
 
     it('should reload the page when the form is submitted with all fields', () => {
-      // Given an API response with no results
-      cy.stubGetIngestionAttempts()
-
       // When the user loads the page with no query params
       cy.visit('/police-data/dashboard')
 

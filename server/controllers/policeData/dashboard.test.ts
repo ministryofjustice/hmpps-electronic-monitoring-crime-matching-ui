@@ -176,10 +176,14 @@ describe('PoliceDataDashboardController', () => {
     )
 
     it.each([
-      [{ batchId: 'MPS20251110' }, ['MPS20251110', '', '', ''], 'batchId=MPS20251110'],
-      [{ policeForceArea: 'METROPOLITAN' }, ['', 'METROPOLITAN', '', ''], 'policeForceArea=METROPOLITAN'],
-      [{ fromDate: '01/01/2026' }, ['', '', '2026-01-01T00:00:00', ''], 'fromDate=01%2F01%2F2026'],
-      [{ toDate: '02/01/2026' }, ['', '', '', '2026-01-02T23:59:59'], 'toDate=02%2F01%2F2026'],
+      [{ batchId: 'MPS20251110' }, ['MPS20251110', undefined, undefined, undefined], 'batchId=MPS20251110'],
+      [
+        { policeForceArea: 'METROPOLITAN' },
+        [undefined, 'METROPOLITAN', undefined, undefined],
+        'policeForceArea=METROPOLITAN',
+      ],
+      [{ fromDate: '01/01/2026' }, [undefined, undefined, '2026-01-01T00:00:00', undefined], 'fromDate=01%2F01%2F2026'],
+      [{ toDate: '02/01/2026' }, [undefined, undefined, undefined, '2026-01-02T23:59:59'], 'toDate=02%2F01%2F2026'],
       [
         {
           batchId: 'MPS20251110',
@@ -256,10 +260,10 @@ describe('PoliceDataDashboardController', () => {
       // Then
       expect(mockRestClient.getIngestionAttempts).toHaveBeenCalledWith(
         expectedAuthOptions,
-        '',
-        '',
-        '',
-        '',
+        undefined,
+        undefined,
+        undefined,
+        undefined,
         (pageNumber - 1).toString(),
       )
       expect(res.render).toHaveBeenCalledWith('pages/policeData/dashboard', {

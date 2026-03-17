@@ -92,10 +92,10 @@ export default class CrimeMatchingClient extends RestClient {
 
   getIngestionAttempts(
     authOptions: AuthOptions,
-    batchId: string,
-    policeForceArea: string,
-    fromDate: string,
-    toDate: string,
+    batchId: string | undefined,
+    policeForceArea: string | undefined,
+    fromDate: string | undefined,
+    toDate: string | undefined,
     page: string | undefined,
   ): Promise<unknown> {
     return this.get(

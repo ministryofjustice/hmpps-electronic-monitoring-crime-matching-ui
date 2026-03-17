@@ -15,7 +15,7 @@ context('Police Data Dashboard', () => {
       cy.signIn()
       cy.stubGetIngestionAttempts({
         status: 200,
-        query: '.*',
+        query: '',
         response: {
           data: [
             // Successful with matches

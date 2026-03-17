@@ -32,7 +32,7 @@ type StubGetIngestionAttemptsOptions = StubGetIngestionAttempts200Options | Stub
 
 const defaultGetIngestionAttemptsOptions: StubGetIngestionAttemptsOptions = {
   status: 200,
-  query: '.*',
+  query: '',
   response: {
     data: [],
     pageCount: 1,
