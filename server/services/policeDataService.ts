@@ -88,10 +88,10 @@ class PoliceDataService {
 
     const response = await this.crimeMatchingApiClient.getIngestionAttempts(
       asSystem(username),
-      parsedBatchId,
-      parsedPoliceForceArea.ok ? parsedPoliceForceArea.data : '',
-      parsedFromDate.ok ? parsedFromDate.data : '',
-      parsedToDate.ok ? parsedToDate.data : '',
+      parsedBatchId || undefined,
+      parsedPoliceForceArea.ok ? parsedPoliceForceArea.data || undefined : undefined,
+      parsedFromDate.ok ? parsedFromDate.data || undefined : undefined,
+      parsedToDate.ok ? parsedToDate.data || undefined : undefined,
       parsedPageNumber,
     )
 

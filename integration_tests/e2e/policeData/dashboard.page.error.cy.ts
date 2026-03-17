@@ -36,7 +36,7 @@ context('Police Data Dashboard', () => {
     it('should display an error if the api returns 500 when creating a query', () => {
       // Given a failing get ingestion attempts request
       cy.stubGetIngestionAttempts({
-        query: '.*',
+        query: '',
         status: 500,
         response: 'Internal Server Error',
       })
