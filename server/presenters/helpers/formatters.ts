@@ -30,3 +30,10 @@ export function convertRadiansToDegrees(radians: number | null | undefined): num
   const degrees = (radians * 180) / Math.PI
   return Math.round((degrees + 360) % 360)
 }
+
+export const withFallback = (value: string | null, fallback: string = 'N/A'): string => {
+  if (value) {
+    return value
+  }
+  return fallback
+}

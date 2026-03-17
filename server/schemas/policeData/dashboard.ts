@@ -16,7 +16,7 @@ const policeDataDashboardExportQuerySchema = z.object({
     .transform(v => (typeof v === 'string' ? [v] : v)),
 })
 
-const getIngestionAttemptDtoSchema = paginatedDtoSchema.extend({
+const getIngestionAttemptSummariesDtoSchema = paginatedDtoSchema.extend({
   data: z.array(
     z.object({
       ingestionAttemptId: z.string(),
@@ -30,4 +30,4 @@ const getIngestionAttemptDtoSchema = paginatedDtoSchema.extend({
   ),
 })
 
-export { getIngestionAttemptDtoSchema, policeDataDashboardQuerySchema, policeDataDashboardExportQuerySchema }
+export { getIngestionAttemptSummariesDtoSchema, policeDataDashboardQuerySchema, policeDataDashboardExportQuerySchema }

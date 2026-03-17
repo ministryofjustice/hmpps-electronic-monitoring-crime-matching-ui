@@ -90,6 +90,15 @@ export default class CrimeMatchingClient extends RestClient {
     )
   }
 
+  getIngestionAttempt(authOptions: AuthOptions, ingestionAttemptId: string): Promise<unknown> {
+    return this.get(
+      {
+        path: `/ingestion-attempts/${ingestionAttemptId}`,
+      },
+      authOptions,
+    )
+  }
+
   getIngestionAttempts(
     authOptions: AuthOptions,
     batchId: string | undefined,

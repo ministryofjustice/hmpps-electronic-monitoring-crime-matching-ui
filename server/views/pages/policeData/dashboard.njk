@@ -36,8 +36,8 @@
   {% set status %}
     {{
       govukTag({
-        text: ingestionAttempt.statusText,
-        classes: "govuk-tag--" + ingestionAttempt.statusColour
+        text: ingestionAttempt.ingestionStatusText,
+        classes: "govuk-tag--" + ingestionAttempt.ingestionStatusColour
       })
     }}
   {% endset %}
