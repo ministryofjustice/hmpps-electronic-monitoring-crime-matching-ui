@@ -4,7 +4,11 @@ import policeForceAreas from '../data/policeForceAreas'
 import IngestionAttemptSummary from '../types/ingestionAttemptSummary'
 import { PaginatedServiceResult } from '../types/service'
 import { parseDateTimeFromComponents } from '../utils/date'
-import { getIngestionAttemptDtoSchema, ingestionAttemptDetailDtoSchema, type IngestionAttemptDetail } from '../schemas/policeData/dashboard'
+import {
+  getIngestionAttemptDtoSchema,
+  ingestionAttemptDetailDtoSchema,
+  type IngestionAttemptDetail,
+} from '../schemas/policeData/dashboard'
 import Result from '../types/result'
 
 class PoliceDataService {

@@ -18,7 +18,10 @@ const policeDataRoutes = ({ crimeMatchingResultsService, policeDataService }: Se
 
   router.get('/ingestion-attempts/:ingestionAttemptId', asyncMiddleware(policeDataIngestionAttemptController.view))
 
-  router.get('/ingestion-attempts/:ingestionAttemptId/export-validation-errors', asyncMiddleware(policeDataIngestionAttemptController.exportValidationErrors))
+  router.get(
+    '/ingestion-attempts/:ingestionAttemptId/export-validation-errors',
+    asyncMiddleware(policeDataIngestionAttemptController.exportValidationErrors),
+  )
 
   return router
 }

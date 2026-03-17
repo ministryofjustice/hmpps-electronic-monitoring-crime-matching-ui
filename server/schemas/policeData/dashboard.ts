@@ -61,6 +61,12 @@ const ingestionAttemptDetailDtoSchema = z.object({
 
 type IngestionAttemptDetail = z.infer<typeof ingestionAttemptDetailDtoSchema>
 
-export { getIngestionAttemptDtoSchema, ingestionAttemptDetailDtoSchema, ingestionStatusSchema, policeDataDashboardQuerySchema, policeDataDashboardExportQuerySchema }
+export {
+  getIngestionAttemptDtoSchema,
+  ingestionAttemptDetailDtoSchema,
+  ingestionStatusSchema,
+  policeDataDashboardQuerySchema,
+  policeDataDashboardExportQuerySchema,
+}
 
 export type { IngestionAttemptDetail }
