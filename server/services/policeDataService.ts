@@ -2,7 +2,7 @@ import { asSystem } from '@ministryofjustice/hmpps-rest-client'
 import CrimeMatchingClient from '../data/crimeMatchingClient'
 import policeForceAreas from '../data/policeForceAreas'
 import IngestionAttemptSummary from '../types/ingestionAttemptSummary'
-import { PaginatedServiceResult, ServiceResult } from '../types/service'
+import { PaginatedServiceResult } from '../types/service'
 import { parseDateTimeFromComponents } from '../utils/date'
 import { getIngestionAttemptSummariesDtoSchema } from '../schemas/policeData/dashboard'
 import Result from '../types/result'
@@ -54,13 +54,10 @@ class PoliceDataService {
     return { ok: false, error: 'Please enter a valid date.' }
   }
 
-  async getIngestionAttempt(username: string, ingestionAttemptId: string): Promise<ServiceResult<IngestionAttempt>> {
+  async getIngestionAttempt(username: string, ingestionAttemptId: string): Promise<IngestionAttempt> {
     const response = await this.crimeMatchingApiClient.getIngestionAttempt(asSystem(username), ingestionAttemptId)
 
-    return {
-      ok: true,
-      ...getIngestionAttemptDtoSchema.parse(response),
-    }
+    return getIngestionAttemptDtoSchema.parse(response).data
   }
 
   async getIngestionAttemptSummaries(

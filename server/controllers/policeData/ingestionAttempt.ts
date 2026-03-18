@@ -8,14 +8,10 @@ export default class PoliceDataIngestionAttemptController {
   view: RequestHandler = async (req, res, next) => {
     const { username } = res.locals.user
     const { ingestionAttemptId } = req.params
-    const result = await this.policeDataService.getIngestionAttempt(username, ingestionAttemptId)
+    const ingestionAttempt = await this.policeDataService.getIngestionAttempt(username, ingestionAttemptId)
 
-    if (result.ok) {
-      res.render('pages/policeData/ingestionAttempt', {
-        ingestionAttempt: presentIngestionAttempt(result.data),
-      })
-    } else {
-      next(new Error('Not Found'))
-    }
+    res.render('pages/policeData/ingestionAttempt', {
+      ingestionAttempt: presentIngestionAttempt(ingestionAttempt),
+    })
   }
 }
