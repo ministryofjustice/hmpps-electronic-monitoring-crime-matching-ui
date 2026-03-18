@@ -27,6 +27,10 @@ Cypress.Commands.add('stubGetDeviceActivationPositions', options => {
   cy.task('stubGetDeviceActivationPositions', options)
 })
 
+Cypress.Commands.add('stubGetIngestionAttempt', options => {
+  cy.task('stubGetIngestionAttempt', options)
+})
+
 Cypress.Commands.add('stubGetIngestionAttempts', options => {
   cy.task('stubGetIngestionAttempts', options)
 })

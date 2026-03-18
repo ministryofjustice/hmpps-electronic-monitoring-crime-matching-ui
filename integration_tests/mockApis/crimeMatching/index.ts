@@ -4,6 +4,7 @@ import { stubGetCrimeVersions } from './crimeVersions'
 import { stubGetPersons } from '../locationData/persons'
 import { stubGetDeviceActivation } from '../locationData/deviceActivation'
 import { stubGetDeviceActivationPositions } from '../locationData/deviceActivationPositions'
+import { stubGetIngestionAttempt } from './ingestionAttempt'
 import { stubGetIngestionAttempts } from './ingestionAttempts'
 import { stubGetPerson } from '../locationData/person'
 
@@ -13,6 +14,7 @@ export default {
   stubGetCrimeVersions,
   stubGetDeviceActivation,
   stubGetDeviceActivationPositions,
+  stubGetIngestionAttempt,
   stubGetIngestionAttempts,
   stubGetPersons,
   stubGetPerson,

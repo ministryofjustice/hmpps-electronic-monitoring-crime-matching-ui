@@ -5,8 +5,8 @@ import PaginationComponent from './pagination'
 export default class DataTableComponent {
   private elementCacheId: string = uuidv4()
 
-  constructor() {
-    cy.get('.datatable', { log: false }).as(`${this.elementCacheId}-element`)
+  constructor(classes: string = '') {
+    cy.get(`.datatable${classes}`, { log: false }).as(`${this.elementCacheId}-element`)
   }
 
   // PROPERTIES
