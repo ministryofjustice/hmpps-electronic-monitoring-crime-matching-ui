@@ -4,8 +4,10 @@ import policeForceAreas from '../data/policeForceAreas'
 import IngestionAttemptSummary from '../types/ingestionAttemptSummary'
 import { PaginatedServiceResult } from '../types/service'
 import { parseDateTimeFromComponents } from '../utils/date'
-import { getIngestionAttemptDtoSchema } from '../schemas/policeData/dashboard'
+import { getIngestionAttemptSummariesDtoSchema } from '../schemas/policeData/dashboard'
 import Result from '../types/result'
+import IngestionAttempt from '../types/ingestionAttempt'
+import getIngestionAttemptDtoSchema from '../schemas/policeData/ingestionAttempt'
 
 class PoliceDataService {
   constructor(private readonly crimeMatchingApiClient: CrimeMatchingClient) {}
@@ -50,6 +52,12 @@ class PoliceDataService {
     }
 
     return { ok: false, error: 'Please enter a valid date.' }
+  }
+
+  async getIngestionAttempt(username: string, ingestionAttemptId: string): Promise<IngestionAttempt> {
+    const response = await this.crimeMatchingApiClient.getIngestionAttempt(asSystem(username), ingestionAttemptId)
+
+    return getIngestionAttemptDtoSchema.parse(response).data
   }
 
   async getIngestionAttemptSummaries(
@@ -97,7 +105,7 @@ class PoliceDataService {
 
     return {
       ok: true,
-      ...getIngestionAttemptDtoSchema.parse(response),
+      ...getIngestionAttemptSummariesDtoSchema.parse(response),
     }
   }
 }

@@ -2,6 +2,7 @@ import { StubGetDeviceActivationOptions } from './mockApis/locationData/deviceAc
 import { StubGetDeviceActivationPositionsOptions } from './mockApis/locationData/deviceActivationPositions'
 import { StubGetPersonsOptions } from './mockApis/locationData/persons'
 import { StubGetPersonOptions } from './mockApis/locationData/person'
+import { StubGetIngestionAttemptOptions } from './mockApis/crimeMatching/ingestionAttempt'
 import { StubGetIngestionAttemptsOptions } from './mockApis/crimeMatching/ingestionAttempts'
 import { StubGetCrimeMatchingResultsOptions } from './mockApis/crimeMatching/crimeMatchingResults'
 import { StubGetCrimeVersionsOptions } from './mockApis/crimeMatching/crimeVersions'
@@ -62,6 +63,11 @@ declare global {
        * Stub a wiremock response for the crimeMatchingApi GET /device-activations/{deviceActivationId}/positions
        */
       stubGetDeviceActivationPositions(options?: StubGetDeviceActivationPositionsOptions): Chainable<void>
+
+      /**
+       * Stub a wiremock response for the crimeMatchingApi GET /ingestion-attempts/{ingestionAttemptId}
+       */
+      stubGetIngestionAttempt(options?: StubGetIngestionAttemptOptions): Chainable<void>
 
       /**
        * Stub a wiremock response for the crimeMatchingApi GET /ingestion-attempts

@@ -1,11 +1,31 @@
 {% extends "../../partials/layout.njk" %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/table/macro.njk" import govukTable %}
+{% from "govuk/components/tag/macro.njk" import govukTag %}
+{% from "../../components/datatable/macro.njk" import dataTable %}
 
 {% set pageTitle = applicationName + " - Home" %}
 {% set mainClasses = "app-container govuk-body" %}
 {% set activeLinkId = "data-ingestion" %}
 {% set rows = [] %}
+
+
+{% set status %}
+  {{
+    govukTag({
+      text: ingestionAttempt.ingestionStatusText,
+      classes: "govuk-tag--" + ingestionAttempt.ingestionStatusColour
+    })
+  }}
+{% endset %}
+
+{% if ingestionAttempt.matchesText == 'N/A' %}
+  {% set matchesClasses = "table-cell--red table-cell--bold" %}
+{% elif ingestionAttempt.matches == 0 %}
+  {% set matchesClasses = "table-cell--red table-cell--bold" %}
+{% else %}
+  {% set matchesClasses = "" %}
+{% endif %}
 
 {% block content %}
   <div class="govuk-grid-row">
@@ -17,10 +37,11 @@
   <div class="govuk-grid-row govuk-!-static-margin-bottom-3">
     <div class="govuk-grid-column-full">
       {{
-        govukTable({
+        dataTable({
           caption: "Summary",
           captionClasses: "govuk-table__caption--m",
-          head: [
+          classes: "ingestion-attempt-summary-table",
+          columns: [
             {
               text: "Status"
             },
@@ -43,7 +64,32 @@
               text: "Time"
             }
           ],
-          rows: []
+          rows: [
+            [
+              {
+                html: status
+              },
+              {
+                text: ingestionAttempt.policeForceArea
+              },
+              {
+                text: ingestionAttempt.batchId
+              },
+              {
+                text: ingestionAttempt.fileName
+              },
+              {
+                text: ingestionAttempt.matchesText,
+                classes: matchesClasses
+              },
+              {
+                text: ingestionAttempt.createdAt | formatDateTime("DD/MM/YYYY")
+              },
+              {
+                text: ingestionAttempt.createdAt | formatDateTime("HH:mm:ss")
+              }
+            ]
+          ]
         })
       }}
     </div>

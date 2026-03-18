@@ -1,3 +1,5 @@
+import { withFallback } from './helpers/formatters'
+
 const policeForceAreaMap: Record<string, string> = {
   AVON_AND_SOMERSET: 'Avon and Somerset',
   BEDFORDSHIRE: 'Bedfordshire',
@@ -20,8 +22,8 @@ const policeForceAreaMap: Record<string, string> = {
   WEST_MIDLANDS: 'West Midlands',
 }
 
-const presentPoliceForceArea = (policeForceArea: string) => {
-  return policeForceAreaMap[policeForceArea] ?? ''
+const presentPoliceForceArea = (policeForceArea: string): string => {
+  return withFallback(policeForceAreaMap[policeForceArea])
 }
 
 export default presentPoliceForceArea
