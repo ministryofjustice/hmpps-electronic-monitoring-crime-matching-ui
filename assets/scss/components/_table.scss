@@ -1,5 +1,5 @@
 .table-cell--red {
-    color: govuk-colour("red");
+  color: govuk-colour("red");
 }
 
 .table-cell--bold {
@@ -9,4 +9,8 @@
 .table-cell--middle {
   vertical-align: middle;
   padding: 5px 20px 5px 0;
+}
+
+.table-cell--background-blue {
+  background-color: govuk-colour("blue", $variant: "tint-95");
 }

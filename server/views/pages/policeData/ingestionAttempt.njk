@@ -7,7 +7,6 @@
 {% set pageTitle = applicationName + " - Home" %}
 {% set mainClasses = "app-container govuk-body" %}
 {% set activeLinkId = "data-ingestion" %}
-{% set rows = [] %}
 
 
 {% set status %}
@@ -95,31 +94,9 @@
     </div>
   </div>
 
-  <div class="govuk-grid-row govuk-!-static-margin-bottom-3">
-    <div class="govuk-grid-column-full">
-      {{
-        govukTable({
-          caption: "Breakdown by crime type",
-          captionClasses: "govuk-table__caption--m",
-          head: [
-            {
-              text: "Crime type"
-            },
-            {
-              text: "Submitted"
-            },
-            {
-              text: "Ingested"
-            },
-            {
-              text: "Failed validation"
-            }
-          ],
-          rows: []
-        })
-      }}
-    </div>
-  </div>
+  {% if ingestionAttempt.displayCrimeBreakdown %}
+    {%- include "./partials/crimeBreakdown.njk" -%}
+  {% endif %}
 
   <div class="govuk-grid-row govuk-!-static-margin-bottom-3">
     <div class="govuk-grid-column-full">

@@ -18,6 +18,12 @@ type StubGetIngestionAttempt200Options = {
       submitted: number
       successful: number
       failed: number
+      crimesByCrimeType: Array<{
+        crimeType: string
+        submitted: number
+        successful: number
+        failed: number
+      }>
     }
   }
 }

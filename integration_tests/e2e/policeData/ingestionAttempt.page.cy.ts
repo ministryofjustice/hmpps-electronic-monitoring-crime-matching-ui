@@ -25,6 +25,7 @@ context('Police Data Ingestion Attempt', () => {
             submitted: 2,
             successful: 2,
             failed: 0,
+            crimesByCrimeType: [{ crimeType: 'BIAD', submitted: 2, failed: 0, successful: 2 }],
           },
         },
         status: 200,
@@ -55,6 +56,19 @@ context('Police Data Ingestion Attempt', () => {
 
       // And the matches column should have the correct formatting
       page.summaryTable.cell(0, 4).should('not.have.class', 'table-cell--red table-cell--bold')
+
+      // And the crime breakdown table should be populated
+      page.crimeBreakdownTable.shouldHaveColumns(['Crime type', 'Submitted', 'Ingested', 'Failed validation'])
+      page.crimeBreakdownTable.shouldHaveRows([
+        ['Total', '2', '2', '0'],
+        ['Missing', '0', '0', '0'],
+        ['BIAD - Burglary in a dwelling', '2', '2', '0'],
+        ['BOTD - Burglary in a building other than a dwelling', '0', '0', '0'],
+        ['RB - Robbery', '0', '0', '0'],
+        ['TFMV - Theft from motor vehicle', '0', '0', '0'],
+        ['TFP - Theft from person', '0', '0', '0'],
+        ['TOMV - Theft of motor vehicle', '0', '0', '0'],
+      ])
     })
 
     it('should display a successful ingestion with matches', () => {
@@ -73,6 +87,7 @@ context('Police Data Ingestion Attempt', () => {
             submitted: 2,
             successful: 2,
             failed: 0,
+            crimesByCrimeType: [{ crimeType: 'RB', submitted: 2, failed: 0, successful: 2 }],
           },
         },
         status: 200,
@@ -103,6 +118,98 @@ context('Police Data Ingestion Attempt', () => {
 
       // And the matches column should have the correct formatting
       page.summaryTable.cell(0, 4).should('not.have.class', 'table-cell--red table-cell--bold')
+
+      // And the crime breakdown table should be populated
+      page.crimeBreakdownTable.shouldHaveColumns(['Crime type', 'Submitted', 'Ingested', 'Failed validation'])
+      page.crimeBreakdownTable.shouldHaveRows([
+        ['Total', '2', '2', '0'],
+        ['Missing', '0', '0', '0'],
+        ['BIAD - Burglary in a dwelling', '0', '0', '0'],
+        ['BOTD - Burglary in a building other than a dwelling', '0', '0', '0'],
+        ['RB - Robbery', '2', '2', '0'],
+        ['TFMV - Theft from motor vehicle', '0', '0', '0'],
+        ['TFP - Theft from person', '0', '0', '0'],
+        ['TOMV - Theft of motor vehicle', '0', '0', '0'],
+      ])
+    })
+
+    it('should display a partially successful ingestion', () => {
+      // Given an API response containing an successful ingestion attempt
+      cy.stubGetIngestionAttempt({
+        ingestionAttemptId: '64d41bd9-5450-4bbb-89d4-42ba75659f49',
+        response: {
+          data: {
+            ingestionAttemptId: '64d41bd9-5450-4bbb-89d4-42ba75659f49',
+            ingestionStatus: 'PARTIAL',
+            policeForceArea: 'NORTH_WALES',
+            batchId: 'CMB20250710',
+            matches: null,
+            createdAt: '2026-03-17T11:33:38.483121',
+            fileName: '20260101000000.csv',
+            submitted: 101,
+            successful: 100,
+            failed: 1,
+            crimesByCrimeType: [
+              { crimeType: 'BIAD', submitted: 13, failed: 0, successful: 13 },
+              { crimeType: 'RB', submitted: 17, failed: 0, successful: 17 },
+              { crimeType: 'TOMV', submitted: 20, failed: 0, successful: 20 },
+              { crimeType: 'TFP', submitted: 12, failed: 0, successful: 12 },
+              { crimeType: 'TFMV', submitted: 12, failed: 0, successful: 12 },
+              { crimeType: 'AB', submitted: 13, failed: 0, successful: 13 },
+              { crimeType: 'BOTD', submitted: 13, failed: 0, successful: 13 },
+              { crimeType: 'MISSING', submitted: 1, failed: 1, successful: 0 },
+            ],
+          },
+        },
+        status: 200,
+      })
+
+      // When the user loads the page
+      cy.visit('/police-data/ingestion-attempts/64d41bd9-5450-4bbb-89d4-42ba75659f49')
+
+      const page = Page.verifyOnPage(PoliceDataIngestionAttemptPage)
+
+      // Then the summary table should be populated
+      page.summaryTable.shouldHaveColumns([
+        'Status',
+        'Police force area',
+        'Batch',
+        'Filename',
+        'Matches',
+        'Date',
+        'Time',
+      ])
+      page.summaryTable.shouldHaveRows([
+        [
+          'Partially ingested',
+          'North Wales',
+          'CMB20250710',
+          '20260101000000.csv',
+          'In progress',
+          '17/03/2026',
+          '11:33:38',
+        ],
+      ])
+      page.summaryTable.shouldNotHavePagination()
+
+      // And the status should have the correct tags
+      page.summaryTable.cell(0, 0).find('.govuk-tag').should('have.class', 'govuk-tag--yellow')
+
+      // And the matches column should have the correct formatting
+      page.summaryTable.cell(0, 4).should('not.have.class', 'table-cell--red table-cell--bold')
+
+      // And the crime breakdown table should be populated
+      page.crimeBreakdownTable.shouldHaveColumns(['Crime type', 'Submitted', 'Ingested', 'Failed validation'])
+      page.crimeBreakdownTable.shouldHaveRows([
+        ['Total', '101', '100', '1'],
+        ['Missing', '1', '0', '1'],
+        ['BIAD - Burglary in a dwelling', '13', '13', '0'],
+        ['BOTD - Burglary in a building other than a dwelling', '13', '13', '0'],
+        ['RB - Robbery', '17', '17', '0'],
+        ['TFMV - Theft from motor vehicle', '12', '12', '0'],
+        ['TFP - Theft from person', '12', '12', '0'],
+        ['TOMV - Theft of motor vehicle', '20', '20', '0'],
+      ])
     })
 
     it('should display a failed ingestion', () => {
@@ -121,6 +228,7 @@ context('Police Data Ingestion Attempt', () => {
             submitted: 0,
             successful: 0,
             failed: 0,
+            crimesByCrimeType: [],
           },
         },
         status: 200,
@@ -149,6 +257,9 @@ context('Police Data Ingestion Attempt', () => {
 
       // And the matches column should have the correct formatting
       page.summaryTable.cell(0, 4).should('have.class', 'table-cell--red table-cell--bold')
+
+      // And the crime breakdown table should not exist
+      cy.get(`.datatable.ingestion-attempt-crime-breakdown-table`).should('not.exist')
     })
 
     it('should display an errored ingestion ', () => {
@@ -167,6 +278,7 @@ context('Police Data Ingestion Attempt', () => {
             submitted: 1,
             successful: 0,
             failed: 1,
+            crimesByCrimeType: [{ crimeType: 'RB', submitted: 1, failed: 1, successful: 0 }],
           },
         },
         status: 200,
@@ -197,6 +309,19 @@ context('Police Data Ingestion Attempt', () => {
 
       // And the matches column should have the correct formatting
       page.summaryTable.cell(0, 4).should('have.class', 'table-cell--red table-cell--bold')
+
+      // And the crime breakdown table should be populated
+      page.crimeBreakdownTable.shouldHaveColumns(['Crime type', 'Submitted', 'Ingested', 'Failed validation'])
+      page.crimeBreakdownTable.shouldHaveRows([
+        ['Total', '1', '0', '1'],
+        ['Missing', '0', '0', '0'],
+        ['BIAD - Burglary in a dwelling', '0', '0', '0'],
+        ['BOTD - Burglary in a building other than a dwelling', '0', '0', '0'],
+        ['RB - Robbery', '1', '0', '1'],
+        ['TFMV - Theft from motor vehicle', '0', '0', '0'],
+        ['TFP - Theft from person', '0', '0', '0'],
+        ['TOMV - Theft of motor vehicle', '0', '0', '0'],
+      ])
     })
   })
 })
