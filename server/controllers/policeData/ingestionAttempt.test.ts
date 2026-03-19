@@ -87,6 +87,7 @@ describe('PoliceDataIngestionAttemptController', () => {
           policeForceArea: 'Cumbria',
           submitted: 2,
           successful: 2,
+          displayCrimeBreakdown: true,
           crimesByCrimeType: {
             AB: {
               failed: 0,
@@ -180,6 +181,7 @@ describe('PoliceDataIngestionAttemptController', () => {
           policeForceArea: 'Cumbria',
           submitted: 2,
           successful: 2,
+          displayCrimeBreakdown: true,
           crimesByCrimeType: {
             AB: {
               failed: 0,
@@ -281,6 +283,7 @@ describe('PoliceDataIngestionAttemptController', () => {
           submitted: 101,
           successful: 100,
           failed: 1,
+          displayCrimeBreakdown: true,
           crimesByCrimeType: {
             AB: {
               crimeType: 'AB',
@@ -381,6 +384,7 @@ describe('PoliceDataIngestionAttemptController', () => {
           policeForceArea: 'N/A',
           submitted: 0,
           successful: 0,
+          displayCrimeBreakdown: false,
           crimesByCrimeType: {
             AB: {
               failed: 0,
@@ -473,6 +477,7 @@ describe('PoliceDataIngestionAttemptController', () => {
           policeForceArea: 'N/A',
           submitted: 1,
           successful: 0,
+          displayCrimeBreakdown: true,
           crimesByCrimeType: {
             AB: {
               failed: 0,

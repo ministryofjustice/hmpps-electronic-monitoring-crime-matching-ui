@@ -39,6 +39,7 @@ const presentIngestionAttempt = (ingestionAttempt: IngestionAttempt) => {
     fileName: withFallback(ingestionAttempt.fileName),
     batchId: withFallback(ingestionAttempt.batchId, 'Failed'),
     crimesByCrimeType: getCrimeTypeBreakdown(ingestionAttempt),
+    displayCrimeBreakdown: ingestionAttempt.ingestionStatus !== 'FAILED',
   }
 }
 
