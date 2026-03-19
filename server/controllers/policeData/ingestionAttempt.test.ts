@@ -27,7 +27,7 @@ const expectedAuthOptions = {
   },
 }
 
-describe('PoliceDataDashboardController', () => {
+describe('PoliceDataIngestionAttemptController', () => {
   let mockRestClient: jest.Mocked<CrimeMatchingClient>
 
   beforeEach(() => {
@@ -63,6 +63,7 @@ describe('PoliceDataDashboardController', () => {
           submitted: 2,
           successful: 2,
           failed: 0,
+          crimesByCrimeType: [{ crimeType: 'BIAD', submitted: 2, failed: 0, successful: 2 }],
         },
       })
 
@@ -86,6 +87,49 @@ describe('PoliceDataDashboardController', () => {
           policeForceArea: 'Cumbria',
           submitted: 2,
           successful: 2,
+          crimesByCrimeType: {
+            AB: {
+              failed: 0,
+              submitted: 0,
+              successful: 0,
+            },
+            BIAD: {
+              crimeType: 'BIAD',
+              failed: 0,
+              submitted: 2,
+              successful: 2,
+            },
+            BOTD: {
+              failed: 0,
+              submitted: 0,
+              successful: 0,
+            },
+            MISSING: {
+              failed: 0,
+              submitted: 0,
+              successful: 0,
+            },
+            RB: {
+              failed: 0,
+              submitted: 0,
+              successful: 0,
+            },
+            TFMV: {
+              failed: 0,
+              submitted: 0,
+              successful: 0,
+            },
+            TFP: {
+              failed: 0,
+              submitted: 0,
+              successful: 0,
+            },
+            TOMV: {
+              failed: 0,
+              submitted: 0,
+              successful: 0,
+            },
+          },
         },
       })
     })
@@ -112,6 +156,7 @@ describe('PoliceDataDashboardController', () => {
           submitted: 2,
           successful: 2,
           failed: 0,
+          crimesByCrimeType: [{ crimeType: 'RB', submitted: 2, failed: 0, successful: 2 }],
         },
       })
 
@@ -135,6 +180,157 @@ describe('PoliceDataDashboardController', () => {
           policeForceArea: 'Cumbria',
           submitted: 2,
           successful: 2,
+          crimesByCrimeType: {
+            AB: {
+              failed: 0,
+              submitted: 0,
+              successful: 0,
+            },
+            BIAD: {
+              failed: 0,
+              submitted: 0,
+              successful: 0,
+            },
+            BOTD: {
+              failed: 0,
+              submitted: 0,
+              successful: 0,
+            },
+            MISSING: {
+              failed: 0,
+              submitted: 0,
+              successful: 0,
+            },
+            RB: {
+              crimeType: 'RB',
+              failed: 0,
+              submitted: 2,
+              successful: 2,
+            },
+            TFMV: {
+              failed: 0,
+              submitted: 0,
+              successful: 0,
+            },
+            TFP: {
+              failed: 0,
+              submitted: 0,
+              successful: 0,
+            },
+            TOMV: {
+              failed: 0,
+              submitted: 0,
+              successful: 0,
+            },
+          },
+        },
+      })
+    })
+
+    it('should correctly present a partial ingestion to the view engine', async () => {
+      // Given
+      const ingestionAttemptId = '64d41bd9-5450-4bbb-89d4-42ba75659f49'
+      const req = createMockRequest({ params: { ingestionAttemptId } })
+      const res = createMockResponse()
+      const next = jest.fn()
+      const policeDataService = new PoliceDataService(mockRestClient)
+      const controller = new PoliceDataIngestionAttemptController(policeDataService)
+
+      mockRestClient.getIngestionAttempt.mockResolvedValue({
+        data: {
+          ingestionAttemptId: '64d41bd9-5450-4bbb-89d4-42ba75659f49',
+          ingestionStatus: 'PARTIAL',
+          policeForceArea: 'NORTH_WALES',
+          batchId: 'CMB20250710',
+          matches: null,
+          createdAt: '2026-03-17T11:33:38.483121',
+          fileName: '20260101000000.csv',
+          submitted: 101,
+          successful: 100,
+          failed: 1,
+          crimesByCrimeType: [
+            { crimeType: 'BIAD', submitted: 13, failed: 0, successful: 13 },
+            { crimeType: 'RB', submitted: 17, failed: 0, successful: 17 },
+            { crimeType: 'TOMV', submitted: 20, failed: 0, successful: 20 },
+            { crimeType: 'TFP', submitted: 12, failed: 0, successful: 12 },
+            { crimeType: 'TFMV', submitted: 12, failed: 0, successful: 12 },
+            { crimeType: 'AB', submitted: 13, failed: 0, successful: 13 },
+            { crimeType: 'BOTD', submitted: 13, failed: 0, successful: 13 },
+            { crimeType: 'MISSING', submitted: 1, failed: 1, successful: 0 },
+          ],
+        },
+      })
+
+      // When
+      await controller.view(req, res, next)
+
+      // Then
+      expect(mockRestClient.getIngestionAttempt).toHaveBeenCalledWith(expectedAuthOptions, ingestionAttemptId)
+      expect(res.render).toHaveBeenCalledWith('pages/policeData/ingestionAttempt', {
+        ingestionAttempt: {
+          batchId: 'CMB20250710',
+          createdAt: '2026-03-17T11:33:38.483121',
+          fileName: '20260101000000.csv',
+          ingestionAttemptId: '64d41bd9-5450-4bbb-89d4-42ba75659f49',
+          ingestionStatus: 'PARTIAL',
+          ingestionStatusColour: 'yellow',
+          ingestionStatusText: 'Partially ingested',
+          matches: null,
+          matchesText: 'In progress',
+          policeForceArea: 'North Wales',
+          submitted: 101,
+          successful: 100,
+          failed: 1,
+          crimesByCrimeType: {
+            AB: {
+              crimeType: 'AB',
+              failed: 0,
+              submitted: 13,
+              successful: 13,
+            },
+            BIAD: {
+              crimeType: 'BIAD',
+              failed: 0,
+              submitted: 13,
+              successful: 13,
+            },
+            BOTD: {
+              crimeType: 'BOTD',
+              failed: 0,
+              submitted: 13,
+              successful: 13,
+            },
+            MISSING: {
+              crimeType: 'MISSING',
+              failed: 1,
+              submitted: 1,
+              successful: 0,
+            },
+            RB: {
+              crimeType: 'RB',
+              failed: 0,
+              submitted: 17,
+              successful: 17,
+            },
+            TFMV: {
+              crimeType: 'TFMV',
+              failed: 0,
+              submitted: 12,
+              successful: 12,
+            },
+            TFP: {
+              crimeType: 'TFP',
+              failed: 0,
+              submitted: 12,
+              successful: 12,
+            },
+            TOMV: {
+              crimeType: 'TOMV',
+              failed: 0,
+              submitted: 20,
+              successful: 20,
+            },
+          },
         },
       })
     })
@@ -161,6 +357,7 @@ describe('PoliceDataDashboardController', () => {
           submitted: 0,
           successful: 0,
           failed: 0,
+          crimesByCrimeType: [],
         },
       })
 
@@ -184,6 +381,48 @@ describe('PoliceDataDashboardController', () => {
           policeForceArea: 'N/A',
           submitted: 0,
           successful: 0,
+          crimesByCrimeType: {
+            AB: {
+              failed: 0,
+              submitted: 0,
+              successful: 0,
+            },
+            BIAD: {
+              failed: 0,
+              submitted: 0,
+              successful: 0,
+            },
+            BOTD: {
+              failed: 0,
+              submitted: 0,
+              successful: 0,
+            },
+            MISSING: {
+              failed: 0,
+              submitted: 0,
+              successful: 0,
+            },
+            RB: {
+              failed: 0,
+              submitted: 0,
+              successful: 0,
+            },
+            TFMV: {
+              failed: 0,
+              submitted: 0,
+              successful: 0,
+            },
+            TFP: {
+              failed: 0,
+              submitted: 0,
+              successful: 0,
+            },
+            TOMV: {
+              failed: 0,
+              submitted: 0,
+              successful: 0,
+            },
+          },
         },
       })
     })
@@ -210,6 +449,7 @@ describe('PoliceDataDashboardController', () => {
           submitted: 1,
           successful: 0,
           failed: 1,
+          crimesByCrimeType: [{ crimeType: 'RB', submitted: 1, failed: 1, successful: 0 }],
         },
       })
 
@@ -233,6 +473,49 @@ describe('PoliceDataDashboardController', () => {
           policeForceArea: 'N/A',
           submitted: 1,
           successful: 0,
+          crimesByCrimeType: {
+            AB: {
+              failed: 0,
+              submitted: 0,
+              successful: 0,
+            },
+            BIAD: {
+              failed: 0,
+              submitted: 0,
+              successful: 0,
+            },
+            BOTD: {
+              failed: 0,
+              submitted: 0,
+              successful: 0,
+            },
+            MISSING: {
+              failed: 0,
+              submitted: 0,
+              successful: 0,
+            },
+            RB: {
+              crimeType: 'RB',
+              failed: 1,
+              submitted: 1,
+              successful: 0,
+            },
+            TFMV: {
+              failed: 0,
+              submitted: 0,
+              successful: 0,
+            },
+            TFP: {
+              failed: 0,
+              submitted: 0,
+              successful: 0,
+            },
+            TOMV: {
+              failed: 0,
+              submitted: 0,
+              successful: 0,
+            },
+          },
         },
       })
     })

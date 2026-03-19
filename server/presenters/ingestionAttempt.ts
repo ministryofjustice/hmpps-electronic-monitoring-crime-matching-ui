@@ -38,7 +38,7 @@ const presentIngestionAttempt = (ingestionAttempt: IngestionAttempt) => {
     matchesText: presentIngestionAttemptMatches(ingestionAttempt.ingestionStatus, ingestionAttempt.matches),
     fileName: withFallback(ingestionAttempt.fileName),
     batchId: withFallback(ingestionAttempt.batchId, 'Failed'),
-    crimeTypeBreakdown: getCrimeTypeBreakdown(ingestionAttempt),
+    crimesByCrimeType: getCrimeTypeBreakdown(ingestionAttempt),
   }
 }
 
