@@ -7,7 +7,6 @@
 {% set pageTitle = applicationName + " - Home" %}
 {% set mainClasses = "app-container govuk-body" %}
 {% set activeLinkId = "data-ingestion" %}
-{% set rows = [] %}
 
 
 {% set status %}
@@ -98,24 +97,169 @@
   <div class="govuk-grid-row govuk-!-static-margin-bottom-3">
     <div class="govuk-grid-column-full">
       {{
-        govukTable({
+        dataTable({
           caption: "Breakdown by crime type",
           captionClasses: "govuk-table__caption--m",
-          head: [
+          classes: "ingestion-attempt-crime-breakdown-table",
+          columns: [
             {
               text: "Crime type"
             },
             {
-              text: "Submitted"
+              text: "Submitted",
+              format: "numeric"
             },
             {
-              text: "Ingested"
+              text: "Ingested",
+              format: "numeric"
             },
             {
-              text: "Failed validation"
+              text: "Failed validation",
+              format: "numeric"
             }
           ],
-          rows: []
+          rows: [
+            [
+              {
+                text: "Total",
+                classes: "table-cell--background-blue"
+              },
+              {
+                text: ingestionAttempt.submitted,
+                classes: "table-cell--background-blue",
+                format: "numeric"
+              },
+              {
+                text: ingestionAttempt.successful,
+                classes: "table-cell--background-blue",
+                format: "numeric"
+              },
+              {
+                text: ingestionAttempt.failed,
+                classes: "table-cell--background-blue",
+                format: "numeric"
+              }
+            ],
+            [
+              {
+                text: "Missing"
+              },
+              {
+                text: ingestionAttempt.crimeTypeBreakdown['MISSING']['submitted'],
+                format: "numeric"
+              },
+              {
+                text: ingestionAttempt.crimeTypeBreakdown['MISSING']['successful'],
+                format: "numeric"
+              },
+              {
+                text: ingestionAttempt.crimeTypeBreakdown['MISSING']['failed'],
+                format: "numeric"
+              }
+            ],
+            [
+              {
+                text: "BIAD - Burglary in a dwelling"
+              },
+              {
+                text: ingestionAttempt.crimeTypeBreakdown['BIAD']['submitted'],
+                format: "numeric"
+              },
+              {
+                text: ingestionAttempt.crimeTypeBreakdown['BIAD']['successful'],
+                format: "numeric"
+              },
+              {
+                text: ingestionAttempt.crimeTypeBreakdown['BIAD']['failed'],
+                format: "numeric"
+              }
+            ],
+            [
+              {
+                text: "BOTD - Burglary in a building other than a dwelling"
+              },
+              {
+                text: ingestionAttempt.crimeTypeBreakdown['BOTD']['submitted'],
+                format: "numeric"
+              },
+              {
+                text: ingestionAttempt.crimeTypeBreakdown['BOTD']['successful'],
+                format: "numeric"
+              },
+              {
+                text: ingestionAttempt.crimeTypeBreakdown['BOTD']['failed'],
+                format: "numeric"
+              }
+            ],
+            [
+              {
+                text: "RB - Robbery"
+              },
+              {
+                text: ingestionAttempt.crimeTypeBreakdown['RB']['submitted'],
+                format: "numeric"
+              },
+              {
+                text: ingestionAttempt.crimeTypeBreakdown['RB']['successful'],
+                format: "numeric"
+              },
+              {
+                text: ingestionAttempt.crimeTypeBreakdown['RB']['failed'],
+                format: "numeric"
+              }
+            ],
+            [
+              {
+                text: "TFMV - Theft from motor vehicle"
+              },
+              {
+                text: ingestionAttempt.crimeTypeBreakdown['TFMV']['submitted'],
+                format: "numeric"
+              },
+              {
+                text: ingestionAttempt.crimeTypeBreakdown['TFMV']['successful'],
+                format: "numeric"
+              },
+              {
+                text: ingestionAttempt.crimeTypeBreakdown['TFMV']['failed'],
+                format: "numeric"
+              }
+            ],
+            [
+              {
+                text: "TFP - Theft from person"
+              },
+              {
+                text: ingestionAttempt.crimeTypeBreakdown['TFP']['submitted'],
+                format: "numeric"
+              },
+              {
+                text: ingestionAttempt.crimeTypeBreakdown['TFP']['successful'],
+                format: "numeric"
+              },
+              {
+                text: ingestionAttempt.crimeTypeBreakdown['TFP']['failed'],
+                format: "numeric"
+              }
+            ],
+            [
+              {
+                text: "TOMV - Theft of motor vehicle"
+              },
+              {
+                text: ingestionAttempt.crimeTypeBreakdown['TOMV']['submitted'],
+                format: "numeric"
+              },
+              {
+                text: ingestionAttempt.crimeTypeBreakdown['TOMV']['successful'],
+                format: "numeric"
+              },
+              {
+                text: ingestionAttempt.crimeTypeBreakdown['TOMV']['failed'],
+                format: "numeric"
+              }
+            ]
+          ]
         })
       }}
     </div>

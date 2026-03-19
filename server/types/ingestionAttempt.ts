@@ -9,6 +9,7 @@ type IngestionAttempt = {
   submitted: number
   successful: number
   failed: number
+  crimesByCrimeType: Array<{ crimeType: string; submitted: number; failed: number; successful: number }>
 }
 
 export default IngestionAttempt
