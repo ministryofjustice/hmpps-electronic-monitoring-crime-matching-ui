@@ -1,4 +1,4 @@
-{% extends "../../partials/fullWidthLayout.njk" %}
+{% extends "../../partials/layout.njk" %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
@@ -7,6 +7,7 @@
 {% from "../../components/date-time-picker/macro.njk" import dateTimePicker %}
 
 {% set pageTitle = applicationName + " - Home" %}
+{% set containerClasses = "govuk-full-width-container" %}
 {% set mainClasses = "app-container govuk-body map-container location-data" %}
 {% set pageType = "subject" %}
 {% set activeLinkId = "location-data" %}

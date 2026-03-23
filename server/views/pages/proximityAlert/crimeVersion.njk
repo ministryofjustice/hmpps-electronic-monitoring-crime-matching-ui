@@ -1,9 +1,10 @@
-{% extends "../../partials/fullWidthLayout.njk" %}
+{% extends "../../partials/layout.njk" %}
 {% from "../../components/map/macro.njk" import appMap %}
 {% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
 {% from "govuk/components/tabs/macro.njk" import govukTabs %}
 
 {% set pageTitle = applicationName + " - Home" %}
+{% set containerClasses = "govuk-full-width-container" %}
 {% set mainClasses = "app-container govuk-body map-container" %}
 {% set activeLinkId = "proximity-alert" %}
 

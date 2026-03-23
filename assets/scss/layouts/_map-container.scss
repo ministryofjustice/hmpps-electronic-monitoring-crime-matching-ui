@@ -1,12 +1,10 @@
 .map-container {
-  padding: 0;
-  margin: 0;
+  @media #{govuk-from-breakpoint(desktop)} {
+    padding: 0;
+    margin: 0;
+  }
 
   .app-map {
-    display: grid;
-    grid-template-columns: 400px 1fr;
-    grid-template-rows: calc(100vh - 70px - 55px);
-
     .app-map__error {
       position: absolute;
       margin: 5px 60px;
@@ -14,21 +12,26 @@
     }
 
     .app-map__sidebar {
-      border-left: 1px solid $govuk-border-colour;
       overflow-y: auto;
 
       .govuk-tabs {
-        margin-bottom: 0;
+        @media #{govuk-from-breakpoint(desktop)} {
+          margin-bottom: 0;
+        }
       }
 
       .govuk-tabs__list-item {
-        border-top: none;
+        @media #{govuk-from-breakpoint(desktop)} {
+          border-top: none;
+        }
       }
 
       .govuk-tabs__panel {
-        border-right: none;
-        border-left: none;
-        border-bottom: none;
+        @media #{govuk-from-breakpoint(desktop)} {
+          border-right: none;
+          border-left: none;
+          border-bottom: none;
+        }
       }
 
       .govuk-form-group {
