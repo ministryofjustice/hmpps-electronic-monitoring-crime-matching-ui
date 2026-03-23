@@ -1,0 +1,15 @@
+.govuk-full-width-container-no-gutter {
+  @media #{govuk-from-breakpoint(desktop)} {
+    max-width: 100% !important;
+    margin-left: 0px !important;
+    margin-right: 0px !important;
+  }
+}
+
+.govuk-full-width-container {
+  @media #{govuk-from-breakpoint(desktop)} {
+    max-width: 100% !important;
+    margin-left: 15px !important;
+    margin-right: 15px !important;
+  }
+}

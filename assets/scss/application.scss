@@ -9,15 +9,14 @@ $govuk-page-width: $moj-page-width;
 @import '@ministryofjustice/hmpps-probation-frontend-components/dist/assets/footer';
 @import '@ministryofjustice/hmpps-probation-frontend-components/dist/assets/header';
 
+@import './layouts/full-width-container';
 @import './layouts/map-container';
 @import './components/table';
 @import './views/location-data/index';
 @import './views/police-data/dashboard';
 @import './local';
 
-.govuk-full-width-container {
-    @include govuk-width-container(1400px);
-}
+
 
 .govuk-\!-width-one-eighth {
   width: 100% !important;
