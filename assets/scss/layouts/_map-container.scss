@@ -4,6 +4,22 @@
     margin: 0;
   }
 
+  .govuk-grid-row {
+    .govuk-grid-column-one-quarter-from-desktop {
+      @media #{govuk-from-breakpoint(desktop)} {
+        padding-right: 0;
+      }
+    }
+
+    .govuk-grid-column-three-quarters-from-desktop {
+      height: calc(100vh - 70px - 55px);
+
+      @media #{govuk-from-breakpoint(desktop)} {
+        padding-left: 0;
+      }
+    }
+  }
+
   .app-map {
     .app-map__error {
       position: absolute;

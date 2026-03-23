@@ -1,4 +1,4 @@
-{% extends "../../partials/fullWidthLayout.njk" %}
+{% extends "../../partials/layout.njk" %}
 {% from "govuk/components/input/macro.njk" import govukInput %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
@@ -7,6 +7,7 @@
 {% from "../../components/date-time-picker/macro.njk" import dateTimePicker %}
 
 {% set pageTitle = applicationName + " - Persons Search" %}
+{% set containerClasses = "govuk-full-width-container" %}
 {% set mainClasses = "app-container govuk-body device-activation-search" %}
 {% set pageType = "index" %}
 {% set rows = [] %}
@@ -99,7 +100,11 @@
 {% endfor %}
 
 {% block content %}
-  <h1 class="govuk-heading-m">Search Location Data</h1>
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+      <h1 class="govuk-heading-m">Search Location Data</h1>
+    </div>
+  </div>
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-one-quarter">
       <form method="post" novalidate id="person-search-form">
