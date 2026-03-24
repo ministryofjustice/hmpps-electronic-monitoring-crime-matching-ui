@@ -14,6 +14,10 @@ export default class PoliceDataIngestionAttemptPage extends AppPage {
     return new DataTableComponent('.ingestion-attempt-crime-breakdown-table')
   }
 
+  get validationErrorsTable(): DataTableComponent {
+    return new DataTableComponent('.ingestion-attempt-validation-errors-table')
+  }
+
   checkOnPage(): void {
     super.checkOnPage()
 
