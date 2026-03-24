@@ -102,12 +102,7 @@
     {%- include "./partials/validationErrors.njk" -%}
   {% endif %}
 
-  <div class="govuk-grid-row">
-    <div class="govuk-grid-column-full">
-      <h2 class="govuk-heading-m">Failed ingestion</h2>
-      <p>
-        No crimes have been ingested. Please refer to email "MoJ Acquisitive Crime - Ingestion - Failure -" for details.
-      </p>
-    </div>
-  </div>
+  {% if ingestionAttempt.ingestionStatus == 'FAILED' %}
+    {%- include "./partials/failedIngestion.njk" -%}
+  {% endif %}
 {% endblock %}
