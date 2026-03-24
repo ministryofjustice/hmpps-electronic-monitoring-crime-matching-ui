@@ -40,6 +40,7 @@ const presentIngestionAttempt = (ingestionAttempt: IngestionAttempt) => {
     batchId: withFallback(ingestionAttempt.batchId, 'Failed'),
     crimesByCrimeType: getCrimeTypeBreakdown(ingestionAttempt),
     displayCrimeBreakdown: ingestionAttempt.ingestionStatus !== 'FAILED',
+    displayValidationErrors: ['PARTIAL', 'ERROR'].includes(ingestionAttempt.ingestionStatus),
   }
 }
 

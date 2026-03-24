@@ -20,6 +20,13 @@ const getIngestionAttemptDtoSchema = z.object({
         successful: z.number(),
       }),
     ),
+    validationErrors: z.array(
+      z.object({
+        crimeReference: z.string(),
+        errorType: z.string(),
+        requiredAction: z.string(),
+      }),
+    ),
   }),
 })
 
