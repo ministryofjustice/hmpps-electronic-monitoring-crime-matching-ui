@@ -64,6 +64,7 @@ describe('PoliceDataIngestionAttemptController', () => {
           successful: 2,
           failed: 0,
           crimesByCrimeType: [{ crimeType: 'BIAD', submitted: 2, failed: 0, successful: 2 }],
+          validationErrors: [],
         },
       })
 
@@ -88,6 +89,7 @@ describe('PoliceDataIngestionAttemptController', () => {
           submitted: 2,
           successful: 2,
           displayCrimeBreakdown: true,
+          displayValidationErrors: false,
           crimesByCrimeType: {
             AB: {
               failed: 0,
@@ -131,6 +133,7 @@ describe('PoliceDataIngestionAttemptController', () => {
               successful: 0,
             },
           },
+          validationErrors: [],
         },
       })
     })
@@ -158,6 +161,7 @@ describe('PoliceDataIngestionAttemptController', () => {
           successful: 2,
           failed: 0,
           crimesByCrimeType: [{ crimeType: 'RB', submitted: 2, failed: 0, successful: 2 }],
+          validationErrors: [],
         },
       })
 
@@ -182,6 +186,7 @@ describe('PoliceDataIngestionAttemptController', () => {
           submitted: 2,
           successful: 2,
           displayCrimeBreakdown: true,
+          displayValidationErrors: false,
           crimesByCrimeType: {
             AB: {
               failed: 0,
@@ -225,6 +230,7 @@ describe('PoliceDataIngestionAttemptController', () => {
               successful: 0,
             },
           },
+          validationErrors: [],
         },
       })
     })
@@ -260,6 +266,13 @@ describe('PoliceDataIngestionAttemptController', () => {
             { crimeType: 'BOTD', submitted: 13, failed: 0, successful: 13 },
             { crimeType: 'MISSING', submitted: 1, failed: 1, successful: 0 },
           ],
+          validationErrors: [
+            {
+              crimeReference: 'CR123456',
+              errorType: 'Field must be a valid ENUM value',
+              requiredAction: 'Amend crime type to a registered crime type',
+            },
+          ],
         },
       })
 
@@ -284,6 +297,7 @@ describe('PoliceDataIngestionAttemptController', () => {
           successful: 100,
           failed: 1,
           displayCrimeBreakdown: true,
+          displayValidationErrors: true,
           crimesByCrimeType: {
             AB: {
               crimeType: 'AB',
@@ -334,6 +348,13 @@ describe('PoliceDataIngestionAttemptController', () => {
               successful: 20,
             },
           },
+          validationErrors: [
+            {
+              crimeReference: 'CR123456',
+              errorType: 'Field must be a valid ENUM value',
+              requiredAction: 'Amend crime type to a registered crime type',
+            },
+          ],
         },
       })
     })
@@ -361,6 +382,7 @@ describe('PoliceDataIngestionAttemptController', () => {
           successful: 0,
           failed: 0,
           crimesByCrimeType: [],
+          validationErrors: [],
         },
       })
 
@@ -385,6 +407,7 @@ describe('PoliceDataIngestionAttemptController', () => {
           submitted: 0,
           successful: 0,
           displayCrimeBreakdown: false,
+          displayValidationErrors: false,
           crimesByCrimeType: {
             AB: {
               failed: 0,
@@ -427,6 +450,7 @@ describe('PoliceDataIngestionAttemptController', () => {
               successful: 0,
             },
           },
+          validationErrors: [],
         },
       })
     })
@@ -454,6 +478,13 @@ describe('PoliceDataIngestionAttemptController', () => {
           successful: 0,
           failed: 1,
           crimesByCrimeType: [{ crimeType: 'RB', submitted: 1, failed: 1, successful: 0 }],
+          validationErrors: [
+            {
+              crimeReference: 'CR123456',
+              errorType: 'Field must be a valid ENUM value',
+              requiredAction: 'Amend crime type to a registered crime type',
+            },
+          ],
         },
       })
 
@@ -478,6 +509,7 @@ describe('PoliceDataIngestionAttemptController', () => {
           submitted: 1,
           successful: 0,
           displayCrimeBreakdown: true,
+          displayValidationErrors: true,
           crimesByCrimeType: {
             AB: {
               failed: 0,
@@ -521,6 +553,13 @@ describe('PoliceDataIngestionAttemptController', () => {
               successful: 0,
             },
           },
+          validationErrors: [
+            {
+              crimeReference: 'CR123456',
+              errorType: 'Field must be a valid ENUM value',
+              requiredAction: 'Amend crime type to a registered crime type',
+            },
+          ],
         },
       })
     })
