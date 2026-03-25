@@ -4,6 +4,7 @@ import CrimeVersionSummary from '../types/crimeVersionSummary'
 import CrimeVersion from '../types/crimeVersion'
 import { PaginatedServiceResult, ServiceResult } from '../types/service'
 import { getCrimeVersionsDtoSchema } from '../schemas/proximityAlert/crimeSearch'
+import getCrimeVersionDtoSchema from '../schemas/proximityAlert/crimeVersion'
 
 class CrimeService {
   constructor(private readonly crimeMatchingApiClient: CrimeMatchingClient) {}
@@ -19,15 +20,12 @@ class CrimeService {
     return undefined
   }
 
-  async getCrimeVersion(
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    username: string,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    crimeVersionId: string,
-  ): Promise<ServiceResult<CrimeVersion>> {
+  async getCrimeVersion(username: string, crimeVersionId: string): Promise<ServiceResult<CrimeVersion>> {
+    const response = await this.crimeMatchingApiClient.getCrimeVersion(asSystem(username), crimeVersionId)
+
     return {
       ok: true,
-      data: {},
+      data: getCrimeVersionDtoSchema.parse(response).data,
     }
   }
 
