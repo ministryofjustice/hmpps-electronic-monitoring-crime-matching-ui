@@ -1,5 +1,5 @@
 import CrimeMatchingClient from '../../data/crimeMatchingClient'
-import CrimeVersionController from './crimeSearch'
+import CrimeVersionController from './crimeVersion'
 import logger from '../../../logger'
 import createMockRequest from '../../testutils/createMockRequest'
 import createMockResponse from '../../testutils/createMockResponse'
