@@ -41,10 +41,16 @@
     }}
   </div>
   <div class="govuk-grid-column-full">
-    {{
-      govukButton({
-        text: "Export"
-      })
-    }}
+    <form
+      id="export-validation-errors-form"
+      action="/police-data/ingestion-attempts/{{ ingestionAttempt.ingestionAttemptId }}/export"
+    >
+      <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+      {{
+        govukButton({
+          text: "Export"
+        })
+      }}
+    </form>
   </div>
 </div>
