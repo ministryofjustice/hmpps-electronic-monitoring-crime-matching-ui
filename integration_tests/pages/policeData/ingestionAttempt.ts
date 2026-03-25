@@ -1,5 +1,6 @@
 import AppPage from '../appPage'
 import DataTableComponent from '../components/dataTableComponent'
+import ExportValidationErrorsFormComponent from '../components/forms/exportValidationErrorsForm'
 import { PageElement } from '../page'
 
 export default class PoliceDataIngestionAttemptPage extends AppPage {
@@ -25,6 +26,10 @@ export default class PoliceDataIngestionAttemptPage extends AppPage {
 
   get failedIngestionSection(): PageElement {
     return cy.get('.govuk-grid-row').filter(':has(h2:contains("Failed ingestion"))')
+  }
+
+  get exportForm(): ExportValidationErrorsFormComponent {
+    return new ExportValidationErrorsFormComponent()
   }
 
   checkOnPage(): void {
