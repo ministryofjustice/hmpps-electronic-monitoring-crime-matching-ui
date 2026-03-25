@@ -179,35 +179,67 @@ context('Police Data Dashboard', () => {
       page.dataTable
         .cell(0, 3)
         .find('a')
-        .should('have.attr', 'href', '/police-data/ingestion-attempts/6664c855-cd76-4674-8f38-34244ad77c5a')
+        .should(
+          'have.attr',
+          'href',
+          '/police-data/ingestion-attempts/6664c855-cd76-4674-8f38-34244ad77c5a?returnTo=%2Fpolice-data%2Fdashboard%3F',
+        )
       page.dataTable
         .cell(1, 3)
         .find('a')
-        .should('have.attr', 'href', '/police-data/ingestion-attempts/6664c855-cd76-4674-8f38-34244ad77c5a')
+        .should(
+          'have.attr',
+          'href',
+          '/police-data/ingestion-attempts/6664c855-cd76-4674-8f38-34244ad77c5a?returnTo=%2Fpolice-data%2Fdashboard%3F',
+        )
       page.dataTable
         .cell(2, 3)
         .find('a')
-        .should('have.attr', 'href', '/police-data/ingestion-attempts/6664c855-cd76-4674-8f38-34244ad77c5a')
+        .should(
+          'have.attr',
+          'href',
+          '/police-data/ingestion-attempts/6664c855-cd76-4674-8f38-34244ad77c5a?returnTo=%2Fpolice-data%2Fdashboard%3F',
+        )
       page.dataTable
         .cell(3, 3)
         .find('a')
-        .should('have.attr', 'href', '/police-data/ingestion-attempts/0078f3f7-74dc-4165-8e43-dca9e10a1a39')
+        .should(
+          'have.attr',
+          'href',
+          '/police-data/ingestion-attempts/0078f3f7-74dc-4165-8e43-dca9e10a1a39?returnTo=%2Fpolice-data%2Fdashboard%3F',
+        )
       page.dataTable
         .cell(4, 3)
         .find('a')
-        .should('have.attr', 'href', '/police-data/ingestion-attempts/0078f3f7-74dc-4165-8e43-dca9e10a1a39')
+        .should(
+          'have.attr',
+          'href',
+          '/police-data/ingestion-attempts/0078f3f7-74dc-4165-8e43-dca9e10a1a39?returnTo=%2Fpolice-data%2Fdashboard%3F',
+        )
       page.dataTable
         .cell(5, 3)
         .find('a')
-        .should('have.attr', 'href', '/police-data/ingestion-attempts/0078f3f7-74dc-4165-8e43-dca9e10a1a39')
+        .should(
+          'have.attr',
+          'href',
+          '/police-data/ingestion-attempts/0078f3f7-74dc-4165-8e43-dca9e10a1a39?returnTo=%2Fpolice-data%2Fdashboard%3F',
+        )
       page.dataTable
         .cell(6, 3)
         .find('a')
-        .should('have.attr', 'href', '/police-data/ingestion-attempts/de5cd033-4a06-4f1b-b4af-c40879b1eda8')
+        .should(
+          'have.attr',
+          'href',
+          '/police-data/ingestion-attempts/de5cd033-4a06-4f1b-b4af-c40879b1eda8?returnTo=%2Fpolice-data%2Fdashboard%3F',
+        )
       page.dataTable
         .cell(7, 3)
         .find('a')
-        .should('have.attr', 'href', '/police-data/ingestion-attempts/aae2d621-719d-4c53-b8cd-a2d847ee659d')
+        .should(
+          'have.attr',
+          'href',
+          '/police-data/ingestion-attempts/aae2d621-719d-4c53-b8cd-a2d847ee659d?returnTo=%2Fpolice-data%2Fdashboard%3F',
+        )
 
       // And the matches column should have the correct formatting
       page.dataTable.cell(0, 4).should('not.have.class', 'table-cell--red table-cell--bold')
