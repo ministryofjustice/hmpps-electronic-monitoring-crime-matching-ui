@@ -19,6 +19,15 @@ export default class CrimeMatchingClient extends RestClient {
     )
   }
 
+  getCrimeVersion(authOptions: AuthOptions, crimeVersionId: String): Promise <unknown> {
+    return this.get(
+      {
+        path: `/crime-versions/${crimeVersionId}`
+      },
+      authOptions,
+    )
+  }
+
   getCrimeVersions(authOptions: AuthOptions, crimeReference: string, page: string | undefined): Promise<unknown> {
     return this.get(
       {
