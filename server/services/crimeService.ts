@@ -4,7 +4,7 @@ import CrimeVersionSummary from '../types/crimeVersionSummary'
 import CrimeVersion from '../types/crimeVersion'
 import { PaginatedServiceResult, ServiceResult } from '../types/service'
 import { getCrimeVersionsDtoSchema } from '../schemas/proximityAlert/crimeSearch'
-import { getCrimeVersionDtoSchema } from '../schemas/proximityAlert/crimeVersion'
+import getCrimeVersionDtoSchema from '../schemas/proximityAlert/crimeVersion'
 
 class CrimeService {
   constructor(private readonly crimeMatchingApiClient: CrimeMatchingClient) {}
@@ -20,15 +20,12 @@ class CrimeService {
     return undefined
   }
 
-  async getCrimeVersion(
-    username: string,
-    crimeVersionId: string,
-  ): Promise<ServiceResult<CrimeVersion>> {
+  async getCrimeVersion(username: string, crimeVersionId: string): Promise<ServiceResult<CrimeVersion>> {
     const response = await this.crimeMatchingApiClient.getCrimeVersion(asSystem(username), crimeVersionId)
 
-    return  {
+    return {
       ok: true,
-      data: getCrimeVersionDtoSchema.parse(response).data
+      data: getCrimeVersionDtoSchema.parse(response).data,
     }
   }
 

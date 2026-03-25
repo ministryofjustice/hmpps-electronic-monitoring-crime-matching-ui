@@ -20,13 +20,13 @@ const getCrimeVersionDtoSchema = z.object({
               longitude: z.number(),
               sequenceLabel: z.string(),
               confidence: z.number(),
-              captureDateTime: z.string(),
-            })
-          )
-        })
-      )
-    })
-  })
+              capturedDateTime: z.string(),
+            }),
+          ),
+        }),
+      ),
+    }),
+  }),
 })
 
-export { getCrimeVersionDtoSchema }
+export default getCrimeVersionDtoSchema
