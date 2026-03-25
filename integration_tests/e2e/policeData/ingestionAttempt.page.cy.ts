@@ -76,6 +76,9 @@ context('Police Data Ingestion Attempt', () => {
 
       // And the failed validation section should not exist
       page.failedIngestionSection.should('not.exist')
+
+      // And the backlink should have the default value
+      page.backLink.should('have.attr', 'href', '/police-data/dashboard')
     })
 
     it('should display a successful ingestion with matches', () => {
@@ -102,7 +105,9 @@ context('Police Data Ingestion Attempt', () => {
       })
 
       // When the user loads the page
-      cy.visit('/police-data/ingestion-attempts/64d41bd9-5450-4bbb-89d4-42ba75659f49')
+      cy.visit(
+        '/police-data/ingestion-attempts/64d41bd9-5450-4bbb-89d4-42ba75659f49?returnTo=%2Fpolice-data%2Fdashboard%3FbatchId%3DS',
+      )
 
       const page = Page.verifyOnPage(PoliceDataIngestionAttemptPage)
 
@@ -145,6 +150,9 @@ context('Police Data Ingestion Attempt', () => {
 
       // And the failed validation section should not exist
       page.failedIngestionSection.should('not.exist')
+
+      // And the backlink should have the returnTo value
+      page.backLink.should('have.attr', 'href', '/police-data/dashboard?batchId=S')
     })
 
     it('should display a partially successful ingestion', () => {
@@ -301,10 +309,12 @@ context('Police Data Ingestion Attempt', () => {
       page.failedIngestionSection.should('exist')
       page.failedIngestionSection
         .find('p')
-        .should(
-          'contain.text',
-          'No crimes have been ingested. Please refer to email "MoJ Acquisitive Crime - Ingestion - Failure - 17/03/2026 / Cumbria / 20260316111111.csv" for details.',
-        )
+        .invoke('text')
+        .then(text => {
+          expect(text.replace(/\s+/g, ' ').trim()).to.contain(
+            'No crimes have been ingested. Please refer to email "MoJ Acquisitive Crime - Ingestion - Failure - 17/03/2026 / Cumbria / 20260316111111.csv" for details.',
+          )
+        })
     })
 
     it('should display an errored ingestion ', () => {

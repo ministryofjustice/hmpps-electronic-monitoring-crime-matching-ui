@@ -7,6 +7,10 @@ export default class PoliceDataIngestionAttemptPage extends AppPage {
     super('Batch details')
   }
 
+  get backLink(): PageElement {
+    return cy.get('a.govuk-back-link')
+  }
+
   get summaryTable(): DataTableComponent {
     return new DataTableComponent('.ingestion-attempt-summary-table')
   }

@@ -1,5 +1,9 @@
 import { z } from 'zod/v4'
 
+const policeDataIngestionAttemptQuerySchema = z.object({
+  returnTo: z.string().default('/police-data/dashboard'),
+})
+
 const getIngestionAttemptDtoSchema = z.object({
   data: z.object({
     ingestionAttemptId: z.string(),
@@ -30,4 +34,4 @@ const getIngestionAttemptDtoSchema = z.object({
   }),
 })
 
-export default getIngestionAttemptDtoSchema
+export { getIngestionAttemptDtoSchema, policeDataIngestionAttemptQuerySchema }

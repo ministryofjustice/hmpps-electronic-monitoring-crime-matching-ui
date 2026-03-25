@@ -1,11 +1,12 @@
 {% extends "../../partials/layout.njk" %}
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/table/macro.njk" import govukTable %}
 {% from "govuk/components/tag/macro.njk" import govukTag %}
 {% from "../../components/datatable/macro.njk" import dataTable %}
 
 {% set pageTitle = applicationName + " - Home" %}
-{% set mainClasses = "app-container govuk-body" %}
+{% set mainClasses = "app-container govuk-body govuk-!-static-padding-top-0" %}
 {% set activeLinkId = "data-ingestion" %}
 
 
@@ -25,6 +26,15 @@
 {% else %}
   {% set matchesClasses = "" %}
 {% endif %}
+
+{% block beforeContent %}
+  {{
+    govukBackLink({
+      text: "Back",
+      href: backLink
+    })
+  }}
+{% endblock %}
 
 {% block content %}
   <div class="govuk-grid-row">

@@ -7,7 +7,7 @@ import { parseDateTimeFromComponents } from '../utils/date'
 import { getIngestionAttemptSummariesDtoSchema } from '../schemas/policeData/dashboard'
 import Result from '../types/result'
 import IngestionAttempt from '../types/ingestionAttempt'
-import getIngestionAttemptDtoSchema from '../schemas/policeData/ingestionAttempt'
+import { getIngestionAttemptDtoSchema } from '../schemas/policeData/ingestionAttempt'
 
 class PoliceDataService {
   constructor(private readonly crimeMatchingApiClient: CrimeMatchingClient) {}

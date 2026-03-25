@@ -44,7 +44,9 @@
 
 
   {% set link %}
-    <a href="/police-data/ingestion-attempts/{{ ingestionAttempt.ingestionAttemptId }}">
+    <a
+      href="/police-data/ingestion-attempts/{{ ingestionAttempt.ingestionAttemptId }}?returnTo={{ ('/police-data/dashboard?' ~ paginationHrefPrefix) | urlencode }}"
+    >
       {{ 'Failed' if ingestionAttempt.batchId == '' else ingestionAttempt.batchId }}
     </a>
   {% endset %}
