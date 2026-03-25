@@ -26,6 +26,7 @@ context('Police Data Ingestion Attempt', () => {
             successful: 2,
             failed: 0,
             crimesByCrimeType: [{ crimeType: 'BIAD', submitted: 2, failed: 0, successful: 2 }],
+            validationErrors: [],
           },
         },
         status: 200,
@@ -69,6 +70,9 @@ context('Police Data Ingestion Attempt', () => {
         ['TFP - Theft from person', '0', '0', '0'],
         ['TOMV - Theft of motor vehicle', '0', '0', '0'],
       ])
+
+      // And the validation errors table should not exist
+      cy.get(`.datatable.ingestion-attempt-validation-errors-table`).should('not.exist')
     })
 
     it('should display a successful ingestion with matches', () => {
@@ -88,6 +92,7 @@ context('Police Data Ingestion Attempt', () => {
             successful: 2,
             failed: 0,
             crimesByCrimeType: [{ crimeType: 'RB', submitted: 2, failed: 0, successful: 2 }],
+            validationErrors: [],
           },
         },
         status: 200,
@@ -131,6 +136,9 @@ context('Police Data Ingestion Attempt', () => {
         ['TFP - Theft from person', '0', '0', '0'],
         ['TOMV - Theft of motor vehicle', '0', '0', '0'],
       ])
+
+      // And the validation errors table should not exist
+      cy.get(`.datatable.ingestion-attempt-validation-errors-table`).should('not.exist')
     })
 
     it('should display a partially successful ingestion', () => {
@@ -158,6 +166,13 @@ context('Police Data Ingestion Attempt', () => {
               { crimeType: 'AB', submitted: 13, failed: 0, successful: 13 },
               { crimeType: 'BOTD', submitted: 13, failed: 0, successful: 13 },
               { crimeType: 'MISSING', submitted: 1, failed: 1, successful: 0 },
+            ],
+            validationErrors: [
+              {
+                crimeReference: 'CR123456',
+                errorType: 'Field must be a valid ENUM value',
+                requiredAction: 'Amend crime type to a registered crime type',
+              },
             ],
           },
         },
@@ -210,6 +225,12 @@ context('Police Data Ingestion Attempt', () => {
         ['TFP - Theft from person', '12', '12', '0'],
         ['TOMV - Theft of motor vehicle', '20', '20', '0'],
       ])
+
+      // And the validation errors table should be populated
+      page.validationErrorsTable.shouldHaveColumns(['Crime reference', 'Error type', 'Required action'])
+      page.validationErrorsTable.shouldHaveRows([
+        ['CR123456', 'Field must be a valid ENUM value', 'Amend crime type to a registered crime type'],
+      ])
     })
 
     it('should display a failed ingestion', () => {
@@ -229,6 +250,7 @@ context('Police Data Ingestion Attempt', () => {
             successful: 0,
             failed: 0,
             crimesByCrimeType: [],
+            validationErrors: [],
           },
         },
         status: 200,
@@ -260,6 +282,9 @@ context('Police Data Ingestion Attempt', () => {
 
       // And the crime breakdown table should not exist
       cy.get(`.datatable.ingestion-attempt-crime-breakdown-table`).should('not.exist')
+
+      // And the validation errors table should not exist
+      cy.get(`.datatable.ingestion-attempt-validation-errors-table`).should('not.exist')
     })
 
     it('should display an errored ingestion ', () => {
@@ -279,6 +304,13 @@ context('Police Data Ingestion Attempt', () => {
             successful: 0,
             failed: 1,
             crimesByCrimeType: [{ crimeType: 'RB', submitted: 1, failed: 1, successful: 0 }],
+            validationErrors: [
+              {
+                crimeReference: 'CR123456',
+                errorType: 'Field must be a valid ENUM value',
+                requiredAction: 'Amend crime type to a registered crime type',
+              },
+            ],
           },
         },
         status: 200,
@@ -321,6 +353,12 @@ context('Police Data Ingestion Attempt', () => {
         ['TFMV - Theft from motor vehicle', '0', '0', '0'],
         ['TFP - Theft from person', '0', '0', '0'],
         ['TOMV - Theft of motor vehicle', '0', '0', '0'],
+      ])
+
+      // And the validation errors table should be populated
+      page.validationErrorsTable.shouldHaveColumns(['Crime reference', 'Error type', 'Required action'])
+      page.validationErrorsTable.shouldHaveRows([
+        ['CR123456', 'Field must be a valid ENUM value', 'Amend crime type to a registered crime type'],
       ])
     })
   })

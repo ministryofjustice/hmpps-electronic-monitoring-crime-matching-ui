@@ -10,6 +10,11 @@ type IngestionAttempt = {
   successful: number
   failed: number
   crimesByCrimeType: Array<{ crimeType: string; submitted: number; failed: number; successful: number }>
+  validationErrors: Array<{
+    crimeReference: string
+    errorType: string
+    requiredAction: string
+  }>
 }
 
 export default IngestionAttempt
