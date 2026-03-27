@@ -1,108 +1,113 @@
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
-{% from "govuk/components/tag/macro.njk" import govukTag %}    
+{% from "govuk/components/tag/macro.njk" import govukTag %}
 
 {{
-    govukTag({
-    text: crimeVersion.versionLabel,
-    classes: "govuk-tag--" + crimeVersion.versionColour
-    })
+  govukTag({
+  text: crimeVersion.versionLabel,
+  classes: "govuk-tag--" + crimeVersion.versionColour
+  })
 }}
-    
+
 <div class="govuk-grid-row govuk-!-static-margin-top-4">
-    
-    <div class="govuk-grid-column-three-quarters govuk-!-static-margin-top-1">
-        {{ govukCheckboxes({
-            id: "crime-include",
-            classes: "govuk-checkboxes--small",
-            name: "crime-include",
-            items: [
-                {
-                    value: "crime-include",
-                    html: "<strong>" + crimeVersion.crimeReference + "</strong><br>" + "<strong>" + crimeVersion.crimeType + "</strong>",
-                    checked: true
-                }
-            ]
-        })}}
-    </div>
+  <div class="govuk-grid-column-three-quarters govuk-!-static-margin-top-1">
+    {{
+      govukCheckboxes({
+          id: "crime-include",
+          classes: "govuk-checkboxes--small",
+          name: "crime-include",
+          items: [
+              {
+                  value: "crime-include",
+                  html: "<strong>" + crimeVersion.crimeReference + "</strong><br>" + "<strong>" + crimeVersion.crimeType + "</strong>",
+                  checked: true
+              }
+          ]
+      })
+    }}
+  </div>
 
-    <div class="govuk-grid-column-one-quarter">
-        <a href="placeholder" class="govuk-link">View on map</a>
-    </div>
-
+  <div class="govuk-grid-column-one-quarter">
+    <a href="placeholder" class="govuk-link">View on map</a>
+  </div>
 </div>
 
-{{ govukSummaryList({
-  classes: "govuk-summary-list--no-border summary-list--compact",
-  rows: [
-    {
-      key: {
-        text: "From:"
+{{
+  govukSummaryList({
+    classes: "govuk-summary-list--no-border summary-list--compact",
+    rows: [
+      {
+        key: {
+          text: "From:"
+        },
+        value: {
+          text: crimeVersion.crimeDateTimeFrom | formatDateTime("DD/MM/YYYY HH:mm")
+        }
       },
-      value: {
-        text: crimeVersion.crimeDateTimeFrom | formatDateTime("DD/MM/YYYY HH:mm")
-      }
-    },
-    {
-      key: {
-        text: "To:"
+      {
+        key: {
+          text: "To:"
+        },
+        value: {
+          text: crimeVersion.crimeDateTimeTo | formatDateTime("DD/MM/YYYY HH:mm")
+        }
       },
-      value: {
-        text: crimeVersion.crimeDateTimeTo | formatDateTime("DD/MM/YYYY HH:mm")
+      {
+        key: {
+          text: "Desc:"
+        },
+        value: {
+          text: crimeVersion.crimeText
+        }
       }
-    },
-    {
-      key: {
-        text: "Desc:"
-      },
-      value: {
-        text: crimeVersion.crimeText
-      }
-    }
-  ]
-}) }}
+    ]
+  })
+}}
 
-<hr class="govuk-section-break govuk-section-break--visible govuk-section-break--m">
+<hr class="govuk-section-break govuk-section-break--visible govuk-section-break--m" />
 {% for deviceWearer in crimeVersion.matching.deviceWearers %}
 
-{{ govukSummaryList({
-  classes: "govuk-summary-list--no-border govuk-!-margin-bottom-0",
-  rows: [
-    {
-      key: {
-        text: "Name:"
-      },
-      value: {
-        text: deviceWearer.name
-      }
-    },
-    {
-      key: {
-        text: "NOMIS ID:"
-      },
-      value: {
-        text: deviceWearer.nomisId
-      }
-    },
-    {
-      key: {
-        text: "ID:"
-      },
-      value: {
-        text: deviceWearer.deviceId
-      }
-    },
-    {
-      key: {
-        text: "Count:"
-      },
-      value: {
-        text: deviceWearer.positions.length
-      }
-    }
-    ]
-}) }}
+  {{
+    govukSummaryList({
+      classes: "govuk-summary-list--no-border govuk-!-margin-bottom-0",
+      rows: [
+        {
+          key: {
+            text: "Name:"
+          },
+          value: {
+            text: deviceWearer.name
+          }
+        },
+        {
+          key: {
+            text: "NOMIS ID:"
+          },
+          value: {
+            text: deviceWearer.nomisId
+          }
+        },
+        {
+          key: {
+            text: "ID:"
+          },
+          value: {
+            text: deviceWearer.deviceId
+          }
+        },
+        {
+          key: {
+            text: "Count:"
+          },
+          value: {
+            text: deviceWearer.positions.length
+          }
+        }
+        ]
+    })
+  }}
 
-    {{ govukCheckboxes({
+  {{
+    govukCheckboxes({
         classes: "govuk-checkboxes--small",
         id: "show-tracks-" + deviceWearer.deviceId,
         name: "show-tracks-" + deviceWearer.deviceId,
@@ -112,9 +117,11 @@
             text: "Show tracks"
             }
         ]
-    }) }}
+    })
+  }}
 
-    {{ govukCheckboxes({
+  {{
+    govukCheckboxes({
         classes: "govuk-checkboxes--small",
         id: "include-" + deviceWearer.deviceId,
         name: "include-" + deviceWearer.deviceId,
@@ -125,10 +132,10 @@
             checked: true
             }
         ]
-    }) }}
+    })
+  }}
 
-    {% if not loop.last %}
-    <hr class="govuk-section-break govuk-section-break--visible govuk-section-break--m">
-    {% endif %}
-
+  {% if not loop.last %}
+    <hr class="govuk-section-break govuk-section-break--visible govuk-section-break--m" />
+  {% endif %}
 {% endfor %}
