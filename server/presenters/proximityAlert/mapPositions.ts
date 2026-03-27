@@ -1,4 +1,4 @@
-import CrimeVersion from "../../types/crimeVersion"
+import CrimeVersion from '../../types/crimeVersion'
 
 export type ProximityAlertMapPosition =
   | {

@@ -44,6 +44,9 @@ describe('CrimeVersionController', () => {
           crimeDateTimeFrom: '2025-01-01T00:00:00Z',
           crimeDateTimeTo: '2025-01-01T01:00:00Z',
           crimeText: 'text',
+          versionLabel: 'Latest version',
+          latitude: 10.0,
+          longitude: 10.0,
           matching: {
             deviceWearers: [
               {
@@ -85,6 +88,8 @@ describe('CrimeVersionController', () => {
           crimeDateTimeFrom: '2025-01-01T00:00:00Z',
           crimeDateTimeTo: '2025-01-01T01:00:00Z',
           crimeText: 'text',
+          latitude: 10.0,
+          longitude: 10.0,
           matching: {
             deviceWearers: [
               {
@@ -110,7 +115,40 @@ describe('CrimeVersionController', () => {
               },
             ],
           },
+          versionColour: 'green',
+          versionLabel: 'Latest version',
         },
+        positions: [
+          {
+            latitude: 10,
+            longitude: 10,
+            positionType: 'crime',
+          },
+          {
+            confidence: 10,
+            deviceId: 1,
+            geolocationMechanism: 'GPS',
+            latitude: 10,
+            longitude: 10,
+            personName: 'name',
+            personNomisId: 'nomisId',
+            positionType: 'wearer',
+            sequenceLabel: 'A1',
+            timestamp: '2025-01-01T00:00',
+          },
+          {
+            confidence: 10,
+            deviceId: 1,
+            geolocationMechanism: 'GPS',
+            latitude: 10,
+            longitude: 10,
+            personName: 'name',
+            personNomisId: 'nomisId',
+            positionType: 'wearer',
+            sequenceLabel: 'A2',
+            timestamp: '2025-01-01T02:00',
+          },
+        ],
       })
     })
 
@@ -131,6 +169,9 @@ describe('CrimeVersionController', () => {
           crimeDateTimeFrom: '2025-01-01T00:00:00Z',
           crimeDateTimeTo: '2025-01-01T01:00:00Z',
           crimeText: 'text',
+          versionLabel: 'Latest version',
+          latitude: 10.0,
+          longitude: 10.0,
           matching: { deviceWearers: [] },
         },
       })
@@ -148,8 +189,19 @@ describe('CrimeVersionController', () => {
           crimeDateTimeFrom: '2025-01-01T00:00:00Z',
           crimeDateTimeTo: '2025-01-01T01:00:00Z',
           crimeText: 'text',
+          latitude: 10.0,
+          longitude: 10.0,
           matching: { deviceWearers: [] },
+          versionLabel: 'Latest version',
+          versionColour: 'green',
         },
+        positions: [
+          {
+            latitude: 10,
+            longitude: 10,
+            positionType: 'crime',
+          },
+        ],
       })
     })
 
@@ -170,6 +222,9 @@ describe('CrimeVersionController', () => {
           crimeDateTimeFrom: '2025-01-01T00:00:00Z',
           crimeDateTimeTo: '2025-01-01T01:00:00Z',
           crimeText: 'text',
+          versionLabel: 'Latest version',
+          latitude: 10.0,
+          longitude: 10.0,
           matching: null,
         },
       })
@@ -187,8 +242,19 @@ describe('CrimeVersionController', () => {
           crimeDateTimeFrom: '2025-01-01T00:00:00Z',
           crimeDateTimeTo: '2025-01-01T01:00:00Z',
           crimeText: 'text',
+          latitude: 10.0,
+          longitude: 10.0,
           matching: null,
+          versionColour: 'green',
+          versionLabel: 'Latest version',
         },
+        positions: [
+          {
+            latitude: 10,
+            longitude: 10,
+            positionType: 'crime',
+          },
+        ],
       })
     })
   })

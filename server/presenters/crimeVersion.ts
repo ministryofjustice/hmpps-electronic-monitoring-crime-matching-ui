@@ -1,4 +1,4 @@
-import CrimeVersion from "../types/crimeVersion"
+import CrimeVersion from '../types/crimeVersion'
 
 const getVersionColour = (crimeVersion: CrimeVersion) => {
   if (crimeVersion.versionLabel === 'Latest version') {
@@ -9,10 +9,10 @@ const getVersionColour = (crimeVersion: CrimeVersion) => {
 }
 
 const presentCrimeVersion = (crimeVersion: CrimeVersion) => {
-    return {
-        ...crimeVersion,
-        versionColour: getVersionColour(crimeVersion)
-    }
+  return {
+    ...crimeVersion,
+    versionColour: getVersionColour(crimeVersion),
+  }
 }
 
 export default presentCrimeVersion
