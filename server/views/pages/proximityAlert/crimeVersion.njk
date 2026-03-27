@@ -5,11 +5,11 @@
 
 {% set pageTitle = applicationName + " - Home" %}
 {% set containerClasses = "govuk-full-width-container-no-gutter" %}
-{% set mainClasses = "app-container govuk-body map-container" %}
+{% set mainClasses = "app-container govuk-body map-container proximity-alert" %}
 {% set activeLinkId = "proximity-alert" %}
 
-
 {% set reportsHtml %}
+  {%- include "./partials/report.njk" -%}
 {% endset %}
 
 

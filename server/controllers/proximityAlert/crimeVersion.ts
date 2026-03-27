@@ -1,6 +1,8 @@
 import { RequestHandler } from 'express'
 import createError from 'http-errors'
 import CrimeService from '../../services/crimeService'
+import presentCrimeVersion from '../../presenters/crimeVersion'
+import toProximityAlertMapPositions from '../../presenters/proximityAlert/mapPositions'
 
 export default class CrimeVersionController {
   constructor(private readonly crimeService: CrimeService) {}
@@ -12,7 +14,8 @@ export default class CrimeVersionController {
 
     if (result.ok) {
       res.render('pages/proximityAlert/crimeVersion', {
-        crimeVersion: result.data,
+        crimeVersion: presentCrimeVersion(result.data),
+        positions: toProximityAlertMapPositions(result.data),
       })
     } else {
       next(createError(404, 'Not found'))
