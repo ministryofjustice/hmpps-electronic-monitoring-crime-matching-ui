@@ -64,6 +64,7 @@ describe('PoliceDataIngestionAttemptController', () => {
           successful: 2,
           failed: 0,
           crimesByCrimeType: [{ crimeType: 'BIAD', submitted: 2, failed: 0, successful: 2 }],
+          validationErrors: [],
         },
       })
 
@@ -73,6 +74,7 @@ describe('PoliceDataIngestionAttemptController', () => {
       // Then
       expect(mockRestClient.getIngestionAttempt).toHaveBeenCalledWith(expectedAuthOptions, ingestionAttemptId)
       expect(res.render).toHaveBeenCalledWith('pages/policeData/ingestionAttempt', {
+        backLink: '/police-data/dashboard',
         ingestionAttempt: {
           batchId: 'CMB20250710',
           createdAt: '2026-03-17T11:33:38.483121',
@@ -88,6 +90,7 @@ describe('PoliceDataIngestionAttemptController', () => {
           submitted: 2,
           successful: 2,
           displayCrimeBreakdown: true,
+          displayValidationErrors: false,
           crimesByCrimeType: {
             AB: {
               failed: 0,
@@ -131,6 +134,7 @@ describe('PoliceDataIngestionAttemptController', () => {
               successful: 0,
             },
           },
+          validationErrors: [],
         },
       })
     })
@@ -158,6 +162,7 @@ describe('PoliceDataIngestionAttemptController', () => {
           successful: 2,
           failed: 0,
           crimesByCrimeType: [{ crimeType: 'RB', submitted: 2, failed: 0, successful: 2 }],
+          validationErrors: [],
         },
       })
 
@@ -167,6 +172,7 @@ describe('PoliceDataIngestionAttemptController', () => {
       // Then
       expect(mockRestClient.getIngestionAttempt).toHaveBeenCalledWith(expectedAuthOptions, ingestionAttemptId)
       expect(res.render).toHaveBeenCalledWith('pages/policeData/ingestionAttempt', {
+        backLink: '/police-data/dashboard',
         ingestionAttempt: {
           batchId: 'CMB20250710',
           createdAt: '2026-03-17T11:33:38.483121',
@@ -182,6 +188,7 @@ describe('PoliceDataIngestionAttemptController', () => {
           submitted: 2,
           successful: 2,
           displayCrimeBreakdown: true,
+          displayValidationErrors: false,
           crimesByCrimeType: {
             AB: {
               failed: 0,
@@ -225,6 +232,7 @@ describe('PoliceDataIngestionAttemptController', () => {
               successful: 0,
             },
           },
+          validationErrors: [],
         },
       })
     })
@@ -260,6 +268,13 @@ describe('PoliceDataIngestionAttemptController', () => {
             { crimeType: 'BOTD', submitted: 13, failed: 0, successful: 13 },
             { crimeType: 'MISSING', submitted: 1, failed: 1, successful: 0 },
           ],
+          validationErrors: [
+            {
+              crimeReference: 'CR123456',
+              errorType: 'Field must be a valid ENUM value',
+              requiredAction: 'Amend crime type to a registered crime type',
+            },
+          ],
         },
       })
 
@@ -269,6 +284,7 @@ describe('PoliceDataIngestionAttemptController', () => {
       // Then
       expect(mockRestClient.getIngestionAttempt).toHaveBeenCalledWith(expectedAuthOptions, ingestionAttemptId)
       expect(res.render).toHaveBeenCalledWith('pages/policeData/ingestionAttempt', {
+        backLink: '/police-data/dashboard',
         ingestionAttempt: {
           batchId: 'CMB20250710',
           createdAt: '2026-03-17T11:33:38.483121',
@@ -284,6 +300,7 @@ describe('PoliceDataIngestionAttemptController', () => {
           successful: 100,
           failed: 1,
           displayCrimeBreakdown: true,
+          displayValidationErrors: true,
           crimesByCrimeType: {
             AB: {
               crimeType: 'AB',
@@ -334,6 +351,13 @@ describe('PoliceDataIngestionAttemptController', () => {
               successful: 20,
             },
           },
+          validationErrors: [
+            {
+              crimeReference: 'CR123456',
+              errorType: 'Field must be a valid ENUM value',
+              requiredAction: 'Amend crime type to a registered crime type',
+            },
+          ],
         },
       })
     })
@@ -361,6 +385,7 @@ describe('PoliceDataIngestionAttemptController', () => {
           successful: 0,
           failed: 0,
           crimesByCrimeType: [],
+          validationErrors: [],
         },
       })
 
@@ -370,6 +395,7 @@ describe('PoliceDataIngestionAttemptController', () => {
       // Then
       expect(mockRestClient.getIngestionAttempt).toHaveBeenCalledWith(expectedAuthOptions, ingestionAttemptId)
       expect(res.render).toHaveBeenCalledWith('pages/policeData/ingestionAttempt', {
+        backLink: '/police-data/dashboard',
         ingestionAttempt: {
           batchId: 'Failed',
           createdAt: '2026-03-17T11:33:38.483049',
@@ -385,6 +411,7 @@ describe('PoliceDataIngestionAttemptController', () => {
           submitted: 0,
           successful: 0,
           displayCrimeBreakdown: false,
+          displayValidationErrors: false,
           crimesByCrimeType: {
             AB: {
               failed: 0,
@@ -427,6 +454,7 @@ describe('PoliceDataIngestionAttemptController', () => {
               successful: 0,
             },
           },
+          validationErrors: [],
         },
       })
     })
@@ -454,6 +482,13 @@ describe('PoliceDataIngestionAttemptController', () => {
           successful: 0,
           failed: 1,
           crimesByCrimeType: [{ crimeType: 'RB', submitted: 1, failed: 1, successful: 0 }],
+          validationErrors: [
+            {
+              crimeReference: 'CR123456',
+              errorType: 'Field must be a valid ENUM value',
+              requiredAction: 'Amend crime type to a registered crime type',
+            },
+          ],
         },
       })
 
@@ -463,6 +498,7 @@ describe('PoliceDataIngestionAttemptController', () => {
       // Then
       expect(mockRestClient.getIngestionAttempt).toHaveBeenCalledWith(expectedAuthOptions, ingestionAttemptId)
       expect(res.render).toHaveBeenCalledWith('pages/policeData/ingestionAttempt', {
+        backLink: '/police-data/dashboard',
         ingestionAttempt: {
           batchId: 'Failed',
           createdAt: '2026-03-17T11:33:38.483028',
@@ -478,6 +514,7 @@ describe('PoliceDataIngestionAttemptController', () => {
           submitted: 1,
           successful: 0,
           displayCrimeBreakdown: true,
+          displayValidationErrors: true,
           crimesByCrimeType: {
             AB: {
               failed: 0,
@@ -521,8 +558,110 @@ describe('PoliceDataIngestionAttemptController', () => {
               successful: 0,
             },
           },
+          validationErrors: [
+            {
+              crimeReference: 'CR123456',
+              errorType: 'Field must be a valid ENUM value',
+              requiredAction: 'Amend crime type to a registered crime type',
+            },
+          ],
         },
       })
+    })
+
+    it('should parse a returnTo link from query parameters', async () => {
+      // Given
+      const ingestionAttemptId = '64d41bd9-5450-4bbb-89d4-42ba75659f49'
+      const req = createMockRequest({
+        params: { ingestionAttemptId },
+        query: { returnTo: '%2Fpolice-data%2Fdashboard%3FbatchId%3DS' },
+      })
+      const res = createMockResponse()
+      const next = jest.fn()
+      const policeDataService = new PoliceDataService(mockRestClient)
+      const controller = new PoliceDataIngestionAttemptController(policeDataService)
+
+      mockRestClient.getIngestionAttempt.mockResolvedValue({
+        data: {
+          ingestionAttemptId: '64d41bd9-5450-4bbb-89d4-42ba75659f49',
+          ingestionStatus: 'SUCCESSFUL',
+          policeForceArea: 'CUMBRIA',
+          crimeBatchId: '4aba17e8-3cc1-4b3d-8be4-b7e5c0d6b15d',
+          batchId: 'CMB20250710',
+          matches: null,
+          createdAt: '2026-03-17T11:33:38.483121',
+          fileName: '20260101000000.csv',
+          submitted: 2,
+          successful: 2,
+          failed: 0,
+          crimesByCrimeType: [{ crimeType: 'BIAD', submitted: 2, failed: 0, successful: 2 }],
+          validationErrors: [],
+        },
+      })
+
+      // When
+      await controller.view(req, res, next)
+
+      // Then
+      expect(mockRestClient.getIngestionAttempt).toHaveBeenCalledWith(expectedAuthOptions, ingestionAttemptId)
+      expect(res.render).toHaveBeenCalledWith(
+        'pages/policeData/ingestionAttempt',
+        expect.objectContaining({
+          backLink: '%2Fpolice-data%2Fdashboard%3FbatchId%3DS',
+        }),
+      )
+    })
+  })
+
+  describe('export', () => {
+    it('should export validation errors', async () => {
+      // Given
+      const ingestionAttemptId = '64d41bd9-5450-4bbb-89d4-42ba75659f49'
+      const req = createMockRequest({ params: { ingestionAttemptId } })
+      const res = createMockResponse()
+      const next = jest.fn()
+      const policeDataService = new PoliceDataService(mockRestClient)
+      const controller = new PoliceDataIngestionAttemptController(policeDataService)
+
+      mockRestClient.getIngestionAttempt.mockResolvedValue({
+        data: {
+          ingestionAttemptId: '904a7328-0817-449e-9124-7360c446d8ae',
+          ingestionStatus: 'ERROR',
+          policeForceArea: '',
+          crimeBatchId: '',
+          batchId: 'CMB20250710',
+          matches: null,
+          createdAt: '2026-03-17T11:33:38.483028',
+          fileName: '20260101000000.csv',
+          submitted: 1,
+          successful: 0,
+          failed: 1,
+          crimesByCrimeType: [{ crimeType: 'RB', submitted: 1, failed: 1, successful: 0 }],
+          validationErrors: [
+            {
+              crimeReference: 'CR123456',
+              errorType: 'Field must be a valid ENUM value',
+              requiredAction: 'Amend crime type to a registered crime type',
+            },
+          ],
+        },
+      })
+
+      // When
+      await controller.export(req, res, next)
+
+      // Then
+      expect(mockRestClient.getIngestionAttempt).toHaveBeenCalledWith(expectedAuthOptions, ingestionAttemptId)
+      expect(res.setHeader).toHaveBeenNthCalledWith(1, 'Content-Type', 'text/csv')
+      expect(res.setHeader).toHaveBeenNthCalledWith(
+        2,
+        'Content-Disposition',
+        'attachment; filename="validation-errors-CMB20250710.csv"',
+      )
+      expect(res.send).toHaveBeenCalledWith(
+        '"Crime reference","Error type","Required action"\n"CR123456","Field must be a valid ENUM value","Amend crime type to a registered crime type"',
+      )
+      expect(next).not.toHaveBeenCalled()
     })
   })
 })

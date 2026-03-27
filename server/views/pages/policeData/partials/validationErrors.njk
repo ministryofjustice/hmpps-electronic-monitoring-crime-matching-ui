@@ -1,0 +1,56 @@
+{% set rows = [] %}
+
+{% for validationError in ingestionAttempt.validationErrors %}
+  {%
+    set rows = (rows.push(
+      [
+        {
+            text: validationError.crimeReference
+          },
+          {
+            text: validationError.errorType
+          },
+          {
+            text: validationError.requiredAction
+          }
+      ]
+    ), rows)
+  %}
+{% endfor %}
+
+<div class="govuk-grid-row govuk-!-static-margin-bottom-3">
+  <div class="govuk-grid-column-full">
+    {{
+      dataTable({
+        caption: "Failed validation",
+        captionClasses: "govuk-table__caption--m",
+        classes: "ingestion-attempt-validation-errors-table",
+        columns: [
+          {
+            text: "Crime reference"
+          },
+          {
+            text: "Error type"
+          },
+          {
+            text: "Required action"
+          }
+        ],
+        rows: rows
+      })
+    }}
+  </div>
+  <div class="govuk-grid-column-full">
+    <form
+      id="export-validation-errors-form"
+      action="/police-data/ingestion-attempts/{{ ingestionAttempt.ingestionAttemptId }}/export"
+    >
+      <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+      {{
+        govukButton({
+          text: "Export"
+        })
+      }}
+    </form>
+  </div>
+</div>

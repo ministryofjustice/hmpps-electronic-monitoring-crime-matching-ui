@@ -1,3 +1,5 @@
+import ValidationError from './validationError'
+
 type IngestionAttempt = {
   ingestionAttemptId: string
   ingestionStatus: string
@@ -10,6 +12,7 @@ type IngestionAttempt = {
   successful: number
   failed: number
   crimesByCrimeType: Array<{ crimeType: string; submitted: number; failed: number; successful: number }>
+  validationErrors: Array<ValidationError>
 }
 
 export default IngestionAttempt

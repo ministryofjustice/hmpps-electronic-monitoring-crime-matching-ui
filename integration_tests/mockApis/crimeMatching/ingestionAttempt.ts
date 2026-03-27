@@ -24,6 +24,11 @@ type StubGetIngestionAttempt200Options = {
         successful: number
         failed: number
       }>
+      validationErrors: Array<{
+        crimeReference: string
+        errorType: string
+        requiredAction: string
+      }>
     }
   }
 }

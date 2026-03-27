@@ -2,7 +2,7 @@ import Page from '../../pages/page'
 import PoliceDataIngestionAttemptPage from '../../pages/policeData/ingestionAttempt'
 
 context('Police Data Ingestion Attempt', () => {
-  context('Searching for ingestion attempts', () => {
+  context('Viewing an ingestion attempt', () => {
     beforeEach(() => {
       cy.task('reset')
       cy.task('stubSignIn')
@@ -26,6 +26,7 @@ context('Police Data Ingestion Attempt', () => {
             successful: 2,
             failed: 0,
             crimesByCrimeType: [{ crimeType: 'BIAD', submitted: 2, failed: 0, successful: 2 }],
+            validationErrors: [],
           },
         },
         status: 200,
@@ -69,6 +70,15 @@ context('Police Data Ingestion Attempt', () => {
         ['TFP - Theft from person', '0', '0', '0'],
         ['TOMV - Theft of motor vehicle', '0', '0', '0'],
       ])
+
+      // And the validation errors table should not exist
+      cy.get(`.datatable.ingestion-attempt-validation-errors-table`).should('not.exist')
+
+      // And the failed validation section should not exist
+      page.failedIngestionSection.should('not.exist')
+
+      // And the backlink should have the default value
+      page.backLink.should('have.attr', 'href', '/police-data/dashboard')
     })
 
     it('should display a successful ingestion with matches', () => {
@@ -88,13 +98,16 @@ context('Police Data Ingestion Attempt', () => {
             successful: 2,
             failed: 0,
             crimesByCrimeType: [{ crimeType: 'RB', submitted: 2, failed: 0, successful: 2 }],
+            validationErrors: [],
           },
         },
         status: 200,
       })
 
       // When the user loads the page
-      cy.visit('/police-data/ingestion-attempts/64d41bd9-5450-4bbb-89d4-42ba75659f49')
+      cy.visit(
+        '/police-data/ingestion-attempts/64d41bd9-5450-4bbb-89d4-42ba75659f49?returnTo=%2Fpolice-data%2Fdashboard%3FbatchId%3DS',
+      )
 
       const page = Page.verifyOnPage(PoliceDataIngestionAttemptPage)
 
@@ -131,6 +144,15 @@ context('Police Data Ingestion Attempt', () => {
         ['TFP - Theft from person', '0', '0', '0'],
         ['TOMV - Theft of motor vehicle', '0', '0', '0'],
       ])
+
+      // And the validation errors table should not exist
+      cy.get(`.datatable.ingestion-attempt-validation-errors-table`).should('not.exist')
+
+      // And the failed validation section should not exist
+      page.failedIngestionSection.should('not.exist')
+
+      // And the backlink should have the returnTo value
+      page.backLink.should('have.attr', 'href', '/police-data/dashboard?batchId=S')
     })
 
     it('should display a partially successful ingestion', () => {
@@ -158,6 +180,13 @@ context('Police Data Ingestion Attempt', () => {
               { crimeType: 'AB', submitted: 13, failed: 0, successful: 13 },
               { crimeType: 'BOTD', submitted: 13, failed: 0, successful: 13 },
               { crimeType: 'MISSING', submitted: 1, failed: 1, successful: 0 },
+            ],
+            validationErrors: [
+              {
+                crimeReference: 'CR123456',
+                errorType: 'Field must be a valid ENUM value',
+                requiredAction: 'Amend crime type to a registered crime type',
+              },
             ],
           },
         },
@@ -210,6 +239,15 @@ context('Police Data Ingestion Attempt', () => {
         ['TFP - Theft from person', '12', '12', '0'],
         ['TOMV - Theft of motor vehicle', '20', '20', '0'],
       ])
+
+      // And the validation errors table should be populated
+      page.validationErrorsTable.shouldHaveColumns(['Crime reference', 'Error type', 'Required action'])
+      page.validationErrorsTable.shouldHaveRows([
+        ['CR123456', 'Field must be a valid ENUM value', 'Amend crime type to a registered crime type'],
+      ])
+
+      // And the failed validation section should not exist
+      page.failedIngestionSection.should('not.exist')
     })
 
     it('should display a failed ingestion', () => {
@@ -220,15 +258,16 @@ context('Police Data Ingestion Attempt', () => {
           data: {
             ingestionAttemptId: '64d41bd9-5450-4bbb-89d4-42ba75659f49',
             ingestionStatus: 'FAILED',
-            policeForceArea: '',
+            policeForceArea: 'CUMBRIA',
             batchId: '',
             matches: null,
             createdAt: '2026-03-17T11:33:38.483049',
-            fileName: null,
+            fileName: '20260316111111.csv',
             submitted: 0,
             successful: 0,
             failed: 0,
             crimesByCrimeType: [],
+            validationErrors: [],
           },
         },
         status: 200,
@@ -249,7 +288,9 @@ context('Police Data Ingestion Attempt', () => {
         'Date',
         'Time',
       ])
-      page.summaryTable.shouldHaveRows([['Failed ingestion', 'N/A', 'Failed', 'N/A', 'N/A', '17/03/2026', '11:33:38']])
+      page.summaryTable.shouldHaveRows([
+        ['Failed ingestion', 'Cumbria', 'Failed', '20260316111111.csv', 'N/A', '17/03/2026', '11:33:38'],
+      ])
       page.summaryTable.shouldNotHavePagination()
 
       // And the status should have the correct tags
@@ -260,6 +301,20 @@ context('Police Data Ingestion Attempt', () => {
 
       // And the crime breakdown table should not exist
       cy.get(`.datatable.ingestion-attempt-crime-breakdown-table`).should('not.exist')
+
+      // And the validation errors table should not exist
+      cy.get(`.datatable.ingestion-attempt-validation-errors-table`).should('not.exist')
+
+      // And the failed validation section should not exist
+      page.failedIngestionSection.should('exist')
+      page.failedIngestionSection
+        .find('p')
+        .invoke('text')
+        .then(text => {
+          expect(text.replace(/\s+/g, ' ').trim()).to.contain(
+            'No crimes have been ingested. Please refer to email "MoJ Acquisitive Crime - Ingestion - Failure - 17/03/2026 / Cumbria / 20260316111111.csv" for details.',
+          )
+        })
     })
 
     it('should display an errored ingestion ', () => {
@@ -279,6 +334,13 @@ context('Police Data Ingestion Attempt', () => {
             successful: 0,
             failed: 1,
             crimesByCrimeType: [{ crimeType: 'RB', submitted: 1, failed: 1, successful: 0 }],
+            validationErrors: [
+              {
+                crimeReference: 'CR123456',
+                errorType: 'Field must be a valid ENUM value',
+                requiredAction: 'Amend crime type to a registered crime type',
+              },
+            ],
           },
         },
         status: 200,
@@ -322,6 +384,15 @@ context('Police Data Ingestion Attempt', () => {
         ['TFP - Theft from person', '0', '0', '0'],
         ['TOMV - Theft of motor vehicle', '0', '0', '0'],
       ])
+
+      // And the validation errors table should be populated
+      page.validationErrorsTable.shouldHaveColumns(['Crime reference', 'Error type', 'Required action'])
+      page.validationErrorsTable.shouldHaveRows([
+        ['CR123456', 'Field must be a valid ENUM value', 'Amend crime type to a registered crime type'],
+      ])
+
+      // And the failed validation section should not exist
+      page.failedIngestionSection.should('not.exist')
     })
   })
 })
