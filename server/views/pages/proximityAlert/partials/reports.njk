@@ -33,29 +33,35 @@
 
 {{
   govukSummaryList({
-    classes: "govuk-summary-list--no-border summary-list--compact",
+    classes: "govuk-summary-list--no-border",
     rows: [
       {
         key: {
+          classes: "govuk-!-static-padding-top-0 govuk-!-static-padding-bottom-1",
           text: "From:"
         },
         value: {
+          classes: "govuk-!-static-padding-top-0 govuk-!-static-padding-bottom-1",
           text: crimeVersion.crimeDateTimeFrom | formatDateTime("DD/MM/YYYY HH:mm")
         }
       },
       {
         key: {
+          classes: "govuk-!-static-padding-top-0 govuk-!-static-padding-bottom-1",
           text: "To:"
         },
         value: {
+          classes: "govuk-!-static-padding-top-0 govuk-!-static-padding-bottom-1",
           text: crimeVersion.crimeDateTimeTo | formatDateTime("DD/MM/YYYY HH:mm")
         }
       },
       {
         key: {
+          classes: "govuk-!-static-padding-top-0 govuk-!-static-padding-bottom-1",
           text: "Desc:"
         },
         value: {
+          classes: "govuk-!-static-padding-top-0 govuk-!-static-padding-bottom-1",
           text: crimeVersion.crimeText
         }
       }
@@ -72,33 +78,41 @@
       rows: [
         {
           key: {
+            classes: "govuk-!-static-padding-top-0 govuk-!-static-padding-bottom-1",
             text: "Name:"
           },
           value: {
+            classes: "govuk-!-static-padding-top-0 govuk-!-static-padding-bottom-1",
             text: deviceWearer.name
           }
         },
         {
           key: {
+            classes: "govuk-!-static-padding-top-0 govuk-!-static-padding-bottom-1",
             text: "NOMIS ID:"
           },
           value: {
+            classes: "govuk-!-static-padding-top-0 govuk-!-static-padding-bottom-1",
             text: deviceWearer.nomisId
           }
         },
         {
           key: {
+            classes: "govuk-!-static-padding-top-0 govuk-!-static-padding-bottom-1",
             text: "ID:"
           },
           value: {
+            classes: "govuk-!-static-padding-top-0 govuk-!-static-padding-bottom-1",
             text: deviceWearer.deviceId
           }
         },
         {
           key: {
+            classes: "govuk-!-static-padding-top-0 govuk-!-static-padding-bottom-1",
             text: "Count:"
           },
           value: {
+            classes: "govuk-!-static-padding-top-0 govuk-!-static-padding-bottom-1",
             text: deviceWearer.positions.length
           }
         }
@@ -108,30 +122,22 @@
 
   {{
     govukCheckboxes({
-        classes: "govuk-checkboxes--small",
-        id: "show-tracks-" + deviceWearer.deviceId,
-        name: "show-tracks-" + deviceWearer.deviceId,
-        items: [
-            {
-            value: "show-tracks-" + deviceWearer.deviceId,
-            text: "Show tracks"
-            }
-        ]
-    })
-  }}
-
-  {{
-    govukCheckboxes({
-        classes: "govuk-checkboxes--small",
-        id: "include-" + deviceWearer.deviceId,
-        name: "include-" + deviceWearer.deviceId,
-        items: [
-            {
-            value: "include-" + deviceWearer.deviceId,
-            text: "Include",
-            checked: true
-            }
-        ]
+      classes: "govuk-checkboxes--small",
+      name: "deviceWearerToggle",
+      attributes: {
+        "data-module": 'map-layer-visibility-toggle'
+      },
+      items: [
+        {
+          text: "Show tracks",
+          value: 'device-wearer-tracks-' + deviceWearer.deviceId
+        },
+        {
+          value: 'device-wearer-positions-' + deviceWearer.deviceId,
+          text: "Include",
+          checked: true
+        }
+      ]
     })
   }}
 

@@ -10,7 +10,7 @@
 
 
 {% set reportsHtml %}
-  {%- include "./partials/report.njk" -%}
+  {%- include "./partials/reports.njk" -%}
 {% endset %}
 
 
@@ -20,6 +20,9 @@
       id: "analysis-toggles",
       classes: "govuk-checkboxes--small",
       name: "analysisToggles",
+      attributes: {
+        "data-module": 'map-layer-visibility-toggle'
+      },
       items: [
         {
           value: "on",
@@ -61,7 +64,6 @@
 {% endset %}
 
 {% block content %}
-
   {{
     appMap({
       cspNonce: cspNonce,
