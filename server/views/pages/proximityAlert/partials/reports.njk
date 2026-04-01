@@ -3,8 +3,8 @@
 
 {{
   govukTag({
-  text: crimeVersion.versionLabel,
-  classes: "govuk-tag--" + crimeVersion.versionColour
+    text: crimeVersion.versionLabel,
+    classes: "govuk-tag--" + crimeVersion.versionColour
   })
 }}
 
@@ -12,16 +12,16 @@
   <div class="govuk-grid-column-three-quarters govuk-!-static-margin-top-1">
     {{
       govukCheckboxes({
-          id: "crime-include",
-          classes: "govuk-checkboxes--small",
-          name: "crime-include",
-          items: [
-              {
-                  value: "crime-include",
-                  html: "<strong>" + crimeVersion.crimeReference + "</strong><br>" + "<strong>" + crimeVersion.crimeType + "</strong>",
-                  checked: true
-              }
-          ]
+        id: "crime-include",
+        classes: "govuk-checkboxes--small",
+        name: "crime-include",
+        items: [
+          {
+            value: "crime-include",
+            html: "<strong>" + crimeVersion.crimeReference + "</strong><br>" + "<strong>" + crimeVersion.crimeType + "</strong>",
+            checked: true
+          }
+        ]
       })
     }}
   </div>
@@ -116,7 +116,7 @@
             text: deviceWearer.positions.length
           }
         }
-        ]
+      ]
     })
   }}
 
