@@ -8,6 +8,9 @@ const getCrimeVersionDtoSchema = z.object({
     crimeDateTimeFrom: z.string(),
     crimeDateTimeTo: z.string(),
     crimeText: z.string(),
+    latitude: z.number(),
+    longitude: z.number(),
+    versionLabel: z.string(),
     matching: z
       .object({
         deviceWearers: z.array(

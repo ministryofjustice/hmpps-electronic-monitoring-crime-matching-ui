@@ -1,0 +1,147 @@
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+{% from "govuk/components/tag/macro.njk" import govukTag %}
+
+{{
+  govukTag({
+    text: crimeVersion.versionLabel,
+    classes: "govuk-tag--" + crimeVersion.versionColour
+  })
+}}
+
+<div class="govuk-grid-row govuk-!-static-margin-top-4">
+  <div class="govuk-grid-column-three-quarters govuk-!-static-margin-top-1">
+    {{
+      govukCheckboxes({
+        id: "crime-include",
+        classes: "govuk-checkboxes--small",
+        name: "crime-include",
+        items: [
+          {
+            value: "crime-include",
+            html: "<strong>" + crimeVersion.crimeReference + "</strong><br>" + "<strong>" + crimeVersion.crimeType + "</strong>",
+            checked: true
+          }
+        ]
+      })
+    }}
+  </div>
+
+  <div class="govuk-grid-column-one-quarter">
+    <a href="placeholder" class="govuk-link">View on map</a>
+  </div>
+</div>
+
+{{
+  govukSummaryList({
+    classes: "govuk-summary-list--no-border",
+    rows: [
+      {
+        key: {
+          classes: "govuk-!-static-padding-top-0 govuk-!-static-padding-bottom-1",
+          text: "From:"
+        },
+        value: {
+          classes: "govuk-!-static-padding-top-0 govuk-!-static-padding-bottom-1",
+          text: crimeVersion.crimeDateTimeFrom | formatDateTime("DD/MM/YYYY HH:mm")
+        }
+      },
+      {
+        key: {
+          classes: "govuk-!-static-padding-top-0 govuk-!-static-padding-bottom-1",
+          text: "To:"
+        },
+        value: {
+          classes: "govuk-!-static-padding-top-0 govuk-!-static-padding-bottom-1",
+          text: crimeVersion.crimeDateTimeTo | formatDateTime("DD/MM/YYYY HH:mm")
+        }
+      },
+      {
+        key: {
+          classes: "govuk-!-static-padding-top-0 govuk-!-static-padding-bottom-1",
+          text: "Desc:"
+        },
+        value: {
+          classes: "govuk-!-static-padding-top-0 govuk-!-static-padding-bottom-1",
+          text: crimeVersion.crimeText
+        }
+      }
+    ]
+  })
+}}
+
+<hr class="govuk-section-break govuk-section-break--visible govuk-section-break--m" />
+{% for deviceWearer in crimeVersion.matching.deviceWearers %}
+
+  {{
+    govukSummaryList({
+      classes: "govuk-summary-list--no-border govuk-!-margin-bottom-0",
+      rows: [
+        {
+          key: {
+            classes: "govuk-!-static-padding-top-0 govuk-!-static-padding-bottom-1",
+            text: "Name:"
+          },
+          value: {
+            classes: "govuk-!-static-padding-top-0 govuk-!-static-padding-bottom-1",
+            text: deviceWearer.name
+          }
+        },
+        {
+          key: {
+            classes: "govuk-!-static-padding-top-0 govuk-!-static-padding-bottom-1",
+            text: "NOMIS ID:"
+          },
+          value: {
+            classes: "govuk-!-static-padding-top-0 govuk-!-static-padding-bottom-1",
+            text: deviceWearer.nomisId
+          }
+        },
+        {
+          key: {
+            classes: "govuk-!-static-padding-top-0 govuk-!-static-padding-bottom-1",
+            text: "ID:"
+          },
+          value: {
+            classes: "govuk-!-static-padding-top-0 govuk-!-static-padding-bottom-1",
+            text: deviceWearer.deviceId
+          }
+        },
+        {
+          key: {
+            classes: "govuk-!-static-padding-top-0 govuk-!-static-padding-bottom-1",
+            text: "Count:"
+          },
+          value: {
+            classes: "govuk-!-static-padding-top-0 govuk-!-static-padding-bottom-1",
+            text: deviceWearer.positions.length
+          }
+        }
+      ]
+    })
+  }}
+
+  {{
+    govukCheckboxes({
+      classes: "govuk-checkboxes--small",
+      name: "deviceWearerToggle",
+      attributes: {
+        "data-module": 'map-layer-visibility-toggle'
+      },
+      items: [
+        {
+          text: "Show tracks",
+          value: 'device-wearer-tracks-' + deviceWearer.deviceId
+        },
+        {
+          value: 'device-wearer-positions-' + deviceWearer.deviceId,
+          text: "Include",
+          checked: true
+        }
+      ]
+    })
+  }}
+
+  {% if not loop.last %}
+    <hr class="govuk-section-break govuk-section-break--visible govuk-section-break--m" />
+  {% endif %}
+{% endfor %}

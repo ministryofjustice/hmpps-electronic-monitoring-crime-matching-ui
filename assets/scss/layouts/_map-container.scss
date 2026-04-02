@@ -29,6 +29,7 @@
 
     .app-map__sidebar {
       overflow-y: auto;
+      max-height: calc(100vh - 70px - 55px);
 
       .govuk-tabs {
         @media #{govuk-from-breakpoint(desktop)} {

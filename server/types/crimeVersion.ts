@@ -5,6 +5,9 @@ type CrimeVersion = {
   crimeDateTimeFrom: string
   crimeDateTimeTo: string
   crimeText: string
+  latitude: number
+  longitude: number
+  versionLabel: string
   matching: Matching | null
 }
 

@@ -5,11 +5,12 @@
 
 {% set pageTitle = applicationName + " - Home" %}
 {% set containerClasses = "govuk-full-width-container-no-gutter" %}
-{% set mainClasses = "app-container govuk-body map-container" %}
+{% set mainClasses = "app-container govuk-body map-container proximity-alert" %}
 {% set activeLinkId = "proximity-alert" %}
 
 
 {% set reportsHtml %}
+  {%- include "./partials/reports.njk" -%}
 {% endset %}
 
 
@@ -19,6 +20,9 @@
       id: "analysis-toggles",
       classes: "govuk-checkboxes--small",
       name: "analysisToggles",
+      attributes: {
+        "data-module": 'map-layer-visibility-toggle'
+      },
       items: [
         {
           value: "on",
@@ -60,7 +64,6 @@
 {% endset %}
 
 {% block content %}
-
   {{
     appMap({
       cspNonce: cspNonce,
