@@ -72,21 +72,24 @@ const initialiseLocationDataView = async () => {
     }),
   )
 
-  const locationSource = locationsLayer?.getSource()
+  emMap.fitToLayers(['pointsLayer'])
 
-  if (locationSource) {
-    const extent = locationSource.getExtent()
-    if (isEmpty(extent) === false) {
-      map.getView().fit(extent, {
-        maxZoom: 16,
-        padding: [30, 30, 30, 30],
-        size: map.getSize(),
-      })
-    }
-  }
+  // const locationSource = locationsLayer?.getSource()
+
+  // if (locationSource) {
+    
+  //   const extent = locationSource.getExtent()
+  //   if (isEmpty(extent) === false) {
+  //     map.getView().fit(extent, {
+  //       maxZoom: 16,
+  //       padding: [30, 30, 30, 30],
+  //       size: map.getSize(),
+  //     })
+  //   }
+  // }
 
   // Add controls
-  if (locationsLayer) createLayerVisibilityToggle('#locations', locationsLayer, emMap)
+  // if (locationsLayer) createLayerVisibilityToggle('#locations', locationsLayer, emMap)
   if (tracksLayer) createLayerVisibilityToggle('#tracks', tracksLayer, emMap)
   if (confidenceLayer) createLayerVisibilityToggle('#confidence', confidenceLayer)
   if (numbersLayer) createLayerVisibilityToggle('#numbering', numbersLayer)
