@@ -73,8 +73,8 @@ const initialiseLocationDataView = async () => {
   emMap.fitToAllLayers()
 
   // Add controls
-  createLayerVisibilityToggle('#locations', locationsLayer, emMap)
-  createLayerVisibilityToggle('#tracks', tracksLayer, emMap)
+  if (locationsLayer) createLayerVisibilityToggle('#locations', locationsLayer, emMap)
+  if (tracksLayer) createLayerVisibilityToggle('#tracks', tracksLayer, emMap)
   if (confidenceLayer) createLayerVisibilityToggle('#confidence', confidenceLayer)
   if (numbersLayer) createLayerVisibilityToggle('#numbering', numbersLayer)
 

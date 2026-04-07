@@ -7,13 +7,18 @@ type VisibilityLayer = {
 }
 
 // Accept either an OpenLayers layer or a composable layer
-type ToggleableLayer = VisibilityLayer | ComposableLayer
+type ToggleableLayer = VisibilityLayer | ComposableLayer | unknown
 
 const resolveLayer = (layer: ToggleableLayer): VisibilityLayer => {
-  if ('getPrimaryLayer' in layer) {
-    return layer.getPrimaryLayer()
+  if (Array.isArray(layer)) {
+    return layer[0] as VisibilityLayer
   }
-  return layer
+
+  if (layer && typeof layer === 'object' && 'getPrimaryLayer' in layer) {
+    return (layer as ComposableLayer).getPrimaryLayer()
+  }
+
+  return layer as VisibilityLayer
 }
 
 const toggleVisibility = (layerInput: ToggleableLayer, emMap?: EmMap) => () => {
