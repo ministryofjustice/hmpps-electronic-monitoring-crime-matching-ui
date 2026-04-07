@@ -27,7 +27,7 @@ export default function setUpWebSecurity(): Router {
           // This ensures only scripts we trust are loaded, and not anything injected into the
           // page by an attacker.
           // @ts-expect-error mismatch response
-          scriptSrc: ["'self'", (_req: Request, res: Response) => `'nonce-${res.locals.cspNonce}'`],
+          scriptSrc: ["'self'", 'blob:', (_req: Request, res: Response) => `'nonce-${res.locals.cspNonce}'`],
           styleSrc: ["'self'", 'cdn.jsdelivr.net', "'unsafe-inline'"],
           fontSrc: ["'self'", 'cdn.jsdelivr.net'],
           formAction: [`'self' ${config.apis.hmppsAuth.externalUrl}`],
