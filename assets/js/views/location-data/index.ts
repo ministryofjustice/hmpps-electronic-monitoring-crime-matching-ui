@@ -17,50 +17,48 @@ const initialiseLocationDataView = async () => {
   })
 
   const { positions } = emMap
-  const locationsLayer = emMap.addLayer(
-    new LocationsLayer({
-      title: 'pointsLayer',
-      positions,
-      zIndex: 4,
-    }),
-  )!
 
-  const tracksLayer = emMap.addLayer(
-    new TracksLayer({
-      title: 'tracksLayer',
-      positions,
-      visible: false,
-      zIndex: 1,
-    }),
-  )!
+  const locationsLayer = new LocationsLayer({
+    title: 'pointsLayer',
+    positions,
+    zIndex: 4,
+  })
 
-  const confidenceLayer = emMap.addLayer(
-    new CirclesLayer({
-      positions,
-      id: 'confidence',
-      title: 'confidenceLayer',
-      visible: false,
-      zIndex: 3,
-      style: {
-        fill: null,
-        stroke: {
-          color: 'rgba(242, 201, 76, 1)',
-          lineDash: [8, 8],
-          width: 2,
-        },
+  const tracksLayer = new TracksLayer({
+    title: 'tracksLayer',
+    positions,
+    visible: false,
+    zIndex: 1,
+  })
+
+  const confidenceLayer = new CirclesLayer({
+    positions,
+    id: 'confidence',
+    title: 'confidenceLayer',
+    visible: false,
+    zIndex: 3,
+    style: {
+      fill: null,
+      stroke: {
+        color: 'rgba(242, 201, 76, 1)',
+        lineDash: [8, 8],
+        width: 2,
       },
-    }),
-  )
+    },
+  })
 
-  const numbersLayer = emMap.addLayer(
-    new TextLayer({
-      positions,
-      textProperty: 'sequenceNumber',
-      title: 'numberingLayer',
-      visible: false,
-      zIndex: 3,
-    }),
-  )
+  const numbersLayer = new TextLayer({
+    positions,
+    textProperty: 'sequenceNumber',
+    title: 'numberingLayer',
+    visible: false,
+    zIndex: 3,
+  })
+
+  emMap.addLayer(locationsLayer)
+  emMap.addLayer(tracksLayer)
+  emMap.addLayer(confidenceLayer)
+  emMap.addLayer(numbersLayer)
 
   emMap.dispatchEvent(
     new CustomEvent('app:map:layers:ready', {

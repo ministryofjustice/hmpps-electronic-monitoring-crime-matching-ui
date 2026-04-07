@@ -1,24 +1,15 @@
+import LayerGroup from 'ol/layer/Group'
+import Layer from 'ol/layer/Layer'
 import { EmMap } from '@ministryofjustice/hmpps-electronic-monitoring-components/map'
 import type { ComposableLayer } from '@ministryofjustice/hmpps-electronic-monitoring-components/map/layers'
 
-type VisibilityLayer = {
-  getVisible(): boolean
-  setVisible(v: boolean): void
-}
+type ToggleableLayer = Layer | LayerGroup | ComposableLayer
 
-// Accept either an OpenLayers layer or a composable layer
-type ToggleableLayer = VisibilityLayer | ComposableLayer | unknown
-
-const resolveLayer = (layer: ToggleableLayer): VisibilityLayer => {
-  if (Array.isArray(layer)) {
-    return layer[0] as VisibilityLayer
+const resolveLayer = (layer: ToggleableLayer): Layer | LayerGroup => {
+  if ('getPrimaryLayer' in layer) {
+    return layer.getPrimaryLayer() as Layer | LayerGroup
   }
-
-  if (layer && typeof layer === 'object' && 'getPrimaryLayer' in layer) {
-    return (layer as ComposableLayer).getPrimaryLayer()
-  }
-
-  return layer as VisibilityLayer
+  return layer
 }
 
 const toggleVisibility = (layerInput: ToggleableLayer, emMap?: EmMap) => () => {
