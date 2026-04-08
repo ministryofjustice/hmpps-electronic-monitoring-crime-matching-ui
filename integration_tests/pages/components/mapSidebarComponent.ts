@@ -1,9 +1,9 @@
 import { v4 as uuidv4 } from 'uuid'
 import { PageElement } from '../page'
-import FormCheckboxComponent from './formCheckboxComponent'
 import TabComponent from './tabComponent'
 import SearchDeviceActivationPositionsFormComponent from './forms/searchDeviceActivationPositions'
 import ExportLocationDataFormComponent from './forms/exportLocationDataForm'
+import FormCheckboxesComponent from './formCheckboxesComponent'
 
 export default class MapSidebarComponent {
   private elementCacheId: string = uuidv4()
@@ -26,20 +26,8 @@ export default class MapSidebarComponent {
     return new TabComponent('#tab_time')
   }
 
-  get showLocationToggle(): FormCheckboxComponent {
-    return new FormCheckboxComponent(this.element, 'Show locations')
-  }
-
-  get showConfidenceCirclesToggle(): FormCheckboxComponent {
-    return new FormCheckboxComponent(this.element, 'Show confidence circles')
-  }
-
-  get showTracksToggle(): FormCheckboxComponent {
-    return new FormCheckboxComponent(this.element, 'Show tracks')
-  }
-
-  get showLocationNumberingToggle(): FormCheckboxComponent {
-    return new FormCheckboxComponent(this.element, 'Show location numbering')
+  get analysisToggles(): FormCheckboxesComponent {
+    return new FormCheckboxesComponent(this.element, 'analysis-toggles')
   }
 
   get form(): SearchDeviceActivationPositionsFormComponent {
@@ -57,10 +45,7 @@ export default class MapSidebarComponent {
   }
 
   shouldHaveControls() {
-    this.showLocationToggle.shouldExist()
-    this.showConfidenceCirclesToggle.shouldExist()
-    this.showTracksToggle.shouldExist()
-    this.showLocationNumberingToggle.shouldExist()
+    this.analysisToggles.shouldExist()
   }
 
   shouldHaveTabs() {

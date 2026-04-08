@@ -5,7 +5,6 @@ import {
   CirclesLayer,
   TextLayer,
 } from '@ministryofjustice/hmpps-electronic-monitoring-components/map/layers'
-import createLayerVisibilityToggle from './controls/layerVisibilityToggle'
 import { queryElement } from '../../utils/utils'
 import initialiseDateFilterForm from '../../forms/date-filter-form'
 
@@ -69,12 +68,6 @@ const initialiseLocationDataView = async () => {
   )
 
   emMap.fitToAllLayers()
-
-  // Add controls
-  if (locationsLayer) createLayerVisibilityToggle('#locations', locationsLayer, emMap)
-  if (tracksLayer) createLayerVisibilityToggle('#tracks', tracksLayer, emMap)
-  if (confidenceLayer) createLayerVisibilityToggle('#confidence', confidenceLayer)
-  if (numbersLayer) createLayerVisibilityToggle('#numbering', numbersLayer)
 
   initialiseDateFilterForm()
 }
