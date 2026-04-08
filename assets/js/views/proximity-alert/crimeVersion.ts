@@ -157,7 +157,7 @@ const initialiseProximityAlertView = async () => {
 
     const locations = emMap.addLayer(
       new LocationsLayer({
-        id: `locations-${deviceId}`,
+        id: `device-wearer-positions-${deviceId}`,
         title: `locations-${deviceId}`,
         positions,
         zIndex: 4,

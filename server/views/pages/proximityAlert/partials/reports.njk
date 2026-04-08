@@ -123,7 +123,7 @@
   {{
     govukCheckboxes({
       classes: "govuk-checkboxes--small",
-      name: "deviceWearerToggle",
+      name: "deviceWearerToggle-" + deviceWearer.deviceId,
       attributes: {
         "data-module": 'map-layer-visibility-toggle'
       },

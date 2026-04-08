@@ -29,87 +29,28 @@
 {% set analysisHtml %}
   {{
     govukCheckboxes({
-      id: "locations",
       classes: "govuk-checkboxes--small",
-      name: "locations",
-      fieldset: {
-        legend: {
+      name: "analysis-toggles",
+      attributes: {
+        "data-module": 'map-layer-visibility-toggle'
+      },
+      items: [
+        {
+          checked: true,
           text: "Show locations",
-          isPageHeading: true,
-          classes: "govuk-fieldset__legend--s"
-        }
-      },
-      items: [
+          value: "pointsLayer"
+        },
         {
-          value: "on",
-          text: "Toggled on",
-          checked: true
-        }
-      ]
-    })
-  }}
-
-  {{
-    govukCheckboxes({
-      id: "confidence",
-      classes: "govuk-checkboxes--small",
-      name: "confidence",
-      fieldset: {
-        legend: {
           text: "Show confidence circles",
-          isPageHeading: true,
-          classes: "govuk-fieldset__legend--s"
-        }
-      },
-      items: [
+          value: "confidenceLayer"
+        },
         {
-          value: "on",
-          text: "Toggled on",
-          checked: false
-        }
-      ]
-    })
-  }}
-
-  {{
-    govukCheckboxes({
-      id: "tracks",
-      classes: "govuk-checkboxes--small",
-      name: "tracks",
-      fieldset: {
-        legend: {
           text: "Show tracks",
-          isPageHeading: true,
-          classes: "govuk-fieldset__legend--s"
-        }
-      },
-      items: [
+          value: "tracksLayer"
+        },
         {
-          value: "on",
-          text: "Toggled on",
-          checked: false
-        }
-      ]
-    })
-  }}
-
-  {{
-    govukCheckboxes({
-      id: "numbering",
-      classes: "govuk-checkboxes--small",
-      name: "numbering",
-      fieldset: {
-        legend: {
           text: "Show location numbering",
-          isPageHeading: true,
-          classes: "govuk-fieldset__legend--s"
-        }
-      },
-      items: [
-        {
-          value: "on",
-          text: "Toggled on",
-          checked: false
+          value: "numberingLayer"
         }
       ]
     })
