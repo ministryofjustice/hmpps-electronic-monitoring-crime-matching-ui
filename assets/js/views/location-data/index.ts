@@ -5,7 +5,6 @@ import {
   CirclesLayer,
   TextLayer,
 } from '@ministryofjustice/hmpps-electronic-monitoring-components/map/layers'
-import { isEmpty } from 'ol/extent'
 import createLayerVisibilityToggle from './controls/layerVisibilityToggle'
 import { queryElement } from '../../utils/utils'
 import initialiseDateFilterForm from '../../forms/date-filter-form'
@@ -17,52 +16,49 @@ const initialiseLocationDataView = async () => {
     emMap.addEventListener('map:ready', () => resolve(), { once: true })
   })
 
-  const map = emMap.olMapInstance!
   const { positions } = emMap
-  const locationsLayer = emMap.addLayer(
-    new LocationsLayer({
-      title: 'pointsLayer',
-      positions,
-      zIndex: 4,
-    }),
-  )!
 
-  const tracksLayer = emMap.addLayer(
-    new TracksLayer({
-      title: 'tracksLayer',
-      positions,
-      visible: false,
-      zIndex: 1,
-    }),
-  )!
+  const locationsLayer = new LocationsLayer({
+    title: 'pointsLayer',
+    positions,
+    zIndex: 4,
+  })
 
-  const confidenceLayer = emMap.addLayer(
-    new CirclesLayer({
-      positions,
-      id: 'confidence',
-      title: 'confidenceLayer',
-      visible: false,
-      zIndex: 3,
-      style: {
-        fill: null,
-        stroke: {
-          color: 'rgba(242, 201, 76, 1)',
-          lineDash: [8, 8],
-          width: 2,
-        },
+  const tracksLayer = new TracksLayer({
+    title: 'tracksLayer',
+    positions,
+    visible: false,
+    zIndex: 1,
+  })
+
+  const confidenceLayer = new CirclesLayer({
+    positions,
+    id: 'confidence',
+    title: 'confidenceLayer',
+    visible: false,
+    zIndex: 3,
+    style: {
+      fill: null,
+      stroke: {
+        color: 'rgba(242, 201, 76, 1)',
+        lineDash: [8, 8],
+        width: 2,
       },
-    }),
-  )
+    },
+  })
 
-  const numbersLayer = emMap.addLayer(
-    new TextLayer({
-      positions,
-      textProperty: 'sequenceNumber',
-      title: 'numberingLayer',
-      visible: false,
-      zIndex: 3,
-    }),
-  )
+  const numbersLayer = new TextLayer({
+    positions,
+    textProperty: 'sequenceNumber',
+    title: 'numberingLayer',
+    visible: false,
+    zIndex: 3,
+  })
+
+  emMap.addLayer(locationsLayer)
+  emMap.addLayer(tracksLayer)
+  emMap.addLayer(confidenceLayer)
+  emMap.addLayer(numbersLayer)
 
   emMap.dispatchEvent(
     new CustomEvent('app:map:layers:ready', {
@@ -72,18 +68,7 @@ const initialiseLocationDataView = async () => {
     }),
   )
 
-  const locationSource = locationsLayer?.getSource()
-
-  if (locationSource) {
-    const extent = locationSource.getExtent()
-    if (isEmpty(extent) === false) {
-      map.getView().fit(extent, {
-        maxZoom: 16,
-        padding: [30, 30, 30, 30],
-        size: map.getSize(),
-      })
-    }
-  }
+  emMap.fitToAllLayers()
 
   // Add controls
   if (locationsLayer) createLayerVisibilityToggle('#locations', locationsLayer, emMap)
