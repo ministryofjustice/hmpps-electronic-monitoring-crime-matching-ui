@@ -128,11 +128,7 @@ const addCrimeLayers = (emMap: EmMap, crime: CrimePosition): { centre: Coordinat
   })
 
   const layerGroup = new LayerGroup({
-    layers: [
-      ...crimeMarkerLayer.getLayers(),
-      ...crimeRadius.getLayers(),
-      ...crimeTypeLabel.getLayers(),
-    ],
+    layers: [...crimeMarkerLayer.getLayers(), ...crimeRadius.getLayers(), ...crimeTypeLabel.getLayers()],
   })
 
   layerGroup.set('id', 'crimeLayer')
