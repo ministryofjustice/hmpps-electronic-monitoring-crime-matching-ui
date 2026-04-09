@@ -5,6 +5,7 @@ const getCrimeVersionDtoSchema = z.object({
     crimeVersionId: z.string(),
     crimeReference: z.string(),
     crimeType: z.string(),
+    crimeTypeId: z.string(),
     crimeDateTimeFrom: z.string(),
     crimeDateTimeTo: z.string(),
     crimeText: z.string(),

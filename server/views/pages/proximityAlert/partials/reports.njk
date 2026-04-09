@@ -26,8 +26,8 @@
     }}
   </div>
 
-  <div class="govuk-grid-column-one-quarter">
-    <a href="placeholder" class="govuk-link">View on map</a>
+  <div class="govuk-grid-column-one-quarter govuk-!-static-margin-top-1">
+    <a href="placeholder" class="govuk-link">View <br>on map</a>
   </div>
 </div>
 
@@ -122,6 +122,7 @@
 
   {{
     govukCheckboxes({
+      id: 'analysis-toggles-' + deviceWearer.deviceId,
       classes: "govuk-checkboxes--small",
       name: "deviceWearerToggle",
       attributes: {
@@ -129,10 +130,12 @@
       },
       items: [
         {
+          id: 'device-wearer-tracks-' + deviceWearer.deviceId,
           text: "Show tracks",
           value: 'device-wearer-tracks-' + deviceWearer.deviceId
         },
         {
+          id: 'device-wearer-positions-' + deviceWearer.deviceId,
           value: 'device-wearer-positions-' + deviceWearer.deviceId,
           text: "Include",
           checked: true

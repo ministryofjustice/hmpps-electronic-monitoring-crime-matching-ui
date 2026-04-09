@@ -17,6 +17,7 @@ export type ProximityAlertMapPosition =
       positionType: 'crime'
       latitude: number
       longitude: number
+      crimeTypeId: string
     }
 
 export default function toProximityAlertMapPositions(crimeVersion: CrimeVersion): ProximityAlertMapPosition[] {
@@ -24,6 +25,7 @@ export default function toProximityAlertMapPositions(crimeVersion: CrimeVersion)
     positionType: 'crime',
     latitude: crimeVersion.latitude,
     longitude: crimeVersion.longitude,
+    crimeTypeId: crimeVersion.crimeTypeId,
   }
 
   let wearerPositions: ProximityAlertMapPosition[] = []
