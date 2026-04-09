@@ -12,12 +12,15 @@
   <div class="govuk-grid-column-three-quarters govuk-!-static-margin-top-1">
     {{
       govukCheckboxes({
-        id: "crime-include",
+        id: "crime-toggle",
         classes: "govuk-checkboxes--small",
-        name: "crime-include",
+        name: "crime-toggle",
+        attributes: {
+          "data-module": 'map-layer-visibility-toggle'
+        },
         items: [
           {
-            value: "crime-include",
+            value: "crimeLayer",
             html: "<strong>" + crimeVersion.crimeReference + "</strong><br>" + "<strong>" + crimeVersion.crimeType + "</strong>",
             checked: true
           }

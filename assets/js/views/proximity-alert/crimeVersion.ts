@@ -4,13 +4,11 @@ import {
   CirclesLayer,
   TextLayer,
   TracksLayer,
-  NativeLayerWrapper,
 } from '@ministryofjustice/hmpps-electronic-monitoring-components/map/layers'
 import { createEmpty } from 'ol/extent'
 import { fromLonLat } from 'ol/proj'
 import type { Coordinate } from 'ol/coordinate'
 import { queryElement } from '../../utils/utils'
-import createLayerVisibilityToggle from '../location-data/controls/layerVisibilityToggle'
 import LayerGroup from 'ol/layer/Group'
 
 type WearerPosition = {
@@ -71,8 +69,8 @@ const palette = [
   '#8fbb00',
 ]
 
-// Add a Crime marker
-const addCrimeLayers = (emMap: EmMap, crime: CrimePosition): { centre: Coordinate, layerGroup: LayerGroup } => {
+// Add a Crime marker layers
+const addCrimeLayers = (emMap: EmMap, crime: CrimePosition): { centre: Coordinate } => {
   const centre = fromLonLat([crime.longitude, crime.latitude])
   
   const crimeMarkerLayer = new LocationsLayer({
@@ -116,21 +114,17 @@ const addCrimeLayers = (emMap: EmMap, crime: CrimePosition): { centre: Coordinat
     },
   })
 
-  emMap.addLayer(crimeMarkerLayer)
-  emMap.addLayer(crimeRadius)
-  emMap.addLayer(crimeTypeLabel)
-
   const layerGroup = new LayerGroup({
     layers: [
-      crimeMarkerLayer.getPrimaryLayer(),
-      crimeRadius.getPrimaryLayer(),
-      crimeTypeLabel.getPrimaryLayer()
+      ...crimeMarkerLayer.getLayers(),
+      ...crimeRadius.getLayers(),
+      ...crimeTypeLabel.getLayers()
     ]
   })
 
-  emMap.addLayer(new NativeLayerWrapper(layerGroup))
+  emMap.addLayerGroup(layerGroup)
 
-  return { centre, layerGroup }
+  return { centre }
 }
 
 // Default map view
@@ -154,7 +148,7 @@ const initialiseProximityAlertView = async () => {
 
   const wearerPositions = allPositions.filter(p => p.positionType === 'wearer') as WearerPosition[]
 
-  const { centre, layerGroup } = addCrimeLayers(emMap, crime)
+  const { centre } = addCrimeLayers(emMap, crime)
 
   setCrimeDefaultView(emMap, centre)
 
@@ -216,8 +210,6 @@ const initialiseProximityAlertView = async () => {
 
     layersByWearer.set(deviceId, { locations, tracks, labels })
   }
-
-  if (layerGroup) createLayerVisibilityToggle('#crime-include', layerGroup, emMap)
 
   emMap.dispatchEvent(
     new CustomEvent('app:map:layers:ready', {
