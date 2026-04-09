@@ -47,10 +47,10 @@ context('Location Data', () => {
       page.map.sidebar.form.toDateField.shouldHaveValue({ date: '02/01/2025', hour: '02', minute: '04', second: '50' })
 
       // Initial state should be to show only the locations
-      page.map.sidebar.showLocationToggle.shouldBeChecked()
-      page.map.sidebar.showConfidenceCirclesToggle.shouldNotBeChecked()
-      page.map.sidebar.showTracksToggle.shouldNotBeChecked()
-      page.map.sidebar.showLocationNumberingToggle.shouldNotBeChecked()
+      page.map.sidebar.analysisToggles.shouldBeChecked('pointsLayer')
+      page.map.sidebar.analysisToggles.shouldNotBeChecked('confidenceLayer')
+      page.map.sidebar.analysisToggles.shouldNotBeChecked('tracksLayer')
+      page.map.sidebar.analysisToggles.shouldNotBeChecked('numberingLayer')
     })
 
     it('should show an alert if no location data was returned from the api', () => {
