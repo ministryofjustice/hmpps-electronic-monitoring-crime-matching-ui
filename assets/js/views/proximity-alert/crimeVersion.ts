@@ -8,8 +8,8 @@ import {
 import { createEmpty } from 'ol/extent'
 import { fromLonLat } from 'ol/proj'
 import type { Coordinate } from 'ol/coordinate'
-import { queryElement } from '../../utils/utils'
 import LayerGroup from 'ol/layer/Group'
+import { queryElement } from '../../utils/utils'
 
 type WearerPosition = {
   positionType: 'wearer'
@@ -27,6 +27,15 @@ type CrimePosition = {
   longitude: number
   radiusMeters: number
   crimeTypeId: string
+}
+
+type CrimePositionWithMarker = CrimePosition & {
+  marker: {
+    type: 'pin'
+    pin: {
+      color: string
+    }
+  }
 }
 
 type ProximityAlertMapPosition = WearerPosition | CrimePosition
@@ -51,7 +60,7 @@ type CircleInput = {
 }
 
 const palette = [
-  '#d00050', 
+  '#d00050',
   '#fffb06',
   '#1065f9',
   '#69c9ff',
@@ -72,13 +81,17 @@ const palette = [
 // Add a Crime marker layers
 const addCrimeLayers = (emMap: EmMap, crime: CrimePosition): { centre: Coordinate } => {
   const centre = fromLonLat([crime.longitude, crime.latitude])
-  
-  const crimeMarkerLayer = new LocationsLayer({
-    positions: [crime],
+
+  const crimeWithMarker: CrimePositionWithMarker = {
+    ...crime,
     marker: {
       type: 'pin',
       pin: { color: '#d4351c' },
     },
+  }
+
+  const crimeMarkerLayer = new LocationsLayer({
+    positions: [crimeWithMarker],
   })
 
   // Add a Crime 100m radius circle
@@ -118,10 +131,11 @@ const addCrimeLayers = (emMap: EmMap, crime: CrimePosition): { centre: Coordinat
     layers: [
       ...crimeMarkerLayer.getLayers(),
       ...crimeRadius.getLayers(),
-      ...crimeTypeLabel.getLayers()
-    ]
+      ...crimeTypeLabel.getLayers(),
+    ],
   })
 
+  layerGroup.set('id', 'crimeLayer')
   emMap.addLayerGroup(layerGroup)
 
   return { centre }
