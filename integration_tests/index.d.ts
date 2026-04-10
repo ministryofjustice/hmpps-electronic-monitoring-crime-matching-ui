@@ -6,6 +6,7 @@ import { StubGetIngestionAttemptOptions } from './mockApis/crimeMatching/ingesti
 import { StubGetIngestionAttemptsOptions } from './mockApis/crimeMatching/ingestionAttempts'
 import { StubGetCrimeMatchingResultsOptions } from './mockApis/crimeMatching/crimeMatchingResults'
 import { StubGetCrimeVersionsOptions } from './mockApis/crimeMatching/crimeVersions'
+import { StubGetCrimeVersionOptions } from './mockApis/crimeMatching/crimeVersion'
 
 declare global {
   namespace Cypress {
@@ -50,9 +51,14 @@ declare global {
       stubGetCrimeMatchingResults(options?: StubGetCrimeMatchingResultsOptions): Chainable<void>
 
       /**
-       * Stub a wiremock response for the crimeMatchingApi POST /crime-batches-query
+       * Stub a wiremock response for the crimeMatchingApi POST /crime-versions
        */
       stubGetCrimeVersions(options?: StubGetCrimeVersionsOptions): Chainable<void>
+
+      /**
+       * Stub a wiremock response for the crimeMatchingApi GET /crime-versions/{crimeVersionId}
+       */
+      stubGetCrimeVersion(options?: StubGetCrimeVersionOptions): Chainable<void>
 
       /**
        * Stub a wiremock response for the crimeMatchingApi GET /device-activations/{deviceActivationId}

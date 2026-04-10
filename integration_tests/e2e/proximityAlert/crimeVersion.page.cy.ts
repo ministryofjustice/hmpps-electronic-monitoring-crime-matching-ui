@@ -1,0 +1,198 @@
+import Page from "../../pages/page"
+import CrimeVersionPage from "../../pages/proximityAlert/crimeVersion"
+
+const crimeVersionId = '64d41bd9-5450-4bbb-89d4-42ba75659f49'
+
+context('Crime Version', () => {
+  context('Get Crime Version', () => {
+    beforeEach(() => {
+      cy.task('reset')
+      cy.task('stubSignIn')
+      cy.signIn()
+
+      cy.stubMapMiddleware()
+    })
+
+    it('should display a map showing crime version data with a match', () => {
+      cy.stubGetCrimeVersion({
+        status: 200,
+        crimeVersionId: '64d41bd9-5450-4bbb-89d4-42ba75659f49',
+        response: {
+          data: {
+            crimeVersionId,
+            crimeReference: 'crimeRef',
+            crimeType: 'crimeType',
+            crimeTypeId: 'crimeTypeId',
+            crimeDateTimeFrom: '2025-01-01T00:00:00Z',
+            crimeDateTimeTo: '2025-01-01T01:00:00Z',
+            crimeText: 'crimeText',
+            longitude: 0,
+            latitude: 0,
+            versionLabel: 'Latest Version',
+            matching: {
+              deviceWearers: [
+                {
+                  name: 'deviceName',
+                  deviceId: 1,
+                  nomisId: 'nomisId',
+                  positions: [
+                    {
+                      latitude: 0,
+                      longitude: 0,
+                      sequenceLabel: 'A1',
+                      confidence: 10,
+                      capturedDateTime: '2025-01-01T00:00'
+                    }
+                  ]
+                }
+              ],
+            }
+          }
+        },
+      })
+
+      cy.visit('/proximity-alert/64d41bd9-5450-4bbb-89d4-42ba75659f49')
+
+      const page = Page.verifyOnPage(CrimeVersionPage)
+
+      page.map.shouldExist()
+      page.map.shouldNotHaveAlerts()
+      page.map.sidebar.shouldExist()
+      page.map.sidebar.shouldHaveProximityTabs()
+      page.map.sidebar.reportsTab.shouldBeActive()
+      page.map.sidebar.analysisTab.shouldNotBeActive()
+      page.map.sidebar.shouldHaveProximityControls()
+
+      page.map.sidebar.shouldHaveTag('Latest Version')
+      page.map.sidebar.crimeToggle.shouldBeChecked('crimeLayer')
+      page.map.sidebar.crimeToggle.shouldHaveText('crimeRefcrimeType')
+
+      page.map.sidebar.crimeVersionSummaryList.shouldHaveItem('From:', '01/01/2025 00:00')
+      page.map.sidebar.crimeVersionSummaryList.shouldHaveItem('To:', '01/01/2025 01:00')
+      page.map.sidebar.crimeVersionSummaryList.shouldHaveItem('Desc:', 'crimeText')
+
+      page.map.sidebar.shouldHaveDeviceWearer(0, 'deviceName', 'nomisId', '1', '1')
+    })
+
+    it('should display a map showing crime version data with no matches', () => {
+      cy.stubGetCrimeVersion({
+        status: 200,
+        crimeVersionId: '64d41bd9-5450-4bbb-89d4-42ba75659f49',
+        response: {
+          data: {
+            crimeVersionId,
+            crimeReference: 'crimeRef',
+            crimeType: 'crimeType',
+            crimeTypeId: 'crimeTypeId',
+            crimeDateTimeFrom: '2025-01-01T00:00:00Z',
+            crimeDateTimeTo: '2025-01-01T01:00:00Z',
+            crimeText: 'crimeText',
+            longitude: 0,
+            latitude: 0,
+            versionLabel: 'Latest Version',
+            matching: null,
+          }
+        },
+      })
+
+      cy.visit('/proximity-alert/64d41bd9-5450-4bbb-89d4-42ba75659f49')
+
+      const page = Page.verifyOnPage(CrimeVersionPage)
+
+      page.map.shouldExist()
+      page.map.shouldNotHaveAlerts()
+      page.map.sidebar.shouldExist()
+      page.map.sidebar.shouldHaveProximityTabs()
+      page.map.sidebar.reportsTab.shouldBeActive()
+      page.map.sidebar.analysisTab.shouldNotBeActive()
+      page.map.sidebar.shouldHaveProximityControls()
+
+      page.map.sidebar.shouldHaveTag('Latest Version')
+      page.map.sidebar.crimeToggle.shouldBeChecked('crimeLayer')
+      page.map.sidebar.crimeToggle.shouldHaveText('crimeRefcrimeType')
+
+      page.map.sidebar.crimeVersionSummaryList.shouldHaveItem('From:', '01/01/2025 00:00')
+      page.map.sidebar.crimeVersionSummaryList.shouldHaveItem('To:', '01/01/2025 01:00')
+      page.map.sidebar.crimeVersionSummaryList.shouldHaveItem('Desc:', 'crimeText')
+
+      // page.map.sidebar.shouldNotHaveDeviceWearer()
+    })
+
+    it('should display a map showing crime version data with a match', () => {
+        cy.stubGetCrimeVersion({
+          status: 200,
+          crimeVersionId: '64d41bd9-5450-4bbb-89d4-42ba75659f50',
+          response: {
+            data: {
+              crimeVersionId,
+              crimeReference: 'crimeRef',
+              crimeType: 'crimeType',
+              crimeTypeId: 'crimeTypeId',
+              crimeDateTimeFrom: '2025-01-01T00:00:00Z',
+              crimeDateTimeTo: '2025-01-01T01:00:00Z',
+              crimeText: 'crimeText',
+              longitude: 0,
+              latitude: 0,
+              versionLabel: 'Latest Version',
+              matching: {
+                deviceWearers: [
+                  {
+                    name: 'deviceName',
+                    deviceId: 1,
+                    nomisId: 'nomisId',
+                    positions: [
+                      {
+                        latitude: 0,
+                        longitude: 0,
+                        sequenceLabel: 'A1',
+                        confidence: 10,
+                        capturedDateTime: '2025-01-01T00:00'
+                      }
+                    ]
+                  },
+                  {
+                    name: 'deviceName2',
+                    deviceId: 2,
+                    nomisId: 'nomisId2',
+                    positions: [
+                      {
+                        latitude: 0,
+                        longitude: 0,
+                        sequenceLabel: 'A1',
+                        confidence: 10,
+                        capturedDateTime: '2025-01-01T00:00'
+                      }
+                    ]
+                  }
+                ],
+              }
+            }
+          },
+        })
+
+        cy.visit('/proximity-alert/64d41bd9-5450-4bbb-89d4-42ba75659f50')
+
+        const page = Page.verifyOnPage(CrimeVersionPage)
+
+        page.map.shouldExist()
+        page.map.shouldNotHaveAlerts()
+        page.map.sidebar.shouldExist()
+        page.map.sidebar.shouldHaveProximityTabs()
+        page.map.sidebar.reportsTab.shouldBeActive()
+        page.map.sidebar.analysisTab.shouldNotBeActive()
+        page.map.sidebar.shouldHaveProximityControls()
+
+        page.map.sidebar.shouldHaveTag('Latest Version')
+        page.map.sidebar.crimeToggle.shouldBeChecked('crimeLayer')
+        page.map.sidebar.crimeToggle.shouldHaveText('crimeRefcrimeType')
+
+        page.map.sidebar.crimeVersionSummaryList.shouldHaveItem('From:', '01/01/2025 00:00')
+        page.map.sidebar.crimeVersionSummaryList.shouldHaveItem('To:', '01/01/2025 01:00')
+        page.map.sidebar.crimeVersionSummaryList.shouldHaveItem('Desc:', 'crimeText')
+
+        page.map.sidebar.shouldHaveDeviceWearer(0, 'deviceName', 'nomisId', '1', '1')
+        page.map.sidebar.shouldHaveDeviceWearer(1, 'deviceName2', 'nomisId2', '2', '1')
+    })
+
+  })
+})

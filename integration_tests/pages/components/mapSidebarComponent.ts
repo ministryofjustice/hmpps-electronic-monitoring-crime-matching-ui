@@ -4,6 +4,7 @@ import TabComponent from './tabComponent'
 import SearchDeviceActivationPositionsFormComponent from './forms/searchDeviceActivationPositions'
 import ExportLocationDataFormComponent from './forms/exportLocationDataForm'
 import FormCheckboxesComponent from './formCheckboxesComponent'
+import SummaryListComponent from './summaryListComponent'
 
 export default class MapSidebarComponent {
   private elementCacheId: string = uuidv4()
@@ -26,8 +27,24 @@ export default class MapSidebarComponent {
     return new TabComponent('#tab_time')
   }
 
+  get reportsTab(): TabComponent {
+    return new TabComponent('#tab_reports')
+  }
+
   get analysisToggles(): FormCheckboxesComponent {
     return new FormCheckboxesComponent(this.element, 'analysis-toggles')
+  }
+
+  get crimeToggle(): FormCheckboxesComponent {
+    return new FormCheckboxesComponent(this.element, 'crime-toggle')
+  }
+
+  get crimeVersionSummaryList(): SummaryListComponent {
+    return new SummaryListComponent('.crime-version-summary-list')
+  }
+
+  get versionTag() {
+    return this.element.get('.govuk-tag')
   }
 
   get form(): SearchDeviceActivationPositionsFormComponent {
@@ -51,5 +68,38 @@ export default class MapSidebarComponent {
   shouldHaveTabs() {
     this.analysisTab.shouldExist()
     this.timeTab.shouldExist()
+  }
+
+  shouldHaveProximityControls() {
+    this.crimeToggle.shouldExist()
+  }
+
+  shouldHaveProximityTabs() {
+    this.analysisTab.shouldExist()
+    this.reportsTab.shouldExist()
+  }
+
+  shouldHaveTag(value: string) {
+    this.versionTag.should('contain.text', value)
+  }
+
+  shouldHaveDeviceWearer(index: number, name: string, nomisId: string, deviceId: string, count: string) {
+    const wearer = new SummaryListComponent(
+      '.device-wearer-summary-list',
+      index,
+    )
+
+    wearer.shouldHaveItem('Name:', name)
+    wearer.shouldHaveItem('NOMIS ID:', nomisId)
+    // wearer.shouldHaveItem('ID:', deviceId)
+    wearer.shouldHaveItem('Count:', count)
+  }
+
+  shouldNotHaveDeviceWearer() {
+    const wearer = new SummaryListComponent(
+      '.device-wearer-summary-list',
+      0,
+    )
+    wearer.shouldNotExist()
   }
 }
