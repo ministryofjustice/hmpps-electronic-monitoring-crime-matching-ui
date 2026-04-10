@@ -3,15 +3,12 @@ import {
   LocationsLayer,
   CirclesLayer,
   TextLayer,
+  TracksLayer,
 } from '@ministryofjustice/hmpps-electronic-monitoring-components/map/layers'
-import Feature from 'ol/Feature'
 import { createEmpty } from 'ol/extent'
 import { fromLonLat } from 'ol/proj'
-import VectorSource from 'ol/source/Vector'
-import VectorLayer from 'ol/layer/Vector'
-import { Point, Circle as CircleGeom } from 'ol/geom'
-import { Fill, Stroke, Style, RegularShape } from 'ol/style'
 import type { Coordinate } from 'ol/coordinate'
+import LayerGroup from 'ol/layer/Group'
 import { queryElement } from '../../utils/utils'
 
 type WearerPosition = {
@@ -29,6 +26,16 @@ type CrimePosition = {
   latitude: number
   longitude: number
   radiusMeters: number
+  crimeTypeId: string
+}
+
+type CrimePositionWithMarker = CrimePosition & {
+  marker: {
+    type: 'pin'
+    pin: {
+      color: string
+    }
+  }
 }
 
 type ProximityAlertMapPosition = WearerPosition | CrimePosition
@@ -43,10 +50,7 @@ type LayerWithSource = {
 type WearerLayers = {
   locations?: LayerWithSource
   labels?: LayerWithSource
-}
-
-type CrimeLayers = {
-  radiusFeatureForExtent: Feature<CircleGeom>
+  tracks?: LayerWithSource
 }
 
 type CircleInput = {
@@ -55,35 +59,40 @@ type CircleInput = {
   precision: number
 }
 
-const palette = ['rgba(255, 214, 10, 1)', 'rgba(139, 69, 19, 1)']
+const palette = [
+  '#d00050',
+  '#fffb06',
+  '#1065f9',
+  '#69c9ff',
+  '#d87300',
+  '#a900bc',
+  '#965a00',
+  '#904aff',
+  '#a492ff',
+  '#ffc7ea',
+  '#f3c715',
+  '#00a775',
+  '#1e2db0',
+  '#acacac',
+  '#0693e2',
+  '#8fbb00',
+]
 
-// Add a Crime marker, will need to be a marker with label.
-const addCrimeLayers = (emMap: EmMap, crime: CrimePosition): { centre: Coordinate; crimeLayers: CrimeLayers } => {
-  const map = emMap.olMapInstance!
+// Add a Crime marker layers
+const addCrimeLayers = (emMap: EmMap, crime: CrimePosition): { centre: Coordinate } => {
   const centre = fromLonLat([crime.longitude, crime.latitude])
 
-  // Crime square marker
-  const crimeMarker = new Feature({
-    geometry: new Point(centre),
-  })
+  const crimeWithMarker: CrimePositionWithMarker = {
+    ...crime,
+    marker: {
+      type: 'pin',
+      pin: { color: '#d4351c' },
+    },
+  }
 
-  crimeMarker.setStyle(
-    new Style({
-      image: new RegularShape({
-        points: 4,
-        radius: 10,
-        angle: Math.PI / 4,
-        fill: new Fill({ color: 'rgba(220, 0, 0, 1)' }),
-        stroke: new Stroke({ color: 'rgba(255, 255, 255, 1)', width: 2 }),
-      }),
-    }),
-  )
-
-  const crimeMarkerLayer = new VectorLayer({
-    source: new VectorSource({ features: [crimeMarker] }),
+  const crimeMarkerLayer = new LocationsLayer({
+    positions: [crimeWithMarker],
   })
-  crimeMarkerLayer.setZIndex(10)
-  map.addLayer(crimeMarkerLayer)
 
   // Add a Crime 100m radius circle
   const circlePos: CircleInput = {
@@ -92,26 +101,40 @@ const addCrimeLayers = (emMap: EmMap, crime: CrimePosition): { centre: Coordinat
     precision: 100,
   }
 
-  emMap.addLayer(
-    new CirclesLayer({
-      id: 'crime-radius',
-      title: 'crime-radius',
-      zIndex: 1,
-      visible: true,
-      style: {
-        fill: 'rgba(0, 0, 0, 0.12)',
-        stroke: { color: 'rgba(0, 0, 0, 0.45)', width: 2 },
-      },
-      positions: [circlePos],
-    }),
-  )
-
-  // Create a feature with the crime radius geometry for later calculating extent when fitting to the crime circle
-  const radiusFeatureForExtent = new Feature({
-    geometry: new CircleGeom(centre, crime.radiusMeters),
+  const crimeRadius = new CirclesLayer({
+    id: 'crime-radius',
+    title: 'crime-radius',
+    zIndex: 1,
+    visible: true,
+    style: {
+      fill: 'rgba(0, 0, 0, 0.12)',
+      stroke: { color: 'rgba(0, 0, 0, 0.45)', width: 2 },
+    },
+    positions: [circlePos],
   })
 
-  return { centre, crimeLayers: { radiusFeatureForExtent } }
+  const crimeTypeLabel = new TextLayer({
+    id: `labels-crime-type`,
+    title: `labels-crime-type`,
+    positions: [crime],
+    textProperty: 'crimeTypeId',
+    zIndex: 5,
+    visible: true,
+    style: {
+      fill: '#d4351c',
+      offset: { x: 0, y: 20 },
+      textAlign: 'center',
+    },
+  })
+
+  const layerGroup = new LayerGroup({
+    layers: [...crimeMarkerLayer.getLayers(), ...crimeRadius.getLayers(), ...crimeTypeLabel.getLayers()],
+  })
+
+  layerGroup.set('id', 'crimeLayer')
+  emMap.addLayerGroup(layerGroup)
+
+  return { centre }
 }
 
 // Default map view
@@ -168,6 +191,22 @@ const initialiseProximityAlertView = async () => {
       }),
     ) as unknown as LayerWithSource
 
+    const tracks = emMap.addLayer(
+      new TracksLayer({
+        id: `tracks-${deviceId}`,
+        title: `tracks-${deviceId}`,
+        positions,
+        entryExit: {
+          enabled: true,
+          extensionDistanceMeters: 100,
+          centre: [crime.latitude, crime.longitude],
+          radiusMeters: 100,
+        },
+        zIndex: 2,
+        visible: false,
+      }),
+    ) as unknown as LayerWithSource
+
     const labels = emMap.addLayer(
       new TextLayer({
         id: `labels-${deviceId}`,
@@ -179,7 +218,7 @@ const initialiseProximityAlertView = async () => {
       }),
     ) as unknown as LayerWithSource
 
-    layersByWearer.set(deviceId, { locations, labels })
+    layersByWearer.set(deviceId, { locations, tracks, labels })
   }
 
   emMap.dispatchEvent(

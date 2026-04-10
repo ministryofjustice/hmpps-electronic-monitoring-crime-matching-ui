@@ -12,12 +12,15 @@
   <div class="govuk-grid-column-three-quarters govuk-!-static-margin-top-1">
     {{
       govukCheckboxes({
-        id: "crime-include",
+        id: "crime-toggle",
         classes: "govuk-checkboxes--small",
-        name: "crime-include",
+        name: "crime-toggle",
+        attributes: {
+          "data-module": 'map-layer-visibility-toggle'
+        },
         items: [
           {
-            value: "crime-include",
+            value: "crimeLayer",
             html: "<strong>" + crimeVersion.crimeReference + "</strong><br>" + "<strong>" + crimeVersion.crimeType + "</strong>",
             checked: true
           }
@@ -26,8 +29,8 @@
     }}
   </div>
 
-  <div class="govuk-grid-column-one-quarter">
-    <a href="placeholder" class="govuk-link">View on map</a>
+  <div class="govuk-grid-column-one-quarter govuk-!-static-margin-top-1">
+    <a href="placeholder" class="govuk-link">View <br />on map</a>
   </div>
 </div>
 
@@ -122,6 +125,7 @@
 
   {{
     govukCheckboxes({
+      id: 'analysis-toggles-' + deviceWearer.deviceId,
       classes: "govuk-checkboxes--small",
       name: "deviceWearerToggle-" + deviceWearer.deviceId,
       attributes: {
@@ -129,10 +133,12 @@
       },
       items: [
         {
+          id: 'device-wearer-tracks-' + deviceWearer.deviceId,
           text: "Show tracks",
           value: 'device-wearer-tracks-' + deviceWearer.deviceId
         },
         {
+          id: 'device-wearer-positions-' + deviceWearer.deviceId,
           value: 'device-wearer-positions-' + deviceWearer.deviceId,
           text: "Include",
           checked: true

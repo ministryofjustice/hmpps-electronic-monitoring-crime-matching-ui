@@ -15,7 +15,7 @@ class MapLayerVisibilityToggle extends Component {
   }
 
   setLayerVisibility(layerId: string, visible: boolean) {
-    this.map.getLayer(layerId)?.getPrimaryLayer().setVisible(visible)
+    this.map.setLayerVisibility(layerId, visible)
   }
 
   handleClick(event: MouseEvent) {
