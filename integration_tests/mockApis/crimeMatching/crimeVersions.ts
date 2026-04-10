@@ -33,7 +33,7 @@ type StubGetCrimeVersionsErrorOptions = {
 
 type StubGetCrimeVersionsOptions = StubGetCrimeVersions200Options | StubGetCrimeVersionsErrorOptions
 
-const defaultGetCrimeVersionsResultsOptions: StubGetCrimeVersionsOptions = {
+const defaultGetCrimeVersionsOptions: StubGetCrimeVersionsOptions = {
   status: 200,
   query: '.*',
   response: {
@@ -44,7 +44,7 @@ const defaultGetCrimeVersionsResultsOptions: StubGetCrimeVersionsOptions = {
   },
 }
 
-const stubGetCrimeVersions = (options: StubGetCrimeVersionsOptions = defaultGetCrimeVersionsResultsOptions) => {
+const stubGetCrimeVersions = (options: StubGetCrimeVersionsOptions = defaultGetCrimeVersionsOptions) => {
   let urlPattern = `${baseUrl}/crime-versions`
 
   if (options.query.length > 0) {
