@@ -33,8 +33,6 @@ export default class FormCheckboxesComponent {
   }
 
   shouldHaveText(text: string) {
-    this.element.get(`label[for="${this.name}"]`)
-      .should('be.visible')
-      .and('contain.text', text)
+    this.element.get(`label[for="${this.name}"]`).should('be.visible').and('contain.text', text)
   }
 }

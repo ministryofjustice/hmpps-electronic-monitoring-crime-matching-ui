@@ -43,7 +43,7 @@ export default class MapSidebarComponent {
     return new SummaryListComponent('.crime-version-summary-list')
   }
 
-  get versionTag() {
+  get versionLabel() {
     return this.element.get('.govuk-tag')
   }
 
@@ -79,27 +79,21 @@ export default class MapSidebarComponent {
     this.reportsTab.shouldExist()
   }
 
-  shouldHaveTag(value: string) {
-    this.versionTag.should('contain.text', value)
+  shouldHaveVersionLabel(value: string) {
+    this.versionLabel.should('contain.text', value)
   }
 
-  shouldHaveDeviceWearer(index: number, name: string, nomisId: string, deviceId: string, count: string) {
-    const wearer = new SummaryListComponent(
-      '.device-wearer-summary-list',
-      index,
-    )
-
+  shouldHaveDeviceWearer(name: string, nomisId: string, deviceId: string, count: string) {
+    const wearer = new SummaryListComponent('.device-wearer-summary-list')
+    wearer.shouldExist()
     wearer.shouldHaveItem('Name:', name)
     wearer.shouldHaveItem('NOMIS ID:', nomisId)
-    // wearer.shouldHaveItem('ID:', deviceId)
+    wearer.shouldHaveItem('ID:', deviceId)
     wearer.shouldHaveItem('Count:', count)
   }
 
   shouldNotHaveDeviceWearer() {
-    const wearer = new SummaryListComponent(
-      '.device-wearer-summary-list',
-      0,
-    )
+    const wearer = new SummaryListComponent('.device-wearer-summary-list')
     wearer.shouldNotExist()
   }
 }

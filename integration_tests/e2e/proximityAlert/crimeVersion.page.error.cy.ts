@@ -1,5 +1,5 @@
 import ErrorPage from '../../pages/error'
-import Page from "../../pages/page"
+import Page from '../../pages/page'
 
 context('Crime Version', () => {
   context('Error states', () => {
@@ -38,6 +38,5 @@ context('Crime Version', () => {
       // Then they should be shown an error page
       Page.verifyOnPage(ErrorPage, 'Internal Server Error')
     })
-
   })
 })

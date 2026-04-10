@@ -45,7 +45,7 @@ type StubGetCrimeVersionErrorOptions = {
 type StubGetCrimeVersionOptions = StubGetCrimeVersion200Options | StubGetCrimeVersionErrorOptions
 
 const stubGetCrimeVersion = (options: StubGetCrimeVersionOptions) => {
-  let urlPattern = `${baseUrl}/crime-versions/${options.crimeVersionId}`
+  const urlPattern = `${baseUrl}/crime-versions/${options.crimeVersionId}`
 
   return stubFor({
     request: {
