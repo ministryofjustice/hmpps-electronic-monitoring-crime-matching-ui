@@ -92,6 +92,7 @@ const addCrimeLayers = (emMap: EmMap, crime: CrimePosition): { centre: Coordinat
 
   const crimeMarkerLayer = new LocationsLayer({
     positions: [crimeWithMarker],
+    zIndex: 10,
   })
 
   // Add a Crime 100m radius circle
