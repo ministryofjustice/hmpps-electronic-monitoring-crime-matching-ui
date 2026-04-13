@@ -4,14 +4,7 @@ import {
   TextLayer,
 } from '@ministryofjustice/hmpps-electronic-monitoring-components/map/layers'
 import LayerGroup from 'ol/layer/Group'
-
-type CrimePosition = {
-  positionType: 'crime'
-  latitude: number
-  longitude: number
-  radiusMeters: number
-  crimeTypeId: string
-}
+import { CrimePosition } from '../types'
 
 class CrimeLayer extends LayerGroup {
   constructor(crime: CrimePosition) {

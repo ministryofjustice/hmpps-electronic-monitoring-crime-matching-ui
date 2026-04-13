@@ -4,24 +4,7 @@ import {
   TracksLayer,
 } from '@ministryofjustice/hmpps-electronic-monitoring-components/map/layers'
 import LayerGroup from 'ol/layer/Group'
-
-type WearerPosition = {
-  positionType: 'wearer'
-  latitude: number
-  longitude: number
-  precision: number
-  timestamp: string
-  sequenceLabel: string
-  deviceId: number
-}
-
-type CrimePosition = {
-  positionType: 'crime'
-  latitude: number
-  longitude: number
-  radiusMeters: number
-  crimeTypeId: string
-}
+import { CrimePosition, WearerPosition } from '../types'
 
 class DeviceWearerLayer extends LayerGroup {
   constructor(deviceId: number, crime: CrimePosition, positions: Array<WearerPosition>, colour: string) {

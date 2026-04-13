@@ -4,24 +4,7 @@ import type { Coordinate } from 'ol/coordinate'
 import { queryElement } from '../../utils/utils'
 import CrimeLayer from './layers/crime'
 import DeviceWearerLayer from './layers/deviceWearer'
-
-type WearerPosition = {
-  positionType: 'wearer'
-  latitude: number
-  longitude: number
-  precision: number
-  timestamp: string
-  sequenceLabel: string
-  deviceId: number
-}
-
-type CrimePosition = {
-  positionType: 'crime'
-  latitude: number
-  longitude: number
-  radiusMeters: number
-  crimeTypeId: string
-}
+import { CrimePosition, WearerPosition } from './types'
 
 type ProximityAlertMapPosition = WearerPosition | CrimePosition
 
