@@ -1,0 +1,74 @@
+import {
+  LocationsLayer,
+  TextLayer,
+  TracksLayer,
+} from '@ministryofjustice/hmpps-electronic-monitoring-components/map/layers'
+import LayerGroup from 'ol/layer/Group'
+
+type WearerPosition = {
+  positionType: 'wearer'
+  latitude: number
+  longitude: number
+  precision: number
+  timestamp: string
+  sequenceLabel: string
+  deviceId: number
+}
+
+type CrimePosition = {
+  positionType: 'crime'
+  latitude: number
+  longitude: number
+  radiusMeters: number
+  crimeTypeId: string
+}
+
+class DeviceWearerLayer extends LayerGroup {
+  constructor(deviceId: number, crime: CrimePosition, positions: Array<WearerPosition>, colour: string) {
+    super({
+      properties: {
+        title: `device-wearer-${deviceId}`,
+      },
+      layers: [
+        // Tracks
+        ...new TracksLayer({
+          id: `device-wearer-tracks-${deviceId}`,
+          title: `device-wearer-tracks-${deviceId}`,
+          positions,
+          entryExit: {
+            enabled: true,
+            extensionDistanceMeters: 100,
+            centre: [crime.latitude, crime.longitude],
+            radiusMeters: 100,
+          },
+          zIndex: 2,
+          visible: false,
+        }).getLayers(),
+
+        // Labels
+        ...new TextLayer({
+          id: `device-wearer-labels-${deviceId}`,
+          title: `device-wearer-labels-${deviceId}`,
+          positions,
+          textProperty: 'sequenceLabel',
+          zIndex: 5,
+          visible: true,
+        }).getLayers(),
+
+        // Locations
+        ...new LocationsLayer({
+          id: `device-wearer-positions-${deviceId}`,
+          title: `device-wearer-positions-${deviceId}`,
+          positions,
+          zIndex: 4,
+          style: {
+            fill: colour,
+            stroke: { color: colour, width: 0 },
+          },
+        }).getLayers(),
+      ],
+    })
+  }
+}
+
+export default DeviceWearerLayer

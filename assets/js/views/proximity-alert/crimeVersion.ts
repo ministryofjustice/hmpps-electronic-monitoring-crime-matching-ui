@@ -1,15 +1,9 @@
 import { EmMap } from '@ministryofjustice/hmpps-electronic-monitoring-components/map'
-import {
-  LocationsLayer,
-  CirclesLayer,
-  TextLayer,
-  TracksLayer,
-} from '@ministryofjustice/hmpps-electronic-monitoring-components/map/layers'
-import { createEmpty } from 'ol/extent'
 import { fromLonLat } from 'ol/proj'
 import type { Coordinate } from 'ol/coordinate'
-import LayerGroup from 'ol/layer/Group'
 import { queryElement } from '../../utils/utils'
+import CrimeLayer from './layers/crime'
+import DeviceWearerLayer from './layers/deviceWearer'
 
 type WearerPosition = {
   positionType: 'wearer'
@@ -29,35 +23,7 @@ type CrimePosition = {
   crimeTypeId: string
 }
 
-type CrimePositionWithMarker = CrimePosition & {
-  marker: {
-    type: 'pin'
-    pin: {
-      color: string
-    }
-  }
-}
-
 type ProximityAlertMapPosition = WearerPosition | CrimePosition
-
-type Extent = ReturnType<typeof createEmpty>
-type SourceWithExtent = { getExtent?: () => Extent }
-type LayerWithSource = {
-  getSource?: () => SourceWithExtent | undefined
-  setVisible?: (visible: boolean) => void
-}
-
-type WearerLayers = {
-  locations?: LayerWithSource
-  labels?: LayerWithSource
-  tracks?: LayerWithSource
-}
-
-type CircleInput = {
-  latitude: number
-  longitude: number
-  precision: number
-}
 
 const palette = [
   '#d00050',
@@ -82,58 +48,7 @@ const palette = [
 const addCrimeLayers = (emMap: EmMap, crime: CrimePosition): { centre: Coordinate } => {
   const centre = fromLonLat([crime.longitude, crime.latitude])
 
-  const crimeWithMarker: CrimePositionWithMarker = {
-    ...crime,
-    marker: {
-      type: 'pin',
-      pin: { color: '#d4351c' },
-    },
-  }
-
-  const crimeMarkerLayer = new LocationsLayer({
-    positions: [crimeWithMarker],
-    zIndex: 10,
-  })
-
-  // Add a Crime 100m radius circle
-  const circlePos: CircleInput = {
-    latitude: crime.latitude,
-    longitude: crime.longitude,
-    precision: 100,
-  }
-
-  const crimeRadius = new CirclesLayer({
-    id: 'crime-radius',
-    title: 'crime-radius',
-    zIndex: 1,
-    visible: true,
-    style: {
-      fill: 'rgba(0, 0, 0, 0.12)',
-      stroke: { color: 'rgba(0, 0, 0, 0.45)', width: 2 },
-    },
-    positions: [circlePos],
-  })
-
-  const crimeTypeLabel = new TextLayer({
-    id: `labels-crime-type`,
-    title: `labels-crime-type`,
-    positions: [crime],
-    textProperty: 'crimeTypeId',
-    zIndex: 5,
-    visible: true,
-    style: {
-      fill: '#d4351c',
-      offset: { x: 0, y: 20 },
-      textAlign: 'center',
-    },
-  })
-
-  const layerGroup = new LayerGroup({
-    layers: [...crimeMarkerLayer.getLayers(), ...crimeRadius.getLayers(), ...crimeTypeLabel.getLayers()],
-  })
-
-  layerGroup.set('id', 'crimeLayer')
-  emMap.addLayerGroup(layerGroup)
+  emMap.addLayerGroup(new CrimeLayer(crime))
 
   return { centre }
 }
@@ -172,54 +87,12 @@ const initialiseProximityAlertView = async () => {
     positionsByWearer.set(key, list)
   }
 
-  const layersByWearer = new Map<number, WearerLayers>()
-
   let colourIndex = 0
   for (const [deviceId, positions] of positionsByWearer.entries()) {
     const colour = palette[colourIndex % palette.length]
     colourIndex += 1
 
-    const locations = emMap.addLayer(
-      new LocationsLayer({
-        id: `device-wearer-positions-${deviceId}`,
-        title: `locations-${deviceId}`,
-        positions,
-        zIndex: 4,
-        style: {
-          fill: colour,
-          stroke: { color: colour, width: 0 },
-        },
-      }),
-    ) as unknown as LayerWithSource
-
-    const tracks = emMap.addLayer(
-      new TracksLayer({
-        id: `device-wearer-tracks-${deviceId}`,
-        title: `device-wearer-tracks-${deviceId}`,
-        positions,
-        entryExit: {
-          enabled: true,
-          extensionDistanceMeters: 100,
-          centre: [crime.latitude, crime.longitude],
-          radiusMeters: 100,
-        },
-        zIndex: 2,
-        visible: false,
-      }),
-    ) as unknown as LayerWithSource
-
-    const labels = emMap.addLayer(
-      new TextLayer({
-        id: `labels-${deviceId}`,
-        title: `labels-${deviceId}`,
-        positions,
-        textProperty: 'sequenceLabel',
-        zIndex: 5,
-        visible: true,
-      }),
-    ) as unknown as LayerWithSource
-
-    layersByWearer.set(deviceId, { locations, tracks, labels })
+    emMap.addLayerGroup(new DeviceWearerLayer(deviceId, crime, positions, colour))
   }
 
   emMap.dispatchEvent(
