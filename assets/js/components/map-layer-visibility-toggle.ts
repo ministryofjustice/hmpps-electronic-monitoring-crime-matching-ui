@@ -15,7 +15,15 @@ class MapLayerVisibilityToggle extends Component {
   }
 
   setLayerVisibility(layerId: string, visible: boolean) {
-    this.map.setLayerVisibility(layerId, visible)
+    const re = new RegExp(layerId)
+    const layers = this.map.olMapInstance?.getAllLayers() || []
+    const layerGroups = this.map.olMapInstance?.getLayerGroup().getLayers().getArray() || []
+
+    for (const layer of [...layerGroups, ...layers]) {
+      if (re.test(layer.get('title'))) {
+        layer.setVisible(visible)
+      }
+    }
   }
 
   handleClick(event: MouseEvent) {
