@@ -22,8 +22,8 @@ context('Crime Version', () => {
           data: {
             crimeVersionId,
             crimeReference: 'crimeRef',
-            crimeType: 'crimeType',
-            crimeTypeId: 'crimeTypeId',
+            crimeTypeDescription: 'Aggravated Burglary',
+            crimeTypeId: 'AB',
             crimeDateTimeFrom: '2025-01-01T00:00:00Z',
             crimeDateTimeTo: '2025-01-01T01:00:00Z',
             crimeText: 'crimeText',
@@ -69,7 +69,7 @@ context('Crime Version', () => {
       // And the crime version details
       page.map.sidebar.shouldHaveVersionLabel('Latest Version')
       page.map.sidebar.crimeToggle.shouldBeChecked('crimeLayer')
-      page.map.sidebar.crimeToggle.shouldHaveText('crimeRefcrimeType')
+      page.map.sidebar.crimeToggle.shouldHaveText('crimeRefAggravated Burglary')
 
       page.map.sidebar.crimeVersionSummaryList.shouldExist()
       page.map.sidebar.crimeVersionSummaryList.shouldHaveItem('From:', '01/01/2025 00:00')
@@ -89,8 +89,8 @@ context('Crime Version', () => {
           data: {
             crimeVersionId,
             crimeReference: 'crimeRef',
-            crimeType: 'crimeType',
-            crimeTypeId: 'crimeTypeId',
+            crimeTypeDescription: 'Aggravated Burglary',
+            crimeTypeId: 'AB',
             crimeDateTimeFrom: '2025-01-01T00:00:00Z',
             crimeDateTimeTo: '2025-01-01T01:00:00Z',
             crimeText: 'crimeText',
@@ -119,7 +119,7 @@ context('Crime Version', () => {
       // And the crime version details
       page.map.sidebar.shouldHaveVersionLabel('Latest Version')
       page.map.sidebar.crimeToggle.shouldBeChecked('crimeLayer')
-      page.map.sidebar.crimeToggle.shouldHaveText('crimeRefcrimeType')
+      page.map.sidebar.crimeToggle.shouldHaveText('crimeRefAggravated Burglary')
 
       page.map.sidebar.crimeVersionSummaryList.shouldExist()
       page.map.sidebar.crimeVersionSummaryList.shouldHaveItem('From:', '01/01/2025 00:00')
@@ -139,8 +139,8 @@ context('Crime Version', () => {
           data: {
             crimeVersionId,
             crimeReference: 'crimeRef',
-            crimeType: 'crimeType',
-            crimeTypeId: 'crimeTypeId',
+            crimeTypeDescription: 'Aggravated Burglary',
+            crimeTypeId: 'AB',
             crimeDateTimeFrom: '2025-01-01T00:00:00Z',
             crimeDateTimeTo: '2025-01-01T01:00:00Z',
             crimeText: 'crimeText',
@@ -200,7 +200,7 @@ context('Crime Version', () => {
       // And the crime version details
       page.map.sidebar.shouldHaveVersionLabel('Latest Version')
       page.map.sidebar.crimeToggle.shouldBeChecked('crimeLayer')
-      page.map.sidebar.crimeToggle.shouldHaveText('crimeRefcrimeType')
+      page.map.sidebar.crimeToggle.shouldHaveText('crimeRefAggravated Burglary')
 
       page.map.sidebar.crimeVersionSummaryList.shouldExist()
       page.map.sidebar.crimeVersionSummaryList.shouldHaveItem('From:', '01/01/2025 00:00')

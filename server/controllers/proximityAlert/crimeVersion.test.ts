@@ -40,7 +40,7 @@ describe('CrimeVersionController', () => {
         data: {
           crimeVersionId: '78d41bd9-5450-4bbb-89d4-42ba75659f50',
           crimeReference: 'crime1',
-          crimeType: 'Aggravated Burglary',
+          crimeTypeDescription: 'Aggravated Burglary',
           crimeTypeId: 'AB',
           crimeDateTimeFrom: '2025-01-01T00:00:00Z',
           crimeDateTimeTo: '2025-01-01T01:00:00Z',
@@ -85,7 +85,7 @@ describe('CrimeVersionController', () => {
         crimeVersion: {
           crimeVersionId: '78d41bd9-5450-4bbb-89d4-42ba75659f50',
           crimeReference: 'crime1',
-          crimeType: 'Aggravated Burglary',
+          crimeTypeDescription: 'Aggravated Burglary',
           crimeTypeId: 'AB',
           crimeDateTimeFrom: '2025-01-01T00:00:00Z',
           crimeDateTimeTo: '2025-01-01T01:00:00Z',
@@ -168,7 +168,7 @@ describe('CrimeVersionController', () => {
         data: {
           crimeVersionId: '78d41bd9-5450-4bbb-89d4-42ba75659f50',
           crimeReference: 'crime1',
-          crimeType: 'Aggravated Burglary',
+          crimeTypeDescription: 'Aggravated Burglary',
           crimeTypeId: 'AB',
           crimeDateTimeFrom: '2025-01-01T00:00:00Z',
           crimeDateTimeTo: '2025-01-01T01:00:00Z',
@@ -189,7 +189,7 @@ describe('CrimeVersionController', () => {
         crimeVersion: {
           crimeVersionId: '78d41bd9-5450-4bbb-89d4-42ba75659f50',
           crimeReference: 'crime1',
-          crimeType: 'Aggravated Burglary',
+          crimeTypeDescription: 'Aggravated Burglary',
           crimeTypeId: 'AB',
           crimeDateTimeFrom: '2025-01-01T00:00:00Z',
           crimeDateTimeTo: '2025-01-01T01:00:00Z',
@@ -224,7 +224,7 @@ describe('CrimeVersionController', () => {
         data: {
           crimeVersionId: '78d41bd9-5450-4bbb-89d4-42ba75659f50',
           crimeReference: 'crime1',
-          crimeType: 'Aggravated Burglary',
+          crimeTypeDescription: 'Aggravated Burglary',
           crimeTypeId: 'AB',
           crimeDateTimeFrom: '2025-01-01T00:00:00Z',
           crimeDateTimeTo: '2025-01-01T01:00:00Z',
@@ -245,7 +245,7 @@ describe('CrimeVersionController', () => {
         crimeVersion: {
           crimeVersionId: '78d41bd9-5450-4bbb-89d4-42ba75659f50',
           crimeReference: 'crime1',
-          crimeType: 'Aggravated Burglary',
+          crimeTypeDescription: 'Aggravated Burglary',
           crimeTypeId: 'AB',
           crimeDateTimeFrom: '2025-01-01T00:00:00Z',
           crimeDateTimeTo: '2025-01-01T01:00:00Z',
