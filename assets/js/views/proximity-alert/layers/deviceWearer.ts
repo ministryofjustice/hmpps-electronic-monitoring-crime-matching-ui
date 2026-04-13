@@ -32,7 +32,6 @@ class DeviceWearerLayer extends LayerGroup {
       layers: [
         // Tracks
         ...new TracksLayer({
-          id: `device-wearer-tracks-${deviceId}`,
           title: `device-wearer-tracks-${deviceId}`,
           positions,
           entryExit: {
@@ -47,7 +46,6 @@ class DeviceWearerLayer extends LayerGroup {
 
         // Labels
         ...new TextLayer({
-          id: `device-wearer-labels-${deviceId}`,
           title: `device-wearer-labels-${deviceId}`,
           positions,
           textProperty: 'sequenceLabel',
@@ -57,7 +55,6 @@ class DeviceWearerLayer extends LayerGroup {
 
         // Locations
         ...new LocationsLayer({
-          id: `device-wearer-positions-${deviceId}`,
           title: `device-wearer-positions-${deviceId}`,
           positions,
           zIndex: 4,
