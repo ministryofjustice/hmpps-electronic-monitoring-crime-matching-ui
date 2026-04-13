@@ -1,7 +1,7 @@
 type CrimeVersion = {
   crimeVersionId: string
   crimeReference: string
-  crimeType: string
+  crimeTypeDescription: string
   crimeTypeId: string
   crimeDateTimeFrom: string
   crimeDateTimeTo: string

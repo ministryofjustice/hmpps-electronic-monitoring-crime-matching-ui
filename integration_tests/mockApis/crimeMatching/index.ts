@@ -7,10 +7,12 @@ import { stubGetDeviceActivationPositions } from '../locationData/deviceActivati
 import { stubGetIngestionAttempt } from './ingestionAttempt'
 import { stubGetIngestionAttempts } from './ingestionAttempts'
 import { stubGetPerson } from '../locationData/person'
+import { stubGetCrimeVersion } from './crimeVersion'
 
 export default {
   stubCrimeMatchingPing: ping,
   stubGetCrimeMatchingResults,
+  stubGetCrimeVersion,
   stubGetCrimeVersions,
   stubGetDeviceActivation,
   stubGetDeviceActivationPositions,

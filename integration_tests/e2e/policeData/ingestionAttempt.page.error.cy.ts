@@ -14,7 +14,7 @@ context('Police Data Ingestion Attempt', () => {
       cy.stubGetIngestionAttempt({
         ingestionAttemptId: '64d41bd9-5450-4bbb-89d4-42ba75659f49',
         status: 404,
-        response: 'Internal Server Error',
+        response: 'Not Found',
       })
 
       // When the user loads the page
