@@ -194,8 +194,8 @@ const initialiseProximityAlertView = async () => {
 
     const tracks = emMap.addLayer(
       new TracksLayer({
-        id: `tracks-${deviceId}`,
-        title: `tracks-${deviceId}`,
+        id: `device-wearer-tracks-${deviceId}`,
+        title: `device-wearer-tracks-${deviceId}`,
         positions,
         entryExit: {
           enabled: true,
