@@ -57,6 +57,10 @@ export default class MapSidebarComponent {
 
   // HELPERS
 
+  getDeviceWearerToggles(id: string) {
+    return new FormCheckboxesComponent(this.element, `device-wearer-toggle-${id}`)
+  }
+
   shouldExist(): void {
     this.element.should('exist')
   }

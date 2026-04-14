@@ -4,7 +4,7 @@ import CrimeVersionPage from '../../pages/proximityAlert/crimeVersion'
 const crimeVersionId = '64d41bd9-5450-4bbb-89d4-42ba75659f49'
 
 context('Crime Version', () => {
-  context('Get Crime Version', () => {
+  context('Viewing a crime version', () => {
     beforeEach(() => {
       cy.task('reset')
       cy.task('stubSignIn')
@@ -53,7 +53,7 @@ context('Crime Version', () => {
       })
 
       // When the user loads the page
-      cy.visit('/proximity-alert/64d41bd9-5450-4bbb-89d4-42ba75659f49')
+      cy.visit(`/proximity-alert/${crimeVersionId}`)
 
       const page = Page.verifyOnPage(CrimeVersionPage)
 
@@ -103,7 +103,7 @@ context('Crime Version', () => {
       })
 
       // When the user loads the page
-      cy.visit('/proximity-alert/64d41bd9-5450-4bbb-89d4-42ba75659f49')
+      cy.visit(`/proximity-alert/${crimeVersionId}`)
 
       const page = Page.verifyOnPage(CrimeVersionPage)
 
