@@ -1,31 +1,15 @@
 import { RequestHandler } from 'express'
 import createError from 'http-errors'
-import config from '../../config'
+import logger from '../../../logger'
 import CrimeService from '../../services/crimeService'
 import presentCrimeVersion from '../../presenters/crimeVersion'
 import toProximityAlertMapPositions from '../../presenters/proximityAlert/mapPositions'
+import exportProximityAlertFormSchema from '../../schemas/proximityAlert/exportProximityAlert'
 import { createMojAlertWarning } from '../../utils/alerts'
 import type { MojAlert } from '../../types/govUk/mojAlert'
-import logger from '../../../logger'
-
-type ExportProximityAlertFormBody = {
-  deviceIds?: string | string[]
-  capturedMapState?: string
-}
 
 const EXPORT_ERROR_MESSAGE = 'Could not export Proximity Alert report. Please try again.'
-
-function parseFormStringArray(value: unknown): string[] {
-  if (Array.isArray(value)) return value.map(arrayValue => String(arrayValue)).filter(Boolean)
-  if (typeof value === 'string' && value.length > 0) return [value]
-  return []
-}
-
-function parseFormOptionalString(value: unknown): string | undefined {
-  if (typeof value !== 'string') return undefined
-  const trimmed = value.trim()
-  return trimmed.length ? trimmed : undefined
-}
+const INVALID_EXPORT_REQUEST_ERROR = 'Invalid export request.'
 
 export default class CrimeVersionController {
   constructor(private readonly crimeService: CrimeService) {}
@@ -67,34 +51,52 @@ export default class CrimeVersionController {
       const result = await this.crimeService.getCrimeVersion(username, crimeVersionId)
 
       if (!result.ok) {
-        next(createError(404, 'Not found'))
-        return
+        return next(createError(404, 'Not found'))
+      }
+
+      const formData = exportProximityAlertFormSchema.safeParse(req.body)
+
+      if (!formData.success) {
+        logger.warn(
+          {
+            crimeVersionId,
+            issues: formData.error.issues,
+          },
+          'Invalid proximity alert export request',
+        )
+
+        req.session.proximityAlertExportProximityAlertError = INVALID_EXPORT_REQUEST_ERROR
+        return res.redirect(`/proximity-alert/${encodeURIComponent(crimeVersionId)}`)
       }
 
       const crimeVersion = result.data
-      const body = req.body as ExportProximityAlertFormBody
-
-      const selectedDeviceIdsFromForm = parseFormStringArray(body.deviceIds)
-      const capturedMapStateJson = parseFormOptionalString(body.capturedMapState)
+      const { deviceIds } = formData.data
 
       const allDeviceIds = crimeVersion.matching?.deviceWearers.map(deviceWearer => String(deviceWearer.deviceId)) ?? []
 
-      const selectedDeviceIds = selectedDeviceIdsFromForm.length > 0 ? selectedDeviceIdsFromForm : allDeviceIds
+      const selectedDeviceIds = deviceIds.length > 0 ? deviceIds : allDeviceIds
 
       logger.info(
         {
           crimeVersionId,
           selectedDeviceIds,
-          hasCapturedMapState: Boolean(capturedMapStateJson),
         },
         'Bootstrapped proximity alert export request',
       )
 
-      req.session.proximityAlertExportProximityAlertError = 'Export not implemented yet.'
-      res.redirect(`/proximity-alert/${encodeURIComponent(crimeVersionId)}`)
-    } catch {
       req.session.proximityAlertExportProximityAlertError = EXPORT_ERROR_MESSAGE
-      res.redirect(`/proximity-alert/${encodeURIComponent(crimeVersionId)}`)
+      return res.redirect(`/proximity-alert/${encodeURIComponent(crimeVersionId)}`)
+    } catch (error) {
+      logger.error(
+        {
+          crimeVersionId,
+          error,
+        },
+        'Failed to bootstrap proximity alert export request',
+      )
+
+      req.session.proximityAlertExportProximityAlertError = EXPORT_ERROR_MESSAGE
+      return res.redirect(`/proximity-alert/${encodeURIComponent(crimeVersionId)}`)
     }
   }
 }
