@@ -82,6 +82,8 @@ describe('CrimeVersionController', () => {
       // Then
       expect(mockRestClient.getCrimeVersion).toHaveBeenCalledWith(expectedAuthOptions, crimeVersionId)
       expect(res.render).toHaveBeenCalledWith('pages/proximityAlert/crimeVersion', {
+        usesInternalOverlays: false,
+        alerts: [],
         crimeVersion: {
           crimeVersionId: '78d41bd9-5450-4bbb-89d4-42ba75659f50',
           crimeReference: 'crime1',
@@ -152,6 +154,9 @@ describe('CrimeVersionController', () => {
             timestamp: '2025-01-01T02:00',
           },
         ],
+        exportProximityAlertForm: {
+          url: '/proximity-alert/78d41bd9-5450-4bbb-89d4-42ba75659f50/export-proximity-alert',
+        },
       })
     })
 
@@ -186,6 +191,8 @@ describe('CrimeVersionController', () => {
       // Then
       expect(mockRestClient.getCrimeVersion).toHaveBeenCalledWith(expectedAuthOptions, crimeVersionId)
       expect(res.render).toHaveBeenCalledWith('pages/proximityAlert/crimeVersion', {
+        usesInternalOverlays: false,
+        alerts: [],
         crimeVersion: {
           crimeVersionId: '78d41bd9-5450-4bbb-89d4-42ba75659f50',
           crimeReference: 'crime1',
@@ -208,6 +215,9 @@ describe('CrimeVersionController', () => {
             crimeTypeId: 'AB',
           },
         ],
+        exportProximityAlertForm: {
+          url: '/proximity-alert/78d41bd9-5450-4bbb-89d4-42ba75659f50/export-proximity-alert',
+        },
       })
     })
 
@@ -242,6 +252,8 @@ describe('CrimeVersionController', () => {
       // Then
       expect(mockRestClient.getCrimeVersion).toHaveBeenCalledWith(expectedAuthOptions, crimeVersionId)
       expect(res.render).toHaveBeenCalledWith('pages/proximityAlert/crimeVersion', {
+        usesInternalOverlays: false,
+        alerts: [],
         crimeVersion: {
           crimeVersionId: '78d41bd9-5450-4bbb-89d4-42ba75659f50',
           crimeReference: 'crime1',
@@ -264,6 +276,9 @@ describe('CrimeVersionController', () => {
             crimeTypeId: 'AB',
           },
         ],
+        exportProximityAlertForm: {
+          url: '/proximity-alert/78d41bd9-5450-4bbb-89d4-42ba75659f50/export-proximity-alert',
+        },
       })
     })
   })

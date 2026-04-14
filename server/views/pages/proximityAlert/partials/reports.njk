@@ -1,5 +1,6 @@
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 {% from "govuk/components/tag/macro.njk" import govukTag %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
 
 {{
   govukTag({
@@ -71,6 +72,13 @@
     ]
   })
 }}
+
+<form
+  id="exportProximityAlertForm"
+  method="post"
+   action="{{ exportProximityAlertForm.url }}">
+  <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+  <input type="hidden" id="capturedMapState" name="capturedMapState" value="" />
 
 <hr class="govuk-section-break govuk-section-break--visible govuk-section-break--m" />
 {% for deviceWearer in crimeVersion.matching.deviceWearers %}
@@ -153,3 +161,12 @@
     <hr class="govuk-section-break govuk-section-break--visible govuk-section-break--m" />
   {% endif %}
 {% endfor %}
+
+  <div class="govuk-!-margin-top-4">
+    {{
+      govukButton({
+        text: "Export proximity alert"
+      })
+    }}
+  </div>
+</form>

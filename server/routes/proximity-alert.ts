@@ -1,4 +1,4 @@
-import { Router } from 'express'
+import { Router, type Request, type Response } from 'express'
 import type { Services } from '../services'
 import asyncMiddleware from '../middleware/asyncMiddleware'
 import CrimeSearchController from '../controllers/proximityAlert/crimeSearch'
@@ -13,6 +13,12 @@ const proximityAlertRoutes = ({ crimeService }: Services): Router => {
   router.post('/', asyncMiddleware(crimeSearchController.search))
 
   router.get('/:crimeVersionId', asyncMiddleware(crimeVersionController.view))
+
+  router.get('/:crimeVersionId/export-proximity-alert', (req: Request<{ crimeVersionId: string }>, res: Response) => {
+    res.redirect(`/proximity-alert/${encodeURIComponent(req.params.crimeVersionId)}`)
+  })
+
+  router.post('/:crimeVersionId/export-proximity-alert', asyncMiddleware(crimeVersionController.exportProximityAlert))
 
   return router
 }
