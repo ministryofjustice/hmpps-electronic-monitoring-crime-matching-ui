@@ -5,7 +5,7 @@ export type ProximityAlertMapPosition =
       positionType: 'wearer'
       latitude: number
       longitude: number
-      confidence: number
+      precision: number
       timestamp: string
       sequenceLabel: string
       geolocationMechanism: string
@@ -36,7 +36,7 @@ export default function toProximityAlertMapPositions(crimeVersion: CrimeVersion)
         positionType: 'wearer' as const,
         latitude: pos.latitude,
         longitude: pos.longitude,
-        confidence: pos.confidence,
+        precision: pos.confidence,
         timestamp: pos.capturedDateTime,
         sequenceLabel: pos.sequenceLabel,
         geolocationMechanism: 'GPS' as const,

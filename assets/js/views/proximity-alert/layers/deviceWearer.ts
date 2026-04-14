@@ -1,4 +1,5 @@
 import {
+  CirclesLayer,
   LocationsLayer,
   TextLayer,
   TracksLayer,
@@ -34,6 +35,22 @@ class DeviceWearerLayer extends LayerGroup {
           textProperty: 'sequenceLabel',
           zIndex: 5,
           visible: true,
+        }).getLayers(),
+
+        // Confidence circles
+        ...new CirclesLayer({
+          title: `device-wearer-circles-${deviceId}`,
+          positions,
+          visible: true,
+          zIndex: 3,
+          style: {
+            fill: null,
+            stroke: {
+              color: 'rgba(242, 201, 76, 1)',
+              lineDash: [8, 8],
+              width: 2,
+            },
+          },
         }).getLayers(),
 
         // Locations

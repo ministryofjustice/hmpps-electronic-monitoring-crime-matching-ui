@@ -128,7 +128,7 @@ describe('CrimeVersionController', () => {
             crimeTypeId: 'AB',
           },
           {
-            confidence: 10,
+            precision: 10,
             deviceId: 1,
             geolocationMechanism: 'GPS',
             latitude: 10,
@@ -140,7 +140,7 @@ describe('CrimeVersionController', () => {
             timestamp: '2025-01-01T00:00',
           },
           {
-            confidence: 10,
+            precision: 10,
             deviceId: 1,
             geolocationMechanism: 'GPS',
             latitude: 10,
