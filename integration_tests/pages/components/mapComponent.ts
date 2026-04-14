@@ -44,7 +44,11 @@ export default class MapComponent {
           }
         }
 
-        el.addEventListener('app:map:layers:ready', handler, { once: true })
+        if (el.olMapInstance) {
+          resolve(el.olMapInstance)
+        } else {
+          el.addEventListener('app:map:layers:ready', handler, { once: true })
+        }
       })
     })
   }
