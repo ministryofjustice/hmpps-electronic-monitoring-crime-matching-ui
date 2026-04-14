@@ -16,15 +16,9 @@ class MapFocusOnLayer extends Component {
 
   handleClick(event: MouseEvent) {
     event.preventDefault()
-    const $clickedLink = event.currentTarget
-
-    // Ignore clicks on things that aren't anchor elements
-    if (!($clickedLink instanceof HTMLAnchorElement)) {
-      return
-    }
 
     // Check layer value is present
-    const { layer } = $clickedLink.dataset
+    const { layer } = this.$root.dataset
     if (!layer) {
       return
     }
