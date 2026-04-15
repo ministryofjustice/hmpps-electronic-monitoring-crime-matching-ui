@@ -169,7 +169,7 @@ context('Crime Version', () => {
       // And the map is ready
       page.map.mapInstance.then(map => {
         // And the user hides device wearer 1
-        page.map.sidebar.getDeviceWearerToggles('1').unselect('device-wearer-1')
+        page.map.sidebar.deviceWearerToggles.unselect('device-wearer-1')
 
         // Then the device wearer 1 layers should be hidden
         cy.wait(100).then(() => {
@@ -196,7 +196,7 @@ context('Crime Version', () => {
       // And the map is ready
       page.map.mapInstance.then(map => {
         // And the user hides device wearer 2
-        page.map.sidebar.getDeviceWearerToggles('2').unselect('device-wearer-2')
+        page.map.sidebar.deviceWearerToggles.unselect('device-wearer-2')
 
         // Then the device wearer 2 layers should be hidden
         cy.wait(100).then(() => {
@@ -223,7 +223,7 @@ context('Crime Version', () => {
       // And the map is ready
       page.map.mapInstance.then(map => {
         // And the user shows the tracks for device wearer 1
-        page.map.sidebar.getDeviceWearerToggles('1').select('device-wearer-tracks-1')
+        page.map.sidebar.deviceWearerTrackToggles.select('device-wearer-tracks-1')
 
         // Then the device wearer 1 tracks should be shown
         cy.wait(100).then(() => {
@@ -250,7 +250,7 @@ context('Crime Version', () => {
       // And the map is ready
       page.map.mapInstance.then(map => {
         // And the user shows the tracks for device wearer 1
-        page.map.sidebar.getDeviceWearerToggles('2').select('device-wearer-tracks-2')
+        page.map.sidebar.deviceWearerTrackToggles.select('device-wearer-tracks-2')
 
         // Then the device wearer 1 tracks should be shown
         cy.wait(100).then(() => {
@@ -282,7 +282,7 @@ context('Crime Version', () => {
 
         // And hides device wearer 2
         page.map.sidebar.reportsTab.click()
-        page.map.sidebar.getDeviceWearerToggles('2').unselect('device-wearer-2')
+        page.map.sidebar.deviceWearerToggles.unselect('device-wearer-2')
 
         // And then shows the confidence circles
         page.map.sidebar.analysisTab.click()
@@ -318,7 +318,7 @@ context('Crime Version', () => {
 
         // And hides device wearer 2
         page.map.sidebar.reportsTab.click()
-        page.map.sidebar.getDeviceWearerToggles('2').unselect('device-wearer-2')
+        page.map.sidebar.deviceWearerToggles.unselect('device-wearer-2')
 
         // And then shows the numbering layers
         page.map.sidebar.analysisTab.click()
@@ -349,11 +349,11 @@ context('Crime Version', () => {
       // And the map is ready
       page.map.mapInstance.then(map => {
         // And the user hides all device wearer layers
-        page.map.sidebar.crimeToggle.unselect('device-wearer-\\d+')
+        page.map.sidebar.crimeToggle.unselect('device-wearer-toggle')
 
         // Then the device wearer "include" toggles should be unchecked
-        page.map.sidebar.getDeviceWearerToggles('1').shouldNotBeChecked('device-wearer-1')
-        page.map.sidebar.getDeviceWearerToggles('2').shouldNotBeChecked('device-wearer-2')
+        page.map.sidebar.deviceWearerToggles.shouldNotBeChecked('device-wearer-1')
+        page.map.sidebar.deviceWearerToggles.shouldNotBeChecked('device-wearer-2')
 
         // Then the device wearer layers should be hidden
         cy.wait(100).then(() => {
@@ -370,11 +370,11 @@ context('Crime Version', () => {
         })
 
         // And the user shows all device wearer layers
-        page.map.sidebar.crimeToggle.select('device-wearer-\\d+')
+        page.map.sidebar.crimeToggle.select('device-wearer-toggle')
 
         // Then the device wearer "include" toggles should be unchecked
-        page.map.sidebar.getDeviceWearerToggles('1').shouldBeChecked('device-wearer-1')
-        page.map.sidebar.getDeviceWearerToggles('2').shouldBeChecked('device-wearer-2')
+        page.map.sidebar.deviceWearerToggles.shouldBeChecked('device-wearer-1')
+        page.map.sidebar.deviceWearerToggles.shouldBeChecked('device-wearer-2')
 
         // Then the device wearer layers should be shown
         cy.wait(100).then(() => {
@@ -399,16 +399,16 @@ context('Crime Version', () => {
       const page = Page.verifyOnPage(CrimeVersionPage)
 
       // And unchecks one of the device wearer "include" layers
-      page.map.sidebar.getDeviceWearerToggles('1').unselect('device-wearer-1')
+      page.map.sidebar.deviceWearerToggles.unselect('device-wearer-1')
 
       // Then the "select all" checkbox should be unchecked
-      page.map.sidebar.crimeToggle.shouldNotBeChecked('device-wearer-\\\\d+')
+      page.map.sidebar.crimeToggle.shouldNotBeChecked('device-wearer-toggle')
 
       // And when the user has selected all of the device wearer "include" layers
-      page.map.sidebar.getDeviceWearerToggles('1').select('device-wearer-1')
+      page.map.sidebar.deviceWearerToggles.select('device-wearer-1')
 
       // Then the "select all" checkbox should be checked
-      page.map.sidebar.crimeToggle.shouldBeChecked('device-wearer-\\\\d+')
+      page.map.sidebar.crimeToggle.shouldBeChecked('device-wearer-toggle')
     })
   })
 })

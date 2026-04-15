@@ -4,7 +4,7 @@ import { Component } from 'govuk-frontend'
  * Select All Component
  *
  * This allows a single checkbox element to select many other checkbox elements
- * if their value matches the pattern defined in the value of the control checkbox.
+ * if their name matches the value of the control checkbox.
  */
 class SelectAll extends Component {
   private targets: Array<HTMLInputElement>
@@ -31,12 +31,9 @@ class SelectAll extends Component {
   }
 
   private getTargets(): Array<HTMLInputElement> {
-    const re = new RegExp(this.$input.value)
-    const allCheckboxes = document.querySelectorAll("input[type='checkbox']").entries()
-
-    return [...allCheckboxes]
-      .filter(([_, element]) => re.test((element as HTMLInputElement).value))
-      .map(([_, e]) => e as HTMLInputElement)
+    return [...document.querySelectorAll(`input[type='checkbox'][name=${this.$input.value}]`).entries()].map(
+      ([_, element]) => element as HTMLInputElement,
+    )
   }
 
   /**

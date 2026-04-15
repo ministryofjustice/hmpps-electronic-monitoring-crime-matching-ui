@@ -27,14 +27,14 @@ class MapLayerVisibilityToggle extends Component {
   }
 
   handleChange(event: Event) {
-    const $clickedInput = event.target
+    const $changedInput = event.target
 
     // Ignore clicks on things that aren't checkbox inputs
-    if (!($clickedInput instanceof HTMLInputElement) || $clickedInput.type !== 'checkbox') {
+    if (!($changedInput instanceof HTMLInputElement) || $changedInput.type !== 'checkbox') {
       return
     }
 
-    this.setLayerVisibility($clickedInput.value, $clickedInput.checked)
+    this.setLayerVisibility($changedInput.value, $changedInput.checked)
   }
 
   static moduleName = 'map-layer-visibility-toggle'
