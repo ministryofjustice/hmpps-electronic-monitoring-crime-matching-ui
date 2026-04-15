@@ -16,21 +16,21 @@ export type RenderProximityAlertImagesArgs = {
   capturedMapState?: string
 }
 
-export async function renderProximityAlertReportImages(
-  args: RenderProximityAlertImagesArgs,
-): Promise<ProximityAlertReportImages> {
-  const { browser } = args
+export default class MapImageRendererService {
+  async render(args: RenderProximityAlertImagesArgs): Promise<ProximityAlertReportImages> {
+    const { browser } = args
 
-  const context = await browser.newContext()
+    const context = await browser.newContext()
 
-  try {
-    return {
-      image1Jpg: undefined,
-      image2Jpg: undefined,
-      wearerImage1JpgById: {},
-      wearerImage2JpgById: {},
+    try {
+      return {
+        image1Jpg: undefined,
+        image2Jpg: undefined,
+        wearerImage1JpgById: {},
+        wearerImage2JpgById: {},
+      }
+    } finally {
+      await context.close()
     }
-  } finally {
-    await context.close()
   }
 }

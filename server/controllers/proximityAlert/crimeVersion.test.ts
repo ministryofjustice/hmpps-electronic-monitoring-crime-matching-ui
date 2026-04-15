@@ -1,10 +1,13 @@
 import CrimeMatchingClient from '../../data/crimeMatchingClient'
 import CrimeVersionController from './crimeVersion'
 import logger from '../../../logger'
+import config from '../../config'
 import createMockRequest from '../../testutils/createMockRequest'
 import createMockResponse from '../../testutils/createMockResponse'
 import CrimeService from '../../services/crimeService'
 import PlaywrightBrowserService from '../../services/proximityAlert/playwrightBrowserService'
+import MapImageRendererService from '../../services/proximityAlert/mapImageRendererService'
+import ProximityAlertReportDocxService from '../../services/proximityAlert/proximityAlertReportDocxService'
 
 jest.mock('../../data/crimeMatchingClient')
 jest.mock('../../../logger')
@@ -19,13 +22,24 @@ const expectedAuthOptions = {
 describe('CrimeVersionController', () => {
   let mockRestClient: jest.Mocked<CrimeMatchingClient>
   let mockPlaywrightBrowserService: jest.Mocked<PlaywrightBrowserService>
+  let mockMapImageRendererService: jest.Mocked<MapImageRendererService>
+  let mockProximityAlertReportDocxService: jest.Mocked<ProximityAlertReportDocxService>
 
   beforeEach(() => {
     mockRestClient = new CrimeMatchingClient(logger) as jest.Mocked<CrimeMatchingClient>
+
     mockPlaywrightBrowserService = {
       getBrowser: jest.fn(),
       close: jest.fn(),
     } as unknown as jest.Mocked<PlaywrightBrowserService>
+
+    mockMapImageRendererService = {
+      render: jest.fn(),
+    } as unknown as jest.Mocked<MapImageRendererService>
+
+    mockProximityAlertReportDocxService = {
+      build: jest.fn(),
+    } as unknown as jest.Mocked<ProximityAlertReportDocxService>
   })
 
   afterEach(() => {
@@ -40,7 +54,12 @@ describe('CrimeVersionController', () => {
       const res = createMockResponse()
       const next = jest.fn()
       const crimeService = new CrimeService(mockRestClient)
-      const controller = new CrimeVersionController(crimeService, mockPlaywrightBrowserService)
+      const controller = new CrimeVersionController(
+        crimeService,
+        mockPlaywrightBrowserService,
+        mockMapImageRendererService,
+        mockProximityAlertReportDocxService,
+      )
 
       mockRestClient.getCrimeVersion.mockResolvedValue({
         data: {
@@ -173,7 +192,12 @@ describe('CrimeVersionController', () => {
       const res = createMockResponse()
       const next = jest.fn()
       const crimeService = new CrimeService(mockRestClient)
-      const controller = new CrimeVersionController(crimeService, mockPlaywrightBrowserService)
+      const controller = new CrimeVersionController(
+        crimeService,
+        mockPlaywrightBrowserService,
+        mockMapImageRendererService,
+        mockProximityAlertReportDocxService,
+      )
 
       mockRestClient.getCrimeVersion.mockResolvedValue({
         data: {
@@ -234,7 +258,12 @@ describe('CrimeVersionController', () => {
       const res = createMockResponse()
       const next = jest.fn()
       const crimeService = new CrimeService(mockRestClient)
-      const controller = new CrimeVersionController(crimeService, mockPlaywrightBrowserService)
+      const controller = new CrimeVersionController(
+        crimeService,
+        mockPlaywrightBrowserService,
+        mockMapImageRendererService,
+        mockProximityAlertReportDocxService,
+      )
 
       mockRestClient.getCrimeVersion.mockResolvedValue({
         data: {
@@ -296,7 +325,12 @@ describe('CrimeVersionController', () => {
       const res = createMockResponse()
       const next = jest.fn()
       const crimeService = new CrimeService(mockRestClient)
-      const controller = new CrimeVersionController(crimeService, mockPlaywrightBrowserService)
+      const controller = new CrimeVersionController(
+        crimeService,
+        mockPlaywrightBrowserService,
+        mockMapImageRendererService,
+        mockProximityAlertReportDocxService,
+      )
 
       mockRestClient.getCrimeVersion.mockResolvedValue({
         data: {
@@ -372,7 +406,12 @@ describe('CrimeVersionController', () => {
       const res = createMockResponse()
       const next = jest.fn()
       const crimeService = new CrimeService(mockRestClient)
-      const controller = new CrimeVersionController(crimeService, mockPlaywrightBrowserService)
+      const controller = new CrimeVersionController(
+        crimeService,
+        mockPlaywrightBrowserService,
+        mockMapImageRendererService,
+        mockProximityAlertReportDocxService,
+      )
 
       mockRestClient.getCrimeVersion.mockResolvedValue({
         data: {
@@ -401,19 +440,48 @@ describe('CrimeVersionController', () => {
       expect(next).not.toHaveBeenCalled()
     })
 
-    it('should redirect back after a valid export request with selected device ids', async () => {
+    it('should send a docx when the export request is valid', async () => {
       // Given
       const crimeVersionId = '78d41bd9-5450-4bbb-89d4-42ba75659f50'
+      const capturedMapState = JSON.stringify({
+        mapWidthPx: 1200,
+        mapHeightPx: 800,
+        devicePixelRatio: 2,
+        view: {
+          center: [12345, 67890],
+          resolution: 4.5,
+          rotation: 0,
+        },
+      })
+
       const req = createMockRequest({
         params: { crimeVersionId },
+        headers: {
+          cookie: 'connect.sid=fake-session',
+        },
         body: {
           deviceIds: ['1', '2'],
+          capturedMapState,
         },
       })
       const res = createMockResponse()
       const next = jest.fn()
       const crimeService = new CrimeService(mockRestClient)
-      const controller = new CrimeVersionController(crimeService, mockPlaywrightBrowserService)
+      const controller = new CrimeVersionController(
+        crimeService,
+        mockPlaywrightBrowserService,
+        mockMapImageRendererService,
+        mockProximityAlertReportDocxService,
+      )
+
+      const mockBrowser = {} as Awaited<ReturnType<PlaywrightBrowserService['getBrowser']>>
+      const mockImages = {
+        image1Jpg: undefined,
+        image2Jpg: undefined,
+        wearerImage1JpgById: {},
+        wearerImage2JpgById: {},
+      }
+      const docxBuffer = Buffer.from('fake-docx')
 
       mockRestClient.getCrimeVersion.mockResolvedValue({
         data: {
@@ -436,14 +504,41 @@ describe('CrimeVersionController', () => {
         },
       })
 
+      mockPlaywrightBrowserService.getBrowser.mockResolvedValue(mockBrowser)
+      mockMapImageRendererService.render.mockResolvedValue(mockImages)
+      mockProximityAlertReportDocxService.build.mockResolvedValue(docxBuffer)
+
       // When
       await controller.exportProximityAlert(req, res, next)
 
       // Then
-      expect(req.session.exportProximityAlertError).toEqual(
-        'Could not export Proximity Alert report. Please try again.',
+      expect(mockPlaywrightBrowserService.getBrowser).toHaveBeenCalled()
+      expect(mockMapImageRendererService.render).toHaveBeenCalledWith({
+        browser: mockBrowser,
+        pageUrl: `${config.ingressUrl}/proximity-alert/${encodeURIComponent(crimeVersionId)}`,
+        baseUrlForCookies: config.ingressUrl,
+        cookieHeader: 'connect.sid=fake-session',
+        selectedDeviceIds: ['1', '2'],
+        capturedMapState,
+      })
+      expect(mockProximityAlertReportDocxService.build).toHaveBeenCalledWith({
+        crimeVersion: expect.objectContaining({
+          crimeVersionId,
+        }),
+        deviceIds: ['1', '2'],
+        capturedMapState,
+        images: mockImages,
+      })
+      expect(res.setHeader).toHaveBeenCalledWith(
+        'Content-Type',
+        'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
       )
-      expect(res.redirect).toHaveBeenCalledWith(`/proximity-alert/${crimeVersionId}`)
+      expect(res.setHeader).toHaveBeenCalledWith(
+        'Content-Disposition',
+        `attachment; filename="proximity-alert-${crimeVersionId}.docx"`,
+      )
+      expect(res.send).toHaveBeenCalledWith(docxBuffer)
+      expect(res.redirect).not.toHaveBeenCalled()
       expect(next).not.toHaveBeenCalled()
     })
 
@@ -452,12 +547,17 @@ describe('CrimeVersionController', () => {
       const crimeVersionId = '78d41bd9-5450-4bbb-89d4-42ba75659f50'
       const req = createMockRequest({
         params: { crimeVersionId },
-        body: {}, // no deviceIds submitted
+        body: {},
       })
       const res = createMockResponse()
       const next = jest.fn()
       const crimeService = new CrimeService(mockRestClient)
-      const controller = new CrimeVersionController(crimeService, mockPlaywrightBrowserService)
+      const controller = new CrimeVersionController(
+        crimeService,
+        mockPlaywrightBrowserService,
+        mockMapImageRendererService,
+        mockProximityAlertReportDocxService,
+      )
 
       mockRestClient.getCrimeVersion.mockResolvedValue({
         data: {
