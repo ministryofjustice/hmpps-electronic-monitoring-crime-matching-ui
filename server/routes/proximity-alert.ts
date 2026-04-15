@@ -4,10 +4,10 @@ import asyncMiddleware from '../middleware/asyncMiddleware'
 import CrimeSearchController from '../controllers/proximityAlert/crimeSearch'
 import CrimeVersionController from '../controllers/proximityAlert/crimeVersion'
 
-const proximityAlertRoutes = ({ crimeService }: Services): Router => {
+const proximityAlertRoutes = ({ crimeService, playwrightBrowserService }: Services): Router => {
   const router = Router()
   const crimeSearchController = new CrimeSearchController(crimeService)
-  const crimeVersionController = new CrimeVersionController(crimeService)
+  const crimeVersionController = new CrimeVersionController(crimeService, playwrightBrowserService)
 
   router.get('/', asyncMiddleware(crimeSearchController.view))
   router.post('/', asyncMiddleware(crimeSearchController.search))

@@ -9,7 +9,7 @@ export declare module 'express-session' {
     nowInMinutes: number
     formData: unknown
     validationErrors: ValidationResult
-    proximityAlertExportProximityAlertError?: string
+    exportProximityAlertError?: string
     queryId: string
   }
 }
