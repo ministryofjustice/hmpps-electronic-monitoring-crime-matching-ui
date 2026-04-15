@@ -16,11 +16,11 @@
         classes: "govuk-checkboxes--small",
         name: "crime-toggle",
         attributes: {
-          "data-module": 'map-layer-visibility-toggle'
+          "data-module": 'select-all'
         },
         items: [
           {
-            value: "crime",
+            value: "device-wearer-\\d+",
             html: "<strong>" + crimeVersion.crimeReference + "</strong><br>" + "<strong>" + crimeVersion.crimeTypeDescription + "</strong>",
             checked: true
           }

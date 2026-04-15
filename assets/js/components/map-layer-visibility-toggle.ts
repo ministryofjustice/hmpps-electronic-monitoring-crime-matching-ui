@@ -9,7 +9,7 @@ class MapLayerVisibilityToggle extends Component {
     super($root)
 
     // Handle events
-    this.$root.addEventListener('click', event => this.handleClick(event))
+    this.$root.addEventListener('change', event => this.handleChange(event))
 
     this.map = queryElement(document, 'em-map') as EmMap
   }
@@ -26,7 +26,7 @@ class MapLayerVisibilityToggle extends Component {
     }
   }
 
-  handleClick(event: MouseEvent) {
+  handleChange(event: Event) {
     const $clickedInput = event.target
 
     // Ignore clicks on things that aren't checkbox inputs
