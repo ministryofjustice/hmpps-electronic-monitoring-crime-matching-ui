@@ -339,5 +339,76 @@ context('Crime Version', () => {
         })
       })
     })
+
+    it('should hide and show all selected device wearer layers', () => {
+      // When the user loads the page
+      cy.visit(`/proximity-alert/${crimeVersionId}`)
+
+      const page = Page.verifyOnPage(CrimeVersionPage)
+
+      // And the map is ready
+      page.map.mapInstance.then(map => {
+        // And the user hides all device wearer layers
+        page.map.sidebar.crimeToggle.unselect('device-wearer-\\d+')
+
+        // Then the device wearer "include" toggles should be unchecked
+        page.map.sidebar.getDeviceWearerToggles('1').shouldNotBeChecked('device-wearer-1')
+        page.map.sidebar.getDeviceWearerToggles('2').shouldNotBeChecked('device-wearer-2')
+
+        // Then the device wearer layers should be hidden
+        cy.wait(100).then(() => {
+          expect(getLayers(map)).to.deep.eq([
+            { title: 'device-wearer-tracks-1', visible: false },
+            { title: 'device-wearer-labels-1', visible: false },
+            { title: 'device-wearer-circles-1', visible: false },
+            { title: 'device-wearer-positions-1', visible: false },
+            { title: 'device-wearer-tracks-2', visible: false },
+            { title: 'device-wearer-labels-2', visible: false },
+            { title: 'device-wearer-circles-2', visible: false },
+            { title: 'device-wearer-positions-2', visible: false },
+          ])
+        })
+
+        // And the user shows all device wearer layers
+        page.map.sidebar.crimeToggle.select('device-wearer-\\d+')
+
+        // Then the device wearer "include" toggles should be unchecked
+        page.map.sidebar.getDeviceWearerToggles('1').shouldBeChecked('device-wearer-1')
+        page.map.sidebar.getDeviceWearerToggles('2').shouldBeChecked('device-wearer-2')
+
+        // Then the device wearer layers should be shown
+        cy.wait(100).then(() => {
+          expect(getLayers(map)).to.deep.eq([
+            { title: 'device-wearer-tracks-1', visible: false },
+            { title: 'device-wearer-labels-1', visible: true },
+            { title: 'device-wearer-circles-1', visible: true },
+            { title: 'device-wearer-positions-1', visible: true },
+            { title: 'device-wearer-tracks-2', visible: false },
+            { title: 'device-wearer-labels-2', visible: true },
+            { title: 'device-wearer-circles-2', visible: true },
+            { title: 'device-wearer-positions-2', visible: true },
+          ])
+        })
+      })
+    })
+
+    it('should sync the "select all" checkbox with the device wearer "include" checkboxes', () => {
+      // When the user loads the page
+      cy.visit(`/proximity-alert/${crimeVersionId}`)
+
+      const page = Page.verifyOnPage(CrimeVersionPage)
+
+      // And unchecks one of the device wearer "include" layers
+      page.map.sidebar.getDeviceWearerToggles('1').unselect('device-wearer-1')
+
+      // Then the "select all" checkbox should be unchecked
+      page.map.sidebar.crimeToggle.shouldNotBeChecked('device-wearer-\\\\d+')
+
+      // And when the user has selected all of the device wearer "include" layers
+      page.map.sidebar.getDeviceWearerToggles('1').select('device-wearer-1')
+
+      // Then the "select all" checkbox should be checked
+      page.map.sidebar.crimeToggle.shouldBeChecked('device-wearer-\\\\d+')
+    })
   })
 })

@@ -24,7 +24,7 @@ export default class FormCheckboxesComponent {
     this.element.filter(`[value="${value}"]`).should('be.checked')
   }
 
-  shouldNotBeChecked(value) {
+  shouldNotBeChecked(value: string) {
     this.element.filter(`[value="${value}"]`).should('not.be.checked')
   }
 

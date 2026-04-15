@@ -68,7 +68,7 @@ context('Crime Version', () => {
 
       // And the crime version details
       page.map.sidebar.shouldHaveVersionLabel('Latest Version')
-      page.map.sidebar.crimeToggle.shouldBeChecked('crime')
+      page.map.sidebar.crimeToggle.shouldBeChecked('device-wearer-\\\\d+')
       page.map.sidebar.crimeToggle.shouldHaveText('crimeRefAggravated Burglary')
 
       page.map.sidebar.crimeVersionSummaryList.shouldExist()
@@ -118,7 +118,7 @@ context('Crime Version', () => {
 
       // And the crime version details
       page.map.sidebar.shouldHaveVersionLabel('Latest Version')
-      page.map.sidebar.crimeToggle.shouldBeChecked('crime')
+      page.map.sidebar.crimeToggle.shouldBeChecked('device-wearer-\\\\d+')
       page.map.sidebar.crimeToggle.shouldHaveText('crimeRefAggravated Burglary')
 
       page.map.sidebar.crimeVersionSummaryList.shouldExist()
@@ -199,7 +199,7 @@ context('Crime Version', () => {
 
       // And the crime version details
       page.map.sidebar.shouldHaveVersionLabel('Latest Version')
-      page.map.sidebar.crimeToggle.shouldBeChecked('crime')
+      page.map.sidebar.crimeToggle.shouldBeChecked('device-wearer-\\\\d+')
       page.map.sidebar.crimeToggle.shouldHaveText('crimeRefAggravated Burglary')
 
       page.map.sidebar.crimeVersionSummaryList.shouldExist()
