@@ -73,63 +73,60 @@
   })
 }}
 
-<form
-  id="exportProximityAlertForm"
-  method="post"
-   action="{{ exportProximityAlertForm.url }}">
+<form id="exportProximityAlertForm" method="post" action="{{ exportProximityAlertForm.url }}">
   <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
   <input type="hidden" id="capturedMapState" name="capturedMapState" value="" />
 
-<hr class="govuk-section-break govuk-section-break--visible govuk-section-break--m" />
-{% for deviceWearer in crimeVersion.matching.deviceWearers %}
+  <hr class="govuk-section-break govuk-section-break--visible govuk-section-break--m" />
+  {% for deviceWearer in crimeVersion.matching.deviceWearers %}
 
-  {{
-    govukSummaryList({
-      classes: "govuk-summary-list--no-border device-wearer-summary-list govuk-!-margin-bottom-0",
-      rows: [
-        {
-          key: {
-            classes: "govuk-!-static-padding-top-0 govuk-!-static-padding-bottom-1",
-            text: "Name:"
+    {{
+      govukSummaryList({
+        classes: "govuk-summary-list--no-border device-wearer-summary-list govuk-!-margin-bottom-0",
+        rows: [
+          {
+            key: {
+              classes: "govuk-!-static-padding-top-0 govuk-!-static-padding-bottom-1",
+              text: "Name:"
+            },
+            value: {
+              classes: "govuk-!-static-padding-top-0 govuk-!-static-padding-bottom-1",
+              text: deviceWearer.name
+            }
           },
-          value: {
-            classes: "govuk-!-static-padding-top-0 govuk-!-static-padding-bottom-1",
-            text: deviceWearer.name
-          }
-        },
-        {
-          key: {
-            classes: "govuk-!-static-padding-top-0 govuk-!-static-padding-bottom-1",
-            text: "NOMIS ID:"
+          {
+            key: {
+              classes: "govuk-!-static-padding-top-0 govuk-!-static-padding-bottom-1",
+              text: "NOMIS ID:"
+            },
+            value: {
+              classes: "govuk-!-static-padding-top-0 govuk-!-static-padding-bottom-1",
+              text: deviceWearer.nomisId
+            }
           },
-          value: {
-            classes: "govuk-!-static-padding-top-0 govuk-!-static-padding-bottom-1",
-            text: deviceWearer.nomisId
-          }
-        },
-        {
-          key: {
-            classes: "govuk-!-static-padding-top-0 govuk-!-static-padding-bottom-1",
-            text: "ID:"
+          {
+            key: {
+              classes: "govuk-!-static-padding-top-0 govuk-!-static-padding-bottom-1",
+              text: "ID:"
+            },
+            value: {
+              classes: "govuk-!-static-padding-top-0 govuk-!-static-padding-bottom-1",
+              text: deviceWearer.deviceId
+            }
           },
-          value: {
-            classes: "govuk-!-static-padding-top-0 govuk-!-static-padding-bottom-1",
-            text: deviceWearer.deviceId
+          {
+            key: {
+              classes: "govuk-!-static-padding-top-0 govuk-!-static-padding-bottom-1",
+              text: "Count:"
+            },
+            value: {
+              classes: "govuk-!-static-padding-top-0 govuk-!-static-padding-bottom-1",
+              text: deviceWearer.positions.length
+            }
           }
-        },
-        {
-          key: {
-            classes: "govuk-!-static-padding-top-0 govuk-!-static-padding-bottom-1",
-            text: "Count:"
-          },
-          value: {
-            classes: "govuk-!-static-padding-top-0 govuk-!-static-padding-bottom-1",
-            text: deviceWearer.positions.length
-          }
-        }
-      ]
-    })
-  }}
+        ]
+      })
+    }}
 
   {{
     govukCheckboxes({
@@ -157,10 +154,10 @@
     })
   }}
 
-  {% if not loop.last %}
-    <hr class="govuk-section-break govuk-section-break--visible govuk-section-break--m" />
-  {% endif %}
-{% endfor %}
+    {% if not loop.last %}
+      <hr class="govuk-section-break govuk-section-break--visible govuk-section-break--m" />
+    {% endif %}
+  {% endfor %}
 
   <div class="govuk-!-margin-top-4">
     {{
