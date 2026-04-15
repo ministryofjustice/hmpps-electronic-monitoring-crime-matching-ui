@@ -9,6 +9,8 @@ import { createMojAlertWarning } from '../../utils/alerts'
 import type { MojAlert } from '../../types/govUk/mojAlert'
 
 const EXPORT_ERROR_MESSAGE = 'Could not export Proximity Alert report. Please try again.'
+const NO_DEVICE_WEARERS_SELECTED_ERROR_MESSAGE =
+  'Select at least one device wearer to export the Proximity Alert report.'
 const INVALID_EXPORT_REQUEST_ERROR = 'Invalid export request.'
 
 export default class CrimeVersionController {
@@ -25,7 +27,9 @@ export default class CrimeVersionController {
 
       const alerts: Array<MojAlert> = []
       if (exportError) {
-        alerts.push(createMojAlertWarning(exportError))
+        const alert = createMojAlertWarning(exportError)
+        alert.dismissible = true
+        alerts.push(alert)
       }
 
       res.render('pages/proximityAlert/crimeVersion', {
@@ -69,19 +73,19 @@ export default class CrimeVersionController {
         return res.redirect(`/proximity-alert/${encodeURIComponent(crimeVersionId)}`)
       }
 
-      const crimeVersion = result.data
       const { deviceIds } = formData.data
 
-      const allDeviceIds = crimeVersion.matching?.deviceWearers.map(deviceWearer => String(deviceWearer.deviceId)) ?? []
-
-      const selectedDeviceIds = deviceIds.length > 0 ? deviceIds : allDeviceIds
+      if (deviceIds.length === 0) {
+        req.session.proximityAlertExportProximityAlertError = NO_DEVICE_WEARERS_SELECTED_ERROR_MESSAGE
+        return res.redirect(`/proximity-alert/${encodeURIComponent(crimeVersionId)}`)
+      }
 
       logger.info(
         {
           crimeVersionId,
-          selectedDeviceIds,
+          deviceIds,
         },
-        'Bootstrapped proximity alert export request',
+        'Accepted proximity alert export request',
       )
 
       req.session.proximityAlertExportProximityAlertError = EXPORT_ERROR_MESSAGE
