@@ -3,6 +3,7 @@ import type { Services } from '../services'
 import asyncMiddleware from '../middleware/asyncMiddleware'
 import PoliceDataDashboardController from '../controllers/policeData/dashboard'
 import PoliceDataIngestionAttemptController from '../controllers/policeData/ingestionAttempt'
+import populateBackLink from '../middleware/populateBackLink'
 
 const policeDataRoutes = ({ crimeMatchingResultsService, policeDataService }: Services): Router => {
   const router = Router()
@@ -16,7 +17,11 @@ const policeDataRoutes = ({ crimeMatchingResultsService, policeDataService }: Se
   router.post('/dashboard', asyncMiddleware(policeDataDashboardController.search))
   router.get('/dashboard/export', asyncMiddleware(policeDataDashboardController.export))
 
-  router.get('/ingestion-attempts/:ingestionAttemptId', asyncMiddleware(policeDataIngestionAttemptController.view))
+  router.get(
+    '/ingestion-attempts/:ingestionAttemptId',
+    populateBackLink('/police-data/dashboard'),
+    asyncMiddleware(policeDataIngestionAttemptController.view),
+  )
   router.get(
     '/ingestion-attempts/:ingestionAttemptId/export',
     asyncMiddleware(policeDataIngestionAttemptController.export),

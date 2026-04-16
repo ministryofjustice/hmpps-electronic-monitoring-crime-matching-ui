@@ -149,11 +149,19 @@ context('Search Crimes', () => {
       page.dataTable
         .cell(0, 1)
         .find('a')
-        .should('have.attr', 'href', '/proximity-alert/b06a517b-666b-4052-8bdc-b735e022c7c5')
+        .should(
+          'have.attr',
+          'href',
+          '/proximity-alert/b06a517b-666b-4052-8bdc-b735e022c7c5?returnTo=%2Fproximity-alert%3FcrimeReference%3Dabc',
+        )
       page.dataTable
         .cell(1, 1)
         .find('a')
-        .should('have.attr', 'href', '/proximity-alert/fe1592c0-dc78-46c3-88cd-144f1f1ec022')
+        .should(
+          'have.attr',
+          'href',
+          '/proximity-alert/fe1592c0-dc78-46c3-88cd-144f1f1ec022?returnTo=%2Fproximity-alert%3FcrimeReference%3Dabc',
+        )
     })
 
     it('should show allow the user to navigate to other pages in the result set', () => {
