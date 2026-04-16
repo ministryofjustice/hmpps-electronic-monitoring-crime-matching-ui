@@ -1,6 +1,6 @@
 .map-container {
   @media #{govuk-from-breakpoint(desktop)} {
-    padding: 0;
+    padding: 0 15px 0 0;
     margin: 0;
   }
 
@@ -12,15 +12,22 @@
     }
 
     .govuk-grid-column-three-quarters-from-desktop {
-      height: calc(100vh - 70px - 55px);
+      height: calc(100vh - 70px - 55px - 50px);
 
       @media #{govuk-from-breakpoint(desktop)} {
         padding-left: 0;
+        padding-right: 0;
       }
     }
   }
 
   .app-map {
+    > .govuk-grid-row {
+      @media #{govuk-from-breakpoint(desktop)} {
+        border-top: 1px solid govuk-functional-colour(border);
+      }
+    }
+
     .app-map__error {
       position: absolute;
       margin: 5px 60px;
@@ -29,7 +36,7 @@
 
     .app-map__sidebar {
       overflow-y: auto;
-      max-height: calc(100vh - 70px - 55px);
+      max-height: calc(100vh - 70px - 55px - 50px);
 
       .govuk-tabs {
         @media #{govuk-from-breakpoint(desktop)} {

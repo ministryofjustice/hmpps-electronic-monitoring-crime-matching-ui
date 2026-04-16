@@ -1,5 +1,6 @@
 {% extends "../../partials/layout.njk" %}
 {% from "../../components/map/macro.njk" import appMap %}
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
 {% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
 {% from "govuk/components/tabs/macro.njk" import govukTabs %}
 
@@ -12,6 +13,17 @@
 {% set reportsHtml %}
   {%- include "./partials/reports.njk" -%}
 {% endset %}
+
+{% block beforeContent %}
+  <div class="govuk-!-static-padding-left-4">
+    {{
+      govukBackLink({
+        text: "Back",
+        href: backLink
+      })
+    }}
+  </div>
+{% endblock %}
 
 
 {% set analysisHtml %}
