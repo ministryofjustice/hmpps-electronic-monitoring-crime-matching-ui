@@ -43,6 +43,10 @@ export default class MapSidebarComponent {
     return new SummaryListComponent('.crime-version-summary-list')
   }
 
+  get viewOnMapLink() {
+    return this.element.get('.govuk-link').contains('View on map')
+  }
+
   get versionLabel() {
     return this.element.get('.govuk-tag')
   }
