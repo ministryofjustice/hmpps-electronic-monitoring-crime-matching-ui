@@ -5,6 +5,7 @@ import SearchDeviceActivationPositionsFormComponent from './forms/searchDeviceAc
 import ExportLocationDataFormComponent from './forms/exportLocationDataForm'
 import FormCheckboxesComponent from './formCheckboxesComponent'
 import SummaryListComponent from './summaryListComponent'
+import ExportProximityAlertFormComponent from './forms/exportProximityAlertForm'
 
 export default class MapSidebarComponent {
   private elementCacheId: string = uuidv4()
@@ -57,6 +58,10 @@ export default class MapSidebarComponent {
 
   get exportForm(): ExportLocationDataFormComponent {
     return new ExportLocationDataFormComponent()
+  }
+
+  get exportProximityAlertForm(): ExportProximityAlertFormComponent {
+    return new ExportProximityAlertFormComponent()
   }
 
   // HELPERS
