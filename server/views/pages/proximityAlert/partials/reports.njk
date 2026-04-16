@@ -128,31 +128,31 @@
       })
     }}
 
-  {{
-    govukCheckboxes({
-      id: 'device-wearer-toggle-' + deviceWearer.deviceId,
-      classes: "govuk-checkboxes--small",
-      name: "device-wearer-toggle-" + deviceWearer.deviceId,
-      attributes: {
-        "data-module": 'map-layer-visibility-toggle'
-      },
-      items: [
-        {
-          id: 'device-wearer-tracks-' + deviceWearer.deviceId,
-          text: "Show tracks",
-          name: 'device-wearer-tracks',
-          value: 'device-wearer-tracks-' + deviceWearer.deviceId
+    {{
+      govukCheckboxes({
+        id: 'device-wearer-toggle-' + deviceWearer.deviceId,
+        classes: "govuk-checkboxes--small",
+        name: "device-wearer-toggle-" + deviceWearer.deviceId,
+        attributes: {
+          "data-module": 'map-layer-visibility-toggle'
         },
-        {
-          id: 'device-wearer-' + deviceWearer.deviceId,
-          value: 'device-wearer-' + deviceWearer.deviceId,
-          text: "Include",
-          name: 'device-wearer-toggle',
-          checked: true
-        }
-      ]
-    })
-  }}
+        items: [
+          {
+            id: 'device-wearer-tracks-' + deviceWearer.deviceId,
+            text: "Show tracks",
+            name: 'device-wearer-tracks',
+            value: 'device-wearer-tracks-' + deviceWearer.deviceId
+          },
+          {
+            id: 'device-wearer-' + deviceWearer.deviceId,
+            value: 'device-wearer-' + deviceWearer.deviceId,
+            text: "Include",
+            name: 'device-wearer-toggle',
+            checked: true
+          }
+        ]
+      })
+    }}
 
     {% if not loop.last %}
       <hr class="govuk-section-break govuk-section-break--visible govuk-section-break--m" />
