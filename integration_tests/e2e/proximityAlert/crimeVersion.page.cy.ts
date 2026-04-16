@@ -78,6 +78,9 @@ context('Crime Version', () => {
 
       // And the device wearer details
       page.map.sidebar.shouldHaveDeviceWearer('deviceName', 'nomisId', '1', '1')
+
+      // And the backlink should have the default value
+      page.backLink.should('have.attr', 'href', '/proximity-alert')
     })
 
     it('should display a map showing crime version data with no matches', () => {
@@ -103,7 +106,7 @@ context('Crime Version', () => {
       })
 
       // When the user loads the page
-      cy.visit(`/proximity-alert/${crimeVersionId}`)
+      cy.visit(`/proximity-alert/${crimeVersionId}?returnTo=%2Fproximity-alert%3FcrimeReference%3DCHS`)
 
       const page = Page.verifyOnPage(CrimeVersionPage)
 
@@ -128,6 +131,9 @@ context('Crime Version', () => {
 
       // And no device wearer details
       page.map.sidebar.shouldNotHaveDeviceWearer()
+
+      // And the backlink should have the returnTo value
+      page.backLink.should('have.attr', 'href', '/proximity-alert?crimeReference=CHS')
     })
 
     it('should display a map showing crime version data with multiple matches', () => {
