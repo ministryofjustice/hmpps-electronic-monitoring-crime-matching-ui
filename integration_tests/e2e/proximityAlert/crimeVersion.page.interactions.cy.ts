@@ -1,6 +1,7 @@
 /* eslint-disable cypress/no-unnecessary-waiting */
 import Map from 'ol/Map'
 import BaseLayer from 'ol/layer/Base'
+import { transform } from 'ol/proj'
 import Page from '../../pages/page'
 import CrimeVersionPage from '../../pages/proximityAlert/crimeVersion'
 
@@ -42,8 +43,8 @@ context('Crime Version', () => {
             crimeDateTimeFrom: '2025-01-01T00:00:00Z',
             crimeDateTimeTo: '2025-01-01T01:00:00Z',
             crimeText: 'crimeText',
-            longitude: 0,
-            latitude: 0,
+            longitude: -2.528865717,
+            latitude: 53.43157277,
             versionLabel: 'Latest Version',
             matching: {
               deviceWearers: [
@@ -53,8 +54,8 @@ context('Crime Version', () => {
                   nomisId: 'nomisId',
                   positions: [
                     {
-                      latitude: 0,
-                      longitude: 0,
+                      longitude: -2.528865717,
+                      latitude: 53.43157277,
                       sequenceLabel: 'A1',
                       confidence: 10,
                       capturedDateTime: '2025-01-01T00:00',
@@ -67,8 +68,8 @@ context('Crime Version', () => {
                   nomisId: 'nomisId',
                   positions: [
                     {
-                      latitude: 0,
-                      longitude: 0,
+                      longitude: -2.528865717,
+                      latitude: 53.43157277,
                       sequenceLabel: 'A1',
                       confidence: 10,
                       capturedDateTime: '2025-01-01T00:00',
@@ -355,7 +356,7 @@ context('Crime Version', () => {
         page.map.sidebar.deviceWearerToggles.shouldNotBeChecked('device-wearer-1')
         page.map.sidebar.deviceWearerToggles.shouldNotBeChecked('device-wearer-2')
 
-        // Then the device wearer layers should be hidden
+        // And the device wearer layers should be hidden
         cy.wait(100).then(() => {
           expect(getLayers(map)).to.deep.eq([
             { title: 'device-wearer-tracks-1', visible: false },
@@ -376,7 +377,7 @@ context('Crime Version', () => {
         page.map.sidebar.deviceWearerToggles.shouldBeChecked('device-wearer-1')
         page.map.sidebar.deviceWearerToggles.shouldBeChecked('device-wearer-2')
 
-        // Then the device wearer layers should be shown
+        // And the device wearer layers should be shown
         cy.wait(100).then(() => {
           expect(getLayers(map)).to.deep.eq([
             { title: 'device-wearer-tracks-1', visible: false },
@@ -409,6 +410,32 @@ context('Crime Version', () => {
 
       // Then the "select all" checkbox should be checked
       page.map.sidebar.crimeToggle.shouldBeChecked('device-wearer-toggle')
+    })
+
+    it('should focus the map to the crime radius', () => {
+      // When the user loads the page
+      cy.visit(`/proximity-alert/${crimeVersionId}`)
+
+      const page = Page.verifyOnPage(CrimeVersionPage)
+
+      // And the map is ready
+      page.map.mapInstance.then(map => {
+        // Then the map should start zoomed out
+        expect(map.getView().getZoom()).to.eq(16.5)
+
+        // And when the user click the "view on map" link
+        page.map.sidebar.viewOnMapLink.click()
+
+        // The fit transition takes 500ms to should definitely be complete after 600ms
+        cy.wait(600).then(() => {
+          // Then the map should be focused on the crime
+          const centre = transform(map.getView().getCenter()!, 'EPSG:3857', 'EPSG:4326')
+
+          expect(centre[0]).to.be.closeTo(-2.528865717, 0.0000001)
+          expect(centre[1]).to.be.closeTo(53.43157277, 0.0000001)
+          expect(map.getView().getZoom()).to.be.closeTo(18.1, 0.1)
+        })
+      })
     })
   })
 })
