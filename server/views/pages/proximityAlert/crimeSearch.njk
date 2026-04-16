@@ -13,7 +13,11 @@
 
 {% for crime in crimes %}
   {% set link %}
-    <a href="/proximity-alert/{{ crime.crimeVersionId }}"> {{ crime.crimeReference }} </a>
+    <a
+      href="/proximity-alert/{{ crime.crimeVersionId }}?returnTo={{ ('/proximity-alert?' ~ paginationHrefPrefix) | urlencode }}"
+    >
+      {{ crime.crimeReference }}
+    </a>
   {% endset %}
 
 
