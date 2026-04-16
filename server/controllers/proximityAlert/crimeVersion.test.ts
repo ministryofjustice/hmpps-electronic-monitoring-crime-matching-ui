@@ -440,7 +440,8 @@ describe('CrimeVersionController', () => {
       const req = createMockRequest({
         params: { crimeVersionId },
         body: {
-          deviceIds: 123,
+          'device-wearer-toggle': ['device-wearer-1'],
+          capturedMapState: '{invalid-json}',
         },
       })
       const res = createMockResponse()
@@ -501,7 +502,7 @@ describe('CrimeVersionController', () => {
           cookie: 'connect.sid=fake-session',
         },
         body: {
-          deviceIds: ['1', '2'],
+          'device-wearer-toggle': ['device-wearer-1', 'device-wearer-2'],
           capturedMapState,
         },
       })

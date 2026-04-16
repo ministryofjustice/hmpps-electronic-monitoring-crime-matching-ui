@@ -18,6 +18,25 @@ const NO_DEVICE_WEARERS_SELECTED_ERROR_MESSAGE =
   'Select at least one device wearer to export the Proximity Alert report.'
 const INVALID_EXPORT_REQUEST_ERROR = 'Invalid export request.'
 
+function parseFormStringArray(value: unknown): string[] {
+  if (Array.isArray(value)) {
+    return value.map(item => String(item).trim()).filter(Boolean)
+  }
+
+  if (typeof value === 'string') {
+    const trimmed = value.trim()
+    return trimmed ? [trimmed] : []
+  }
+
+  return []
+}
+
+function parseDeviceIdsFromDeviceWearerToggle(value: unknown): string[] {
+  return parseFormStringArray(value)
+    .map(item => item.match(/^device-wearer-(.+)$/)?.[1])
+    .filter((deviceId): deviceId is string => Boolean(deviceId))
+}
+
 export default class CrimeVersionController {
   constructor(
     private readonly crimeService: CrimeService,
@@ -65,7 +84,12 @@ export default class CrimeVersionController {
       const result = await this.crimeService.getCrimeVersion(username, crimeVersionId)
 
       if (result.ok) {
-        const formData = exportProximityAlertFormSchema.safeParse(req.body)
+        const normalisedFormData = {
+          deviceIds: parseDeviceIdsFromDeviceWearerToggle(req.body['device-wearer-toggle']),
+          capturedMapState: req.body.capturedMapState,
+        }
+
+        const formData = exportProximityAlertFormSchema.safeParse(normalisedFormData)
 
         if (!formData.success) {
           logger.warn(
