@@ -1,6 +1,7 @@
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 {% from "govuk/components/tag/macro.njk" import govukTag %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "moj/components/alert/macro.njk" import mojAlert %}
 
 {{
   govukTag({
@@ -73,97 +74,113 @@
   })
 }}
 
-<form id="exportProximityAlertForm" method="post" action="{{ exportProximityAlertForm.url }}">
-  <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
-  <input type="hidden" id="capturedMapState" name="capturedMapState" value="" />
-
-  <hr class="govuk-section-break govuk-section-break--visible govuk-section-break--m" />
-  {% for deviceWearer in crimeVersion.matching.deviceWearers %}
-
-    {{
-      govukSummaryList({
-        classes: "govuk-summary-list--no-border device-wearer-summary-list govuk-!-margin-bottom-0",
-        rows: [
-          {
-            key: {
-              classes: "govuk-!-static-padding-top-0 govuk-!-static-padding-bottom-1",
-              text: "Name:"
+<hr class="govuk-section-break govuk-section-break--visible govuk-section-break--m" />
+{% if not crimeVersion.matching %}
+  {{
+    mojAlert({
+      variant: "warning",
+      title: "Matching for this crime has not occurred yet.",
+      showTitleAsHeading: false,
+      dismissible: false
+    })
+  }}
+{% elif crimeVersion.matching.deviceWearers | length == 0 %}
+  {{
+    mojAlert({
+      variant: "information",
+      title: "No devices were matched to this crime.",
+      showTitleAsHeading: false,
+      dismissible: false
+    })
+  }}
+{% else %}
+  <form id="exportProximityAlertForm" method="post" action="{{ exportProximityAlertForm.url }}">
+    <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+    <input type="hidden" id="capturedMapState" name="capturedMapState" value="" />
+    {% for deviceWearer in crimeVersion.matching.deviceWearers %}
+      {{
+        govukSummaryList({
+          classes: "govuk-summary-list--no-border device-wearer-summary-list govuk-!-margin-bottom-0",
+          rows: [
+            {
+              key: {
+                classes: "govuk-!-static-padding-top-0 govuk-!-static-padding-bottom-1",
+                text: "Name:"
+              },
+              value: {
+                classes: "govuk-!-static-padding-top-0 govuk-!-static-padding-bottom-1",
+                text: deviceWearer.name
+              }
             },
-            value: {
-              classes: "govuk-!-static-padding-top-0 govuk-!-static-padding-bottom-1",
-              text: deviceWearer.name
-            }
-          },
-          {
-            key: {
-              classes: "govuk-!-static-padding-top-0 govuk-!-static-padding-bottom-1",
-              text: "NOMIS ID:"
+            {
+              key: {
+                classes: "govuk-!-static-padding-top-0 govuk-!-static-padding-bottom-1",
+                text: "NOMIS ID:"
+              },
+              value: {
+                classes: "govuk-!-static-padding-top-0 govuk-!-static-padding-bottom-1",
+                text: deviceWearer.nomisId
+              }
             },
-            value: {
-              classes: "govuk-!-static-padding-top-0 govuk-!-static-padding-bottom-1",
-              text: deviceWearer.nomisId
-            }
-          },
-          {
-            key: {
-              classes: "govuk-!-static-padding-top-0 govuk-!-static-padding-bottom-1",
-              text: "ID:"
+            {
+              key: {
+                classes: "govuk-!-static-padding-top-0 govuk-!-static-padding-bottom-1",
+                text: "ID:"
+              },
+              value: {
+                classes: "govuk-!-static-padding-top-0 govuk-!-static-padding-bottom-1",
+                text: deviceWearer.deviceId
+              }
             },
-            value: {
-              classes: "govuk-!-static-padding-top-0 govuk-!-static-padding-bottom-1",
-              text: deviceWearer.deviceId
+            {
+              key: {
+                classes: "govuk-!-static-padding-top-0 govuk-!-static-padding-bottom-1",
+                text: "Count:"
+              },
+              value: {
+                classes: "govuk-!-static-padding-top-0 govuk-!-static-padding-bottom-1",
+                text: deviceWearer.positions.length
+              }
             }
+          ]
+        })
+      }}
+
+      {{
+        govukCheckboxes({
+          id: 'device-wearer-toggle-' + deviceWearer.deviceId,
+          classes: "govuk-checkboxes--small",
+          name: "device-wearer-toggle-" + deviceWearer.deviceId,
+          attributes: {
+            "data-module": 'map-layer-visibility-toggle'
           },
-          {
-            key: {
-              classes: "govuk-!-static-padding-top-0 govuk-!-static-padding-bottom-1",
-              text: "Count:"
+          items: [
+            {
+              id: 'device-wearer-tracks-' + deviceWearer.deviceId,
+              text: "Show tracks",
+              name: 'device-wearer-tracks',
+              value: 'device-wearer-tracks-' + deviceWearer.deviceId
             },
-            value: {
-              classes: "govuk-!-static-padding-top-0 govuk-!-static-padding-bottom-1",
-              text: deviceWearer.positions.length
+            {
+              id: 'device-wearer-' + deviceWearer.deviceId,
+              value: 'device-wearer-' + deviceWearer.deviceId,
+              text: "Include",
+              name: 'device-wearer-toggle',
+              checked: true
             }
-          }
-        ]
-      })
-    }}
-
-    {{
-      govukCheckboxes({
-        id: 'device-wearer-toggle-' + deviceWearer.deviceId,
-        classes: "govuk-checkboxes--small",
-        name: "device-wearer-toggle-" + deviceWearer.deviceId,
-        attributes: {
-          "data-module": 'map-layer-visibility-toggle'
-        },
-        items: [
-          {
-            id: 'device-wearer-tracks-' + deviceWearer.deviceId,
-            text: "Show tracks",
-            name: 'device-wearer-tracks',
-            value: 'device-wearer-tracks-' + deviceWearer.deviceId
-          },
-          {
-            id: 'device-wearer-' + deviceWearer.deviceId,
-            value: 'device-wearer-' + deviceWearer.deviceId,
-            text: "Include",
-            name: 'device-wearer-toggle',
-            checked: true
-          }
-        ]
-      })
-    }}
-
-    {% if not loop.last %}
-      <hr class="govuk-section-break govuk-section-break--visible govuk-section-break--m" />
-    {% endif %}
-  {% endfor %}
-
-  <div class="govuk-!-margin-top-4">
-    {{
-      govukButton({
-        text: "Export proximity alert"
-      })
-    }}
-  </div>
-</form>
+          ]
+        })
+      }}
+      {% if not loop.last %}
+        <hr class="govuk-section-break govuk-section-break--visible govuk-section-break--m" />
+      {% endif %}
+    {% endfor %}
+    <div class="govuk-!-margin-top-4">
+      {{
+        govukButton({
+          text: "Export proximity alert"
+        })
+      }}
+    </div>
+  </form>
+{% endif %}
