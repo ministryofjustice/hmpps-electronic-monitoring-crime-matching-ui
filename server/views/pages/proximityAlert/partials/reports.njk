@@ -16,11 +16,11 @@
         classes: "govuk-checkboxes--small",
         name: "crime-toggle",
         attributes: {
-          "data-module": 'map-layer-visibility-toggle'
+          "data-module": 'select-all'
         },
         items: [
           {
-            value: "crime",
+            value: "device-wearer-toggle",
             html: "<strong>" + crimeVersion.crimeReference + "</strong><br>" + "<strong>" + crimeVersion.crimeTypeDescription + "</strong>",
             checked: true
           }
@@ -135,12 +135,14 @@
         {
           id: 'device-wearer-tracks-' + deviceWearer.deviceId,
           text: "Show tracks",
+          name: 'device-wearer-tracks',
           value: 'device-wearer-tracks-' + deviceWearer.deviceId
         },
         {
           id: 'device-wearer-' + deviceWearer.deviceId,
           value: 'device-wearer-' + deviceWearer.deviceId,
           text: "Include",
+          name: 'device-wearer-toggle',
           checked: true
         }
       ]
