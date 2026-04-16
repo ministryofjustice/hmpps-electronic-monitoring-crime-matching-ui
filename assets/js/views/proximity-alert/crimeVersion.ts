@@ -5,6 +5,7 @@ import { queryElement } from '../../utils/utils'
 import CrimeLayer from './layers/crime'
 import DeviceWearerLayer from './layers/deviceWearer'
 import { CrimePosition, WearerPosition } from './types'
+import initialiseProximityAlertForm from '../../forms/proximity-alert'
 
 type ProximityAlertMapPosition = WearerPosition | CrimePosition
 
@@ -84,6 +85,8 @@ const initialiseProximityAlertView = async () => {
       composed: true,
     }),
   )
+
+  initialiseProximityAlertForm()
 }
 
 export default initialiseProximityAlertView
