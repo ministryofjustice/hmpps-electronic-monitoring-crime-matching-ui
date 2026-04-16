@@ -114,7 +114,7 @@ context('Crime Version', () => {
 
       // Then the page should display the map and sidebar components
       page.map.shouldExist()
-      page.map.shouldHaveAlert('warning', 'No devices were matched to this crime.')
+      page.map.shouldHaveAlert('information', 'No devices were matched to this crime.')
       page.map.sidebar.shouldExist()
       page.map.sidebar.shouldHaveProximityTabs()
       page.map.sidebar.reportsTab.shouldBeActive()
