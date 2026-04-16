@@ -44,7 +44,7 @@ export default class MapSidebarComponent {
   }
 
   get viewOnMapLink() {
-    return this.element.get('.govuk-link')
+    return this.element.get('.govuk-link').contains('View on map')
   }
 
   get versionLabel() {
