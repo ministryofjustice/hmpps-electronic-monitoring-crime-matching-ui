@@ -55,7 +55,7 @@ const setCrimeDefaultView = (emMap: EmMap, centre: Coordinate) => {
   map.getView().setZoom(16.5)
 }
 
-const restoreCheckboxLayerState = () => {
+const applyCheckboxLayerState = () => {
   const selectors = [
     'input[type="checkbox"][name="device-wearer-toggle"]',
     'input[type="checkbox"][name="device-wearer-tracks"]',
@@ -101,7 +101,7 @@ const isValidCapturedMapState = (parsedMapState: unknown): parsedMapState is Cap
 }
 
 // Attempt to read captured map state from hidden input field
-const getRestoredCapturedMapState = (): CapturedMapState | undefined => {
+const getCapturedMapState = (): CapturedMapState | undefined => {
   const mapStateInput = document.querySelector<HTMLInputElement>('#capturedMapState')
   if (!mapStateInput) return undefined
 
@@ -172,9 +172,9 @@ const initialiseProximityAlertView = async () => {
     }),
   )
 
-  restoreCheckboxLayerState()
+  applyCheckboxLayerState()
 
-  const capturedMapState = getRestoredCapturedMapState()
+  const capturedMapState = getCapturedMapState()
   if (capturedMapState) {
     applyCapturedMapState(emMap, capturedMapState)
   }
