@@ -22,6 +22,7 @@ context('Crime Version', () => {
           data: {
             crimeVersionId,
             crimeReference: 'crimeRef',
+            batchId: 'batch1',
             crimeTypeDescription: 'Aggravated Burglary',
             crimeTypeId: 'AB',
             crimeDateTimeFrom: '2025-01-01T00:00:00Z',
@@ -89,6 +90,7 @@ context('Crime Version', () => {
           data: {
             crimeVersionId,
             crimeReference: 'crimeRef',
+            batchId: 'batch1',
             crimeTypeDescription: 'Aggravated Burglary',
             crimeTypeId: 'AB',
             crimeDateTimeFrom: '2025-01-01T00:00:00Z',
@@ -139,6 +141,7 @@ context('Crime Version', () => {
           data: {
             crimeVersionId,
             crimeReference: 'crimeRef',
+            batchId: 'batch1',
             crimeTypeDescription: 'Aggravated Burglary',
             crimeTypeId: 'AB',
             crimeDateTimeFrom: '2025-01-01T00:00:00Z',
