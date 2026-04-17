@@ -8,7 +8,7 @@
 {% set containerClasses = "govuk-full-width-container-no-gutter" %}
 {% set mainClasses = "app-container govuk-body map-container proximity-alert" %}
 {% set activeLinkId = "proximity-alert" %}
-
+{% set hasMatchedDeviceWearers = crimeVersion.matching and (crimeVersion.matching.deviceWearers | length > 0) %}
 
 {% set reportsHtml %}
   {%- include "./partials/reports.njk" -%}
@@ -25,7 +25,6 @@
   </div>
 {% endblock %}
 
-
 {% set analysisHtml %}
   {{
     govukCheckboxes({
@@ -39,20 +38,19 @@
         {
           value: "device-wearer-circles-",
           text: "Show confidence circles",
-          checked: true
+          checked: exportProximityAlertForm.showConfidenceCircles != false
         },
         {
           value: "device-wearer-labels-",
           text: "Show location numbering",
-          checked: true
+          checked: exportProximityAlertForm.showLocationNumbering != false
         }
       ]
     })
   }}
 {% endset %}
 
-
-{% set sidebarHtml %}
+{% set tabsHtml %}
   {{
     govukTabs({
       items: [
@@ -73,6 +71,18 @@
       ]
     })
   }}
+{% endset %}
+
+{% set sidebarHtml %}
+  {% if hasMatchedDeviceWearers %}
+    <form id="exportProximityAlertForm" method="post" action="{{ exportProximityAlertForm.url }}">
+      <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+      <input type="hidden" id="capturedMapState" name="capturedMapState" value="{{ exportProximityAlertForm.capturedMapState or '' }}" />
+      {{ tabsHtml | safe }}
+    </form>
+  {% else %}
+    {{ tabsHtml | safe }}
+  {% endif %}
 {% endset %}
 
 {% block content %}

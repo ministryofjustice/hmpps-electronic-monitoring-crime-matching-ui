@@ -44,6 +44,22 @@ const setCrimeDefaultView = (emMap: EmMap, centre: Coordinate) => {
   map.getView().setZoom(16.5)
 }
 
+const restoreCheckboxLayerState = () => {
+  const selectors = [
+    'input[type="checkbox"][name="device-wearer-toggle"]',
+    'input[type="checkbox"][name="device-wearer-tracks"]',
+    'input[type="checkbox"][name="analysis-toggles"]',
+  ]
+
+  for (const selector of selectors) {
+    const checkboxes = document.querySelectorAll<HTMLInputElement>(selector)
+
+    for (const checkbox of checkboxes) {
+      checkbox.dispatchEvent(new Event('change', { bubbles: true }))
+    }
+  }
+}
+
 const initialiseProximityAlertView = async () => {
   const emMap = queryElement(document, 'em-map') as EmMap
 
@@ -86,6 +102,7 @@ const initialiseProximityAlertView = async () => {
     }),
   )
 
+  restoreCheckboxLayerState()
   initialiseProximityAlertForm()
 }
 

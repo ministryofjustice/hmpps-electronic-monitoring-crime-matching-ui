@@ -197,6 +197,11 @@ describe('CrimeVersionController', () => {
         ],
         exportProximityAlertForm: {
           url: '/proximity-alert/78d41bd9-5450-4bbb-89d4-42ba75659f50/export-proximity-alert',
+          selectedDeviceIds: undefined,
+          selectedTrackDeviceIds: undefined,
+          showConfidenceCircles: undefined,
+          showLocationNumbering: undefined,
+          capturedMapState: undefined,
         },
       })
     })
@@ -271,6 +276,11 @@ describe('CrimeVersionController', () => {
         ],
         exportProximityAlertForm: {
           url: '/proximity-alert/78d41bd9-5450-4bbb-89d4-42ba75659f50/export-proximity-alert',
+          selectedDeviceIds: undefined,
+          selectedTrackDeviceIds: undefined,
+          showConfidenceCircles: undefined,
+          showLocationNumbering: undefined,
+          capturedMapState: undefined,
         },
       })
     })
@@ -345,6 +355,11 @@ describe('CrimeVersionController', () => {
         ],
         exportProximityAlertForm: {
           url: '/proximity-alert/78d41bd9-5450-4bbb-89d4-42ba75659f50/export-proximity-alert',
+          selectedDeviceIds: undefined,
+          selectedTrackDeviceIds: undefined,
+          showConfidenceCircles: undefined,
+          showLocationNumbering: undefined,
+          capturedMapState: undefined,
         },
       })
     })
@@ -353,7 +368,23 @@ describe('CrimeVersionController', () => {
       // Given
       const crimeVersionId = '78d41bd9-5450-4bbb-89d4-42ba75659f50'
       const req = createMockRequest({ params: { crimeVersionId } })
-      req.session.exportProximityAlertError = 'Invalid export request.'
+      req.session.exportProximityAlertState = {
+        error: 'Invalid export request.',
+        selectedDeviceIds: ['1'],
+        selectedTrackDeviceIds: ['1'],
+        showConfidenceCircles: false,
+        showLocationNumbering: true,
+        capturedMapState: JSON.stringify({
+          mapWidthPx: 1200,
+          mapHeightPx: 800,
+          devicePixelRatio: 2,
+          view: {
+            center: [12345, 67890],
+            resolution: 4.5,
+            rotation: 0,
+          },
+        }),
+      }
       const res = createMockResponse()
       const next = jest.fn()
       const crimeService = new CrimeService(mockRestClient)
@@ -427,9 +458,23 @@ describe('CrimeVersionController', () => {
         ],
         exportProximityAlertForm: {
           url: '/proximity-alert/78d41bd9-5450-4bbb-89d4-42ba75659f50/export-proximity-alert',
+          selectedDeviceIds: ['1'],
+          selectedTrackDeviceIds: ['1'],
+          showConfidenceCircles: false,
+          showLocationNumbering: true,
+          capturedMapState: JSON.stringify({
+            mapWidthPx: 1200,
+            mapHeightPx: 800,
+            devicePixelRatio: 2,
+            view: {
+              center: [12345, 67890],
+              resolution: 4.5,
+              rotation: 0,
+            },
+          }),
         },
       })
-      expect(req.session.exportProximityAlertError).toBeUndefined()
+      expect(req.session.exportProximityAlertState).toBeUndefined()
     })
   })
 
@@ -441,6 +486,8 @@ describe('CrimeVersionController', () => {
         params: { crimeVersionId },
         body: {
           'device-wearer-toggle': ['device-wearer-1'],
+          'device-wearer-tracks': ['device-wearer-tracks-1'],
+          'analysis-toggles': ['device-wearer-labels-'],
           capturedMapState: '{invalid-json}',
         },
       })
@@ -477,7 +524,14 @@ describe('CrimeVersionController', () => {
       await controller.exportProximityAlert(req, res, next)
 
       // Then
-      expect(req.session.exportProximityAlertError).toEqual('Invalid export request.')
+      expect(req.session.exportProximityAlertState).toEqual({
+        error: 'Invalid export request.',
+        selectedDeviceIds: ['1'],
+        selectedTrackDeviceIds: ['1'],
+        showConfidenceCircles: false,
+        showLocationNumbering: true,
+        capturedMapState: '{invalid-json}',
+      })
       expect(res.redirect).toHaveBeenCalledWith(`/proximity-alert/${crimeVersionId}`)
       expect(next).not.toHaveBeenCalled()
     })
@@ -503,6 +557,8 @@ describe('CrimeVersionController', () => {
         },
         body: {
           'device-wearer-toggle': ['device-wearer-1', 'device-wearer-2'],
+          'device-wearer-tracks': ['device-wearer-tracks-1'],
+          'analysis-toggles': ['device-wearer-circles-', 'device-wearer-labels-'],
           capturedMapState,
         },
       })
@@ -590,7 +646,20 @@ describe('CrimeVersionController', () => {
       const crimeVersionId = '78d41bd9-5450-4bbb-89d4-42ba75659f50'
       const req = createMockRequest({
         params: { crimeVersionId },
-        body: {},
+        body: {
+          'device-wearer-tracks': ['device-wearer-tracks-1'],
+          'analysis-toggles': ['device-wearer-circles-'],
+          capturedMapState: JSON.stringify({
+            mapWidthPx: 1200,
+            mapHeightPx: 800,
+            devicePixelRatio: 2,
+            view: {
+              center: [12345, 67890],
+              resolution: 4.5,
+              rotation: 0,
+            },
+          }),
+        },
       })
       const res = createMockResponse()
       const next = jest.fn()
@@ -625,9 +694,23 @@ describe('CrimeVersionController', () => {
       await controller.exportProximityAlert(req, res, next)
 
       // Then
-      expect(req.session.exportProximityAlertError).toEqual(
-        'Select at least one device wearer to export the Proximity Alert report.',
-      )
+      expect(req.session.exportProximityAlertState).toEqual({
+        error: 'Select at least one device wearer to export the Proximity Alert report.',
+        selectedDeviceIds: [],
+        selectedTrackDeviceIds: ['1'],
+        showConfidenceCircles: true,
+        showLocationNumbering: false,
+        capturedMapState: JSON.stringify({
+          mapWidthPx: 1200,
+          mapHeightPx: 800,
+          devicePixelRatio: 2,
+          view: {
+            center: [12345, 67890],
+            resolution: 4.5,
+            rotation: 0,
+          },
+        }),
+      })
       expect(res.redirect).toHaveBeenCalledWith(`/proximity-alert/${crimeVersionId}`)
       expect(next).not.toHaveBeenCalled()
     })
