@@ -130,8 +130,60 @@ const applyCapturedMapState = (emMap: EmMap, mapState: CapturedMapState) => {
   map.renderSync()
 }
 
+const isHeadlessCapture = (): boolean => {
+  const params = new URLSearchParams(window.location.search)
+  return params.get('headless') === 'true'
+}
+
+const getHeadlessMapSizeFromUrl = (): { widthPx: number; heightPx: number } | null => {
+  const params = new URLSearchParams(window.location.search)
+  const mapWidthPx = params.get('mapWidthPx')
+  const mapHeightPx = params.get('mapHeightPx')
+
+  if (!mapWidthPx || !mapHeightPx) return null
+
+  const widthPx = Number(mapWidthPx)
+  const heightPx = Number(mapHeightPx)
+
+  if (!Number.isFinite(widthPx) || !Number.isFinite(heightPx) || widthPx <= 0 || heightPx <= 0) {
+    return null
+  }
+
+  return { widthPx, heightPx }
+}
+
+// Headless-only UI tweaks for export screenshots:
+const applyHeadlessUiTweaks = (emMap: EmMap) => {
+  const root = emMap.shadowRoot
+  if (!root) return
+
+  const controls = root.querySelectorAll<HTMLElement>('.ol-control, .ol-attribution')
+  controls.forEach(controlEl => {
+    const el = controlEl
+    el.style.display = 'none'
+  })
+}
+
+const applyHeadlessMapMode = (emMap: EmMap) => {
+  const map = emMap.olMapInstance
+  if (!map) return
+
+  applyHeadlessUiTweaks(emMap)
+
+  const headlessSize = getHeadlessMapSizeFromUrl()
+  if (headlessSize) {
+    const mapElement = emMap as unknown as HTMLElement
+    mapElement.style.width = `${headlessSize.widthPx}px`
+    mapElement.style.height = `${headlessSize.heightPx}px`
+    map.updateSize()
+  }
+
+  map.renderSync()
+}
+
 const initialiseProximityAlertView = async () => {
   const emMap = queryElement(document, 'em-map') as EmMap
+  const isHeadless = isHeadlessCapture()
 
   await new Promise<void>(resolve => {
     emMap.addEventListener('map:ready', () => resolve(), { once: true })
@@ -177,6 +229,11 @@ const initialiseProximityAlertView = async () => {
   const capturedMapState = getCapturedMapState()
   if (capturedMapState) {
     applyCapturedMapState(emMap, capturedMapState)
+  }
+
+  if (isHeadless) {
+    applyHeadlessMapMode(emMap)
+    return
   }
 
   initialiseProximityAlertForm()
