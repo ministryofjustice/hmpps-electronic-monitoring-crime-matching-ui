@@ -1,13 +1,24 @@
 import { EmMap } from '@ministryofjustice/hmpps-electronic-monitoring-components/map'
 import { fromLonLat } from 'ol/proj'
 import type { Coordinate } from 'ol/coordinate'
-import { queryElement } from '../../utils/utils'
+import { queryElement, queryElementAll } from '../../utils/utils'
 import CrimeLayer from './layers/crime'
 import DeviceWearerLayer from './layers/deviceWearer'
 import { CrimePosition, WearerPosition } from './types'
 import initialiseProximityAlertForm from '../../forms/proximity-alert'
 
 type ProximityAlertMapPosition = WearerPosition | CrimePosition
+
+type CapturedMapState = {
+  mapWidthPx: number
+  mapHeightPx: number
+  devicePixelRatio: number
+  view: {
+    center: [number, number]
+    resolution: number
+    rotation: number
+  }
+}
 
 const palette = [
   '#d00050',
@@ -28,7 +39,7 @@ const palette = [
   '#8fbb00',
 ]
 
-// Add a Crime marker layers
+// Add Crime marker layers
 const addCrimeLayers = (emMap: EmMap, crime: CrimePosition): { centre: Coordinate } => {
   const centre = fromLonLat([crime.longitude, crime.latitude])
 
@@ -52,12 +63,71 @@ const restoreCheckboxLayerState = () => {
   ]
 
   for (const selector of selectors) {
-    const checkboxes = document.querySelectorAll<HTMLInputElement>(selector)
+    const checkboxes = queryElementAll(document, selector, HTMLInputElement)
 
-    for (const checkbox of checkboxes) {
+    checkboxes.forEach(checkbox => {
       checkbox.dispatchEvent(new Event('change', { bubbles: true }))
+    })
+  }
+}
+
+// Type guard to validate the structure of the captured map state
+const isValidCapturedMapState = (parsedMapState: unknown): parsedMapState is CapturedMapState => {
+  if (!parsedMapState || typeof parsedMapState !== 'object') return false
+
+  const parsedState = parsedMapState as {
+    mapWidthPx?: unknown
+    mapHeightPx?: unknown
+    devicePixelRatio?: unknown
+    view?: {
+      center?: unknown
+      resolution?: unknown
+      rotation?: unknown
     }
   }
+
+  return (
+    typeof parsedState.mapWidthPx === 'number' &&
+    typeof parsedState.mapHeightPx === 'number' &&
+    typeof parsedState.devicePixelRatio === 'number' &&
+    !!parsedState.view &&
+    Array.isArray(parsedState.view.center) &&
+    parsedState.view.center.length === 2 &&
+    typeof parsedState.view.center[0] === 'number' &&
+    typeof parsedState.view.center[1] === 'number' &&
+    typeof parsedState.view.resolution === 'number' &&
+    typeof parsedState.view.rotation === 'number'
+  )
+}
+
+// Attempt to read captured map state from hidden input field
+const getRestoredCapturedMapState = (): CapturedMapState | undefined => {
+  const mapStateInput = document.querySelector<HTMLInputElement>('#capturedMapState')
+  if (!mapStateInput) return undefined
+
+  const mapStateValue = mapStateInput.value.trim()
+  if (!mapStateValue) return undefined
+
+  try {
+    const parsedMapState: unknown = JSON.parse(mapStateValue)
+    return isValidCapturedMapState(parsedMapState) ? parsedMapState : undefined
+  } catch {
+    return undefined
+  }
+}
+
+// Apply captured map state to the map view
+const applyCapturedMapState = (emMap: EmMap, mapState: CapturedMapState) => {
+  const map = emMap.olMapInstance
+  const mapView = map?.getView()
+
+  if (!map || !mapView) return
+
+  mapView.setRotation(mapState.view.rotation)
+  mapView.setResolution(mapState.view.resolution)
+  mapView.setCenter(mapState.view.center)
+
+  map.renderSync()
 }
 
 const initialiseProximityAlertView = async () => {
@@ -103,6 +173,12 @@ const initialiseProximityAlertView = async () => {
   )
 
   restoreCheckboxLayerState()
+
+  const capturedMapState = getRestoredCapturedMapState()
+  if (capturedMapState) {
+    applyCapturedMapState(emMap, capturedMapState)
+  }
+
   initialiseProximityAlertForm()
 }
 
