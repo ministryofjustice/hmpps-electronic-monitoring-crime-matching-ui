@@ -1,9 +1,17 @@
+import dayjs from 'dayjs'
+import utc from 'dayjs/plugin/utc'
+import timezone from 'dayjs/plugin/timezone'
+import customParseFormat from 'dayjs/plugin/customParseFormat'
 import CrimeMatchingClient from '../../data/crimeMatchingClient'
 import CrimeVersionController from './crimeVersion'
 import logger from '../../../logger'
 import createMockRequest from '../../testutils/createMockRequest'
 import createMockResponse from '../../testutils/createMockResponse'
 import CrimeService from '../../services/crimeService'
+
+dayjs.extend(utc)
+dayjs.extend(timezone)
+dayjs.extend(customParseFormat)
 
 jest.mock('../../data/crimeMatchingClient')
 jest.mock('../../../logger')
@@ -40,6 +48,7 @@ describe('CrimeVersionController', () => {
         data: {
           crimeVersionId: '78d41bd9-5450-4bbb-89d4-42ba75659f50',
           crimeReference: 'crime1',
+          batchId: 'batchId',
           crimeTypeDescription: 'Aggravated Burglary',
           crimeTypeId: 'AB',
           crimeDateTimeFrom: '2025-01-01T00:00:00Z',
@@ -85,6 +94,7 @@ describe('CrimeVersionController', () => {
         crimeVersion: {
           crimeVersionId: '78d41bd9-5450-4bbb-89d4-42ba75659f50',
           crimeReference: 'crime1',
+          batchId: 'batchId',
           crimeTypeDescription: 'Aggravated Burglary',
           crimeTypeId: 'AB',
           crimeDateTimeFrom: '2025-01-01T00:00:00Z',
@@ -126,6 +136,12 @@ describe('CrimeVersionController', () => {
             longitude: 10,
             positionType: 'crime',
             crimeTypeId: 'AB',
+            batchId: 'batchId',
+            crimeDateTimeFrom: '01/01/2025 00:00',
+            crimeDateTimeTo: '01/01/2025 00:00',
+            crimeReference: 'crime1',
+            overlayBodyTemplateId: 'overlay-body-crime-location',
+            overlayTitleTemplateId: 'overlay-title-crime-location',
           },
           {
             precision: 10,
@@ -168,6 +184,7 @@ describe('CrimeVersionController', () => {
         data: {
           crimeVersionId: '78d41bd9-5450-4bbb-89d4-42ba75659f50',
           crimeReference: 'crime1',
+          batchId: 'batchId',
           crimeTypeDescription: 'Aggravated Burglary',
           crimeTypeId: 'AB',
           crimeDateTimeFrom: '2025-01-01T00:00:00Z',
@@ -189,6 +206,7 @@ describe('CrimeVersionController', () => {
         crimeVersion: {
           crimeVersionId: '78d41bd9-5450-4bbb-89d4-42ba75659f50',
           crimeReference: 'crime1',
+          batchId: 'batchId',
           crimeTypeDescription: 'Aggravated Burglary',
           crimeTypeId: 'AB',
           crimeDateTimeFrom: '2025-01-01T00:00:00Z',
@@ -206,6 +224,12 @@ describe('CrimeVersionController', () => {
             longitude: 10,
             positionType: 'crime',
             crimeTypeId: 'AB',
+            batchId: 'batchId',
+            crimeDateTimeFrom: '01/01/2025 00:00',
+            crimeDateTimeTo: '01/01/2025 00:00',
+            crimeReference: 'crime1',
+            overlayBodyTemplateId: 'overlay-body-crime-location',
+            overlayTitleTemplateId: 'overlay-title-crime-location',
           },
         ],
       })
@@ -224,6 +248,7 @@ describe('CrimeVersionController', () => {
         data: {
           crimeVersionId: '78d41bd9-5450-4bbb-89d4-42ba75659f50',
           crimeReference: 'crime1',
+          batchId: 'batchId',
           crimeTypeDescription: 'Aggravated Burglary',
           crimeTypeId: 'AB',
           crimeDateTimeFrom: '2025-01-01T00:00:00Z',
@@ -245,6 +270,7 @@ describe('CrimeVersionController', () => {
         crimeVersion: {
           crimeVersionId: '78d41bd9-5450-4bbb-89d4-42ba75659f50',
           crimeReference: 'crime1',
+          batchId: 'batchId',
           crimeTypeDescription: 'Aggravated Burglary',
           crimeTypeId: 'AB',
           crimeDateTimeFrom: '2025-01-01T00:00:00Z',
@@ -262,6 +288,12 @@ describe('CrimeVersionController', () => {
             longitude: 10,
             positionType: 'crime',
             crimeTypeId: 'AB',
+            batchId: 'batchId',
+            crimeDateTimeFrom: '01/01/2025 00:00',
+            crimeDateTimeTo: '01/01/2025 00:00',
+            crimeReference: 'crime1',
+            overlayBodyTemplateId: 'overlay-body-crime-location',
+            overlayTitleTemplateId: 'overlay-title-crime-location',
           },
         ],
       })
