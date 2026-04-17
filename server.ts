@@ -22,7 +22,6 @@ async function start(): Promise<void> {
     logger.info('[playwright] browser launched at startup')
   } catch (error) {
     logger.error({ error }, '[playwright] failed to launch browser at startup')
-    process.exit(1)
   }
 
   const port = app.get('port')
