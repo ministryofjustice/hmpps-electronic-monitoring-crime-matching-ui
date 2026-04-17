@@ -10,6 +10,7 @@ type StubGetCrimeVersion200Options = {
     data: {
       crimeVersionId: string
       crimeReference: string
+      batchId: string
       crimeTypeDescription: string
       crimeTypeId: string
       crimeDateTimeFrom: string

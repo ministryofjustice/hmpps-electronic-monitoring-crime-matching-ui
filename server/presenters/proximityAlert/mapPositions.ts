@@ -1,4 +1,5 @@
 import CrimeVersion from '../../types/crimeVersion'
+import { formatDateTime } from '../../utils/date'
 
 export type ProximityAlertMapPosition =
   | {
@@ -17,7 +18,13 @@ export type ProximityAlertMapPosition =
       positionType: 'crime'
       latitude: number
       longitude: number
+      crimeReference: string
       crimeTypeId: string
+      overlayTitleTemplateId: string
+      overlayBodyTemplateId: string
+      batchId: string
+      crimeDateTimeFrom: string
+      crimeDateTimeTo: string
     }
 
 export default function toProximityAlertMapPositions(crimeVersion: CrimeVersion): ProximityAlertMapPosition[] {
@@ -25,7 +32,13 @@ export default function toProximityAlertMapPositions(crimeVersion: CrimeVersion)
     positionType: 'crime',
     latitude: crimeVersion.latitude,
     longitude: crimeVersion.longitude,
+    crimeReference: crimeVersion.crimeReference,
     crimeTypeId: crimeVersion.crimeTypeId,
+    overlayTitleTemplateId: 'overlay-title-crime-location',
+    overlayBodyTemplateId: 'overlay-body-crime-location',
+    batchId: crimeVersion.batchId,
+    crimeDateTimeFrom: formatDateTime(crimeVersion.crimeDateTimeFrom, 'DD/MM/YYYY HH:mm'),
+    crimeDateTimeTo: formatDateTime(crimeVersion.crimeDateTimeFrom, 'DD/MM/YYYY HH:mm'),
   }
 
   let wearerPositions: ProximityAlertMapPosition[] = []
