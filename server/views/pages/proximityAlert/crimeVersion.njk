@@ -10,6 +10,7 @@
 {% set activeLinkId = "proximity-alert" %}
 {% set hasMatchedDeviceWearers = crimeVersion.matching and (crimeVersion.matching.deviceWearers | length > 0) %}
 
+
 {% set reportsHtml %}
   {%- include "./partials/reports.njk" -%}
 {% endset %}
@@ -24,6 +25,7 @@
     }}
   </div>
 {% endblock %}
+
 
 {% set analysisHtml %}
   {{
@@ -50,6 +52,7 @@
   }}
 {% endset %}
 
+
 {% set tabsHtml %}
   {{
     govukTabs({
@@ -73,11 +76,17 @@
   }}
 {% endset %}
 
+
 {% set sidebarHtml %}
   {% if hasMatchedDeviceWearers %}
     <form id="exportProximityAlertForm" method="post" action="{{ exportProximityAlertForm.url }}">
       <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
-      <input type="hidden" id="capturedMapState" name="capturedMapState" value="{{ exportProximityAlertForm.capturedMapState or '' }}" />
+      <input
+        type="hidden"
+        id="capturedMapState"
+        name="capturedMapState"
+        value="{{ exportProximityAlertForm.capturedMapState or '' }}"
+      />
       {{ tabsHtml | safe }}
     </form>
   {% else %}

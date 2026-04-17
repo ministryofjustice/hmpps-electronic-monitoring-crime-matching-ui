@@ -6,7 +6,8 @@
 {% set selectedDeviceIds = exportProximityAlertForm.selectedDeviceIds %}
 {% set selectedTrackDeviceIds = exportProximityAlertForm.selectedTrackDeviceIds %}
 {% set deviceWearers = crimeVersion.matching.deviceWearers if crimeVersion.matching else [] %}
-{% set allDeviceIdsSelected =
+{%
+  set allDeviceIdsSelected =
   not selectedDeviceIds or
   ((selectedDeviceIds | length) == (deviceWearers | length))
 %}
@@ -41,9 +42,7 @@
   </div>
 
   <div class="govuk-grid-column-one-quarter govuk-!-static-margin-top-1">
-    <a href="#" data-module="map-focus-on-layer" data-layer="crime" class="govuk-link">
-      View <br />on map
-    </a>
+    <a href="#" data-module="map-focus-on-layer" data-layer="crime" class="govuk-link"> View <br />on map </a>
   </div>
 </div>
 
