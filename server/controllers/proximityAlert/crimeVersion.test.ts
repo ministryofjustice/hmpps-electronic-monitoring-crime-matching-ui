@@ -73,7 +73,7 @@ describe('CrimeVersionController', () => {
         data: {
           crimeVersionId: '78d41bd9-5450-4bbb-89d4-42ba75659f50',
           crimeReference: 'crime1',
-          batchId: 'batchId',
+          batchId: 'batch1',
           crimeTypeDescription: 'Aggravated Burglary',
           crimeTypeId: 'AB',
           crimeDateTimeFrom: '2025-01-01T00:00:00Z',
@@ -121,7 +121,7 @@ describe('CrimeVersionController', () => {
         crimeVersion: {
           crimeVersionId: '78d41bd9-5450-4bbb-89d4-42ba75659f50',
           crimeReference: 'crime1',
-          batchId: 'batchId',
+          batchId: 'batch1',
           crimeTypeDescription: 'Aggravated Burglary',
           crimeTypeId: 'AB',
           crimeDateTimeFrom: '2025-01-01T00:00:00Z',
@@ -163,7 +163,7 @@ describe('CrimeVersionController', () => {
             longitude: 10,
             positionType: 'crime',
             crimeTypeId: 'AB',
-            batchId: 'batchId',
+            batchId: 'batch1',
             crimeDateTimeFrom: '01/01/2025 00:00',
             crimeDateTimeTo: '01/01/2025 00:00',
             crimeReference: 'crime1',
@@ -219,7 +219,7 @@ describe('CrimeVersionController', () => {
         data: {
           crimeVersionId: '78d41bd9-5450-4bbb-89d4-42ba75659f50',
           crimeReference: 'crime1',
-          batchId: 'batchId',
+          batchId: 'batch1',
           crimeTypeDescription: 'Aggravated Burglary',
           crimeTypeId: 'AB',
           crimeDateTimeFrom: '2025-01-01T00:00:00Z',
@@ -243,7 +243,7 @@ describe('CrimeVersionController', () => {
         crimeVersion: {
           crimeVersionId: '78d41bd9-5450-4bbb-89d4-42ba75659f50',
           crimeReference: 'crime1',
-          batchId: 'batchId',
+          batchId: 'batch1',
           crimeTypeDescription: 'Aggravated Burglary',
           crimeTypeId: 'AB',
           crimeDateTimeFrom: '2025-01-01T00:00:00Z',
@@ -261,7 +261,7 @@ describe('CrimeVersionController', () => {
             longitude: 10,
             positionType: 'crime',
             crimeTypeId: 'AB',
-            batchId: 'batchId',
+            batchId: 'batch1',
             crimeDateTimeFrom: '01/01/2025 00:00',
             crimeDateTimeTo: '01/01/2025 00:00',
             crimeReference: 'crime1',
@@ -293,7 +293,7 @@ describe('CrimeVersionController', () => {
         data: {
           crimeVersionId: '78d41bd9-5450-4bbb-89d4-42ba75659f50',
           crimeReference: 'crime1',
-          batchId: 'batchId',
+          batchId: 'batch1',
           crimeTypeDescription: 'Aggravated Burglary',
           crimeTypeId: 'AB',
           crimeDateTimeFrom: '2025-01-01T00:00:00Z',
@@ -317,7 +317,7 @@ describe('CrimeVersionController', () => {
         crimeVersion: {
           crimeVersionId: '78d41bd9-5450-4bbb-89d4-42ba75659f50',
           crimeReference: 'crime1',
-          batchId: 'batchId',
+          batchId: 'batch1',
           crimeTypeDescription: 'Aggravated Burglary',
           crimeTypeId: 'AB',
           crimeDateTimeFrom: '2025-01-01T00:00:00Z',
@@ -335,7 +335,7 @@ describe('CrimeVersionController', () => {
             longitude: 10,
             positionType: 'crime',
             crimeTypeId: 'AB',
-            batchId: 'batchId',
+            batchId: 'batch1',
             crimeDateTimeFrom: '01/01/2025 00:00',
             crimeDateTimeTo: '01/01/2025 00:00',
             crimeReference: 'crime1',
@@ -368,6 +368,7 @@ describe('CrimeVersionController', () => {
         data: {
           crimeVersionId: '78d41bd9-5450-4bbb-89d4-42ba75659f50',
           crimeReference: 'crime1',
+          batchId: 'batch1',
           crimeTypeDescription: 'Aggravated Burglary',
           crimeTypeId: 'AB',
           crimeDateTimeFrom: '2025-01-01T00:00:00Z',
@@ -398,6 +399,7 @@ describe('CrimeVersionController', () => {
         crimeVersion: {
           crimeVersionId: '78d41bd9-5450-4bbb-89d4-42ba75659f50',
           crimeReference: 'crime1',
+          batchId: 'batch1',
           crimeTypeDescription: 'Aggravated Burglary',
           crimeTypeId: 'AB',
           crimeDateTimeFrom: '2025-01-01T00:00:00Z',
@@ -415,6 +417,12 @@ describe('CrimeVersionController', () => {
             longitude: 10,
             positionType: 'crime',
             crimeTypeId: 'AB',
+            batchId: 'batch1',
+            crimeDateTimeFrom: '01/01/2025 00:00',
+            crimeDateTimeTo: '01/01/2025 00:00',
+            crimeReference: 'crime1',
+            overlayBodyTemplateId: 'overlay-body-crime-location',
+            overlayTitleTemplateId: 'overlay-title-crime-location',
           },
         ],
         exportProximityAlertForm: {
@@ -449,6 +457,7 @@ describe('CrimeVersionController', () => {
         data: {
           crimeVersionId,
           crimeReference: 'crime1',
+          batchId: 'batch1',
           crimeTypeDescription: 'Aggravated Burglary',
           crimeTypeId: 'AB',
           crimeDateTimeFrom: '2025-01-01T00:00:00Z',
@@ -519,6 +528,7 @@ describe('CrimeVersionController', () => {
         data: {
           crimeVersionId,
           crimeReference: 'crime1',
+          batchId: 'batch1',
           crimeTypeDescription: 'Aggravated Burglary',
           crimeTypeId: 'AB',
           crimeDateTimeFrom: '2025-01-01T00:00:00Z',
@@ -595,6 +605,7 @@ describe('CrimeVersionController', () => {
         data: {
           crimeVersionId,
           crimeReference: 'crime1',
+          batchId: 'batch1',
           crimeTypeDescription: 'Aggravated Burglary',
           crimeTypeId: 'AB',
           crimeDateTimeFrom: '2025-01-01T00:00:00Z',
