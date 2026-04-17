@@ -58,7 +58,7 @@ class SelectAll extends Component {
    */
   private handleTargetChange(): void {
     if (!this.syncing) {
-      this.$input.checked = this.targets.every(target => target.checked)
+      this.$input.checked = this.targets.some(target => target.checked)
     }
   }
 
