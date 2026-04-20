@@ -116,7 +116,7 @@ describe('CrimeVersionController', () => {
       // Then
       expect(mockRestClient.getCrimeVersion).toHaveBeenCalledWith(expectedAuthOptions, crimeVersionId)
       expect(res.render).toHaveBeenCalledWith('pages/proximityAlert/crimeVersion', {
-        usesInternalOverlays: false,
+        usesInternalOverlays: true,
         alerts: [],
         crimeVersion: {
           crimeVersionId: '78d41bd9-5450-4bbb-89d4-42ba75659f50',
@@ -243,7 +243,7 @@ describe('CrimeVersionController', () => {
       // Then
       expect(mockRestClient.getCrimeVersion).toHaveBeenCalledWith(expectedAuthOptions, crimeVersionId)
       expect(res.render).toHaveBeenCalledWith('pages/proximityAlert/crimeVersion', {
-        usesInternalOverlays: false,
+        usesInternalOverlays: true,
         alerts: [],
         crimeVersion: {
           crimeVersionId: '78d41bd9-5450-4bbb-89d4-42ba75659f50',
@@ -322,7 +322,7 @@ describe('CrimeVersionController', () => {
       // Then
       expect(mockRestClient.getCrimeVersion).toHaveBeenCalledWith(expectedAuthOptions, crimeVersionId)
       expect(res.render).toHaveBeenCalledWith('pages/proximityAlert/crimeVersion', {
-        usesInternalOverlays: false,
+        usesInternalOverlays: true,
         alerts: [],
         crimeVersion: {
           crimeVersionId: '78d41bd9-5450-4bbb-89d4-42ba75659f50',
@@ -417,7 +417,7 @@ describe('CrimeVersionController', () => {
 
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/proximityAlert/crimeVersion', {
-        usesInternalOverlays: false,
+        usesInternalOverlays: true,
         alerts: [
           {
             variant: 'warning',

@@ -434,7 +434,7 @@ context('Crime Version', () => {
 
           expect(centre[0]).to.be.closeTo(-2.528865717, 0.0000001)
           expect(centre[1]).to.be.closeTo(53.43157277, 0.0000001)
-          expect(map.getView().getZoom()).to.be.closeTo(18, 0.2)
+          expect(map.getView().getZoom()).to.be.closeTo(17.2, 0.1)
         })
       })
     })
