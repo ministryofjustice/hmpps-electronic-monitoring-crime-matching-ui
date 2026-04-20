@@ -67,51 +67,49 @@ export default class CrimeVersionController {
 
       if (!result.ok) {
         next(createError(404, 'Not found'))
-        return
+      } else {
+        const parsedRequest = parseExportProximityAlertRequest(req.body as Record<string, unknown>)
+
+        if (!parsedRequest.success) {
+          req.session.exportProximityAlertState = withExportProximityAlertError(
+            parsedRequest.formState,
+            INVALID_EXPORT_REQUEST_ERROR,
+          )
+          res.redirect(redirectUrl)
+        } else {
+          const { deviceIds, capturedMapState } = parsedRequest.exportData
+
+          if (deviceIds.length === 0) {
+            req.session.exportProximityAlertState = withExportProximityAlertError(
+              parsedRequest.formState,
+              NO_DEVICE_WEARERS_SELECTED_ERROR_MESSAGE,
+            )
+            res.redirect(redirectUrl)
+          } else {
+            const browser = await this.playwrightBrowserService.getBrowser()
+
+            const images = await this.mapImageRendererService.render({
+              browser,
+              pageUrl: `${config.ingressUrl}/proximity-alert/${encodeURIComponent(crimeVersionId)}`,
+              baseUrlForCookies: config.ingressUrl,
+              cookieHeader: req.headers.cookie,
+              selectedDeviceIds: deviceIds,
+              capturedMapState,
+            })
+
+            const docxBuffer = await this.proximityAlertReportDocxService.build({
+              crimeVersion: result.data,
+              deviceIds,
+              capturedMapState,
+              images,
+            })
+
+            res.setHeader('Content-Type', DOCX_CONTENT_TYPE)
+            res.setHeader('Content-Disposition', `attachment; filename="proximity-alert-${crimeVersionId}.docx"`)
+            res.send(docxBuffer)
+          }
+        }
       }
-
-      const parsedRequest = parseExportProximityAlertRequest(req.body as Record<string, unknown>)
-
-      if (!parsedRequest.success) {
-        req.session.exportProximityAlertState = withExportProximityAlertError(
-          parsedRequest.formState,
-          INVALID_EXPORT_REQUEST_ERROR,
-        )
-        res.redirect(redirectUrl)
-        return
-      }
-
-      const { deviceIds, capturedMapState } = parsedRequest.exportData
-
-      if (deviceIds.length === 0) {
-        req.session.exportProximityAlertState = withExportProximityAlertError(
-          parsedRequest.formState,
-          NO_DEVICE_WEARERS_SELECTED_ERROR_MESSAGE,
-        )
-        res.redirect(redirectUrl)
-        return
-      }
-
-      const browser = await this.playwrightBrowserService.getBrowser()
-      const images = await this.mapImageRendererService.render({
-        browser,
-        pageUrl: `${config.ingressUrl}/proximity-alert/${encodeURIComponent(crimeVersionId)}`,
-        baseUrlForCookies: config.ingressUrl,
-        cookieHeader: req.headers.cookie,
-        selectedDeviceIds: deviceIds,
-        capturedMapState,
-      })
-
-      const docxBuffer = await this.proximityAlertReportDocxService.build({
-        crimeVersion: result.data,
-        deviceIds,
-        capturedMapState,
-        images,
-      })
-
-      res.setHeader('Content-Type', DOCX_CONTENT_TYPE)
-      res.setHeader('Content-Disposition', `attachment; filename="proximity-alert-${crimeVersionId}.docx"`)
-      res.send(docxBuffer)
     } catch {
       const parsedRequest = parseExportProximityAlertRequest(req.body as Record<string, unknown>)
 
