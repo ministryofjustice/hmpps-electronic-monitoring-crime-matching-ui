@@ -11,7 +11,7 @@ const capturedMapStateValueSchema = z.object({
   }),
 })
 
-const deviceIdsSchema = z
+export const formStringArraySchema = z
   .union([z.string(), z.array(z.string())])
   .optional()
   .transform((value): string[] => {
@@ -27,7 +27,7 @@ const deviceIdsSchema = z
     return []
   })
 
-const capturedMapStateSchema = z
+export const optionalTrimmedStringSchema = z
   .string()
   .optional()
   .transform(value => {
@@ -36,33 +36,34 @@ const capturedMapStateSchema = z
     const trimmed = value.trim()
     return trimmed === '' ? undefined : trimmed
   })
-  .check(ctx => {
-    if (!ctx.value) return
 
-    try {
-      const parsed = JSON.parse(ctx.value)
-      const result = capturedMapStateValueSchema.safeParse(parsed)
+const capturedMapStateSchema = optionalTrimmedStringSchema.check(ctx => {
+  if (!ctx.value) return
 
-      if (!result.success) {
-        ctx.issues.push({
-          code: 'custom',
-          input: ctx.value,
-          message: 'Captured map state is not in a valid format',
-          path: ['capturedMapState'],
-        })
-      }
-    } catch {
+  try {
+    const parsed = JSON.parse(ctx.value)
+    const result = capturedMapStateValueSchema.safeParse(parsed)
+
+    if (!result.success) {
       ctx.issues.push({
         code: 'custom',
         input: ctx.value,
-        message: 'Captured map state must be valid JSON',
+        message: 'Captured map state is not in a valid format',
         path: ['capturedMapState'],
       })
     }
-  })
+  } catch {
+    ctx.issues.push({
+      code: 'custom',
+      input: ctx.value,
+      message: 'Captured map state must be valid JSON',
+      path: ['capturedMapState'],
+    })
+  }
+})
 
 const exportProximityAlertFormSchema = z.object({
-  deviceIds: deviceIdsSchema,
+  deviceIds: formStringArraySchema,
   capturedMapState: capturedMapStateSchema,
 })
 
