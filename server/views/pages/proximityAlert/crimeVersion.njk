@@ -112,23 +112,23 @@
 
     <template id="overlay-body-crime-location">
       <div class="app-map__overlay-row">
-        <span class="app-map__overlay-label">Crime Ref:</span>
+        <span class="app-map__overlay-label">Crime Ref</span>
         <span class="app-map__overlay-value">{{ crimeReference }}</span>
       </div>
       <div class="app-map__overlay-row">
-        <span class="app-map__overlay-label">Crime Batch:</span>
-        <span class="app-map__overlay-value">{{ batchId }}</span>
+        <span class="app-map__overlay-label">Crime Batch</span>
+        <span class="app-map__overlay-value">{{ batchId }} </span>
       </div>
-      <div class="app-map__overlay-row" part="app-map__overlay-row">
-        <span class="app-map__overlay-label">Location:</span>
-        <span class="app-map__overlay-value">{{ longitude }}, {{ latitude }}</span>
+      <div class="app-map__overlay-row">
+        <span class="app-map__overlay-label">Location</span>
+        <span class="app-map__overlay-value" data-copy-value="{{ latitude }}, {{ longitude }}">
+          {{ latitude }}, {{ longitude }}
+          <a href="#" class="app-map__copy-link govuk-link">Copy</a>
+        </span>
       </div>
-      <div class="app-map__overlay-row" part="app-map__overlay-row">
-        <span class="app-map__overlay-label">Crime Window:</span>
-        <span class="app-map__overlay-value"
-          >{{ crimeDateTimeFrom }} <br />
-          {{ crimeDateTimeTo }}</span
-        >
+      <div class="app-map__overlay-row">
+        <span class="app-map__overlay-label">Crime Window</span>
+        <span class="app-map__overlay-value">{{ crimeDateTimeFrom }} <br />{{ crimeDateTimeTo }}</span>
       </div>
     </template>
   {% endraw %}

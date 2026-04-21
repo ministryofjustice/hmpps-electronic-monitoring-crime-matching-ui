@@ -87,7 +87,7 @@ export default class CrimeVersionController {
       }
 
       res.render('pages/proximityAlert/crimeVersion', {
-        usesInternalOverlays: false,
+        usesInternalOverlays: true,
         crimeVersion: presentCrimeVersion(result.data),
         positions: toProximityAlertMapPositions(result.data),
         alerts,
