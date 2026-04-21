@@ -24,6 +24,9 @@ const getLayers = (map: Map, pattern: RegExp = /device-wearer-.*/): Array<{ titl
     .map(layer => ({ title: getTitle(layer), visible: layer.isVisible() }))
 }
 
+const crimeLocation = [-2.528865717, 53.43157277]
+const deviceLocation = [-2.5282, 53.43159]
+
 context('Crime Version', () => {
   context('Viewing a crime Version', () => {
     beforeEach(() => {
@@ -44,8 +47,8 @@ context('Crime Version', () => {
             crimeDateTimeFrom: '2025-01-01T00:00:00Z',
             crimeDateTimeTo: '2025-01-01T01:00:00Z',
             crimeText: 'crimeText',
-            longitude: -2.528865717,
-            latitude: 53.43157277,
+            longitude: crimeLocation[0],
+            latitude: crimeLocation[1],
             versionLabel: 'Latest Version',
             matching: {
               deviceWearers: [
@@ -55,8 +58,8 @@ context('Crime Version', () => {
                   nomisId: 'nomisId',
                   positions: [
                     {
-                      longitude: -2.528865717,
-                      latitude: 53.43157277,
+                      longitude: deviceLocation[0],
+                      latitude: deviceLocation[1],
                       sequenceLabel: 'A1',
                       confidence: 10,
                       capturedDateTime: '2025-01-01T00:00',
@@ -451,7 +454,7 @@ context('Crime Version', () => {
           const canvas = map.getViewport().querySelector('canvas')!
 
           cy.window().then(window => {
-            const coordinate = fromLonLat([-2.528865717, 53.43157277])
+            const coordinate = fromLonLat(crimeLocation)
             const rect = canvas.getBoundingClientRect()
             const pixel = map.getPixelFromCoordinate(coordinate)
             const clientX = rect.left + pixel[0]
@@ -477,6 +480,50 @@ context('Crime Version', () => {
             page.map.overlay.shouldHaveNthRow(1, 'Crime Batch', 'batch1')
             page.map.overlay.shouldHaveNthRow(2, 'Location', '53.43157277, -2.528865717')
             page.map.overlay.shouldHaveNthRow(3, 'Crime Window', '01/01/2025 00:00 01/01/2025 01:00')
+          })
+        })
+      })
+    })
+
+    it('should show the device position overlay', () => {
+      // When the user loads the page
+      cy.visit(`/proximity-alert/${crimeVersionId}`)
+
+      const page = Page.verifyOnPage(CrimeVersionPage)
+
+      // And the map is ready
+      page.map.mapInstance.then(map => {
+        cy.wait(200).then(() => {
+          const canvas = map.getViewport().querySelector('canvas')!
+
+          cy.window().then(window => {
+            const coordinate = fromLonLat(deviceLocation)
+            const rect = canvas.getBoundingClientRect()
+            const pixel = map.getPixelFromCoordinate(coordinate)
+            const clientX = rect.left + pixel[0]
+            const clientY = rect.top + pixel[1]
+            const events = ['pointerdown', 'pointerup', 'click']
+
+            // And clicks the crime marker
+            events.forEach(type => {
+              const event = new window.PointerEvent(type, {
+                clientX,
+                clientY,
+                bubbles: true,
+                cancelable: true,
+                view: window,
+              })
+              canvas.dispatchEvent(event)
+            })
+
+            // Then the crime overlay should be shown
+            page.map.overlay.shouldBeVisible()
+            page.map.overlay.shouldHaveTitle('Name (NOMIS ID): wearer-1 (nomisId)Device ID: 1')
+            page.map.overlay.shouldHaveNthRow(0, 'Confidence (m)', '10')
+            page.map.overlay.shouldHaveNthRow(1, 'Speed (km/h)', '0')
+            page.map.overlay.shouldHaveNthRow(2, 'Direction (degrees)', '0')
+            page.map.overlay.shouldHaveNthRow(3, 'Recorded Date', '01/01/2025 00:00')
+            page.map.overlay.shouldHaveNthRow(4, 'Location', '53.43159, -2.5282')
           })
         })
       })

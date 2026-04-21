@@ -16,7 +16,7 @@ export default class MapOverlay {
   }
 
   shouldHaveTitle(title: string) {
-    this.element.contains('.app-map__overlay-title', title).should('exist')
+    this.element.find('.app-map__overlay-title').should('contain.text', title)
   }
 
   shouldHaveNthRow(index: number, label: string, value: string) {

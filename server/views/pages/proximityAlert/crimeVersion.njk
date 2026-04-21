@@ -133,7 +133,9 @@
     </template>
 
     <template id="overlay-title-device-location">
-      <div><strong>Name (NOMIS ID): {{ name }} ({{ nomisId }})<br />Device ID: {{ deviceId }}</strong></div>
+      <div>
+        <strong>Name (NOMIS ID): {{ name }} ({{ nomisId }})<br />Device ID: {{ deviceId }}</strong>
+      </div>
     </template>
 
     <template id="overlay-body-device-location">
@@ -146,7 +148,7 @@
         <span class="app-map__overlay-value">{{ speed }} </span>
       </div>
       <div class="app-map__overlay-row">
-        <span class="app-map__overlay-label">Direction (degress)</span>
+        <span class="app-map__overlay-label">Direction (degrees)</span>
         <span class="app-map__overlay-value">{{ direction }} </span>
       </div>
       <div class="app-map__overlay-row">
