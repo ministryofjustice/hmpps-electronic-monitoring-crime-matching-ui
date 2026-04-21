@@ -8,7 +8,7 @@
 {% set deviceWearers = crimeVersion.matching.deviceWearers if crimeVersion.matching else [] %}
 {%
   set allDeviceIdsSelected =
-  not selectedDeviceIds or
+  (selectedDeviceIds | length == 0) or
   ((selectedDeviceIds | length) == (deviceWearers | length))
 %}
 
@@ -168,14 +168,14 @@
             text: "Show tracks",
             name: 'device-wearer-tracks',
             value: 'device-wearer-tracks-' + deviceWearer.deviceId,
-            checked: selectedTrackDeviceIds and ((deviceWearer.deviceId | string) in selectedTrackDeviceIds)
+            checked: (deviceWearer.deviceId | string) in selectedTrackDeviceIds
           },
           {
             id: 'device-wearer-' + deviceWearer.deviceId,
             value: 'device-wearer-' + deviceWearer.deviceId,
             text: "Include",
             name: 'device-wearer-toggle',
-            checked: (not selectedDeviceIds) or ((deviceWearer.deviceId | string) in selectedDeviceIds)
+            checked: (selectedDeviceIds | length == 0) or ((deviceWearer.deviceId | string) in selectedDeviceIds)
           }
         ]
       })
