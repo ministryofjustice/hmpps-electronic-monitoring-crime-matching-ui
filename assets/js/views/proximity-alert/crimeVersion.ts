@@ -1,13 +1,10 @@
-import { EmMap } from '@ministryofjustice/hmpps-electronic-monitoring-components/map'
+import { EmMap, Position } from '@ministryofjustice/hmpps-electronic-monitoring-components/map'
 import { fromLonLat } from 'ol/proj'
 import type { Coordinate } from 'ol/coordinate'
 import { queryElement, queryElementAll } from '../../utils/utils'
 import CrimeLayer from './layers/crime'
 import DeviceWearerLayer from './layers/deviceWearer'
-import { CrimePosition, WearerPosition } from './types'
 import initialiseProximityAlertForm from '../../forms/proximity-alert'
-
-type ProximityAlertMapPosition = WearerPosition | CrimePosition
 
 type CapturedMapState = {
   mapWidthPx: number
@@ -40,7 +37,7 @@ const palette = [
 ]
 
 // Add Crime marker layers
-const addCrimeLayers = (emMap: EmMap, crime: CrimePosition): { centre: Coordinate } => {
+const addCrimeLayers = (emMap: EmMap, crime: Position): { centre: Coordinate } => {
   const centre = fromLonLat([crime.longitude, crime.latitude])
 
   emMap.addLayerGroup(new CrimeLayer(crime))
@@ -181,7 +178,38 @@ const applyHeadlessMapMode = (emMap: EmMap) => {
   map.renderSync()
 }
 
+const readJsonFromScript = <T>(id: string): T | undefined => {
+  const script = document.querySelector(`script[type="application/json"][id="${id}"]`)
+
+  if (script?.textContent) {
+    try {
+      return JSON.parse(script.textContent) as T
+    } catch (e) {
+      // eslint-disable-next-line no-console
+      console.warn(`Invalid JSON in script[type="application/json"][id="${id}"]`, e)
+    }
+  }
+
+  return undefined
+}
+
+type MapData = {
+  crimePosition: Position
+  matching?: {
+    deviceWearers: Array<{
+      deviceId: number
+      positions: Array<Position>
+    }>
+  }
+}
+
 const initialiseProximityAlertView = async () => {
+  const data = readJsonFromScript<MapData>('map-data')
+
+  if (!data) {
+    return
+  }
+
   const emMap = queryElement(document, 'em-map') as EmMap
   const isHeadless = isHeadlessCapture()
 
@@ -189,32 +217,23 @@ const initialiseProximityAlertView = async () => {
     emMap.addEventListener('map:ready', () => resolve(), { once: true })
   })
 
-  const allPositions = emMap.positions as ProximityAlertMapPosition[]
-
-  const crime = allPositions.find(p => p.positionType === 'crime') as CrimePosition | undefined
-  if (!crime) throw new Error('No crime position found in positions[] (expected one with positionType="crime")')
-
-  const wearerPositions = allPositions.filter(p => p.positionType === 'wearer') as WearerPosition[]
-
-  const { centre } = addCrimeLayers(emMap, crime)
+  const { centre } = addCrimeLayers(emMap, data.crimePosition)
 
   setCrimeDefaultView(emMap, centre)
 
-  // Group wearer positions by device wearer
-  const positionsByWearer = new Map<number, WearerPosition[]>()
-  for (const pos of wearerPositions) {
-    const key = pos.deviceId
-    const list = positionsByWearer.get(key) ?? []
-    list.push(pos)
-    positionsByWearer.set(key, list)
-  }
-
-  let colourIndex = 0
-  for (const [deviceId, positions] of positionsByWearer.entries()) {
-    const colour = palette[colourIndex % palette.length]
-    colourIndex += 1
-
-    emMap.addLayerGroup(new DeviceWearerLayer(deviceId, crime, positions, colour))
+  if (data.matching) {
+    let colourIndex = 0
+    for (const deviceWearer of data.matching.deviceWearers) {
+      emMap.addLayerGroup(
+        new DeviceWearerLayer(
+          deviceWearer.deviceId,
+          data.crimePosition,
+          deviceWearer.positions,
+          palette[colourIndex % palette.length],
+        ),
+      )
+      colourIndex += 1
+    }
   }
 
   emMap.dispatchEvent(

@@ -13,19 +13,23 @@ type CrimeVersion = {
   matching: Matching | null
 }
 
-type Matching = {
-  deviceWearers: Array<{
-    name: string
-    deviceId: number
-    nomisId: string
-    positions: Array<{
-      latitude: number
-      longitude: number
-      sequenceLabel: string
-      confidence: number
-      capturedDateTime: string
-    }>
-  }>
+type DeviceWearerPosition = {
+  latitude: number
+  longitude: number
+  sequenceLabel: string
+  confidence: number
+  capturedDateTime: string
 }
 
-export default CrimeVersion
+type DeviceWearer = {
+  name: string
+  deviceId: number
+  nomisId: string
+  positions: Array<DeviceWearerPosition>
+}
+
+type Matching = {
+  deviceWearers: Array<DeviceWearer>
+}
+
+export { CrimeVersion, DeviceWearer, DeviceWearerPosition, Matching }

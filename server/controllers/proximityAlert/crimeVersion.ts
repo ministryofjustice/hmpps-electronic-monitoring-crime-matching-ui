@@ -7,7 +7,6 @@ import {
   withExportProximityAlertError,
 } from '../../form-pages/proximityAlert/exportProximityAlert'
 import presentCrimeVersion from '../../presenters/crimeVersion'
-import toProximityAlertMapPositions from '../../presenters/proximityAlert/mapPositions'
 import CrimeService from '../../services/crimeService'
 import MapImageRendererService from '../../services/proximityAlert/mapImageRendererService'
 import PlaywrightBrowserService from '../../services/proximityAlert/playwrightBrowserService'
@@ -48,7 +47,6 @@ export default class CrimeVersionController {
       res.render('pages/proximityAlert/crimeVersion', {
         usesInternalOverlays: true,
         crimeVersion: presentCrimeVersion(result.data),
-        positions: toProximityAlertMapPositions(result.data),
         alerts,
         exportProximityAlertForm: toExportProximityAlertForm(crimeVersionId, exportState),
       })

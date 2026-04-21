@@ -98,7 +98,7 @@
   {{
     appMap({
       cspNonce: cspNonce,
-      positions: positions,
+      positions: [],
       alerts: alerts,
       usesInternalOverlays: true,
       sidebarHtml: sidebarHtml
@@ -132,4 +132,9 @@
       </div>
     </template>
   {% endraw %}
+  {# prettier-ignore-start #}
+    <script id="map-data" type="application/json">
+      {{ crimeVersion | dump | safe }}
+    </script>
+  {# prettier-ignore-end #}
 {% endblock %}
