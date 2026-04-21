@@ -86,7 +86,7 @@ describe('exportProximityAlert form page', () => {
       })
     })
 
-    it('should default missing optional values', () => {
+    it('should treat missing checkbox fields as unchecked when parsing a submitted form', () => {
       // Given
       const body = {
         'device-wearer-toggle': ['device-wearer-1'],
