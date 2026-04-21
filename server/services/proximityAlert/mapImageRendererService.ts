@@ -1,10 +1,14 @@
-import type { Browser } from 'playwright'
+import type { Browser, Page } from 'playwright'
+import {
+  capturedMapStateValueSchema,
+  type CapturedMapStateValue,
+} from '../../schemas/proximityAlert/exportProximityAlert'
 
 export type ProximityAlertReportImages = {
-  image1Jpg?: Buffer
-  image2Jpg?: Buffer
-  wearerImage1JpgById: Record<string, Buffer>
-  wearerImage2JpgById: Record<string, Buffer>
+  overviewUserViewJpg?: Buffer
+  overviewFittedJpg?: Buffer
+  wearerOverviewJpgByDeviceId: Record<string, Buffer>
+  wearerDetailJpgByDeviceId: Record<string, Buffer>
 }
 
 export type RenderProximityAlertImagesArgs = {
@@ -16,18 +20,245 @@ export type RenderProximityAlertImagesArgs = {
   capturedMapState?: string
 }
 
-export default class MapImageRendererService {
-  async render(args: RenderProximityAlertImagesArgs): Promise<ProximityAlertReportImages> {
-    const { browser } = args
+type PresetParam = 'overview-user-view' | 'overview-fitted' | 'wearer-overview' | 'wearer-detail'
 
-    const context = await browser.newContext()
+const DEFAULT_TIMEOUT_MS = 30_000
+const DEFAULT_VIEWPORT = {
+  width: 1200,
+  height: 650,
+}
+const DEFAULT_JPEG_QUALITY = 85
+
+// Parse a Cookie header into Playwright cookie objects.
+const cookiesFromHeader = (cookieHeader: string, baseUrlForCookies: string) => {
+  return cookieHeader
+    .split(';')
+    .map(part => part.trim())
+    .filter(Boolean)
+    .map(part => {
+      const equalsIndex = part.indexOf('=')
+      const name = equalsIndex >= 0 ? part.slice(0, equalsIndex) : part
+      const value = equalsIndex >= 0 ? part.slice(equalsIndex + 1) : ''
+
+      return {
+        name,
+        value,
+        url: baseUrlForCookies,
+      }
+    })
+}
+
+// Attempt to parse the captured map state, returning undefined if parsing fails or the structure is invalid.
+const tryParseCapturedMapState = (capturedMapState?: string): CapturedMapStateValue | undefined => {
+  if (!capturedMapState) return undefined
+
+  try {
+    const parsedMapState: unknown = JSON.parse(capturedMapState)
+    const result = capturedMapStateValueSchema.safeParse(parsedMapState)
+
+    return result.success ? result.data : undefined
+  } catch {
+    return undefined
+  }
+}
+
+// Build a URL for headless export.
+const pageUrlForHeadless = (
+  baseUrl: string,
+  selectedDeviceIds: string[],
+  capturedMapState?: CapturedMapStateValue,
+): string => {
+  const url = new URL(baseUrl)
+
+  url.searchParams.set('headless', 'true')
+
+  if (selectedDeviceIds.length > 0) {
+    url.searchParams.set('deviceIds', selectedDeviceIds.join(','))
+  }
+
+  if (capturedMapState) {
+    url.searchParams.set('mapWidthPx', String(capturedMapState.mapWidthPx))
+    url.searchParams.set('mapHeightPx', String(capturedMapState.mapHeightPx))
+  }
+
+  return url.toString()
+}
+
+// Execute async work sequentially to keep map preset changes and screenshots deterministic.
+const forEachSequentially = async <T>(
+  items: readonly T[],
+  fn: (item: T, index: number) => Promise<void>,
+): Promise<void> => {
+  let index = 0
+  for (const item of items) {
+    // eslint-disable-next-line no-await-in-loop -- Intentional: keep preset changes and screenshots sequential
+    await fn(item, index)
+    index += 1
+  }
+}
+
+// Wait until the client-side map code has added all custom layers.
+const waitForAppLayersReady = async (page: Page): Promise<void> => {
+  await page.evaluate(() => {
+    type DocumentLike = {
+      addEventListener: (type: string, listener: () => void, options?: { once?: boolean }) => void
+    }
+
+    const root = globalThis as unknown as { document: DocumentLike }
+
+    return new Promise<void>(resolve => {
+      root.document.addEventListener('app:map:layers:ready', () => resolve(), { once: true })
+    })
+  })
+}
+
+// Wait for the OpenLayers map to complete a render after a view or layer change.
+const waitForOlRenderComplete = async (page: Page): Promise<void> => {
+  await page.evaluate(() => {
+    type EmMapLike = { olMapInstance?: unknown }
+    type OlMapLike = {
+      once: (eventName: string, handler: () => void) => void
+      renderSync: () => void
+    }
+
+    const doc = (globalThis as unknown as { document?: unknown }).document
+    if (!doc) throw new Error('document not available')
+
+    const mapElement = (doc as { querySelector: (selector: string) => unknown }).querySelector(
+      'em-map',
+    ) as EmMapLike | null
+
+    if (!mapElement?.olMapInstance) {
+      throw new Error('em-map.olMapInstance not found')
+    }
+
+    const map = mapElement.olMapInstance as OlMapLike
+
+    return new Promise<void>(resolve => {
+      map.once('rendercomplete', () => resolve())
+      map.renderSync()
+    })
+  })
+}
+
+// Apply a map preset in the headless page to set layer visibility and styles for screenshots.
+const applyPreset = async (page: Page, preset: PresetParam, deviceId?: string): Promise<void> => {
+  await page.evaluate(
+    ({ presetValue, deviceIdValue }) => {
+      const win = globalThis as unknown as {
+        mapImages?: { applyPreset?: (preset: string, deviceId?: string) => void }
+      }
+
+      if (!win.mapImages?.applyPreset) {
+        throw new Error('window.mapImages.applyPreset not found')
+      }
+
+      win.mapImages.applyPreset(presetValue, deviceIdValue)
+    },
+    {
+      presetValue: preset,
+      deviceIdValue: deviceId,
+    },
+  )
+}
+
+// Apply the captured map state in the headless page to set the map view for the user-view overview screenshot.
+const applyCapturedMapState = async (page: Page, capturedMapState: CapturedMapStateValue): Promise<void> => {
+  await page.evaluate(
+    ({ capturedMapStateValue }) => {
+      const win = globalThis as unknown as {
+        mapImages?: { applyCapturedMapState?: (state: unknown) => void }
+      }
+
+      if (!win.mapImages?.applyCapturedMapState) {
+        throw new Error('window.mapImages.applyCapturedMapState not found')
+      }
+
+      win.mapImages.applyCapturedMapState(capturedMapStateValue)
+    },
+    {
+      capturedMapStateValue: capturedMapState,
+    },
+  )
+}
+
+// Capture a screenshot of the map element in the headless page, returning it as a JPEG buffer.
+const screenshotMapElement = async (page: Page): Promise<Buffer> => {
+  const mapElement = await page.$('em-map')
+  if (!mapElement) {
+    throw new Error('Map element <em-map> not found for screenshot')
+  }
+
+  return mapElement.screenshot({
+    type: 'jpeg',
+    quality: DEFAULT_JPEG_QUALITY,
+  })
+}
+
+export default class MapImageRendererService {
+  // Render map images for the proximity alert report based on the provided arguments, returning them as buffers.
+  async render(args: RenderProximityAlertImagesArgs): Promise<ProximityAlertReportImages> {
+    const { browser, pageUrl, baseUrlForCookies, cookieHeader, selectedDeviceIds, capturedMapState } = args
+
+    const parsedCapturedMapState = tryParseCapturedMapState(capturedMapState)
+
+    const context = await browser.newContext({
+      viewport: DEFAULT_VIEWPORT,
+    })
 
     try {
+      if (cookieHeader) {
+        const cookies = cookiesFromHeader(cookieHeader, baseUrlForCookies)
+        if (cookies.length > 0) {
+          await context.addCookies(cookies)
+        }
+      }
+
+      const page = await context.newPage()
+      page.setDefaultTimeout(DEFAULT_TIMEOUT_MS)
+      page.setDefaultNavigationTimeout(DEFAULT_TIMEOUT_MS)
+
+      const targetUrl = pageUrlForHeadless(pageUrl, selectedDeviceIds, parsedCapturedMapState)
+
+      await page.goto(targetUrl, { waitUntil: 'domcontentloaded' })
+      await waitForAppLayersReady(page)
+      await waitForOlRenderComplete(page)
+
+      let overviewUserViewJpg: Buffer | undefined
+
+      if (parsedCapturedMapState) {
+        await applyPreset(page, 'overview-user-view')
+        await applyCapturedMapState(page, parsedCapturedMapState)
+        await waitForOlRenderComplete(page)
+
+        overviewUserViewJpg = await screenshotMapElement(page)
+      } else {
+        overviewUserViewJpg = await screenshotMapElement(page)
+      }
+
+      await applyPreset(page, 'overview-fitted')
+      await waitForOlRenderComplete(page)
+      const overviewFittedJpg = await screenshotMapElement(page)
+
+      const wearerOverviewJpgByDeviceId: Record<string, Buffer> = {}
+      await forEachSequentially(selectedDeviceIds, async deviceId => {
+        await applyPreset(page, 'wearer-overview', deviceId)
+        await waitForOlRenderComplete(page)
+        wearerOverviewJpgByDeviceId[deviceId] = await screenshotMapElement(page)
+      })
+
+      const wearerDetailJpgByDeviceId: Record<string, Buffer> = {}
+      await forEachSequentially(selectedDeviceIds, async deviceId => {
+        await applyPreset(page, 'wearer-detail', deviceId)
+        await waitForOlRenderComplete(page)
+        wearerDetailJpgByDeviceId[deviceId] = await screenshotMapElement(page)
+      })
+
       return {
-        image1Jpg: undefined,
-        image2Jpg: undefined,
-        wearerImage1JpgById: {},
-        wearerImage2JpgById: {},
+        overviewUserViewJpg,
+        overviewFittedJpg,
+        wearerOverviewJpgByDeviceId,
+        wearerDetailJpgByDeviceId,
       }
     } finally {
       await context.close()

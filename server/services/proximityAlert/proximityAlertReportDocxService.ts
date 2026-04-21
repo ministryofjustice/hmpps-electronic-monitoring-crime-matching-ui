@@ -24,7 +24,7 @@ export default class ProximityAlertReportDocxService {
             new Paragraph(`Crime reference: ${crimeVersion.crimeReference}`),
             new Paragraph(`Selected device IDs: ${deviceIds.join(', ')}`),
             new Paragraph(`Captured map state provided: ${capturedMapState ? 'Yes' : 'No'}`),
-            new Paragraph(`Overview image present: ${images.image1Jpg ? 'Yes' : 'No'}`),
+            new Paragraph(`Overview image present: ${images.overviewUserViewJpg ? 'Yes' : 'No'}`),
           ],
         },
       ],
