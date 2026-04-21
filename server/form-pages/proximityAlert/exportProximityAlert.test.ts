@@ -218,7 +218,7 @@ describe('exportProximityAlert form page', () => {
       })
     })
 
-    it('should build an export proximity alert form with undefined state values when no state exists', () => {
+    it('should build an export proximity alert form with default values when no state exists', () => {
       // Given
       const crimeVersionId = '78d41bd9-5450-4bbb-89d4-42ba75659f50'
 
@@ -228,10 +228,10 @@ describe('exportProximityAlert form page', () => {
       // Then
       expect(result).toEqual({
         url: '/proximity-alert/78d41bd9-5450-4bbb-89d4-42ba75659f50/export-proximity-alert',
-        selectedDeviceIds: undefined,
-        selectedTrackDeviceIds: undefined,
-        showConfidenceCircles: undefined,
-        showLocationNumbering: undefined,
+        selectedDeviceIds: [],
+        selectedTrackDeviceIds: [],
+        showConfidenceCircles: true,
+        showLocationNumbering: true,
         capturedMapState: undefined,
       })
     })

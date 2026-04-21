@@ -12,6 +12,15 @@ export type ExportProximityAlertState = {
   capturedMapState?: string
 }
 
+export type ExportProximityAlertForm = {
+  url: string
+  selectedDeviceIds: string[]
+  selectedTrackDeviceIds: string[]
+  showConfidenceCircles: boolean
+  showLocationNumbering: boolean
+  capturedMapState?: string
+}
+
 type ParsedExportProximityAlertData = {
   deviceIds: string[]
   capturedMapState?: string
@@ -27,6 +36,15 @@ export type ParsedExportProximityAlertRequest =
       success: false
       formState: ExportProximityAlertState
     }
+
+// Default values for the form
+const defaultExportProximityAlertState = (): ExportProximityAlertState => ({
+  selectedDeviceIds: [],
+  selectedTrackDeviceIds: [],
+  showConfidenceCircles: true,
+  showLocationNumbering: true,
+  capturedMapState: undefined,
+})
 
 const parseDeviceIdsFromDeviceWearerToggle = (value: unknown): string[] =>
   formStringArraySchema
@@ -61,6 +79,7 @@ const toExportProximityAlertState = (body: Record<string, unknown>): ExportProxi
   const capturedMapState = optionalTrimmedStringSchema.parse(body.capturedMapState)
 
   return {
+    ...defaultExportProximityAlertState(),
     selectedDeviceIds,
     selectedTrackDeviceIds,
     showConfidenceCircles,
@@ -68,6 +87,14 @@ const toExportProximityAlertState = (body: Record<string, unknown>): ExportProxi
     capturedMapState,
   }
 }
+
+// Resolve state coming from session/query/etc.
+const toResolvedExportProximityAlertState = (
+  state?: Partial<ExportProximityAlertState>,
+): ExportProximityAlertState => ({
+  ...defaultExportProximityAlertState(),
+  ...state,
+})
 
 export const parseExportProximityAlertRequest = (body: Record<string, unknown>): ParsedExportProximityAlertRequest => {
   const formState = toExportProximityAlertState(body)
@@ -100,21 +127,19 @@ export const withExportProximityAlertError = (
   error,
 })
 
+// Convert form state to the shape needed for rendering the export form in the UI
 export const toExportProximityAlertForm = (
   crimeVersionId: string,
-  state?: ExportProximityAlertState,
-): {
-  url: string
-  selectedDeviceIds?: string[]
-  selectedTrackDeviceIds?: string[]
-  showConfidenceCircles?: boolean
-  showLocationNumbering?: boolean
-  capturedMapState?: string
-} => ({
-  url: `/proximity-alert/${encodeURIComponent(crimeVersionId)}/export-proximity-alert`,
-  selectedDeviceIds: state?.selectedDeviceIds,
-  selectedTrackDeviceIds: state?.selectedTrackDeviceIds,
-  showConfidenceCircles: state?.showConfidenceCircles,
-  showLocationNumbering: state?.showLocationNumbering,
-  capturedMapState: state?.capturedMapState,
-})
+  state?: Partial<ExportProximityAlertState>,
+): ExportProximityAlertForm => {
+  const resolvedState = toResolvedExportProximityAlertState(state)
+
+  return {
+    url: `/proximity-alert/${encodeURIComponent(crimeVersionId)}/export-proximity-alert`,
+    selectedDeviceIds: resolvedState.selectedDeviceIds,
+    selectedTrackDeviceIds: resolvedState.selectedTrackDeviceIds,
+    showConfidenceCircles: resolvedState.showConfidenceCircles,
+    showLocationNumbering: resolvedState.showLocationNumbering,
+    capturedMapState: resolvedState.capturedMapState,
+  }
+}
