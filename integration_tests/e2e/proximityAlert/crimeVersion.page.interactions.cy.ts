@@ -1,7 +1,7 @@
 /* eslint-disable cypress/no-unnecessary-waiting */
 import Map from 'ol/Map'
 import BaseLayer from 'ol/layer/Base'
-import { transform } from 'ol/proj'
+import { fromLonLat, transform } from 'ol/proj'
 import Page from '../../pages/page'
 import CrimeVersionPage from '../../pages/proximityAlert/crimeVersion'
 
@@ -435,6 +435,49 @@ context('Crime Version', () => {
           expect(centre[0]).to.be.closeTo(-2.528865717, 0.0000001)
           expect(centre[1]).to.be.closeTo(53.43157277, 0.0000001)
           expect(map.getView().getZoom()).to.be.closeTo(17.2, 0.1)
+        })
+      })
+    })
+
+    it('should show the crime overlay', () => {
+      // When the user loads the page
+      cy.visit(`/proximity-alert/${crimeVersionId}`)
+
+      const page = Page.verifyOnPage(CrimeVersionPage)
+
+      // And the map is ready
+      page.map.mapInstance.then(map => {
+        cy.wait(100).then(() => {
+          const canvas = map.getViewport().querySelector('canvas')!
+
+          cy.window().then(window => {
+            const coordinate = fromLonLat([-2.528865717, 53.43157277])
+            const rect = canvas.getBoundingClientRect()
+            const pixel = map.getPixelFromCoordinate(coordinate)
+            const clientX = rect.left + pixel[0]
+            const clientY = rect.top + pixel[1]
+            const events = ['pointerdown', 'pointerup', 'click']
+
+            // And clicks the crime marker
+            events.forEach(type => {
+              const event = new window.PointerEvent(type, {
+                clientX,
+                clientY,
+                bubbles: true,
+                cancelable: true,
+                view: window,
+              })
+              canvas.dispatchEvent(event)
+            })
+
+            // Then the crime overlay should be shown
+            page.map.overlay.shouldBeVisible()
+            page.map.overlay.shouldHaveTitle('Crime Ref: crimeRef')
+            page.map.overlay.shouldHaveNthRow(0, 'Crime Ref', 'crimeRef')
+            page.map.overlay.shouldHaveNthRow(1, 'Crime Batch', 'batch1')
+            page.map.overlay.shouldHaveNthRow(2, 'Location', '53.43157277, -2.528865717')
+            page.map.overlay.shouldHaveNthRow(3, 'Crime Window', '01/01/2025 00:00 01/01/2025 01:00')
+          })
         })
       })
     })
