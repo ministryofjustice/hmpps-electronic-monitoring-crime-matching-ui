@@ -68,10 +68,16 @@ const presentMatchingResult = (crimeVersion: CrimeVersion) => {
 
 const presentCrimeVersion = (crimeVersion: CrimeVersion) => {
   return {
-    ...crimeVersion,
-    versionColour: getVersionColour(crimeVersion),
+    crimeVersionId: crimeVersion.crimeVersionId,
+    crimeDateTimeFrom: crimeVersion.crimeDateTimeFrom,
+    crimeDateTimeTo: crimeVersion.crimeDateTimeTo,
     crimePosition: presentCrimePosition(crimeVersion),
+    crimeReference: crimeVersion.crimeReference,
+    crimeText: crimeVersion.crimeText,
+    crimeTypeDescription: crimeVersion.crimeTypeDescription,
     matching: presentMatchingResult(crimeVersion),
+    versionColour: getVersionColour(crimeVersion),
+    versionLabel: crimeVersion.versionLabel,
   }
 }
 
