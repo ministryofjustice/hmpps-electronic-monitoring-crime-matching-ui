@@ -5,10 +5,10 @@ import {
   TracksLayer,
 } from '@ministryofjustice/hmpps-electronic-monitoring-components/map/layers'
 import LayerGroup from 'ol/layer/Group'
-import { CrimePosition, WearerPosition } from '../types'
+import { Position } from '@ministryofjustice/hmpps-electronic-monitoring-components/map'
 
 class DeviceWearerLayer extends LayerGroup {
-  constructor(deviceId: number, crime: CrimePosition, positions: Array<WearerPosition>, colour: string) {
+  constructor(deviceId: number, crime: Position, positions: Array<Position>, colour: string) {
     super({
       properties: {
         title: `device-wearer-${deviceId}`,

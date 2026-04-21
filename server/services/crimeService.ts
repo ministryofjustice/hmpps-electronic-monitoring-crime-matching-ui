@@ -1,7 +1,7 @@
 import { asSystem } from '@ministryofjustice/hmpps-rest-client'
 import CrimeMatchingClient from '../data/crimeMatchingClient'
 import CrimeVersionSummary from '../types/crimeVersionSummary'
-import CrimeVersion from '../types/crimeVersion'
+import { CrimeVersion } from '../types/crimeVersion'
 import { PaginatedServiceResult, ServiceResult } from '../types/service'
 import { getCrimeVersionsDtoSchema } from '../schemas/proximityAlert/crimeSearch'
 import getCrimeVersionDtoSchema from '../schemas/proximityAlert/crimeVersion'

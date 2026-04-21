@@ -1,5 +1,5 @@
 import { Document, Packer, Paragraph, TextRun } from 'docx'
-import type CrimeVersion from '../../types/crimeVersion'
+import type { CrimeVersion } from '../../types/crimeVersion'
 import type { ProximityAlertReportImages } from './mapImageRendererService'
 
 export type BuildProximityAlertReportDocxArgs = {

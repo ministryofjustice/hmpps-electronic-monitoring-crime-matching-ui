@@ -7,13 +7,12 @@ import {
   withExportProximityAlertError,
 } from '../../form-pages/proximityAlert/exportProximityAlert'
 import presentCrimeVersion from '../../presenters/crimeVersion'
-import toProximityAlertMapPositions from '../../presenters/proximityAlert/mapPositions'
 import CrimeService from '../../services/crimeService'
 import MapImageRendererService from '../../services/proximityAlert/mapImageRendererService'
 import PlaywrightBrowserService from '../../services/proximityAlert/playwrightBrowserService'
 import ProximityAlertReportDocxService from '../../services/proximityAlert/proximityAlertReportDocxService'
-import type { MojAlert } from '../../types/govUk/mojAlert'
 import { createMojAlertWarning } from '../../utils/alerts'
+import type { MojAlert } from '../../types/govUk/mojAlert'
 
 const DOCX_CONTENT_TYPE = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
 const EXPORT_ERROR_MESSAGE = 'Could not export Proximity Alert report. Please try again.'
@@ -48,7 +47,6 @@ export default class CrimeVersionController {
       res.render('pages/proximityAlert/crimeVersion', {
         usesInternalOverlays: true,
         crimeVersion: presentCrimeVersion(result.data),
-        positions: toProximityAlertMapPositions(result.data),
         alerts,
         exportProximityAlertForm: toExportProximityAlertForm(crimeVersionId, exportState),
       })
