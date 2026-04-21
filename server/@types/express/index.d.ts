@@ -1,6 +1,7 @@
 import { HmppsUser } from '../../interfaces/hmppsUser'
 import { ValidationResult } from '../../models/ValidationResult'
 import DeviceActivation from '../../types/entities/deviceActivation'
+import type { ExportProximityAlertState } from '../form-pages/proximityAlert/exportProximityAlert'
 
 export declare module 'express-session' {
   interface SessionData {
@@ -8,14 +9,7 @@ export declare module 'express-session' {
     nowInMinutes: number
     formData: unknown
     validationErrors: ValidationResult
-    exportProximityAlertState?: {
-      error?: string
-      selectedDeviceIds?: string[]
-      selectedTrackDeviceIds?: string[]
-      showConfidenceCircles?: boolean
-      showLocationNumbering?: boolean
-      capturedMapState?: string
-    }
+    exportProximityAlertState?: ExportProximityAlertState
     queryId: string
   }
 }

@@ -4,10 +4,10 @@ import {
   TextLayer,
 } from '@ministryofjustice/hmpps-electronic-monitoring-components/map/layers'
 import LayerGroup from 'ol/layer/Group'
-import { CrimePosition } from '../types'
+import { Position } from '@ministryofjustice/hmpps-electronic-monitoring-components/map'
 
 class CrimeLayer extends LayerGroup {
-  constructor(crime: CrimePosition) {
+  constructor(crime: Position) {
     super({
       properties: {
         title: 'crime',
@@ -25,14 +25,7 @@ class CrimeLayer extends LayerGroup {
               width: 2,
             },
           },
-          positions: [
-            {
-              latitude: crime.latitude,
-              longitude: crime.longitude,
-              // @ts-expect-error missing from type but is used
-              precision: 100,
-            },
-          ],
+          positions: [crime],
         }).getLayers(),
 
         // Crime type label
