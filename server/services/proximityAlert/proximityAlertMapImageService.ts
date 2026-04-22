@@ -66,7 +66,7 @@ const tryParseCapturedMapState = (capturedMapState?: string): CapturedMapStateVa
 const pageUrlForHeadless = (
   baseUrl: string,
   selectedDeviceIds: string[],
-  capturedMapState?: CapturedMapStateValue,
+  capturedMapState: CapturedMapStateValue,
 ): string => {
   const url = new URL(baseUrl)
 
@@ -76,10 +76,8 @@ const pageUrlForHeadless = (
     url.searchParams.set('deviceIds', selectedDeviceIds.join(','))
   }
 
-  if (capturedMapState) {
-    url.searchParams.set('mapWidthPx', String(capturedMapState.mapWidthPx))
-    url.searchParams.set('mapHeightPx', String(capturedMapState.mapHeightPx))
-  }
+  url.searchParams.set('mapWidthPx', String(capturedMapState.mapWidthPx))
+  url.searchParams.set('mapHeightPx', String(capturedMapState.mapHeightPx))
 
   return url.toString()
 }
@@ -200,19 +198,26 @@ export default class MapImageRendererService {
   async render(args: RenderProximityAlertImagesArgs): Promise<ProximityAlertReportImages> {
     const { browser, pageUrl, baseUrlForCookies, cookieHeader, selectedDeviceIds, capturedMapState } = args
 
+    if (!cookieHeader) {
+      throw new Error('cookieHeader is required to render proximity alert report images')
+    }
+
     const parsedCapturedMapState = tryParseCapturedMapState(capturedMapState)
+    if (!parsedCapturedMapState) {
+      throw new Error('capturedMapState is required and must be valid to render proximity alert report images')
+    }
 
     const context = await browser.newContext({
       viewport: DEFAULT_VIEWPORT,
     })
 
     try {
-      if (cookieHeader) {
-        const cookies = cookiesFromHeader(cookieHeader, baseUrlForCookies)
-        if (cookies.length > 0) {
-          await context.addCookies(cookies)
-        }
+      const cookies = cookiesFromHeader(cookieHeader, baseUrlForCookies)
+      if (cookies.length === 0) {
+        throw new Error('cookieHeader must contain at least one valid cookie to render proximity alert report images')
       }
+
+      await context.addCookies(cookies)
 
       const page = await context.newPage()
       page.setDefaultTimeout(DEFAULT_TIMEOUT_MS)
@@ -224,17 +229,10 @@ export default class MapImageRendererService {
       await waitForAppLayersReady(page)
       await waitForOlRenderComplete(page)
 
-      let overviewUserViewJpg: Buffer | undefined
-
-      if (parsedCapturedMapState) {
-        await applyPreset(page, 'overview-user-view')
-        await applyCapturedMapState(page, parsedCapturedMapState)
-        await waitForOlRenderComplete(page)
-
-        overviewUserViewJpg = await screenshotMapElement(page)
-      } else {
-        overviewUserViewJpg = await screenshotMapElement(page)
-      }
+      await applyPreset(page, 'overview-user-view')
+      await applyCapturedMapState(page, parsedCapturedMapState)
+      await waitForOlRenderComplete(page)
+      const overviewUserViewJpg = await screenshotMapElement(page)
 
       await applyPreset(page, 'overview-fitted')
       await waitForOlRenderComplete(page)

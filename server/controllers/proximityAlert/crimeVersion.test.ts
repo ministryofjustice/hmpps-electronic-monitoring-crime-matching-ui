@@ -10,7 +10,7 @@ import createMockRequest from '../../testutils/createMockRequest'
 import createMockResponse from '../../testutils/createMockResponse'
 import CrimeService from '../../services/crimeService'
 import PlaywrightBrowserService from '../../services/proximityAlert/playwrightBrowserService'
-import MapImageRendererService from '../../services/proximityAlert/mapImageRendererService'
+import MapImageRendererService from '../../services/proximityAlert/proximityAlertMapImageService'
 import ProximityAlertReportDocxService from '../../services/proximityAlert/proximityAlertReportDocxService'
 
 dayjs.extend(utc)

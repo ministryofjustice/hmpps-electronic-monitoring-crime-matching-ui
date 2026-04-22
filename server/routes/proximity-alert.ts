@@ -3,7 +3,7 @@ import type { Services } from '../services'
 import asyncMiddleware from '../middleware/asyncMiddleware'
 import CrimeSearchController from '../controllers/proximityAlert/crimeSearch'
 import CrimeVersionController from '../controllers/proximityAlert/crimeVersion'
-import MapImageRendererService from '../services/proximityAlert/mapImageRendererService'
+import MapImageRendererService from '../services/proximityAlert/proximityAlertMapImageService'
 import ProximityAlertReportDocxService from '../services/proximityAlert/proximityAlertReportDocxService'
 import populateBackLink from '../middleware/populateBackLink'
 

@@ -9,7 +9,7 @@ import {
 } from '../../form-pages/proximityAlert/exportProximityAlert'
 import presentCrimeVersion from '../../presenters/crimeVersion'
 import CrimeService from '../../services/crimeService'
-import MapImageRendererService from '../../services/proximityAlert/mapImageRendererService'
+import MapImageRendererService from '../../services/proximityAlert/proximityAlertMapImageService'
 import PlaywrightBrowserService from '../../services/proximityAlert/playwrightBrowserService'
 import ProximityAlertReportDocxService from '../../services/proximityAlert/proximityAlertReportDocxService'
 import type { MojAlert } from '../../types/govUk/mojAlert'
