@@ -143,6 +143,8 @@ describe('CrimeVersionController', () => {
                     name: 'name',
                     nomisId: 'nomisId',
                     speed: 0,
+                    overlayTitleTemplateId: 'overlay-title-device-location',
+                    overlayBodyTemplateId: 'overlay-body-device-location',
                   },
                   {
                     latitude: 10.0,
@@ -155,6 +157,8 @@ describe('CrimeVersionController', () => {
                     name: 'name',
                     nomisId: 'nomisId',
                     speed: 0,
+                    overlayTitleTemplateId: 'overlay-title-device-location',
+                    overlayBodyTemplateId: 'overlay-body-device-location',
                   },
                 ],
               },

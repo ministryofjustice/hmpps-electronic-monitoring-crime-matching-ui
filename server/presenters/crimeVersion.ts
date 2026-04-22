@@ -47,6 +47,8 @@ const presentDevicePositions = ({
       direction: 0,
       name,
       nomisId,
+      overlayTitleTemplateId: 'overlay-title-device-location',
+      overlayBodyTemplateId: 'overlay-body-device-location',
       sequenceLabel,
       speed: 0,
     }

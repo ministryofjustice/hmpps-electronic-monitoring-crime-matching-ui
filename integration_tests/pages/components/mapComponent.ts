@@ -2,6 +2,7 @@ import { v4 as uuidv4 } from 'uuid'
 import Map from 'ol/Map'
 import { PageElement } from '../page'
 import MapSidebarComponent from './mapSidebarComponent'
+import MapOverlay from './mapOverlay'
 
 export default class MapComponent {
   private elementCacheId: string = uuidv4()
@@ -22,6 +23,10 @@ export default class MapComponent {
 
   get mapComponent(): PageElement {
     return this.element.get('em-map')
+  }
+
+  get overlay(): MapOverlay {
+    return new MapOverlay(this.element)
   }
 
   get mapInstance(): Cypress.Chainable<Map> {

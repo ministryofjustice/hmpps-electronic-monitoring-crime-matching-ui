@@ -131,6 +131,38 @@
         <span class="app-map__overlay-value">{{ crimeDateTimeFrom }} <br />{{ crimeDateTimeTo }}</span>
       </div>
     </template>
+
+    <template id="overlay-title-device-location">
+      <div>
+        <strong>Name (NOMIS ID): {{ name }} ({{ nomisId }})<br />Device ID: {{ deviceId }}</strong>
+      </div>
+    </template>
+
+    <template id="overlay-body-device-location">
+      <div class="app-map__overlay-row">
+        <span class="app-map__overlay-label">Confidence (m)</span>
+        <span class="app-map__overlay-value">{{ precision }}</span>
+      </div>
+      <div class="app-map__overlay-row">
+        <span class="app-map__overlay-label">Speed (km/h)</span>
+        <span class="app-map__overlay-value">{{ speed }} </span>
+      </div>
+      <div class="app-map__overlay-row">
+        <span class="app-map__overlay-label">Direction (degrees)</span>
+        <span class="app-map__overlay-value">{{ direction }} </span>
+      </div>
+      <div class="app-map__overlay-row">
+        <span class="app-map__overlay-label">Recorded Date</span>
+        <span class="app-map__overlay-value">{{ capturedDateTime }} </span>
+      </div>
+      <div class="app-map__overlay-row">
+        <span class="app-map__overlay-label">Location</span>
+        <span class="app-map__overlay-value" data-copy-value="{{ latitude }}, {{ longitude }}">
+          {{ latitude }}, {{ longitude }}
+          <a href="#" class="app-map__copy-link govuk-link">Copy</a>
+        </span>
+      </div>
+    </template>
   {% endraw %}
   {# prettier-ignore-start #}
     <script id="map-data" type="application/json">
