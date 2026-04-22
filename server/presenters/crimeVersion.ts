@@ -15,6 +15,7 @@ const presentCrimePosition = ({
   crimeReference,
   crimeDateTimeFrom,
   crimeDateTimeTo,
+  crimeTypeId,
   latitude,
   longitude,
 }: CrimeVersion): Position & Record<string, unknown> => {
@@ -23,6 +24,7 @@ const presentCrimePosition = ({
     longitude,
     precision: 100,
     crimeReference,
+    crimeTypeId,
     overlayTitleTemplateId: 'overlay-title-crime-location',
     overlayBodyTemplateId: 'overlay-body-crime-location',
     batchId,

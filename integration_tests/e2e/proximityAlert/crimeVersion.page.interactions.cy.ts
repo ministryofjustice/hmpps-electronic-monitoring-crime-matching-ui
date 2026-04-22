@@ -2,6 +2,8 @@
 import Map from 'ol/Map'
 import BaseLayer from 'ol/layer/Base'
 import { fromLonLat, transform } from 'ol/proj'
+import VectorLayer from 'ol/layer/Vector'
+import { Style } from 'ol/style'
 import Page from '../../pages/page'
 import CrimeVersionPage from '../../pages/proximityAlert/crimeVersion'
 
@@ -22,6 +24,27 @@ const getLayers = (map: Map, pattern: RegExp = /device-wearer-.*/): Array<{ titl
     .getAllLayers()
     .filter(layer => pattern.test(getTitle(layer)))
     .map(layer => ({ title: getTitle(layer), visible: layer.isVisible() }))
+}
+
+const getResolvedStyles = (map: Map, layerId: string): Array<Array<Style>> => {
+  const layer = map.getAllLayers().find(l => l.get('title') === layerId)
+
+  if (layer) {
+    const features = (layer as VectorLayer).getSource()!.getFeatures()
+    const styleFn = (layer as VectorLayer).getStyleFunction()!
+
+    return features.map(feature => {
+      const styles = styleFn(feature, 0)
+
+      if (!styles) {
+        return []
+      }
+
+      return Array.isArray(styles) ? styles : [styles]
+    })
+  }
+
+  return []
 }
 
 const crimeLocation = [-2.528865717, 53.43157277]
@@ -106,6 +129,22 @@ context('Crime Version', () => {
           { title: 'device-wearer-circles-2', visible: true },
           { title: 'device-wearer-positions-2', visible: true },
         ])
+      })
+    })
+
+    it('should show the crime type', () => {
+      // When the user loads the page
+      cy.visit(`/proximity-alert/${crimeVersionId}`)
+
+      const page = Page.verifyOnPage(CrimeVersionPage)
+
+      // And the map is ready
+      page.map.mapInstance.then(map => {
+        const textStyles = getResolvedStyles(map, 'crime-type')
+
+        // Then the crime type should be displayed
+        expect(textStyles).to.have.length(1)
+        expect(textStyles.at(0)?.at(0)?.getText()?.getText()).to.eq('AB')
       })
     })
 
