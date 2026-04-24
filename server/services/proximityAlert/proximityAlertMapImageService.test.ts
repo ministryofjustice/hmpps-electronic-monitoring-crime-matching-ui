@@ -5,9 +5,9 @@ describe('MapImageRendererService', () => {
     // Fake screenshot buffers to be returned by the mocked map element's screenshot method
     const screenshotBuffers = [
       Buffer.from('overview-user-view'),
-      Buffer.from('overview-fitted'),
       Buffer.from('wearer-overview-1'),
       Buffer.from('wearer-overview-2'),
+      Buffer.from('overview-fitted'),
       Buffer.from('wearer-detail-1'),
       Buffer.from('wearer-detail-2'),
     ]

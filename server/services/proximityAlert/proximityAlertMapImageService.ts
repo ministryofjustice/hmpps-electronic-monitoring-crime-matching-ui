@@ -82,19 +82,6 @@ const pageUrlForHeadless = (
   return url.toString()
 }
 
-// Execute async work sequentially to keep map preset changes and screenshots deterministic.
-const forEachSequentially = async <T>(
-  items: readonly T[],
-  fn: (item: T, index: number) => Promise<void>,
-): Promise<void> => {
-  let index = 0
-  for (const item of items) {
-    // eslint-disable-next-line no-await-in-loop -- Intentional: keep preset changes and screenshots sequential
-    await fn(item, index)
-    index += 1
-  }
-}
-
 // Wait until the client-side map code has added all custom layers.
 const waitForAppLayersReady = async (page: Page): Promise<void> => {
   await page.evaluate(() => {
@@ -229,28 +216,37 @@ export default class MapImageRendererService {
       await waitForAppLayersReady(page)
       await waitForOlRenderComplete(page)
 
+      // Overview image that reproduces the user's current browser map view.
       await applyPreset(page, 'overview-user-view')
       await applyCapturedMapState(page, parsedCapturedMapState)
       await waitForOlRenderComplete(page)
       const overviewUserViewJpg = await screenshotMapElement(page)
 
+      const wearerOverviewJpgByDeviceId: Record<string, Buffer> = {}
+
+      // Capture similar map states together to avoid repeatedly switching between overview and detail views.
+      // Large view changes can trigger extra tile loading/rendering, so grouping screenshots reduces export time.
+      /* eslint-disable no-await-in-loop -- Intentional: keep map state changes and screenshots sequential  */
+      for (const deviceId of selectedDeviceIds) {
+        await applyPreset(page, 'wearer-overview', deviceId)
+        await waitForOlRenderComplete(page)
+        wearerOverviewJpgByDeviceId[deviceId] = await screenshotMapElement(page)
+      }
+      /* eslint-enable no-await-in-loop */
+
       await applyPreset(page, 'overview-fitted')
       await waitForOlRenderComplete(page)
       const overviewFittedJpg = await screenshotMapElement(page)
 
-      const wearerOverviewJpgByDeviceId: Record<string, Buffer> = {}
-      await forEachSequentially(selectedDeviceIds, async deviceId => {
-        await applyPreset(page, 'wearer-overview', deviceId)
-        await waitForOlRenderComplete(page)
-        wearerOverviewJpgByDeviceId[deviceId] = await screenshotMapElement(page)
-      })
-
       const wearerDetailJpgByDeviceId: Record<string, Buffer> = {}
-      await forEachSequentially(selectedDeviceIds, async deviceId => {
+
+      /* eslint-disable no-await-in-loop -- Intentional: keep map state changes and screenshots sequential  */
+      for (const deviceId of selectedDeviceIds) {
         await applyPreset(page, 'wearer-detail', deviceId)
         await waitForOlRenderComplete(page)
         wearerDetailJpgByDeviceId[deviceId] = await screenshotMapElement(page)
-      })
+      }
+      /* eslint-enable no-await-in-loop */
 
       return {
         overviewUserViewJpg,
