@@ -116,16 +116,16 @@ export default class CrimeVersionController {
               archive.append(images.overviewUserViewJpg, { name: 'overview-user-view.jpg' })
             }
 
-            if (images.overviewFittedJpg) {
-              archive.append(images.overviewFittedJpg, { name: 'overview-fitted.jpg' })
+            if (images.overviewFittedToDeviceWearersJpg) {
+              archive.append(images.overviewFittedToDeviceWearersJpg, { name: 'overview-fitted-to-device-wearers.jpg' })
             }
 
-            for (const [deviceId, imageBuffer] of Object.entries(images.wearerOverviewJpgByDeviceId)) {
-              archive.append(imageBuffer, { name: `wearer-${deviceId}-overview.jpg` })
+            for (const [deviceId, imageBuffer] of Object.entries(images.deviceWearerWithTracksJpgByDeviceId)) {
+              archive.append(imageBuffer, { name: `device-wearer-${deviceId}-with-tracks.jpg` })
             }
 
-            for (const [deviceId, imageBuffer] of Object.entries(images.wearerDetailJpgByDeviceId)) {
-              archive.append(imageBuffer, { name: `wearer-${deviceId}-detail.jpg` })
+            for (const [deviceId, imageBuffer] of Object.entries(images.deviceWearerFittedWithoutTracksJpgByDeviceId)) {
+              archive.append(imageBuffer, { name: `device-wearer-${deviceId}-fitted-without-tracks.jpg` })
             }
 
             await archive.finalize()

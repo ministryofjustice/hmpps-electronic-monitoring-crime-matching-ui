@@ -5,11 +5,11 @@ describe('MapImageRendererService', () => {
     // Fake screenshot buffers to be returned by the mocked map element's screenshot method
     const screenshotBuffers = [
       Buffer.from('overview-user-view'),
-      Buffer.from('wearer-overview-1'),
-      Buffer.from('wearer-overview-2'),
-      Buffer.from('overview-fitted'),
-      Buffer.from('wearer-detail-1'),
-      Buffer.from('wearer-detail-2'),
+      Buffer.from('device-wearer-with-tracks-1'),
+      Buffer.from('device-wearer-with-tracks-2'),
+      Buffer.from('overview-fitted-to-device-wearers'),
+      Buffer.from('device-wearer-fitted-without-tracks-1'),
+      Buffer.from('device-wearer-fitted-without-tracks-2'),
     ]
 
     // Mock the map element with a screenshot method that returns predefined buffers
@@ -105,6 +105,29 @@ describe('MapImageRendererService', () => {
     expect(page.evaluate).toHaveBeenCalledWith(
       expect.any(Function),
       expect.objectContaining({
+        presetValue: 'overview-fitted-to-device-wearers',
+      }),
+    )
+
+    expect(page.evaluate).toHaveBeenCalledWith(
+      expect.any(Function),
+      expect.objectContaining({
+        presetValue: 'device-wearer-with-tracks',
+        deviceIdValue: '1',
+      }),
+    )
+
+    expect(page.evaluate).toHaveBeenCalledWith(
+      expect.any(Function),
+      expect.objectContaining({
+        presetValue: 'device-wearer-fitted-without-tracks',
+        deviceIdValue: '1',
+      }),
+    )
+
+    expect(page.evaluate).toHaveBeenCalledWith(
+      expect.any(Function),
+      expect.objectContaining({
         capturedMapStateValue: {
           mapWidthPx: 1200,
           mapHeightPx: 800,
@@ -122,14 +145,14 @@ describe('MapImageRendererService', () => {
 
     expect(result).toEqual({
       overviewUserViewJpg: Buffer.from('overview-user-view'),
-      overviewFittedJpg: Buffer.from('overview-fitted'),
-      wearerOverviewJpgByDeviceId: {
-        '1': Buffer.from('wearer-overview-1'),
-        '2': Buffer.from('wearer-overview-2'),
+      overviewFittedToDeviceWearersJpg: Buffer.from('overview-fitted-to-device-wearers'),
+      deviceWearerWithTracksJpgByDeviceId: {
+        '1': Buffer.from('device-wearer-with-tracks-1'),
+        '2': Buffer.from('device-wearer-with-tracks-2'),
       },
-      wearerDetailJpgByDeviceId: {
-        '1': Buffer.from('wearer-detail-1'),
-        '2': Buffer.from('wearer-detail-2'),
+      deviceWearerFittedWithoutTracksJpgByDeviceId: {
+        '1': Buffer.from('device-wearer-fitted-without-tracks-1'),
+        '2': Buffer.from('device-wearer-fitted-without-tracks-2'),
       },
     })
 

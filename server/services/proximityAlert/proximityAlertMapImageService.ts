@@ -4,11 +4,29 @@ import {
   type CapturedMapStateValue,
 } from '../../schemas/proximityAlert/exportProximityAlert'
 
+type ValueOf<T> = T[keyof T]
+
+const MAP_IMAGE_PRESETS = {
+  // Replays the user's submitted browser view using captured map state.
+  overviewUserView: 'overview-user-view',
+
+  // Shows all selected device wearers without tracks, fitted to the cluster.
+  overviewFittedToDeviceWearers: 'overview-fitted-to-device-wearers',
+
+  // Shows a single device wearer with tracks visible.
+  deviceWearerWithTracks: 'device-wearer-with-tracks',
+
+  // Shows a single device wearer without tracks, fitted tightly to its positions.
+  deviceWearerFittedWithoutTracks: 'device-wearer-fitted-without-tracks',
+} as const
+
+type PresetParam = ValueOf<typeof MAP_IMAGE_PRESETS>
+
 export type ProximityAlertReportImages = {
   overviewUserViewJpg?: Buffer
-  overviewFittedJpg?: Buffer
-  wearerOverviewJpgByDeviceId: Record<string, Buffer>
-  wearerDetailJpgByDeviceId: Record<string, Buffer>
+  overviewFittedToDeviceWearersJpg?: Buffer
+  deviceWearerWithTracksJpgByDeviceId: Record<string, Buffer>
+  deviceWearerFittedWithoutTracksJpgByDeviceId: Record<string, Buffer>
 }
 
 export type RenderProximityAlertImagesArgs = {
@@ -19,8 +37,6 @@ export type RenderProximityAlertImagesArgs = {
   selectedDeviceIds: string[]
   capturedMapState?: string
 }
-
-type PresetParam = 'overview-user-view' | 'overview-fitted' | 'wearer-overview' | 'wearer-detail'
 
 const DEFAULT_TIMEOUT_MS = 30_000
 const DEFAULT_VIEWPORT = {
@@ -215,44 +231,43 @@ export default class MapImageRendererService {
       await page.goto(targetUrl, { waitUntil: 'domcontentloaded' })
       await waitForAppLayersReady(page)
       await waitForOlRenderComplete(page)
-
       // Overview image that reproduces the user's current browser map view.
-      await applyPreset(page, 'overview-user-view')
+      await applyPreset(page, MAP_IMAGE_PRESETS.overviewUserView)
       await applyCapturedMapState(page, parsedCapturedMapState)
       await waitForOlRenderComplete(page)
       const overviewUserViewJpg = await screenshotMapElement(page)
 
-      const wearerOverviewJpgByDeviceId: Record<string, Buffer> = {}
+      const deviceWearerWithTracksJpgByDeviceId: Record<string, Buffer> = {}
 
       // Capture similar map states together to avoid repeatedly switching between overview and detail views.
       // Large view changes can trigger extra tile loading/rendering, so grouping screenshots reduces export time.
-      /* eslint-disable no-await-in-loop -- Intentional: keep map state changes and screenshots sequential  */
+      /* eslint-disable no-await-in-loop -- Intentional: keep map state changes and screenshots sequential */
       for (const deviceId of selectedDeviceIds) {
-        await applyPreset(page, 'wearer-overview', deviceId)
+        await applyPreset(page, MAP_IMAGE_PRESETS.deviceWearerWithTracks, deviceId)
         await waitForOlRenderComplete(page)
-        wearerOverviewJpgByDeviceId[deviceId] = await screenshotMapElement(page)
+        deviceWearerWithTracksJpgByDeviceId[deviceId] = await screenshotMapElement(page)
       }
       /* eslint-enable no-await-in-loop */
 
-      await applyPreset(page, 'overview-fitted')
+      await applyPreset(page, MAP_IMAGE_PRESETS.overviewFittedToDeviceWearers)
       await waitForOlRenderComplete(page)
-      const overviewFittedJpg = await screenshotMapElement(page)
+      const overviewFittedToDeviceWearersJpg = await screenshotMapElement(page)
 
-      const wearerDetailJpgByDeviceId: Record<string, Buffer> = {}
+      const deviceWearerFittedWithoutTracksJpgByDeviceId: Record<string, Buffer> = {}
 
-      /* eslint-disable no-await-in-loop -- Intentional: keep map state changes and screenshots sequential  */
+      /* eslint-disable no-await-in-loop -- Intentional: keep map state changes and screenshots sequential */
       for (const deviceId of selectedDeviceIds) {
-        await applyPreset(page, 'wearer-detail', deviceId)
+        await applyPreset(page, MAP_IMAGE_PRESETS.deviceWearerFittedWithoutTracks, deviceId)
         await waitForOlRenderComplete(page)
-        wearerDetailJpgByDeviceId[deviceId] = await screenshotMapElement(page)
+        deviceWearerFittedWithoutTracksJpgByDeviceId[deviceId] = await screenshotMapElement(page)
       }
       /* eslint-enable no-await-in-loop */
 
       return {
         overviewUserViewJpg,
-        overviewFittedJpg,
-        wearerOverviewJpgByDeviceId,
-        wearerDetailJpgByDeviceId,
+        overviewFittedToDeviceWearersJpg,
+        deviceWearerWithTracksJpgByDeviceId,
+        deviceWearerFittedWithoutTracksJpgByDeviceId,
       }
     } finally {
       await context.close()

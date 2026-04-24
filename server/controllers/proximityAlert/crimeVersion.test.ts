@@ -538,9 +538,9 @@ describe('CrimeVersionController', () => {
       const mockBrowser = {} as Awaited<ReturnType<PlaywrightBrowserService['getBrowser']>>
       const mockImages = {
         overviewUserViewJpg: undefined,
-        overviewFittedJpg: undefined,
-        wearerOverviewJpgByDeviceId: {},
-        wearerDetailJpgByDeviceId: {},
+        overviewFittedToDeviceWearersJpg: undefined,
+        deviceWearerWithTracksJpgByDeviceId: {},
+        deviceWearerFittedWithoutTracksJpgByDeviceId: {},
       }
       const docxBuffer = Buffer.from('fake-docx')
 
