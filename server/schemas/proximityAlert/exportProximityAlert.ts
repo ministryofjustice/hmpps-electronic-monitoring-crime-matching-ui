@@ -1,6 +1,6 @@
 import { z } from 'zod/v4'
 
-const capturedMapStateValueSchema = z.object({
+export const capturedMapStateValueSchema = z.object({
   mapWidthPx: z.number(),
   mapHeightPx: z.number(),
   devicePixelRatio: z.number(),
@@ -10,6 +10,8 @@ const capturedMapStateValueSchema = z.object({
     rotation: z.number(),
   }),
 })
+
+export type CapturedMapStateValue = z.infer<typeof capturedMapStateValueSchema>
 
 export const formStringArraySchema = z
   .union([z.string(), z.array(z.string())])

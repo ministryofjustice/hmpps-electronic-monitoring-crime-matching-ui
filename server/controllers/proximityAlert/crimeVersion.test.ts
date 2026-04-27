@@ -10,7 +10,7 @@ import createMockRequest from '../../testutils/createMockRequest'
 import createMockResponse from '../../testutils/createMockResponse'
 import CrimeService from '../../services/crimeService'
 import PlaywrightBrowserService from '../../services/proximityAlert/playwrightBrowserService'
-import MapImageRendererService from '../../services/proximityAlert/mapImageRendererService'
+import MapImageRendererService from '../../services/proximityAlert/proximityAlertMapImageService'
 import ProximityAlertReportDocxService from '../../services/proximityAlert/proximityAlertReportDocxService'
 
 dayjs.extend(utc)
@@ -503,7 +503,8 @@ describe('CrimeVersionController', () => {
       expect(next).not.toHaveBeenCalled()
     })
 
-    it('should send a docx when the export request is valid', async () => {
+    // Skipped as temporarily exporting a zipped file of images rather than the docx file
+    it.skip('should send a docx when the export request is valid', async () => {
       // Given
       const crimeVersionId = '78d41bd9-5450-4bbb-89d4-42ba75659f50'
       const capturedMapState = JSON.stringify({
@@ -541,10 +542,10 @@ describe('CrimeVersionController', () => {
 
       const mockBrowser = {} as Awaited<ReturnType<PlaywrightBrowserService['getBrowser']>>
       const mockImages = {
-        image1Jpg: undefined,
-        image2Jpg: undefined,
-        wearerImage1JpgById: {},
-        wearerImage2JpgById: {},
+        overviewUserViewJpg: undefined,
+        overviewFittedToDeviceWearersJpg: undefined,
+        deviceWearerWithTracksJpgByDeviceId: {},
+        deviceWearerFittedWithoutTracksJpgByDeviceId: {},
       }
       const docxBuffer = Buffer.from('fake-docx')
 

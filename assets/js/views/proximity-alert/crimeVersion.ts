@@ -17,6 +17,33 @@ type CapturedMapState = {
   }
 }
 
+type PresetParam = 'overview-user-view' | 'overview-fitted' | 'wearer-overview' | 'wearer-detail'
+
+type ExportMapRenderConfig = {
+  selectedDeviceIds?: number[]
+  focusedDeviceId?: number
+  showTracks: boolean
+  showConfidenceCircles: boolean
+  showLocationNumbering: boolean
+  fitToSelectedPositions: boolean
+  fitToFocusedDevicePositions: boolean
+}
+
+type MapData = {
+  crimePosition: Position
+  matching?: {
+    deviceWearers: Array<{
+      deviceId: number
+      positions: Array<Position>
+    }>
+  }
+}
+
+type MapImagesApi = {
+  applyPreset: (preset: PresetParam, deviceId?: string) => void
+  applyCapturedMapState: (state: CapturedMapState) => void
+}
+
 const palette = [
   '#d00050',
   '#fffb06',
@@ -52,6 +79,10 @@ const setCrimeDefaultView = (emMap: EmMap, centre: Coordinate) => {
   map.getView().setZoom(16.5)
 }
 
+const dispatchCheckboxChange = (checkbox: HTMLInputElement) => {
+  checkbox.dispatchEvent(new Event('change', { bubbles: true }))
+}
+
 const applyCheckboxLayerState = () => {
   const selectors = [
     'input[type="checkbox"][name="device-wearer-toggle"]',
@@ -63,7 +94,7 @@ const applyCheckboxLayerState = () => {
     const checkboxes = queryElementAll(document, selector, HTMLInputElement)
 
     checkboxes.forEach(checkbox => {
-      checkbox.dispatchEvent(new Event('change', { bubbles: true }))
+      dispatchCheckboxChange(checkbox)
     })
   }
 }
@@ -149,6 +180,20 @@ const getHeadlessMapSizeFromUrl = (): { widthPx: number; heightPx: number } | nu
   return { widthPx, heightPx }
 }
 
+const getSelectedDeviceIdsFromUrl = (): number[] | undefined => {
+  const params = new URLSearchParams(window.location.search)
+  const deviceIdsParamValues = params.get('deviceIds')
+
+  if (!deviceIdsParamValues) return undefined
+
+  const deviceIds = deviceIdsParamValues
+    .split(',')
+    .map(value => Number(value.trim()))
+    .filter(value => Number.isFinite(value))
+
+  return deviceIds.length > 0 ? deviceIds : undefined
+}
+
 // Headless-only UI tweaks for export screenshots:
 const applyHeadlessUiTweaks = (emMap: EmMap) => {
   const root = emMap.shadowRoot
@@ -193,14 +238,138 @@ const readJsonFromScript = <T>(id: string): T | undefined => {
   return undefined
 }
 
-type MapData = {
-  crimePosition: Position
-  matching?: {
-    deviceWearers: Array<{
-      deviceId: number
-      positions: Array<Position>
-    }>
+const fitToDevicePositions = (emMap: EmMap, crimePosition: Position, devicePositions: Array<Position>) => {
+  emMap.fitToPoints([crimePosition, ...devicePositions], {
+    padding: 40,
+    maxZoom: 20,
+    animate: false,
+  })
+
+  const map = emMap.olMapInstance
+  const mapView = map?.getView()
+
+  if (!map || !mapView) return
+
+  const resolution = mapView.getResolution()
+  if (typeof resolution === 'number') {
+    mapView.setResolution(resolution * 1.3)
   }
+
+  map.renderSync()
+}
+
+const setCheckboxCheckedState = (name: string, value: string, checked: boolean) => {
+  const checkbox = document.querySelector<HTMLInputElement>(`input[type="checkbox"][name="${name}"][value="${value}"]`)
+
+  if (!checkbox) return
+
+  checkbox.checked = checked
+  dispatchCheckboxChange(checkbox)
+}
+
+const setAllDeviceVisibility = (deviceIds: number[], selectedDeviceIds: Set<number>) => {
+  deviceIds.forEach(deviceId => {
+    setCheckboxCheckedState('device-wearer-toggle', `device-wearer-${deviceId}`, selectedDeviceIds.has(deviceId))
+  })
+}
+
+const setTrackVisibility = (deviceIds: number[], visibleDeviceIds: Set<number>) => {
+  deviceIds.forEach(deviceId => {
+    setCheckboxCheckedState('device-wearer-tracks', `device-wearer-tracks-${deviceId}`, visibleDeviceIds.has(deviceId))
+  })
+}
+
+const setAnalysisVisibility = (showConfidenceCircles: boolean, showLocationNumbering: boolean) => {
+  setCheckboxCheckedState('analysis-toggles', 'device-wearer-circles-', showConfidenceCircles)
+  setCheckboxCheckedState('analysis-toggles', 'device-wearer-labels-', showLocationNumbering)
+}
+
+// Build map render config based on preset selection and URL parameters
+const getRenderConfigForPreset = (
+  preset: PresetParam,
+  selectedDeviceIds: number[] | undefined,
+  focusedDeviceId?: number,
+): ExportMapRenderConfig => {
+  if (preset === 'overview-user-view') {
+    return {
+      selectedDeviceIds,
+      showTracks: true,
+      showConfidenceCircles: true,
+      showLocationNumbering: true,
+      fitToSelectedPositions: false,
+      fitToFocusedDevicePositions: false,
+    }
+  }
+
+  if (preset === 'overview-fitted') {
+    return {
+      selectedDeviceIds,
+      showTracks: false,
+      showConfidenceCircles: true,
+      showLocationNumbering: true,
+      fitToSelectedPositions: true,
+      fitToFocusedDevicePositions: false,
+    }
+  }
+
+  if (preset === 'wearer-overview') {
+    return {
+      selectedDeviceIds: focusedDeviceId ? [focusedDeviceId] : selectedDeviceIds,
+      focusedDeviceId,
+      showTracks: true,
+      showConfidenceCircles: true,
+      showLocationNumbering: true,
+      fitToSelectedPositions: false,
+      fitToFocusedDevicePositions: false,
+    }
+  }
+
+  return {
+    selectedDeviceIds: focusedDeviceId ? [focusedDeviceId] : selectedDeviceIds,
+    focusedDeviceId,
+    showTracks: false,
+    showConfidenceCircles: true,
+    showLocationNumbering: true,
+    fitToSelectedPositions: false,
+    fitToFocusedDevicePositions: true,
+  }
+}
+
+// Apply map render config to the map view by updating checkbox states and fitting view if needed
+const applyRenderConfig = (
+  emMap: EmMap,
+  data: MapData,
+  allDeviceIds: number[],
+  config: ExportMapRenderConfig,
+  crimeCentre: Coordinate,
+) => {
+  const selectedDeviceIds = new Set(config.selectedDeviceIds ?? allDeviceIds)
+  const visibleTrackDeviceIds = config.showTracks ? selectedDeviceIds : new Set<number>()
+
+  setAllDeviceVisibility(allDeviceIds, selectedDeviceIds)
+  setTrackVisibility(allDeviceIds, visibleTrackDeviceIds)
+  setAnalysisVisibility(config.showConfidenceCircles, config.showLocationNumbering)
+
+  if (config.fitToSelectedPositions) {
+    const positions =
+      data.matching?.deviceWearers
+        .filter(deviceWearer => selectedDeviceIds.has(deviceWearer.deviceId))
+        .flatMap(deviceWearer => deviceWearer.positions) ?? []
+
+    fitToDevicePositions(emMap, data.crimePosition, positions)
+    return
+  }
+
+  if (config.fitToFocusedDevicePositions && typeof config.focusedDeviceId === 'number') {
+    const focusedDeviceWearer = data.matching?.deviceWearers.find(
+      deviceWearer => deviceWearer.deviceId === config.focusedDeviceId,
+    )
+
+    fitToDevicePositions(emMap, data.crimePosition, focusedDeviceWearer?.positions ?? [])
+    return
+  }
+
+  setCrimeDefaultView(emMap, crimeCentre)
 }
 
 const initialiseProximityAlertView = async () => {
@@ -212,6 +381,7 @@ const initialiseProximityAlertView = async () => {
 
   const emMap = queryElement(document, 'em-map') as EmMap
   const isHeadless = isHeadlessCapture()
+  const selectedDeviceIdsFromUrl = getSelectedDeviceIdsFromUrl()
 
   await new Promise<void>(resolve => {
     emMap.addEventListener('map:ready', () => resolve(), { once: true })
@@ -220,6 +390,8 @@ const initialiseProximityAlertView = async () => {
   const { centre } = addCrimeLayers(emMap, data.crimePosition)
 
   setCrimeDefaultView(emMap, centre)
+
+  const allDeviceIds: number[] = []
 
   if (data.matching) {
     let colourIndex = 0
@@ -232,8 +404,23 @@ const initialiseProximityAlertView = async () => {
           palette[colourIndex % palette.length],
         ),
       )
+      allDeviceIds.push(deviceWearer.deviceId)
       colourIndex += 1
     }
+  }
+
+  const win = window as unknown as { mapImages?: MapImagesApi }
+  win.mapImages = {
+    applyPreset: (preset: PresetParam, deviceId?: string) => {
+      const parsedDeviceId =
+        typeof deviceId === 'string' && deviceId.trim() !== '' ? Number(deviceId.trim()) : undefined
+
+      const config = getRenderConfigForPreset(preset, selectedDeviceIdsFromUrl, parsedDeviceId)
+      applyRenderConfig(emMap, data, allDeviceIds, config, centre)
+    },
+    applyCapturedMapState: (state: CapturedMapState) => {
+      applyCapturedMapState(emMap, state)
+    },
   }
 
   emMap.dispatchEvent(
