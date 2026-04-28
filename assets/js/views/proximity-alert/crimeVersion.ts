@@ -84,11 +84,11 @@ const isHeadlessCapture = (): boolean => {
 }
 
 // Reads selected device IDs from the headless export URL and returns them as a numeric set.
-const getHeadlessSelectedDeviceIds = (): Set<number> | undefined => {
+const getHeadlessSelectedDeviceIds = (): Set<number> => {
   const params = new URLSearchParams(window.location.search)
   const selectedDeviceIds = params.get('selectedDeviceIds')
 
-  if (!selectedDeviceIds) return undefined
+  if (!selectedDeviceIds) return new Set()
 
   const parsedDeviceIds = selectedDeviceIds
     .split(',')
@@ -101,7 +101,6 @@ const getHeadlessSelectedDeviceIds = (): Set<number> | undefined => {
 // Filters map data to include only selected device wearers when running in headless export mode.
 const filterMapDataForHeadlessExport = (data: MapData): MapData => {
   const selectedDeviceIds = getHeadlessSelectedDeviceIds()
-  if (!selectedDeviceIds) return data
 
   return {
     ...data,
@@ -133,15 +132,15 @@ const readJsonFromScript = <T>(id: string): T | undefined => {
 
 // Initialises the shared proximity alert map, then delegates user or headless export behaviour.
 const initialiseProximityAlertView = async () => {
-  const rawData = readJsonFromScript<MapData>('map-data')
+  const allMapData = readJsonFromScript<MapData>('map-data')
 
-  if (!rawData) {
+  if (!allMapData) {
     return
   }
 
   const emMap = queryElement(document, 'em-map') as EmMap
   const isHeadless = isHeadlessCapture()
-  const data = isHeadless ? filterMapDataForHeadlessExport(rawData) : rawData
+  const data = isHeadless ? filterMapDataForHeadlessExport(allMapData) : allMapData
 
   await new Promise<void>(resolve => {
     emMap.addEventListener('map:ready', () => resolve(), { once: true })
@@ -154,18 +153,22 @@ const initialiseProximityAlertView = async () => {
   const allDeviceIds: number[] = []
 
   if (data.matching) {
-    let colourIndex = 0
+    const colourByDeviceId = new Map<number, string>()
+
+    allMapData.matching?.deviceWearers.forEach((deviceWearer, index) => {
+      colourByDeviceId.set(deviceWearer.deviceId, palette[index % palette.length])
+    })
+
     for (const deviceWearer of data.matching.deviceWearers) {
       emMap.addLayerGroup(
         new DeviceWearerLayer(
           deviceWearer.deviceId,
           data.crimePosition,
           deviceWearer.positions,
-          palette[colourIndex % palette.length],
+          colourByDeviceId.get(deviceWearer.deviceId) ?? palette[0],
         ),
       )
       allDeviceIds.push(deviceWearer.deviceId)
-      colourIndex += 1
     }
   }
 
