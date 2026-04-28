@@ -85,7 +85,7 @@ const applyHeadlessMapMode = (emMap: EmMap) => {
 // Fits the map view to the crime marker and supplied device wearer positions.
 const fitToDevicePositions = (emMap: EmMap, crimePosition: Position, devicePositions: Array<Position>) => {
   emMap.fitToPoints([crimePosition, ...devicePositions], {
-    padding: 100,
+    padding: 40,
     maxZoom: 20,
     animate: false,
   })
@@ -94,6 +94,11 @@ const fitToDevicePositions = (emMap: EmMap, crimePosition: Position, devicePosit
   const mapView = map?.getView()
 
   if (!map || !mapView) return
+
+  const resolution = mapView.getResolution()
+  if (typeof resolution === 'number') {
+    mapView.setResolution(resolution * 1.3)
+  }
 
   map.renderSync()
 }
