@@ -84,11 +84,11 @@ const isHeadlessCapture = (): boolean => {
 }
 
 // Reads selected device IDs from the headless export URL and returns them as a numeric set.
-const getHeadlessSelectedDeviceIds = (): Set<number> | undefined => {
+const getHeadlessSelectedDeviceIds = (): Set<number> => {
   const params = new URLSearchParams(window.location.search)
   const selectedDeviceIds = params.get('selectedDeviceIds')
 
-  if (!selectedDeviceIds) return undefined
+  if (!selectedDeviceIds) return new Set()
 
   const parsedDeviceIds = selectedDeviceIds
     .split(',')
@@ -101,7 +101,6 @@ const getHeadlessSelectedDeviceIds = (): Set<number> | undefined => {
 // Filters map data to include only selected device wearers when running in headless export mode.
 const filterMapDataForHeadlessExport = (data: MapData): MapData => {
   const selectedDeviceIds = getHeadlessSelectedDeviceIds()
-  if (!selectedDeviceIds) return data
 
   return {
     ...data,
