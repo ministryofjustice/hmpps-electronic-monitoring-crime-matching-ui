@@ -4,23 +4,17 @@ import {
   type CapturedMapStateValue,
 } from '../../schemas/proximityAlert/exportProximityAlert'
 
-type ValueOf<T> = T[keyof T]
+type ExportMapFitMode = 'none' | 'selected-device-wearers' | 'focused-device-wearer'
 
-const MAP_IMAGE_PRESETS = {
-  // Replays the user's submitted browser view using captured map state.
-  overviewUserView: 'overview-user-view',
-
-  // Shows all selected device wearers without tracks, fitted to the cluster.
-  overviewFittedToDeviceWearers: 'overview-fitted-to-device-wearers',
-
-  // Shows a single device wearer with tracks visible.
-  deviceWearerWithTracks: 'device-wearer-with-tracks',
-
-  // Shows a single device wearer without tracks, fitted tightly to its positions.
-  deviceWearerFittedWithoutTracks: 'device-wearer-fitted-without-tracks',
-} as const
-
-type PresetParam = ValueOf<typeof MAP_IMAGE_PRESETS>
+type ExportMapRenderConfig = {
+  selectedDeviceIds?: number[]
+  selectedTrackDeviceIds?: number[]
+  focusedDeviceId?: number
+  showConfidenceCircles: boolean
+  showLocationNumbering: boolean
+  fitMode: ExportMapFitMode
+  capturedMapState?: CapturedMapStateValue
+}
 
 export type ProximityAlertReportImages = {
   overviewUserViewJpg?: Buffer
@@ -35,7 +29,10 @@ export type RenderProximityAlertImagesArgs = {
   baseUrlForCookies: string
   cookieHeader?: string
   selectedDeviceIds: string[]
+  selectedTrackDeviceIds: string[]
   capturedMapState?: string
+  showConfidenceCircles: boolean
+  showLocationNumbering: boolean
 }
 
 const DEFAULT_TIMEOUT_MS = 30_000
@@ -78,25 +75,81 @@ const tryParseCapturedMapState = (capturedMapState?: string): CapturedMapStateVa
   }
 }
 
+// Converts selected device IDs from strings to valid numeric IDs for map rendering.
+const parseSelectedDeviceIds = (selectedDeviceIds: string[]): number[] => {
+  return selectedDeviceIds.map(deviceId => Number(deviceId)).filter(deviceId => Number.isFinite(deviceId))
+}
+
 // Build a URL for headless export.
-const pageUrlForHeadless = (
-  baseUrl: string,
-  selectedDeviceIds: string[],
-  capturedMapState: CapturedMapStateValue,
-): string => {
+const pageUrlForHeadless = ({
+  baseUrl,
+  capturedMapState,
+  selectedDeviceIds,
+}: {
+  baseUrl: string
+  capturedMapState: CapturedMapStateValue
+  selectedDeviceIds: number[]
+}): string => {
   const url = new URL(baseUrl)
 
   url.searchParams.set('headless', 'true')
-
-  if (selectedDeviceIds.length > 0) {
-    url.searchParams.set('deviceIds', selectedDeviceIds.join(','))
-  }
-
   url.searchParams.set('mapWidthPx', String(capturedMapState.mapWidthPx))
   url.searchParams.set('mapHeightPx', String(capturedMapState.mapHeightPx))
+  url.searchParams.set('selectedDeviceIds', selectedDeviceIds.join(','))
 
   return url.toString()
 }
+
+// Replays the user's submitted browser view using captured map state.
+const overviewUserViewConfig = ({
+  selectedDeviceIds,
+  selectedTrackDeviceIds,
+  capturedMapState,
+  showConfidenceCircles,
+  showLocationNumbering,
+}: {
+  selectedDeviceIds: number[]
+  selectedTrackDeviceIds: number[]
+  capturedMapState: CapturedMapStateValue
+  showConfidenceCircles: boolean
+  showLocationNumbering: boolean
+}): ExportMapRenderConfig => ({
+  selectedDeviceIds,
+  selectedTrackDeviceIds,
+  showConfidenceCircles,
+  showLocationNumbering,
+  fitMode: 'none',
+  capturedMapState,
+})
+
+// Shows all selected device wearers without tracks, fitted to the cluster.
+const overviewFittedToDeviceWearersConfig = (selectedDeviceIds: number[]): ExportMapRenderConfig => ({
+  selectedDeviceIds,
+  selectedTrackDeviceIds: [],
+  showConfidenceCircles: true,
+  showLocationNumbering: true,
+  fitMode: 'selected-device-wearers',
+})
+
+// Shows a single device wearer with tracks visible.
+const deviceWearerWithTracksConfig = (deviceId: number): ExportMapRenderConfig => ({
+  selectedDeviceIds: [deviceId],
+  selectedTrackDeviceIds: [deviceId],
+  focusedDeviceId: deviceId,
+  showConfidenceCircles: true,
+  showLocationNumbering: true,
+  fitMode: 'none',
+})
+
+// Shows a single device wearer without tracks, fitted to the device.
+const deviceWearerFittedWithoutTracksConfig = (deviceId: number): ExportMapRenderConfig => ({
+  selectedDeviceIds: [deviceId],
+  selectedTrackDeviceIds: [],
+  focusedDeviceId: deviceId,
+  showConfidenceCircles: true,
+  showLocationNumbering: true,
+  fitMode: 'focused-device-wearer',
+})
 
 // Wait until the client-side map code has added all custom layers.
 const waitForAppLayersReady = async (page: Page): Promise<void> => {
@@ -142,43 +195,22 @@ const waitForOlRenderComplete = async (page: Page): Promise<void> => {
   })
 }
 
-// Apply a map preset in the headless page to set layer visibility and styles for screenshots.
-const applyPreset = async (page: Page, preset: PresetParam, deviceId?: string): Promise<void> => {
+// Apply a map render config in the headless page to set layer visibility and viewport for screenshots.
+const applyRenderConfig = async (page: Page, config: ExportMapRenderConfig): Promise<void> => {
   await page.evaluate(
-    ({ presetValue, deviceIdValue }) => {
+    async ({ renderConfig }) => {
       const win = globalThis as unknown as {
-        mapImages?: { applyPreset?: (preset: string, deviceId?: string) => void }
+        mapImages?: { applyRenderConfig?: (config: unknown) => Promise<void> }
       }
 
-      if (!win.mapImages?.applyPreset) {
-        throw new Error('window.mapImages.applyPreset not found')
+      if (!win.mapImages?.applyRenderConfig) {
+        throw new Error('window.mapImages.applyRenderConfig not found')
       }
 
-      win.mapImages.applyPreset(presetValue, deviceIdValue)
+      await win.mapImages.applyRenderConfig(renderConfig)
     },
     {
-      presetValue: preset,
-      deviceIdValue: deviceId,
-    },
-  )
-}
-
-// Apply the captured map state in the headless page to set the map view for the user-view overview screenshot.
-const applyCapturedMapState = async (page: Page, capturedMapState: CapturedMapStateValue): Promise<void> => {
-  await page.evaluate(
-    ({ capturedMapStateValue }) => {
-      const win = globalThis as unknown as {
-        mapImages?: { applyCapturedMapState?: (state: unknown) => void }
-      }
-
-      if (!win.mapImages?.applyCapturedMapState) {
-        throw new Error('window.mapImages.applyCapturedMapState not found')
-      }
-
-      win.mapImages.applyCapturedMapState(capturedMapStateValue)
-    },
-    {
-      capturedMapStateValue: capturedMapState,
+      renderConfig: config,
     },
   )
 }
@@ -199,7 +231,17 @@ const screenshotMapElement = async (page: Page): Promise<Buffer> => {
 export default class MapImageRendererService {
   // Render map images for the proximity alert report based on the provided arguments, returning them as buffers.
   async render(args: RenderProximityAlertImagesArgs): Promise<ProximityAlertReportImages> {
-    const { browser, pageUrl, baseUrlForCookies, cookieHeader, selectedDeviceIds, capturedMapState } = args
+    const {
+      browser,
+      pageUrl,
+      baseUrlForCookies,
+      cookieHeader,
+      selectedDeviceIds,
+      selectedTrackDeviceIds,
+      capturedMapState,
+      showConfidenceCircles,
+      showLocationNumbering,
+    } = args
 
     if (!cookieHeader) {
       throw new Error('cookieHeader is required to render proximity alert report images')
@@ -209,6 +251,9 @@ export default class MapImageRendererService {
     if (!parsedCapturedMapState) {
       throw new Error('capturedMapState is required and must be valid to render proximity alert report images')
     }
+
+    const selectedDeviceIdsAsNumbers = parseSelectedDeviceIds(selectedDeviceIds)
+    const selectedTrackDeviceIdsAsNumbers = parseSelectedDeviceIds(selectedTrackDeviceIds)
 
     const context = await browser.newContext({
       viewport: DEFAULT_VIEWPORT,
@@ -226,14 +271,26 @@ export default class MapImageRendererService {
       page.setDefaultTimeout(DEFAULT_TIMEOUT_MS)
       page.setDefaultNavigationTimeout(DEFAULT_TIMEOUT_MS)
 
-      const targetUrl = pageUrlForHeadless(pageUrl, selectedDeviceIds, parsedCapturedMapState)
+      const targetUrl = pageUrlForHeadless({
+        baseUrl: pageUrl,
+        capturedMapState: parsedCapturedMapState,
+        selectedDeviceIds: selectedDeviceIdsAsNumbers,
+      })
 
       await page.goto(targetUrl, { waitUntil: 'domcontentloaded' })
       await waitForAppLayersReady(page)
       await waitForOlRenderComplete(page)
-      // Overview image that reproduces the user's current browser map view.
-      await applyPreset(page, MAP_IMAGE_PRESETS.overviewUserView)
-      await applyCapturedMapState(page, parsedCapturedMapState)
+
+      await applyRenderConfig(
+        page,
+        overviewUserViewConfig({
+          selectedDeviceIds: selectedDeviceIdsAsNumbers,
+          selectedTrackDeviceIds: selectedTrackDeviceIdsAsNumbers,
+          capturedMapState: parsedCapturedMapState,
+          showConfidenceCircles,
+          showLocationNumbering,
+        }),
+      )
       await waitForOlRenderComplete(page)
       const overviewUserViewJpg = await screenshotMapElement(page)
 
@@ -242,24 +299,24 @@ export default class MapImageRendererService {
       // Capture similar map states together to avoid repeatedly switching between overview and detail views.
       // Large view changes can trigger extra tile loading/rendering, so grouping screenshots reduces export time.
       /* eslint-disable no-await-in-loop -- Intentional: keep map state changes and screenshots sequential */
-      for (const deviceId of selectedDeviceIds) {
-        await applyPreset(page, MAP_IMAGE_PRESETS.deviceWearerWithTracks, deviceId)
+      for (const deviceId of selectedDeviceIdsAsNumbers) {
+        await applyRenderConfig(page, deviceWearerWithTracksConfig(deviceId))
         await waitForOlRenderComplete(page)
-        deviceWearerWithTracksJpgByDeviceId[deviceId] = await screenshotMapElement(page)
+        deviceWearerWithTracksJpgByDeviceId[String(deviceId)] = await screenshotMapElement(page)
       }
       /* eslint-enable no-await-in-loop */
 
-      await applyPreset(page, MAP_IMAGE_PRESETS.overviewFittedToDeviceWearers)
+      await applyRenderConfig(page, overviewFittedToDeviceWearersConfig(selectedDeviceIdsAsNumbers))
       await waitForOlRenderComplete(page)
       const overviewFittedToDeviceWearersJpg = await screenshotMapElement(page)
 
       const deviceWearerFittedWithoutTracksJpgByDeviceId: Record<string, Buffer> = {}
 
       /* eslint-disable no-await-in-loop -- Intentional: keep map state changes and screenshots sequential */
-      for (const deviceId of selectedDeviceIds) {
-        await applyPreset(page, MAP_IMAGE_PRESETS.deviceWearerFittedWithoutTracks, deviceId)
+      for (const deviceId of selectedDeviceIdsAsNumbers) {
+        await applyRenderConfig(page, deviceWearerFittedWithoutTracksConfig(deviceId))
         await waitForOlRenderComplete(page)
-        deviceWearerFittedWithoutTracksJpgByDeviceId[deviceId] = await screenshotMapElement(page)
+        deviceWearerFittedWithoutTracksJpgByDeviceId[String(deviceId)] = await screenshotMapElement(page)
       }
       /* eslint-enable no-await-in-loop */
 
