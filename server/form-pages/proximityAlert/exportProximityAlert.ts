@@ -23,7 +23,10 @@ export type ExportProximityAlertForm = {
 
 type ParsedExportProximityAlertData = {
   deviceIds: string[]
+  selectedTrackDeviceIds: string[]
   capturedMapState?: string
+  showConfidenceCircles: boolean
+  showLocationNumbering: boolean
 }
 
 export type ParsedExportProximityAlertRequest =
@@ -111,11 +114,24 @@ export const parseExportProximityAlertRequest = (body: Record<string, unknown>):
     }
   }
 
+  // Ensures track visibility is only applied to device wearers that are also selected for export.
+  const selectedTrackDeviceIds = formState.selectedTrackDeviceIds.filter(deviceId =>
+    formState.selectedDeviceIds.includes(deviceId),
+  )
+
   // If validation passes, return the parsed export data along with the form state for potential reuse in the UI
   return {
     success: true,
-    exportData: formData.data,
-    formState,
+    exportData: {
+      ...formData.data,
+      selectedTrackDeviceIds,
+      showConfidenceCircles: formState.showConfidenceCircles,
+      showLocationNumbering: formState.showLocationNumbering,
+    },
+    formState: {
+      ...formState,
+      selectedTrackDeviceIds,
+    },
   }
 }
 
