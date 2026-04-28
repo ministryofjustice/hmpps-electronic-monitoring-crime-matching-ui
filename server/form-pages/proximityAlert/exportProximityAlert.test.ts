@@ -34,7 +34,10 @@ describe('exportProximityAlert form page', () => {
         success: true,
         exportData: {
           deviceIds: ['1', '2'],
+          selectedTrackDeviceIds: ['1'],
           capturedMapState,
+          showConfidenceCircles: true,
+          showLocationNumbering: true,
         },
         formState: {
           selectedDeviceIds: ['1', '2'],
@@ -74,7 +77,10 @@ describe('exportProximityAlert form page', () => {
         success: true,
         exportData: {
           deviceIds: ['1'],
+          selectedTrackDeviceIds: ['1'],
           capturedMapState,
+          showConfidenceCircles: false,
+          showLocationNumbering: true,
         },
         formState: {
           selectedDeviceIds: ['1'],
@@ -100,7 +106,10 @@ describe('exportProximityAlert form page', () => {
         success: true,
         exportData: {
           deviceIds: ['1'],
+          selectedTrackDeviceIds: [],
           capturedMapState: undefined,
+          showConfidenceCircles: false,
+          showLocationNumbering: false,
         },
         formState: {
           selectedDeviceIds: ['1'],
@@ -128,7 +137,10 @@ describe('exportProximityAlert form page', () => {
         success: true,
         exportData: {
           deviceIds: ['1', '2'],
+          selectedTrackDeviceIds: ['1'],
           capturedMapState: undefined,
+          showConfidenceCircles: true,
+          showLocationNumbering: false,
         },
         formState: {
           selectedDeviceIds: ['1', '2'],

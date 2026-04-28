@@ -1,12 +1,13 @@
 import { EmMap, Position } from '@ministryofjustice/hmpps-electronic-monitoring-components/map'
 import { fromLonLat } from 'ol/proj'
 import type { Coordinate } from 'ol/coordinate'
-import { queryElement, queryElementAll } from '../../utils/utils'
+import { queryElement } from '../../utils/utils'
 import CrimeLayer from './layers/crime'
 import DeviceWearerLayer from './layers/deviceWearer'
-import initialiseProximityAlertForm from '../../forms/proximity-alert'
+import initialiseProximityAlertExportView from './mapExport'
+import initialiseProximityAlertUserView from './mapUserView'
 
-type CapturedMapState = {
+export type CapturedMapState = {
   mapWidthPx: number
   mapHeightPx: number
   devicePixelRatio: number
@@ -17,19 +18,7 @@ type CapturedMapState = {
   }
 }
 
-type PresetParam = 'overview-user-view' | 'overview-fitted' | 'wearer-overview' | 'wearer-detail'
-
-type ExportMapRenderConfig = {
-  selectedDeviceIds?: number[]
-  focusedDeviceId?: number
-  showTracks: boolean
-  showConfidenceCircles: boolean
-  showLocationNumbering: boolean
-  fitToSelectedPositions: boolean
-  fitToFocusedDevicePositions: boolean
-}
-
-type MapData = {
+export type MapData = {
   crimePosition: Position
   matching?: {
     deviceWearers: Array<{
@@ -37,11 +26,6 @@ type MapData = {
       positions: Array<Position>
     }>
   }
-}
-
-type MapImagesApi = {
-  applyPreset: (preset: PresetParam, deviceId?: string) => void
-  applyCapturedMapState: (state: CapturedMapState) => void
 }
 
 const palette = [
@@ -79,71 +63,6 @@ const setCrimeDefaultView = (emMap: EmMap, centre: Coordinate) => {
   map.getView().setZoom(16.5)
 }
 
-const dispatchCheckboxChange = (checkbox: HTMLInputElement) => {
-  checkbox.dispatchEvent(new Event('change', { bubbles: true }))
-}
-
-const applyCheckboxLayerState = () => {
-  const selectors = [
-    'input[type="checkbox"][name="device-wearer-toggle"]',
-    'input[type="checkbox"][name="device-wearer-tracks"]',
-    'input[type="checkbox"][name="analysis-toggles"]',
-  ]
-
-  for (const selector of selectors) {
-    const checkboxes = queryElementAll(document, selector, HTMLInputElement)
-
-    checkboxes.forEach(checkbox => {
-      dispatchCheckboxChange(checkbox)
-    })
-  }
-}
-
-// Type guard to validate the structure of the captured map state
-const isValidCapturedMapState = (parsedMapState: unknown): parsedMapState is CapturedMapState => {
-  if (!parsedMapState || typeof parsedMapState !== 'object') return false
-
-  const parsedState = parsedMapState as {
-    mapWidthPx?: unknown
-    mapHeightPx?: unknown
-    devicePixelRatio?: unknown
-    view?: {
-      center?: unknown
-      resolution?: unknown
-      rotation?: unknown
-    }
-  }
-
-  return (
-    typeof parsedState.mapWidthPx === 'number' &&
-    typeof parsedState.mapHeightPx === 'number' &&
-    typeof parsedState.devicePixelRatio === 'number' &&
-    !!parsedState.view &&
-    Array.isArray(parsedState.view.center) &&
-    parsedState.view.center.length === 2 &&
-    typeof parsedState.view.center[0] === 'number' &&
-    typeof parsedState.view.center[1] === 'number' &&
-    typeof parsedState.view.resolution === 'number' &&
-    typeof parsedState.view.rotation === 'number'
-  )
-}
-
-// Attempt to read captured map state from hidden input field
-const getCapturedMapState = (): CapturedMapState | undefined => {
-  const mapStateInput = document.querySelector<HTMLInputElement>('#capturedMapState')
-  if (!mapStateInput) return undefined
-
-  const mapStateValue = mapStateInput.value.trim()
-  if (!mapStateValue) return undefined
-
-  try {
-    const parsedMapState: unknown = JSON.parse(mapStateValue)
-    return isValidCapturedMapState(parsedMapState) ? parsedMapState : undefined
-  } catch {
-    return undefined
-  }
-}
-
 // Apply captured map state to the map view
 const applyCapturedMapState = (emMap: EmMap, mapState: CapturedMapState) => {
   const map = emMap.olMapInstance
@@ -158,69 +77,43 @@ const applyCapturedMapState = (emMap: EmMap, mapState: CapturedMapState) => {
   map.renderSync()
 }
 
+// Determines if the page is running in headless export mode.
 const isHeadlessCapture = (): boolean => {
   const params = new URLSearchParams(window.location.search)
   return params.get('headless') === 'true'
 }
 
-const getHeadlessMapSizeFromUrl = (): { widthPx: number; heightPx: number } | null => {
+// Reads selected device IDs from the headless export URL and returns them as a numeric set.
+const getHeadlessSelectedDeviceIds = (): Set<number> | undefined => {
   const params = new URLSearchParams(window.location.search)
-  const mapWidthPx = params.get('mapWidthPx')
-  const mapHeightPx = params.get('mapHeightPx')
+  const selectedDeviceIds = params.get('selectedDeviceIds')
 
-  if (!mapWidthPx || !mapHeightPx) return null
+  if (!selectedDeviceIds) return undefined
 
-  const widthPx = Number(mapWidthPx)
-  const heightPx = Number(mapHeightPx)
-
-  if (!Number.isFinite(widthPx) || !Number.isFinite(heightPx) || widthPx <= 0 || heightPx <= 0) {
-    return null
-  }
-
-  return { widthPx, heightPx }
-}
-
-const getSelectedDeviceIdsFromUrl = (): number[] | undefined => {
-  const params = new URLSearchParams(window.location.search)
-  const deviceIdsParamValues = params.get('deviceIds')
-
-  if (!deviceIdsParamValues) return undefined
-
-  const deviceIds = deviceIdsParamValues
+  const parsedDeviceIds = selectedDeviceIds
     .split(',')
-    .map(value => Number(value.trim()))
-    .filter(value => Number.isFinite(value))
+    .map(deviceId => Number(deviceId))
+    .filter(deviceId => Number.isFinite(deviceId))
 
-  return deviceIds.length > 0 ? deviceIds : undefined
+  return new Set(parsedDeviceIds)
 }
 
-// Headless-only UI tweaks for export screenshots:
-const applyHeadlessUiTweaks = (emMap: EmMap) => {
-  const root = emMap.shadowRoot
-  if (!root) return
+// Filters map data to include only selected device wearers when running in headless export mode.
+const filterMapDataForHeadlessExport = (data: MapData): MapData => {
+  const selectedDeviceIds = getHeadlessSelectedDeviceIds()
+  if (!selectedDeviceIds) return data
 
-  const controls = root.querySelectorAll<HTMLElement>('.ol-control, .ol-attribution')
-  controls.forEach(controlEl => {
-    const el = controlEl
-    el.style.display = 'none'
-  })
-}
-
-const applyHeadlessMapMode = (emMap: EmMap) => {
-  const map = emMap.olMapInstance
-  if (!map) return
-
-  applyHeadlessUiTweaks(emMap)
-
-  const headlessSize = getHeadlessMapSizeFromUrl()
-  if (headlessSize) {
-    const mapElement = emMap as unknown as HTMLElement
-    mapElement.style.width = `${headlessSize.widthPx}px`
-    mapElement.style.height = `${headlessSize.heightPx}px`
-    map.updateSize()
+  return {
+    ...data,
+    matching: data.matching
+      ? {
+          ...data.matching,
+          deviceWearers: data.matching.deviceWearers.filter(deviceWearer =>
+            selectedDeviceIds.has(deviceWearer.deviceId),
+          ),
+        }
+      : undefined,
   }
-
-  map.renderSync()
 }
 
 const readJsonFromScript = <T>(id: string): T | undefined => {
@@ -238,150 +131,17 @@ const readJsonFromScript = <T>(id: string): T | undefined => {
   return undefined
 }
 
-const fitToDevicePositions = (emMap: EmMap, crimePosition: Position, devicePositions: Array<Position>) => {
-  emMap.fitToPoints([crimePosition, ...devicePositions], {
-    padding: 40,
-    maxZoom: 20,
-    animate: false,
-  })
-
-  const map = emMap.olMapInstance
-  const mapView = map?.getView()
-
-  if (!map || !mapView) return
-
-  const resolution = mapView.getResolution()
-  if (typeof resolution === 'number') {
-    mapView.setResolution(resolution * 1.3)
-  }
-
-  map.renderSync()
-}
-
-const setCheckboxCheckedState = (name: string, value: string, checked: boolean) => {
-  const checkbox = document.querySelector<HTMLInputElement>(`input[type="checkbox"][name="${name}"][value="${value}"]`)
-
-  if (!checkbox) return
-
-  checkbox.checked = checked
-  dispatchCheckboxChange(checkbox)
-}
-
-const setAllDeviceVisibility = (deviceIds: number[], selectedDeviceIds: Set<number>) => {
-  deviceIds.forEach(deviceId => {
-    setCheckboxCheckedState('device-wearer-toggle', `device-wearer-${deviceId}`, selectedDeviceIds.has(deviceId))
-  })
-}
-
-const setTrackVisibility = (deviceIds: number[], visibleDeviceIds: Set<number>) => {
-  deviceIds.forEach(deviceId => {
-    setCheckboxCheckedState('device-wearer-tracks', `device-wearer-tracks-${deviceId}`, visibleDeviceIds.has(deviceId))
-  })
-}
-
-const setAnalysisVisibility = (showConfidenceCircles: boolean, showLocationNumbering: boolean) => {
-  setCheckboxCheckedState('analysis-toggles', 'device-wearer-circles-', showConfidenceCircles)
-  setCheckboxCheckedState('analysis-toggles', 'device-wearer-labels-', showLocationNumbering)
-}
-
-// Build map render config based on preset selection and URL parameters
-const getRenderConfigForPreset = (
-  preset: PresetParam,
-  selectedDeviceIds: number[] | undefined,
-  focusedDeviceId?: number,
-): ExportMapRenderConfig => {
-  if (preset === 'overview-user-view') {
-    return {
-      selectedDeviceIds,
-      showTracks: true,
-      showConfidenceCircles: true,
-      showLocationNumbering: true,
-      fitToSelectedPositions: false,
-      fitToFocusedDevicePositions: false,
-    }
-  }
-
-  if (preset === 'overview-fitted') {
-    return {
-      selectedDeviceIds,
-      showTracks: false,
-      showConfidenceCircles: true,
-      showLocationNumbering: true,
-      fitToSelectedPositions: true,
-      fitToFocusedDevicePositions: false,
-    }
-  }
-
-  if (preset === 'wearer-overview') {
-    return {
-      selectedDeviceIds: focusedDeviceId ? [focusedDeviceId] : selectedDeviceIds,
-      focusedDeviceId,
-      showTracks: true,
-      showConfidenceCircles: true,
-      showLocationNumbering: true,
-      fitToSelectedPositions: false,
-      fitToFocusedDevicePositions: false,
-    }
-  }
-
-  return {
-    selectedDeviceIds: focusedDeviceId ? [focusedDeviceId] : selectedDeviceIds,
-    focusedDeviceId,
-    showTracks: false,
-    showConfidenceCircles: true,
-    showLocationNumbering: true,
-    fitToSelectedPositions: false,
-    fitToFocusedDevicePositions: true,
-  }
-}
-
-// Apply map render config to the map view by updating checkbox states and fitting view if needed
-const applyRenderConfig = (
-  emMap: EmMap,
-  data: MapData,
-  allDeviceIds: number[],
-  config: ExportMapRenderConfig,
-  crimeCentre: Coordinate,
-) => {
-  const selectedDeviceIds = new Set(config.selectedDeviceIds ?? allDeviceIds)
-  const visibleTrackDeviceIds = config.showTracks ? selectedDeviceIds : new Set<number>()
-
-  setAllDeviceVisibility(allDeviceIds, selectedDeviceIds)
-  setTrackVisibility(allDeviceIds, visibleTrackDeviceIds)
-  setAnalysisVisibility(config.showConfidenceCircles, config.showLocationNumbering)
-
-  if (config.fitToSelectedPositions) {
-    const positions =
-      data.matching?.deviceWearers
-        .filter(deviceWearer => selectedDeviceIds.has(deviceWearer.deviceId))
-        .flatMap(deviceWearer => deviceWearer.positions) ?? []
-
-    fitToDevicePositions(emMap, data.crimePosition, positions)
-    return
-  }
-
-  if (config.fitToFocusedDevicePositions && typeof config.focusedDeviceId === 'number') {
-    const focusedDeviceWearer = data.matching?.deviceWearers.find(
-      deviceWearer => deviceWearer.deviceId === config.focusedDeviceId,
-    )
-
-    fitToDevicePositions(emMap, data.crimePosition, focusedDeviceWearer?.positions ?? [])
-    return
-  }
-
-  setCrimeDefaultView(emMap, crimeCentre)
-}
-
+// Initialises the shared proximity alert map, then delegates user or headless export behaviour.
 const initialiseProximityAlertView = async () => {
-  const data = readJsonFromScript<MapData>('map-data')
+  const rawData = readJsonFromScript<MapData>('map-data')
 
-  if (!data) {
+  if (!rawData) {
     return
   }
 
   const emMap = queryElement(document, 'em-map') as EmMap
   const isHeadless = isHeadlessCapture()
-  const selectedDeviceIdsFromUrl = getSelectedDeviceIdsFromUrl()
+  const data = isHeadless ? filterMapDataForHeadlessExport(rawData) : rawData
 
   await new Promise<void>(resolve => {
     emMap.addEventListener('map:ready', () => resolve(), { once: true })
@@ -409,18 +169,14 @@ const initialiseProximityAlertView = async () => {
     }
   }
 
-  const win = window as unknown as { mapImages?: MapImagesApi }
-  win.mapImages = {
-    applyPreset: (preset: PresetParam, deviceId?: string) => {
-      const parsedDeviceId =
-        typeof deviceId === 'string' && deviceId.trim() !== '' ? Number(deviceId.trim()) : undefined
-
-      const config = getRenderConfigForPreset(preset, selectedDeviceIdsFromUrl, parsedDeviceId)
-      applyRenderConfig(emMap, data, allDeviceIds, config, centre)
-    },
-    applyCapturedMapState: (state: CapturedMapState) => {
-      applyCapturedMapState(emMap, state)
-    },
+  if (isHeadless) {
+    initialiseProximityAlertExportView({
+      emMap,
+      data,
+      mapDeviceIds: allDeviceIds,
+      setCrimeDefaultView: () => setCrimeDefaultView(emMap, centre),
+      applyCapturedMapState: state => applyCapturedMapState(emMap, state),
+    })
   }
 
   emMap.dispatchEvent(
@@ -430,19 +186,11 @@ const initialiseProximityAlertView = async () => {
     }),
   )
 
-  applyCheckboxLayerState()
-
-  const capturedMapState = getCapturedMapState()
-  if (capturedMapState) {
-    applyCapturedMapState(emMap, capturedMapState)
+  if (isHeadless === false) {
+    initialiseProximityAlertUserView({
+      applyCapturedMapState: state => applyCapturedMapState(emMap, state),
+    })
   }
-
-  if (isHeadless) {
-    applyHeadlessMapMode(emMap)
-    return
-  }
-
-  initialiseProximityAlertForm()
 }
 
 export default initialiseProximityAlertView

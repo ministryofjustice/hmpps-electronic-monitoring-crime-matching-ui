@@ -75,7 +75,8 @@ export default class CrimeVersionController {
           )
           res.redirect(redirectUrl)
         } else {
-          const { deviceIds, capturedMapState } = parsedRequest.exportData
+          const { deviceIds, selectedTrackDeviceIds, capturedMapState, showConfidenceCircles, showLocationNumbering } =
+            parsedRequest.exportData
 
           if (deviceIds.length === 0) {
             req.session.exportProximityAlertState = withExportProximityAlertError(
@@ -92,7 +93,10 @@ export default class CrimeVersionController {
               baseUrlForCookies: config.ingressUrl,
               cookieHeader: req.headers.cookie,
               selectedDeviceIds: deviceIds,
+              selectedTrackDeviceIds,
               capturedMapState,
+              showConfidenceCircles,
+              showLocationNumbering,
             })
 
             const zipFileName = `proximity-alert-${crimeVersionId}-map-images.zip`
