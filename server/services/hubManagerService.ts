@@ -1,31 +1,9 @@
 import { asSystem } from '@ministryofjustice/hmpps-rest-client'
-import z from 'zod'
 import CrimeMatchingClient from '../data/crimeMatchingClient'
 import Result from '../types/result'
 import { ServiceResult } from '../types/service'
-
-type HubManager = {
-  name: string
-  hasSignature: boolean
-}
-
-const hubManagerSchema = z.object({
-  data: z.object({
-    id: z.string(),
-    name: z.string(),
-    hasSignature: z.boolean(),
-  }),
-})
-
-const hubManagersSchema = z.object({
-  data: z.array(
-    z.object({
-      id: z.string(),
-      name: z.string(),
-      hasSignature: z.boolean(),
-    }),
-  ),
-})
+import HubManager from '../types/hubManager'
+import { getHubManagerDtoSchema, getHubManagersDtoSchema } from '../schemas/hubManager'
 
 class HubManagersService {
   constructor(private readonly crimeMatchingApiClient: CrimeMatchingClient) {}
@@ -65,13 +43,13 @@ class HubManagersService {
       asSystem(username),
       parsedName.data,
     )
-    const hubManager = hubManagerSchema.parse(createHubManagerResponse).data
+    const hubManager = getHubManagerDtoSchema.parse(createHubManagerResponse).data
     const updateSignatureResponse = await this.crimeMatchingApiClient.updateHubManagerSignature(
       asSystem(username),
       hubManager.id,
       file,
     )
-    const updatedHubManager = hubManagerSchema.parse(updateSignatureResponse).data
+    const updatedHubManager = getHubManagerDtoSchema.parse(updateSignatureResponse).data
 
     return {
       ok: true,
@@ -88,7 +66,7 @@ class HubManagersService {
 
     return {
       ok: true,
-      ...hubManagersSchema.parse(result),
+      ...getHubManagersDtoSchema.parse(result),
     }
   }
 }
