@@ -7,21 +7,26 @@
 {% set rows = [] %}
 
 {% for manager in hubManagers %}
-  {% set link %}
-    <a href="/hub-managers/{{ manager.id }}/delete"> Delete </a>
+  {% set form %}
+    <form method="post" action="/hub-managers/{{ manager.id }}/delete" novalidate>
+      <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+      <button class="govuk-link">Delete</button>
+    </form>
   {% endset %}
 
   {%
     set rows = (rows.push(
       [
         {
-          text: manager.name
+          text: manager.name,
+          classes: "table-cell--middle"
         },
         {
-          text: manager.hasSignature
+          text: manager.hasSignature,
+          classes: "table-cell--middle"
         },
         {
-          html: link
+          html: form
         }
       ]
     ), rows)

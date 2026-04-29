@@ -10,7 +10,7 @@ const hubManagersRoutes = ({ hubManagersService }: Services): Router => {
   const createController = new CreateHubManagersController(hubManagersService)
 
   router.get('/', asyncMiddleware(listController.view))
-  router.get('/:id/delete', asyncMiddleware(listController.delete))
+  router.post('/:id/delete', asyncMiddleware(listController.delete))
 
   router.get('/create', asyncMiddleware(createController.view))
   router.post('/create', asyncMiddleware(createController.submit))
