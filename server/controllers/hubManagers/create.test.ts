@@ -4,17 +4,11 @@ import HubManagersService from '../../services/hubManagerService'
 import createMockFile from '../../testutils/createMockFile'
 import createMockRequest from '../../testutils/createMockRequest'
 import createMockResponse from '../../testutils/createMockResponse'
+import expectedAuthOptions from '../../testutils/expectedAuthOptions'
 import CreateHubManagersController from './create'
 
 jest.mock('../../data/crimeMatchingClient')
 jest.mock('../../../logger')
-
-const expectedAuthOptions = {
-  tokenType: 'SYSTEM_TOKEN',
-  user: {
-    username: 'fakeUserName',
-  },
-}
 
 describe('CreateHubManagerController', () => {
   let mockRestClient: jest.Mocked<CrimeMatchingClient>
