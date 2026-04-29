@@ -12,11 +12,10 @@ $govuk-page-width: $moj-page-width;
 @import './layouts/full-width-container';
 @import './layouts/map-container';
 @import './components/table';
+@import './components/button';
 @import './views/location-data/index';
 @import './views/police-data/dashboard';
 @import './local';
-
-
 
 .govuk-\!-width-one-eighth {
   width: 100% !important;

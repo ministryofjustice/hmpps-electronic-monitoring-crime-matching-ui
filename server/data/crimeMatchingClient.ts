@@ -7,6 +7,27 @@ export default class CrimeMatchingClient extends RestClient {
     super('Crime Matching Api', config.apis.crimeMatchingApi, logger, authenticationClient)
   }
 
+  createHubManager(authOptions: AuthOptions, name: string): Promise<unknown> {
+    return this.post(
+      {
+        path: '/hub-managers',
+        data: {
+          name,
+        },
+      },
+      authOptions,
+    )
+  }
+
+  deleteHubManager(authOptions: AuthOptions, id: string): Promise<unknown> {
+    return this.delete(
+      {
+        path: `/hub-managers/${id}`,
+      },
+      authOptions,
+    )
+  }
+
   getCrimeMatchingResults(authOptions: AuthOptions, batchIds: Array<string>): Promise<unknown> {
     return this.get(
       {
@@ -71,6 +92,18 @@ export default class CrimeMatchingClient extends RestClient {
     )
   }
 
+  getHubManagers(authOptions: AuthOptions, hasSignature?: boolean): Promise<unknown> {
+    return this.get(
+      {
+        path: '/hub-managers',
+        query: {
+          hasSignature,
+        },
+      },
+      authOptions,
+    )
+  }
+
   getPerson(authOptions: AuthOptions, personId: number): Promise<unknown> {
     return this.get(
       {
@@ -125,6 +158,22 @@ export default class CrimeMatchingClient extends RestClient {
           fromDate,
           toDate,
           page,
+        },
+      },
+      authOptions,
+    )
+  }
+
+  updateHubManagerSignature(
+    authOptions: AuthOptions,
+    id: string,
+    file: { buffer: Buffer; originalname: string },
+  ): Promise<unknown> {
+    return this.put(
+      {
+        path: `/hub-managers/${id}/signature`,
+        files: {
+          signature: file,
         },
       },
       authOptions,
