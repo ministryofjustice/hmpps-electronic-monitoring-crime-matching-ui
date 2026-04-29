@@ -20,6 +20,7 @@ import { CrimeVersion } from '../../types/crimeVersion'
 import HubManager from '../../types/hubManager'
 
 const DOCX_CONTENT_TYPE = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+const DOCX_CONTENT_TYPE = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
 const EXPORT_ERROR_MESSAGE = 'Could not export Proximity Alert report. Please try again.'
 const NO_DEVICE_WEARERS_SELECTED_ERROR_MESSAGE =
   'Select at least one device wearer to export the Proximity Alert report.'
