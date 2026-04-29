@@ -107,7 +107,7 @@ describe('CreateHubManagerController', () => {
           originalname: 'signature.png',
         }),
       )
-      expect(res.redirect).toHaveBeenCalledWith(303, URLS.HUB_MANAGERS__LIST)
+      expect(res.redirect).toHaveBeenCalledWith(303, URLS.HUB_MANAGERS.LIST)
     })
   })
 })

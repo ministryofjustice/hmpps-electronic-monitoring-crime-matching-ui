@@ -8,7 +8,7 @@
 
 {% for manager in hubManagers %}
   {% set form %}
-    <form method="post" action="{{ URLS.HUB_MANAGERS__DELETE | replace(':id', manager.id) }}" novalidate>
+    <form method="post" action="{{ URLS.HUB_MANAGERS.DELETE | replace(':id', manager.id) }}" novalidate>
       <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
       <button class="govuk-link">Delete</button>
     </form>
@@ -43,7 +43,7 @@
   {{
     govukButton({
       text: "Create new manager",
-      href: URLS.HUB_MANAGERS__CREATE
+      href: URLS.HUB_MANAGERS.CREATE
     })
   }}
 

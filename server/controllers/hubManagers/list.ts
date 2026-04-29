@@ -11,7 +11,7 @@ export default class ListHubManagersController {
 
     await this.hubManagersService.deleteHubManager(username, id)
 
-    res.redirect(303, URLS.HUB_MANAGERS__LIST)
+    res.redirect(303, URLS.HUB_MANAGERS.LIST)
   }
 
   view: RequestHandler = async (req, res) => {

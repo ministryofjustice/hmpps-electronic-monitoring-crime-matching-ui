@@ -16,7 +16,7 @@ export default class CreateHubManagersController {
     const result = await this.hubManagersService.createHubManager(username, name, file)
 
     if (result.ok) {
-      res.redirect(303, URLS.HUB_MANAGERS__LIST)
+      res.redirect(303, URLS.HUB_MANAGERS.LIST)
     } else {
       res.render('pages/hubManagers/create', {
         name,
