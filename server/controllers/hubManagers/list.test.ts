@@ -74,7 +74,7 @@ describe('ListHubManagersController', () => {
         expectedAuthOptions,
         'b90f4016-6d0d-4a70-a1ac-a48e43dc48eb',
       )
-      expect(res.redirect).toHaveBeenCalledWith(303, URLS.HUB_MANAGERS.LIST)
+      expect(res.redirect).toHaveBeenCalledWith(303, URLS.HUB_MANAGERS.VIEW)
     })
   })
 })
