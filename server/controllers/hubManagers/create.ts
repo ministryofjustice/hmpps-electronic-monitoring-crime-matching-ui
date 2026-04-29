@@ -1,10 +1,5 @@
 import { RequestHandler } from 'express'
-import z from 'zod'
 import HubManagersService from '../../services/hubManagerService'
-
-const schema = z.object({
-  name: z.string().default(''),
-})
 
 export default class CreateHubManagersController {
   constructor(private readonly hubManagersService: HubManagersService) {}
@@ -15,9 +10,9 @@ export default class CreateHubManagersController {
 
   submit: RequestHandler = async (req, res) => {
     const { username } = res.locals.user
-    const { name } = schema.parse(req.body)
+    const { name } = req.body
     const { file } = req
-    const result = await this.hubManagersService.createHubManagerWithSignature(username, name, file)
+    const result = await this.hubManagersService.createHubManager(username, name, file)
 
     if (result.ok) {
       res.redirect(303, '/hub-managers')

@@ -1,6 +1,5 @@
 import { asSystem } from '@ministryofjustice/hmpps-rest-client'
 import z from 'zod'
-import { createFromCapabilitiesMatrixSet } from 'ol/tilegrid/WMTS'
 import CrimeMatchingClient from '../data/crimeMatchingClient'
 import Result from '../types/result'
 import { ServiceResult } from '../types/service'
@@ -45,57 +44,32 @@ class HubManagersService {
     return { ok: false, error: 'Enter a name' }
   }
 
-  private validateCreateHubManagerRequest(
-    name: string,
-    file?: Express.Multer.File,
-  ): Result<{ name: string; file: Express.Multer.File }, Record<string, string>> {
-    const validationErrors: Record<string, string> = {}
-    const parsedName = this.parseName(name)
-
-    if (!parsedName.ok) {
-      validationErrors.name = parsedName.error
-    }
-
-    if (!file) {
-      validationErrors.file = 'Upload a file'
-    }
-
-    if (Object.keys(validationErrors).length > 0) {
-      return {
-        ok: false,
-        error: validationErrors,
-      }
-    }
-
-    return {
-      ok: true,
-      data: {
-        name: parsedName.ok ? parsedName.data : '',
-        file: file!,
-      },
-    }
-  }
-
-  async createHubManagerWithSignature(
+  async createHubManager(
     username: string,
-    name: string,
+    name?: string,
     file?: Express.Multer.File,
   ): Promise<ServiceResult<HubManager>> {
-    const parsedRequest = this.validateCreateHubManagerRequest(name, file)
+    const parsedName = this.parseName(name)
 
-    if (!parsedRequest.ok) {
+    if (!parsedName.ok || !file) {
       return {
         ok: false,
-        validationErrors: parsedRequest.error,
+        validationErrors: {
+          ...(!parsedName.ok ? { name: parsedName.error } : {}),
+          ...(!file ? { file: 'Upload a file' } : {}),
+        },
       }
     }
 
-    const createHubManagerResponse = await this.crimeMatchingApiClient.createHubManager(asSystem(username), name)
+    const createHubManagerResponse = await this.crimeMatchingApiClient.createHubManager(
+      asSystem(username),
+      parsedName.data,
+    )
     const hubManager = hubManagerSchema.parse(createHubManagerResponse).data
     const updateSignatureResponse = await this.crimeMatchingApiClient.updateHubManagerSignature(
       asSystem(username),
       hubManager.id,
-      parsedRequest.data.file,
+      file,
     )
     const updatedHubManager = hubManagerSchema.parse(updateSignatureResponse).data
 
