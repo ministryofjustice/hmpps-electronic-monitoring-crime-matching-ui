@@ -1,5 +1,5 @@
 import express from 'express'
-
+import multer from 'multer'
 import type { HTTPError } from 'superagent'
 import createError from 'http-errors'
 import pdsComponents from '@ministryofjustice/hmpps-probation-frontend-components'
@@ -72,6 +72,7 @@ export default function createApp(services: Services): express.Application {
   nunjucksSetup(app)
   app.use(setUpAuthentication())
   app.use(authorisationMiddleware())
+  app.use(multer().single('file'))
   app.use(setUpCsrf())
   app.use(setUpCurrentUser())
 

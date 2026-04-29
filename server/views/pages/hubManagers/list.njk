@@ -1,0 +1,66 @@
+{% extends "../../partials/layout.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "../../components/datatable/macro.njk" import dataTable %}
+
+{% set pageTitle = applicationName + " - Home" %}
+{% set mainClasses = "app-container govuk-body" %}
+{% set rows = [] %}
+
+{% for manager in hubManagers %}
+  {% set form %}
+    <form method="post" action="/hub-managers/{{ manager.id }}/delete" novalidate>
+      <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+      <button class="govuk-link">Delete</button>
+    </form>
+  {% endset %}
+
+  {%
+    set rows = (rows.push(
+      [
+        {
+          text: manager.name,
+          classes: "table-cell--middle"
+        },
+        {
+          text: manager.hasSignature,
+          classes: "table-cell--middle"
+        },
+        {
+          html: form
+        }
+      ]
+    ), rows)
+  %}
+{% endfor %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+      <h1 class="govuk-!-static-margin-top-0">Hub managers</h1>
+    </div>
+  </div>
+
+  {{
+    govukButton({
+      text: "Create new manager",
+      href: "/hub-managers/create"
+    })
+  }}
+
+  {{
+    dataTable({
+      columns: [
+        {
+          text: "Name"
+        },
+        {
+          text: "Has signature?"
+        },
+        {
+          text: "Actions"
+        }
+      ],
+      rows: rows
+    })
+  }}
+{% endblock %}
