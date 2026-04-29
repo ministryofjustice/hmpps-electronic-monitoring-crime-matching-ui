@@ -1,0 +1,53 @@
+{% extends "../../partials/layout.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/file-upload/macro.njk" import govukFileUpload %}
+
+{% set pageTitle = applicationName + " - Home" %}
+{% set mainClasses = "app-container govuk-body" %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+      <h1 class="govuk-!-static-margin-top-0">Create hub manager</h1>
+    </div>
+  </div>
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <form method="POST" novalidate encType="multipart/form-data">
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+
+        {{
+          govukInput({
+            id: "name",
+            name: "name",
+            label: {
+              text: "What is the name of the hub manager?"
+            },
+            errorMessage: { text: validationErrors.name } if validationErrors.name,
+            value: name
+          })
+        }}
+
+        {{
+          govukFileUpload({
+            id: "file",
+            name: "file",
+            label: {
+              text: "Upload a signature"
+            },
+            errorMessage: { text: validationErrors.file } if validationErrors.file,
+            javascript: true
+          })
+        }}
+
+        {{
+          govukButton({
+            text: "Create"
+          })
+        }}
+      </form>
+    </div>
+  </div>
+{% endblock %}
