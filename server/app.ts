@@ -26,6 +26,7 @@ import setUpWebSession from './middleware/setUpWebSession'
 
 import routes from './routes'
 import type { Services } from './services'
+import populateConstants from './middleware/populateConstants'
 
 // Loads Probation Design System components into the request
 async function loadPdsComponents(req: express.Request, res: express.Response): Promise<void> {
@@ -75,6 +76,7 @@ export default function createApp(services: Services): express.Application {
   app.use(multer().single('file'))
   app.use(setUpCsrf())
   app.use(setUpCurrentUser())
+  app.use(populateConstants)
 
   app.get(
     '*splat',
