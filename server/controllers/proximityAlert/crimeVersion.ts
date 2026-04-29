@@ -1,5 +1,4 @@
 import { RequestHandler } from 'express'
-import archiver from 'archiver'
 import createError from 'http-errors'
 import config from '../../config'
 import {
@@ -15,6 +14,7 @@ import ProximityAlertReportDocxService from '../../services/proximityAlert/proxi
 import type { MojAlert } from '../../types/govUk/mojAlert'
 import { createMojAlertWarning } from '../../utils/alerts'
 
+const DOCX_CONTENT_TYPE = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
 const EXPORT_ERROR_MESSAGE = 'Could not export Proximity Alert report. Please try again.'
 const NO_DEVICE_WEARERS_SELECTED_ERROR_MESSAGE =
   'Select at least one device wearer to export the Proximity Alert report.'
@@ -99,40 +99,16 @@ export default class CrimeVersionController {
               showLocationNumbering,
             })
 
-            const zipFileName = `proximity-alert-${crimeVersionId}-map-images.zip`
-
-            res.setHeader('Content-Type', 'application/zip')
-            res.setHeader('Content-Disposition', `attachment; filename="${zipFileName}"`)
-
-            const archive = archiver('zip', { zlib: { level: 9 } })
-
-            archive.on('warning', () => {
-              // ignore temporary zip warnings for manual image checking
+            const docxBuffer = await this.proximityAlertReportDocxService.build({
+              crimeVersion: result.data,
+              deviceIds,
+              capturedMapState,
+              images,
             })
 
-            archive.on('error', archiveError => {
-              next(archiveError)
-            })
-
-            archive.pipe(res)
-
-            if (images.overviewUserViewJpg) {
-              archive.append(images.overviewUserViewJpg, { name: 'overview-user-view.jpg' })
-            }
-
-            if (images.overviewFittedToDeviceWearersJpg) {
-              archive.append(images.overviewFittedToDeviceWearersJpg, { name: 'overview-fitted-to-device-wearers.jpg' })
-            }
-
-            for (const [deviceId, imageBuffer] of Object.entries(images.deviceWearerWithTracksJpgByDeviceId)) {
-              archive.append(imageBuffer, { name: `device-wearer-${deviceId}-with-tracks.jpg` })
-            }
-
-            for (const [deviceId, imageBuffer] of Object.entries(images.deviceWearerFittedWithoutTracksJpgByDeviceId)) {
-              archive.append(imageBuffer, { name: `device-wearer-${deviceId}-fitted-without-tracks.jpg` })
-            }
-
-            await archive.finalize()
+            res.setHeader('Content-Type', DOCX_CONTENT_TYPE)
+            res.setHeader('Content-Disposition', `attachment; filename="proximity-alert-${crimeVersionId}.docx"`)
+            res.send(docxBuffer)
           }
         }
       }
