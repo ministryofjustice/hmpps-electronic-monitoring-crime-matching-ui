@@ -7,6 +7,12 @@ import { StubGetIngestionAttemptsOptions } from './mockApis/crimeMatching/ingest
 import { StubGetCrimeMatchingResultsOptions } from './mockApis/crimeMatching/crimeMatchingResults'
 import { StubGetCrimeVersionsOptions } from './mockApis/crimeMatching/crimeVersions'
 import { StubGetCrimeVersionOptions } from './mockApis/crimeMatching/crimeVersion'
+import {
+  StubCreateHubManagerOptions,
+  StubDeleteHubManagerOptions,
+  StubGetHubManagersOptions,
+  StubUpdateHubManagerSignaturesOptions,
+} from './mockApis/crimeMatching/hubManagers'
 
 declare global {
   namespace Cypress {
@@ -46,6 +52,16 @@ declare global {
       signIn(options?: { failOnStatusCode: boolean }): Chainable<AUTWindow>
 
       /**
+       * Stub a wiremock response for the crimeMatchingApi POST /hub-managers
+       */
+      stubCreateHubManager(options?: StubCreateHubManagerOptions): Chainable<void>
+
+      /**
+       * Stub a wiremock response for the crimeMatchingApi POST /hub-managers
+       */
+      stubDeleteHubManager(options?: StubDeleteHubManagerOptions): Chainable<void>
+
+      /**
        * Stub a wiremock response for the crimeMatchingApi POST /crime-batches-query
        */
       stubGetCrimeMatchingResults(options?: StubGetCrimeMatchingResultsOptions): Chainable<void>
@@ -71,6 +87,11 @@ declare global {
       stubGetDeviceActivationPositions(options?: StubGetDeviceActivationPositionsOptions): Chainable<void>
 
       /**
+       * Stub a wiremock response for the crimeMatchingApi GET /hub-managers
+       */
+      stubGetHubManagers(options?: StubGetHubManagersOptions): Chainable<void>
+
+      /**
        * Stub a wiremock response for the crimeMatchingApi GET /ingestion-attempts/{ingestionAttemptId}
        */
       stubGetIngestionAttempt(options?: StubGetIngestionAttemptOptions): Chainable<void>
@@ -94,6 +115,11 @@ declare global {
        * Stub the /os-map/vector/style endpoint to simulate the Ordnance Survey middleware.
        */
       stubMapMiddleware(): Chainable<void>
+
+      /**
+       * Stub a wiremock response for the crimeMatchingApi PUT /hub-managers/{id}/signature
+       */
+      stubUpdateHubManagerSignature(options?: StubUpdateHubManagerSignaturesOptions): Chainable<void>
     }
   }
 }

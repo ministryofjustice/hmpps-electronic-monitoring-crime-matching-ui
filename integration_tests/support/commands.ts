@@ -11,6 +11,14 @@ Cypress.Commands.add('resetDownloads', path => {
   cy.task('resetDownloads', path)
 })
 
+Cypress.Commands.add('stubCreateHubManager', options => {
+  cy.task('stubCreateHubManager', options)
+})
+
+Cypress.Commands.add('stubDeleteHubManager', options => {
+  cy.task('stubDeleteHubManager', options)
+})
+
 Cypress.Commands.add('stubGetCrimeMatchingResults', options => {
   cy.task('stubGetCrimeMatchingResults', options)
 })
@@ -31,6 +39,10 @@ Cypress.Commands.add('stubGetDeviceActivationPositions', options => {
   cy.task('stubGetDeviceActivationPositions', options)
 })
 
+Cypress.Commands.add('stubGetHubManagers', options => {
+  cy.task('stubGetHubManagers', options)
+})
+
 Cypress.Commands.add('stubGetIngestionAttempt', options => {
   cy.task('stubGetIngestionAttempt', options)
 })
@@ -45,6 +57,10 @@ Cypress.Commands.add('stubGetPersons', options => {
 
 Cypress.Commands.add('stubGetPerson', options => {
   cy.task('stubGetPerson', options)
+})
+
+Cypress.Commands.add('stubUpdateHubManagerSignature', options => {
+  cy.task('stubUpdateHubManagerSignature', options)
 })
 
 Cypress.Commands.add('stubMapMiddleware', () => {

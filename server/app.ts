@@ -78,7 +78,7 @@ export default function createApp(services: Services): express.Application {
   app.use(setUpCurrentUser())
   app.use(populateConstants)
 
-  app.get(
+  app.use(
     '*splat',
     pdsComponents.getPageComponents({
       pdsUrl: config.apis.probationApi.url,
