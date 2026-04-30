@@ -1,5 +1,6 @@
 import { RequestHandler } from 'express'
 import HubManagersService from '../../services/hubManagerService'
+import URLS from '../../constants/urls'
 
 export default class CreateHubManagersController {
   constructor(private readonly hubManagersService: HubManagersService) {}
@@ -15,7 +16,7 @@ export default class CreateHubManagersController {
     const result = await this.hubManagersService.createHubManager(username, name, file)
 
     if (result.ok) {
-      res.redirect(303, '/hub-managers')
+      res.redirect(303, URLS.HUB_MANAGERS.VIEW)
     } else {
       res.render('pages/hubManagers/create', {
         name,

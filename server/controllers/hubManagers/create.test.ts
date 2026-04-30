@@ -1,4 +1,5 @@
 import logger from '../../../logger'
+import URLS from '../../constants/urls'
 import CrimeMatchingClient from '../../data/crimeMatchingClient'
 import HubManagersService from '../../services/hubManagerService'
 import createMockFile from '../../testutils/createMockFile'
@@ -106,7 +107,7 @@ describe('CreateHubManagerController', () => {
           originalname: 'signature.png',
         }),
       )
-      expect(res.redirect).toHaveBeenCalledWith(303, '/hub-managers')
+      expect(res.redirect).toHaveBeenCalledWith(303, URLS.HUB_MANAGERS.VIEW)
     })
   })
 })

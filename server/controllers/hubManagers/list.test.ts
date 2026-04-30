@@ -1,4 +1,5 @@
 import logger from '../../../logger'
+import URLS from '../../constants/urls'
 import CrimeMatchingClient from '../../data/crimeMatchingClient'
 import HubManagersService from '../../services/hubManagerService'
 import createMockRequest from '../../testutils/createMockRequest'
@@ -73,7 +74,7 @@ describe('ListHubManagersController', () => {
         expectedAuthOptions,
         'b90f4016-6d0d-4a70-a1ac-a48e43dc48eb',
       )
-      expect(res.redirect).toHaveBeenCalledWith(303, '/hub-managers')
+      expect(res.redirect).toHaveBeenCalledWith(303, URLS.HUB_MANAGERS.VIEW)
     })
   })
 })
