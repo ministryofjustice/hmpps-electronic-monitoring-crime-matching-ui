@@ -59,6 +59,10 @@ Cypress.Commands.add('stubGetPerson', options => {
   cy.task('stubGetPerson', options)
 })
 
+Cypress.Commands.add('stubUpdateHubManagerSignature', options => {
+  cy.task('stubUpdateHubManagerSignature', options)
+})
+
 Cypress.Commands.add('stubMapMiddleware', () => {
   cy.intercept('GET', '/os-map/vector/style', {
     statusCode: 200,
@@ -73,10 +77,6 @@ Cypress.Commands.add('stubMapMiddleware', () => {
       ],
     },
   }).as('stubMapStyle')
-
-  Cypress.Commands.add('stubUpdateHubManagerSignature', options => {
-    cy.task('stubUpdateHubManagerSignature', options)
-  })
 
   cy.intercept('GET', '/os-map/vector/source', {
     statusCode: 200,
