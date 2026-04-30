@@ -11,6 +11,14 @@ Cypress.Commands.add('resetDownloads', path => {
   cy.task('resetDownloads', path)
 })
 
+Cypress.Commands.add('stubCreateHubManager', options => {
+  cy.task('stubCreateHubManager', options)
+})
+
+Cypress.Commands.add('stubDeleteHubManager', options => {
+  cy.task('stubDeleteHubManager', options)
+})
+
 Cypress.Commands.add('stubGetCrimeMatchingResults', options => {
   cy.task('stubGetCrimeMatchingResults', options)
 })
@@ -29,6 +37,10 @@ Cypress.Commands.add('stubGetDeviceActivation', options => {
 
 Cypress.Commands.add('stubGetDeviceActivationPositions', options => {
   cy.task('stubGetDeviceActivationPositions', options)
+})
+
+Cypress.Commands.add('stubGetHubManagers', options => {
+  cy.task('stubGetHubManagers', options)
 })
 
 Cypress.Commands.add('stubGetIngestionAttempt', options => {
@@ -61,6 +73,10 @@ Cypress.Commands.add('stubMapMiddleware', () => {
       ],
     },
   }).as('stubMapStyle')
+
+  Cypress.Commands.add('stubUpdateHubManagerSignature', options => {
+    cy.task('stubUpdateHubManagerSignature', options)
+  })
 
   cy.intercept('GET', '/os-map/vector/source', {
     statusCode: 200,
