@@ -506,8 +506,26 @@ describe('CrimeVersionController', () => {
           longitude: 10.0,
           matching: {
             deviceWearers: [
-              { name: 'name1', deviceId: 1, nomisId: 'nomisId1', positions: [] },
-              { name: 'name2', deviceId: 2, nomisId: 'nomisId2', positions: [] },
+              {
+                name: 'name1',
+                deviceId: 1,
+                nomisId: 'nomisId1',
+                positions: [
+                  {
+                    latitude: 10.1,
+                    longitude: 20.1,
+                    sequenceLabel: 'A1',
+                    confidence: 15,
+                    capturedDateTime: '2025-01-01T00:30:00Z',
+                  },
+                ],
+              },
+              {
+                name: 'name2',
+                deviceId: 2,
+                nomisId: 'nomisId2',
+                positions: [],
+              },
             ],
           },
         },
@@ -534,11 +552,43 @@ describe('CrimeVersionController', () => {
         showLocationNumbering: true,
       })
       expect(mockProximityAlertReportDocxService.build).toHaveBeenCalledWith({
-        crimeVersion: expect.objectContaining({
-          crimeVersionId,
+        report: expect.objectContaining({
+          reportGeneratedAt: expect.any(String),
+          crimeVersion: {
+            crimeVersionId,
+            crimeReference: 'crime1',
+            crimeType: 'Aggravated Burglary',
+            fromDateTime: '2025-01-01T00:00:00Z',
+            toDateTime: '2025-01-01T01:00:00Z',
+            latitude: 10,
+            longitude: 10,
+            crimeText: 'text',
+          },
+          matchedDeviceWearers: [
+            {
+              deviceWearerId: '1',
+              deviceId: 1,
+              name: 'name1',
+              nomisId: 'nomisId1',
+              positions: [
+                {
+                  sequenceLabel: 'A1',
+                  capturedDateTime: '2025-01-01T00:30:00Z',
+                  latitude: 10.1,
+                  longitude: 20.1,
+                  confidenceCircle: 15,
+                },
+              ],
+            },
+            {
+              deviceWearerId: '2',
+              deviceId: 2,
+              name: 'name2',
+              nomisId: 'nomisId2',
+              positions: [],
+            },
+          ],
         }),
-        deviceIds: ['1', '2'],
-        capturedMapState,
         images: mockImages,
       })
       expect(res.setHeader).toHaveBeenCalledWith(

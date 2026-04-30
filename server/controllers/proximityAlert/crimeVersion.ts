@@ -11,6 +11,7 @@ import CrimeService from '../../services/crimeService'
 import MapImageRendererService from '../../services/proximityAlert/proximityAlertMapImageService'
 import PlaywrightBrowserService from '../../services/proximityAlert/playwrightBrowserService'
 import ProximityAlertReportDocxService from '../../services/proximityAlert/proximityAlertReportDocxService'
+import presentProximityAlertReportData from '../../presenters/proximityAlertReportData'
 import type { MojAlert } from '../../types/govUk/mojAlert'
 import { createMojAlertWarning } from '../../utils/alerts'
 
@@ -99,10 +100,12 @@ export default class CrimeVersionController {
               showLocationNumbering,
             })
 
+            const report = presentProximityAlertReportData(result.data, {
+              selectedDeviceIds: deviceIds,
+            })
+
             const docxBuffer = await this.proximityAlertReportDocxService.build({
-              crimeVersion: result.data,
-              deviceIds,
-              capturedMapState,
+              report,
               images,
             })
 

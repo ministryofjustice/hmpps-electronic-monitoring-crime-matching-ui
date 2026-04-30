@@ -1,16 +1,14 @@
 import { AlignmentType, Document, ImageRun, Packer, PageBreak, Paragraph, TextRun } from 'docx'
 import { imageSize } from 'image-size'
-import type { CrimeVersion } from '../../types/crimeVersion'
+import type { ProximityAlertReportData } from '../../presenters/proximityAlertReportData'
 import type { ProximityAlertReportImages } from './proximityAlertMapImageService'
 
 export type BuildProximityAlertReportDocxArgs = {
-  crimeVersion: CrimeVersion
-  deviceIds: string[]
-  capturedMapState?: string
+  report: ProximityAlertReportData
   images: ProximityAlertReportImages
 }
 
-// DOCX libraryuses twips (1/1440 inch). A4 size and margins are defined in these units.
+// DOCX library uses twips (1/1440 inch). A4 size and margins are defined in these units.
 // Values below are standard A4 dimensions converted to twips.
 const A4_WIDTH_WORD_UNITS = 11906
 const A4_HEIGHT_WORD_UNITS = 16838
@@ -65,7 +63,9 @@ export default class ProximityAlertReportDocxService {
   // Builds a DOCX report containing the provided images and metadata.
   // The report is returned as a Buffer of the generated DOCX file.
   async build(args: BuildProximityAlertReportDocxArgs): Promise<Buffer> {
-    const { crimeVersion, deviceIds, capturedMapState, images } = args
+    const { report, images } = args
+    const { crimeVersion, matchedDeviceWearers } = report
+    const deviceIds = matchedDeviceWearers.map(deviceWearer => deviceWearer.deviceWearerId)
 
     const children: Paragraph[] = [
       new Paragraph({
@@ -74,7 +74,6 @@ export default class ProximityAlertReportDocxService {
       new Paragraph(`Crime version ID: ${crimeVersion.crimeVersionId}`),
       new Paragraph(`Crime reference: ${crimeVersion.crimeReference}`),
       new Paragraph(`Selected device IDs: ${deviceIds.join(', ')}`),
-      new Paragraph(`Captured map state provided: ${capturedMapState ? 'Yes' : 'No'}`),
       new Paragraph(`Overview image present: ${images.overviewUserViewJpg ? 'Yes' : 'No'}`),
     ]
 

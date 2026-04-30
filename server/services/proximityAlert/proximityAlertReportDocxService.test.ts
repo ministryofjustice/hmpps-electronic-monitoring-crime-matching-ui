@@ -1,5 +1,5 @@
 import ProximityAlertReportDocxService from './proximityAlertReportDocxService'
-import type { CrimeVersion } from '../../types/crimeVersion'
+import type { ProximityAlertReportData } from '../../presenters/proximityAlertReportData'
 import type { ProximityAlertReportImages } from './proximityAlertMapImageService'
 
 // Minimal valid 1x1 JPEG
@@ -14,21 +14,28 @@ describe('ProximityAlertReportDocxService', () => {
       // Given
       const service = new ProximityAlertReportDocxService()
 
-      const capturedMapState = JSON.stringify({
-        mapWidthPx: 1200,
-        mapHeightPx: 800,
-        devicePixelRatio: 2,
-        view: {
-          center: [12345, 67890],
-          resolution: 4.5,
-          rotation: 0,
+      const report: ProximityAlertReportData = {
+        reportGeneratedAt: '2026-04-29T12:00:00.000Z',
+        crimeVersion: {
+          crimeVersionId: '78d41bd9-5450-4bbb-89d4-42ba75659f50',
+          crimeReference: 'crime1',
+          crimeType: 'Aggravated Burglary',
+          fromDateTime: '2025-01-01T00:00:00Z',
+          toDateTime: '2025-01-01T01:00:00Z',
+          latitude: 10,
+          longitude: 10,
+          crimeText: 'text',
         },
-      })
-
-      const crimeVersion = {
-        crimeVersionId: '78d41bd9-5450-4bbb-89d4-42ba75659f50',
-        crimeReference: 'crime1',
-      } as CrimeVersion
+        matchedDeviceWearers: [
+          {
+            deviceWearerId: '1',
+            deviceId: 1,
+            name: 'name1',
+            nomisId: 'nomisId1',
+            positions: [],
+          },
+        ],
+      }
 
       const images: ProximityAlertReportImages = {
         overviewUserViewJpg: tinyJpeg,
@@ -43,9 +50,7 @@ describe('ProximityAlertReportDocxService', () => {
 
       // When
       const buffer = await service.build({
-        crimeVersion,
-        deviceIds: ['1'],
-        capturedMapState,
+        report,
         images,
       })
 

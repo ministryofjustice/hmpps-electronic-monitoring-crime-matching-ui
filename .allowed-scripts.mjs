@@ -10,10 +10,6 @@ export default configureAllowedScripts({
     'node_modules/dtrace-provider@0.8.8': 'ALLOW',
     // ESBuild is written in GoLang - this is needed to download prebuilt binaries for the specific platform
     'node_modules/esbuild@0.27.5': 'ALLOW',
-    // Needed by jest for running tests in watch mode
-    'node_modules/fsevents@2.3.3': 'ALLOW',
-    // Used as headless browser for rendering map images in proximity alert report generation
-    'node_modules/playwright/node_modules/fsevents@2.3.2': 'ALLOW',
     // Native solution to quickly resolve module paths, used by jest and eslint
     'node_modules/unrs-resolver@1.11.1': 'ALLOW',
   },
