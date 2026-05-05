@@ -24,7 +24,7 @@ const crimeVersion = {
 }
 
 const matchedDeviceWearer1 = {
-  name: 'deviceName',
+  name: 'wearer-1',
   deviceId: 1,
   nomisId: 'nomisId',
   positions: [
@@ -39,7 +39,7 @@ const matchedDeviceWearer1 = {
 }
 
 const matchedDeviceWearer2 = {
-  name: 'deviceName2',
+  name: 'wearer-2',
   deviceId: 2,
   nomisId: 'nomisId2',
   positions: [
