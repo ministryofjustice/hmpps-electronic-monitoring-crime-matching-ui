@@ -216,14 +216,14 @@ function rowNoSplit(children: TableCell[], opts?: { heightWordUnits?: number; he
 // Top boxed table: Date + Title + Summary.
 function topSummaryTable(report: ProximityAlertReportData): Table {
   const borders = strongBlackBorders()
-  const { crimeVersion } = report
+  const { crimeVersionData } = report
 
   const titlePara = new Paragraph({
     alignment: AlignmentType.CENTER,
     children: [
       new TextRun({ text: 'Acquisitive Crime Proximity Alert', bold: true }),
       new TextRun({ text: '\n', break: 1 }),
-      new TextRun({ text: `Crime Reference Number – ${crimeVersion.crimeReference}`, bold: true }),
+      new TextRun({ text: `Crime Reference Number – ${crimeVersionData.crimeReference}`, bold: true }),
     ],
     spacing: { before: 120, after: 120 },
   })
@@ -374,17 +374,17 @@ function resultSummaryTable(matchedCount: number): Table {
 // Request Summary (single instance).
 function requestSummaryTable(report: ProximityAlertReportData): Table {
   const borders = strongBlackBorders()
-  const { crimeVersion } = report
+  const { crimeVersionData } = report
 
   const rows: Array<[string, string]> = [
     ['Crime mapping Batch ID:', ''],
-    ['Crime Reference number:', crimeVersion.crimeReference],
-    ['Crime Type:', crimeVersion.crimeType],
-    ['Crime Date/Time from:', fmtDateTimeGb(crimeVersion.fromDateTime)],
-    ['Crime Date/Time to:', fmtDateTimeGb(crimeVersion.toDateTime)],
-    ['Latitude:', String(crimeVersion.latitude)],
-    ['Longitude:', String(crimeVersion.longitude)],
-    ['Crime Text:', crimeVersion.crimeText || ''],
+    ['Crime Reference number:', crimeVersionData.crimeReference],
+    ['Crime Type:', crimeVersionData.crimeType],
+    ['Crime Date/Time from:', fmtDateTimeGb(crimeVersionData.fromDateTime)],
+    ['Crime Date/Time to:', fmtDateTimeGb(crimeVersionData.toDateTime)],
+    ['Latitude:', String(crimeVersionData.latitude)],
+    ['Longitude:', String(crimeVersionData.longitude)],
+    ['Crime Text:', crimeVersionData.crimeText || ''],
   ]
 
   return new Table({
@@ -403,15 +403,15 @@ function requestSummaryTable(report: ProximityAlertReportData): Table {
 // Details of Allegation (nested table for map pages).
 function detailsOfAllegationTable(report: ProximityAlertReportData): Table {
   const borders = strongBlackBorders()
-  const { crimeVersion } = report
+  const { crimeVersionData } = report
 
   const detailRows: Array<[string, string]> = [
-    ['Crime Type', crimeVersion.crimeType],
-    ['Crime Reference', crimeVersion.crimeReference],
+    ['Crime Type', crimeVersionData.crimeType],
+    ['Crime Reference', crimeVersionData.crimeReference],
     ['Crime Batch', ''],
-    ['From Date/Time', fmtDateTimeGb(crimeVersion.fromDateTime)],
-    ['To Date/Time', fmtDateTimeGb(crimeVersion.toDateTime)],
-    ['Crime Location\n(Lat/Long)', `${crimeVersion.latitude}\n${crimeVersion.longitude}`],
+    ['From Date/Time', fmtDateTimeGb(crimeVersionData.fromDateTime)],
+    ['To Date/Time', fmtDateTimeGb(crimeVersionData.toDateTime)],
+    ['Crime Location\n(Lat/Long)', `${crimeVersionData.latitude}\n${crimeVersionData.longitude}`],
   ]
 
   const additionalInfoRowSpan = detailRows.length
@@ -637,6 +637,7 @@ function disclaimerTable(): Table {
   const bullet3 = 'Where the equipment has failed due to a technical fault.'
   const disclaimerParagraph3 =
     'The technology used (radio frequency transmissions; GPS location monitoring and Location Based Services) has been proven to be reliable over many years. The monitoring equipment is extremely robust and reliable and meets the stringent specifications laid down by the Ministry of Justice. The monitoring equipment is also rigorously tested and audited by EMS, an independent body, and the Home Office Scientific Branch.'
+  const osCopyrightText = 'All maps included in this document are subject to the following OS copyright (AC0000850671)'
 
   return new Table({
     width: { size: 100, type: WidthType.PERCENTAGE },
@@ -662,6 +663,7 @@ function disclaimerTable(): Table {
             bulletPara(bullet2, { spacingAfter: 60 }),
             bulletPara(bullet3, { spacingAfter: 200 }),
             new Paragraph({ children: [new TextRun(disclaimerParagraph3)], spacing: { before: 0, after: 0 } }),
+            new Paragraph({ children: [new TextRun(osCopyrightText)], spacing: { before: 200, after: 0 } }),
           ],
         }),
       ]),
@@ -675,7 +677,7 @@ function witnessStatementTable(args: {
 }): Table {
   const { report, wearer } = args
   const borders = strongBlackBorders()
-  const { crimeVersion } = report
+  const { crimeVersionData } = report
 
   const statementOf = ''
   const occupation = ''
@@ -778,15 +780,23 @@ function witnessStatementTable(args: {
         new Paragraph({
           children: [
             new TextRun(
+              'The main function of the EMAC Hub is to utilise the MoJ crime mapping tool to cross check acquisitive crime data supplied by participating Police Forces with the movement data of persons who are subject to acquisitive crime licence conditions. An EMAC Hub Caseworker manually reviews matches and based on accuracy of the data will qualify matches based on their own professional judgement.',
+            ),
+          ],
+          spacing: { before: 0, after: 200 },
+        }),
+        new Paragraph({
+          children: [
+            new TextRun(
               `On ${fmtDateGb(report.reportGeneratedAt)} I reviewed a qualified match in relation to crime data supplied by `,
             ),
             new TextRun({ text: '', bold: true }),
             new TextRun(
               '. As a result of this process, I can confirm the attached match in relation to an allegation of ',
             ),
-            new TextRun({ text: crimeVersion.crimeType, bold: true }),
+            new TextRun({ text: crimeVersionData.crimeType, bold: true }),
             new TextRun(' – Crime Reference No. '),
-            new TextRun({ text: crimeVersion.crimeReference, bold: true }),
+            new TextRun({ text: crimeVersionData.crimeReference, bold: true }),
             new TextRun('.'),
           ],
           spacing: { before: 0, after: 200 },
@@ -928,7 +938,7 @@ export default class ProximityAlertReportDocxService {
     const { crimeVersionData, matchedDeviceWearers } = report
     const deviceIds = matchedDeviceWearers.map(deviceWearer => deviceWearer.deviceWearerId)
 
-    const children: Paragraph[] = [
+    const children: Array<Paragraph | Table> = [
       new Paragraph({
         children: [new TextRun({ text: 'Proximity Alert report', bold: true })],
       }),
