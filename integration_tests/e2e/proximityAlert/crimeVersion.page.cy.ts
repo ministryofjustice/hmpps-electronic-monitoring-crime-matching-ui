@@ -1,7 +1,13 @@
 import Page from '../../pages/page'
 import CrimeVersionPage from '../../pages/proximityAlert/crimeVersion'
-
-const crimeVersionId = '64d41bd9-5450-4bbb-89d4-42ba75659f49'
+import {
+  crimeVersionWithOneMatch,
+  crimeVersionId,
+  hubManager,
+  crimeVersionWithZeroMatches,
+  crimeVersionAwaitingMatching,
+  crimeVersionWithManyMatches,
+} from './fixtures'
 
 context('Crime Version', () => {
   context('Viewing a crime version', () => {
@@ -11,45 +17,21 @@ context('Crime Version', () => {
       cy.signIn()
 
       cy.stubMapMiddleware()
+      cy.stubGetHubManagers({
+        status: 200,
+        response: {
+          data: [hubManager],
+        },
+      })
     })
 
     it('should display a map showing crime version data with a match', () => {
       // Given an API response containing a crime version with a match
       cy.stubGetCrimeVersion({
         status: 200,
-        crimeVersionId: '64d41bd9-5450-4bbb-89d4-42ba75659f49',
+        crimeVersionId,
         response: {
-          data: {
-            crimeVersionId,
-            crimeReference: 'crimeRef',
-            batchId: 'batch1',
-            crimeTypeDescription: 'Aggravated Burglary',
-            crimeTypeId: 'AB',
-            crimeDateTimeFrom: '2025-01-01T00:00:00Z',
-            crimeDateTimeTo: '2025-01-01T01:00:00Z',
-            crimeText: 'crimeText',
-            longitude: 0,
-            latitude: 0,
-            versionLabel: 'Latest Version',
-            matching: {
-              deviceWearers: [
-                {
-                  name: 'deviceName',
-                  deviceId: 1,
-                  nomisId: 'nomisId',
-                  positions: [
-                    {
-                      latitude: 0,
-                      longitude: 0,
-                      sequenceLabel: 'A1',
-                      confidence: 10,
-                      capturedDateTime: '2025-01-01T00:00',
-                    },
-                  ],
-                },
-              ],
-            },
-          },
+          data: crimeVersionWithOneMatch,
         },
       })
 
@@ -88,24 +70,9 @@ context('Crime Version', () => {
       // Given an API response containing a crime version with no matches
       cy.stubGetCrimeVersion({
         status: 200,
-        crimeVersionId: '64d41bd9-5450-4bbb-89d4-42ba75659f49',
+        crimeVersionId,
         response: {
-          data: {
-            crimeVersionId,
-            crimeReference: 'crimeRef',
-            batchId: 'batch1',
-            crimeTypeDescription: 'Aggravated Burglary',
-            crimeTypeId: 'AB',
-            crimeDateTimeFrom: '2025-01-01T00:00:00Z',
-            crimeDateTimeTo: '2025-01-01T01:00:00Z',
-            crimeText: 'crimeText',
-            longitude: 0,
-            latitude: 0,
-            versionLabel: 'Latest Version',
-            matching: {
-              deviceWearers: [],
-            },
-          },
+          data: crimeVersionWithZeroMatches,
         },
       })
 
@@ -145,22 +112,9 @@ context('Crime Version', () => {
       // Given an API response containing a crime version with no matches
       cy.stubGetCrimeVersion({
         status: 200,
-        crimeVersionId: '64d41bd9-5450-4bbb-89d4-42ba75659f49',
+        crimeVersionId,
         response: {
-          data: {
-            crimeVersionId,
-            crimeReference: 'crimeRef',
-            batchId: 'batch1',
-            crimeTypeDescription: 'Aggravated Burglary',
-            crimeTypeId: 'AB',
-            crimeDateTimeFrom: '2025-01-01T00:00:00Z',
-            crimeDateTimeTo: '2025-01-01T01:00:00Z',
-            crimeText: 'crimeText',
-            longitude: 0,
-            latitude: 0,
-            versionLabel: 'Latest Version',
-            matching: null,
-          },
+          data: crimeVersionAwaitingMatching,
         },
       })
 
@@ -202,51 +156,7 @@ context('Crime Version', () => {
         status: 200,
         crimeVersionId: '64d41bd9-5450-4bbb-89d4-42ba75659f50',
         response: {
-          data: {
-            crimeVersionId,
-            crimeReference: 'crimeRef',
-            batchId: 'batch1',
-            crimeTypeDescription: 'Aggravated Burglary',
-            crimeTypeId: 'AB',
-            crimeDateTimeFrom: '2025-01-01T00:00:00Z',
-            crimeDateTimeTo: '2025-01-01T01:00:00Z',
-            crimeText: 'crimeText',
-            longitude: 0,
-            latitude: 0,
-            versionLabel: 'Latest Version',
-            matching: {
-              deviceWearers: [
-                {
-                  name: 'deviceName',
-                  deviceId: 1,
-                  nomisId: 'nomisId',
-                  positions: [
-                    {
-                      latitude: 0,
-                      longitude: 0,
-                      sequenceLabel: 'A1',
-                      confidence: 10,
-                      capturedDateTime: '2025-01-01T00:00',
-                    },
-                  ],
-                },
-                {
-                  name: 'deviceName2',
-                  deviceId: 2,
-                  nomisId: 'nomisId2',
-                  positions: [
-                    {
-                      latitude: 0,
-                      longitude: 0,
-                      sequenceLabel: 'A1',
-                      confidence: 10,
-                      capturedDateTime: '2025-01-01T00:00',
-                    },
-                  ],
-                },
-              ],
-            },
-          },
+          data: crimeVersionWithManyMatches,
         },
       })
 

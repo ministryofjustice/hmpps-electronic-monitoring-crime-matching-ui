@@ -6,8 +6,7 @@ import VectorLayer from 'ol/layer/Vector'
 import { Style } from 'ol/style'
 import Page from '../../pages/page'
 import CrimeVersionPage from '../../pages/proximityAlert/crimeVersion'
-
-const crimeVersionId = '64d41bd9-5450-4bbb-89d4-42ba75659f49'
+import { crimeLocation, crimeVersionId, crimeVersionWithManyMatches, deviceLocation, hubManager } from './fixtures'
 
 const getTitle = (layer: BaseLayer): string => {
   const title = layer.get('title')
@@ -47,9 +46,6 @@ const getResolvedStyles = (map: Map, layerId: string): Array<Array<Style>> => {
   return []
 }
 
-const crimeLocation = [-2.528865717, 53.43157277]
-const deviceLocation = [-2.5282, 53.43159]
-
 context('Crime Version', () => {
   context('Viewing a crime Version', () => {
     beforeEach(() => {
@@ -57,55 +53,17 @@ context('Crime Version', () => {
       cy.task('stubSignIn')
       cy.signIn()
       cy.stubMapMiddleware()
+      cy.stubGetHubManagers({
+        status: 200,
+        response: {
+          data: [hubManager],
+        },
+      })
       cy.stubGetCrimeVersion({
         status: 200,
-        crimeVersionId: '64d41bd9-5450-4bbb-89d4-42ba75659f49',
+        crimeVersionId,
         response: {
-          data: {
-            crimeVersionId,
-            crimeReference: 'crimeRef',
-            batchId: 'batch1',
-            crimeTypeDescription: 'Aggravated Burglary',
-            crimeTypeId: 'AB',
-            crimeDateTimeFrom: '2025-01-01T00:00:00Z',
-            crimeDateTimeTo: '2025-01-01T01:00:00Z',
-            crimeText: 'crimeText',
-            longitude: crimeLocation[0],
-            latitude: crimeLocation[1],
-            versionLabel: 'Latest Version',
-            matching: {
-              deviceWearers: [
-                {
-                  name: 'wearer-1',
-                  deviceId: 1,
-                  nomisId: 'nomisId',
-                  positions: [
-                    {
-                      longitude: deviceLocation[0],
-                      latitude: deviceLocation[1],
-                      sequenceLabel: 'A1',
-                      confidence: 10,
-                      capturedDateTime: '2025-01-01T00:00',
-                    },
-                  ],
-                },
-                {
-                  name: 'wearer-2',
-                  deviceId: 2,
-                  nomisId: 'nomisId',
-                  positions: [
-                    {
-                      longitude: -2.528865717,
-                      latitude: 53.43157277,
-                      sequenceLabel: 'A1',
-                      confidence: 10,
-                      capturedDateTime: '2025-01-01T00:00',
-                    },
-                  ],
-                },
-              ],
-            },
-          },
+          data: crimeVersionWithManyMatches,
         },
       })
     })

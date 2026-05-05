@@ -32,7 +32,7 @@ const stubGetHubManagers = (options: StubGetHubManagersOptions = defaultGetHubMa
   return stubFor({
     request: {
       method: 'GET',
-      urlPattern: `${baseUrl}/hub-managers`,
+      urlPattern: `${baseUrl}/hub-managers.*`,
     },
     response: {
       status: options.status,
