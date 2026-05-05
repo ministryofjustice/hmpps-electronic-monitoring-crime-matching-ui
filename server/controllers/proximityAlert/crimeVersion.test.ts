@@ -446,82 +446,7 @@ describe('CrimeVersionController', () => {
   })
 
   describe('exportProximityAlert', () => {
-    it('should redirect back with a session error when no device ids are selected', async () => {
-      // Given
-      const crimeVersionId = '78d41bd9-5450-4bbb-89d4-42ba75659f50'
-      const req = createMockRequest({
-        params: { crimeVersionId },
-        body: {
-          'device-wearer-tracks': ['device-wearer-tracks-1'],
-          'analysis-toggles': ['device-wearer-circles-'],
-          capturedMapState: JSON.stringify({
-            mapWidthPx: 1200,
-            mapHeightPx: 800,
-            devicePixelRatio: 2,
-            view: {
-              center: [12345, 67890],
-              resolution: 4.5,
-              rotation: 0,
-            },
-          }),
-        },
-      })
-      const res = createMockResponse()
-      const next = jest.fn()
-      const crimeService = new CrimeService(mockRestClient)
-      const controller = new CrimeVersionController(
-        crimeService,
-        mockPlaywrightBrowserService,
-        mockMapImageRendererService,
-        mockProximityAlertReportDocxService,
-      )
-
-      mockRestClient.getCrimeVersion.mockResolvedValue({
-        data: {
-          crimeVersionId,
-          crimeReference: 'crime1',
-          batchId: 'batch1',
-          crimeTypeDescription: 'Aggravated Burglary',
-          crimeTypeId: 'AB',
-          crimeDateTimeFrom: '2025-01-01T00:00:00Z',
-          crimeDateTimeTo: '2025-01-01T01:00:00Z',
-          crimeText: 'text',
-          versionLabel: 'Latest version',
-          latitude: 10.0,
-          longitude: 10.0,
-          matching: {
-            deviceWearers: [{ name: 'name1', deviceId: 1, nomisId: 'nomisId1', positions: [] }],
-          },
-        },
-      })
-
-      // When
-      await controller.exportProximityAlert(req, res, next)
-
-      // Then
-      expect(req.session.exportProximityAlertState).toEqual({
-        error: 'Select at least one device wearer to export the Proximity Alert report.',
-        selectedDeviceIds: [],
-        selectedTrackDeviceIds: [],
-        showConfidenceCircles: true,
-        showLocationNumbering: false,
-        capturedMapState: JSON.stringify({
-          mapWidthPx: 1200,
-          mapHeightPx: 800,
-          devicePixelRatio: 2,
-          view: {
-            center: [12345, 67890],
-            resolution: 4.5,
-            rotation: 0,
-          },
-        }),
-      })
-      expect(res.redirect).toHaveBeenCalledWith(`/proximity-alert/${crimeVersionId}`)
-      expect(next).not.toHaveBeenCalled()
-    })
-
-    // Skipped as temporarily exporting a zipped file of images rather than the docx file
-    it.skip('should send a docx when the export request is valid', async () => {
+    it('should send a docx when the export request is valid', async () => {
       // Given
       const crimeVersionId = '78d41bd9-5450-4bbb-89d4-42ba75659f50'
       const capturedMapState = JSON.stringify({
@@ -581,8 +506,26 @@ describe('CrimeVersionController', () => {
           longitude: 10.0,
           matching: {
             deviceWearers: [
-              { name: 'name1', deviceId: 1, nomisId: 'nomisId1', positions: [] },
-              { name: 'name2', deviceId: 2, nomisId: 'nomisId2', positions: [] },
+              {
+                name: 'name1',
+                deviceId: 1,
+                nomisId: 'nomisId1',
+                positions: [
+                  {
+                    latitude: 10.1,
+                    longitude: 20.1,
+                    sequenceLabel: 'A1',
+                    confidence: 15,
+                    capturedDateTime: '2025-01-01T00:30:00Z',
+                  },
+                ],
+              },
+              {
+                name: 'name2',
+                deviceId: 2,
+                nomisId: 'nomisId2',
+                positions: [],
+              },
             ],
           },
         },
@@ -603,14 +546,49 @@ describe('CrimeVersionController', () => {
         baseUrlForCookies: config.ingressUrl,
         cookieHeader: 'connect.sid=fake-session',
         selectedDeviceIds: ['1', '2'],
+        selectedTrackDeviceIds: ['1'],
         capturedMapState,
+        showConfidenceCircles: true,
+        showLocationNumbering: true,
       })
       expect(mockProximityAlertReportDocxService.build).toHaveBeenCalledWith({
-        crimeVersion: expect.objectContaining({
-          crimeVersionId,
+        report: expect.objectContaining({
+          reportGeneratedAt: expect.any(String),
+          crimeVersionData: {
+            crimeVersionId,
+            crimeReference: 'crime1',
+            crimeType: 'Aggravated Burglary',
+            fromDateTime: '2025-01-01T00:00:00Z',
+            toDateTime: '2025-01-01T01:00:00Z',
+            latitude: 10,
+            longitude: 10,
+            crimeText: 'text',
+          },
+          matchedDeviceWearers: [
+            {
+              deviceWearerId: '1',
+              deviceId: 1,
+              name: 'name1',
+              nomisId: 'nomisId1',
+              positions: [
+                {
+                  sequenceLabel: 'A1',
+                  capturedDateTime: '2025-01-01T00:30:00Z',
+                  latitude: 10.1,
+                  longitude: 20.1,
+                  confidenceCircle: 15,
+                },
+              ],
+            },
+            {
+              deviceWearerId: '2',
+              deviceId: 2,
+              name: 'name2',
+              nomisId: 'nomisId2',
+              positions: [],
+            },
+          ],
         }),
-        deviceIds: ['1', '2'],
-        capturedMapState,
         images: mockImages,
       })
       expect(res.setHeader).toHaveBeenCalledWith(
