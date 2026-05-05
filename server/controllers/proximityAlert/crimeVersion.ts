@@ -34,7 +34,7 @@ export default class CrimeVersionController {
     private readonly hubManagersService: HubManagersService,
   ) {}
 
-  private async getData(
+  private async getViewData(
     username: string,
     crimeVersionId: string,
   ): Promise<Result<{ crimeVersion: CrimeVersion; hubManagers: Array<HubManager> }, string>> {
@@ -62,9 +62,7 @@ export default class CrimeVersionController {
   view: RequestHandler = async (req, res, next) => {
     const { username } = res.locals.user
     const { crimeVersionId } = req.params
-    // const result = await this.crimeService.getCrimeVersion(username, crimeVersionId)
-    // const hubManagersResult = await this.hubManagersService.getHubManagersWithSignatures(username)
-    const result = await this.getData(username, crimeVersionId)
+    const result = await this.getViewData(username, crimeVersionId)
 
     if (result.ok) {
       const exportState = req.session.exportProximityAlertState
