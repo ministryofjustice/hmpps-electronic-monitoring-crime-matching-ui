@@ -14,6 +14,9 @@
 {% for ingestionAttempt in ingestionAttempts %}
 
   {% set batch = "" %}
+  {% set returnTo = (URLS.POLICE_DATA.INGESTION_ATTEMPTS.VIEW + '?' ~ paginationHrefPrefix) | urlencode %}
+  {% set path = URLS.POLICE_DATA.INGESTION_ATTEMPT.VIEW | replace(':ingestionAttemptId', ingestionAttempt.ingestionAttemptId) %}
+  {% set href = path + "?returnTo=" + returnTo %}
 
   {% if ingestionAttempt.canBeExported %}
     {% set batch %}
@@ -44,11 +47,7 @@
 
 
   {% set link %}
-    <a
-      href="/police-data/ingestion-attempts/{{ ingestionAttempt.ingestionAttemptId }}?returnTo={{ ('/police-data/dashboard?' ~ paginationHrefPrefix) | urlencode }}"
-    >
-      {{ 'Failed' if ingestionAttempt.batchId == '' else ingestionAttempt.batchId }}
-    </a>
+    <a href="{{ href }}"> {{ 'Failed' if ingestionAttempt.batchId == '' else ingestionAttempt.batchId }} </a>
   {% endset %}
 
   {% if ingestionAttempt.matchesText == 'N/A' %}
@@ -282,7 +281,10 @@
     </form>
   </div>
 
-  <form id="export-crime-matching-results-form" action="/police-data/dashboard/export">
+  <form
+    id="export-crime-matching-results-form"
+    action="{{ URLS.POLICE_DATA.INGESTION_ATTEMPTS.EXPORT_MATCHING_RESULTS }}"
+  >
     <div class="govuk-grid-row">
       <div class="govuk-grid-column-full">
         {{

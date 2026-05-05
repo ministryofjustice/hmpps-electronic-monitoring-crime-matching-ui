@@ -36,7 +36,7 @@ export default function routes(services: Services): Router {
   post('/location-data/persons', personsController.search)
 
   router.use('/location-data', locationDataRoutes(services))
-  router.use('/police-data', policeDataRoutes(services))
+  router.use(policeDataRoutes(services))
   router.use('/proximity-alert', proximityAlertRoutes(services))
   router.use(hubManagersRoutes(services))
 
