@@ -29,7 +29,7 @@ export type ProximityAlertReportCrimeVersion = {
 
 export type ProximityAlertReportData = {
   reportGeneratedAt: string
-  crimeVersion: ProximityAlertReportCrimeVersion
+  crimeVersionData: ProximityAlertReportCrimeVersion
   matchedDeviceWearers: ProximityAlertReportDeviceWearer[]
 }
 
@@ -73,7 +73,7 @@ const presentProximityAlertReportData = (
 
   return {
     reportGeneratedAt: new Date().toISOString(),
-    crimeVersion: {
+    crimeVersionData: {
       crimeVersionId: crimeVersion.crimeVersionId,
       crimeReference: crimeVersion.crimeReference,
       crimeType: crimeVersion.crimeTypeDescription,

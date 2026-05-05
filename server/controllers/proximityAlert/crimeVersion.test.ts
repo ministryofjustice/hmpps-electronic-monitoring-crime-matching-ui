@@ -554,7 +554,7 @@ describe('CrimeVersionController', () => {
       expect(mockProximityAlertReportDocxService.build).toHaveBeenCalledWith({
         report: expect.objectContaining({
           reportGeneratedAt: expect.any(String),
-          crimeVersion: {
+          crimeVersionData: {
             crimeVersionId,
             crimeReference: 'crime1',
             crimeType: 'Aggravated Burglary',

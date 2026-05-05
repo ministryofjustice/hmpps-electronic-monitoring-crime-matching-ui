@@ -64,15 +64,15 @@ export default class ProximityAlertReportDocxService {
   // The report is returned as a Buffer of the generated DOCX file.
   async build(args: BuildProximityAlertReportDocxArgs): Promise<Buffer> {
     const { report, images } = args
-    const { crimeVersion, matchedDeviceWearers } = report
+    const { crimeVersionData, matchedDeviceWearers } = report
     const deviceIds = matchedDeviceWearers.map(deviceWearer => deviceWearer.deviceWearerId)
 
     const children: Paragraph[] = [
       new Paragraph({
         children: [new TextRun({ text: 'Proximity Alert report', bold: true })],
       }),
-      new Paragraph(`Crime version ID: ${crimeVersion.crimeVersionId}`),
-      new Paragraph(`Crime reference: ${crimeVersion.crimeReference}`),
+      new Paragraph(`Crime version ID: ${crimeVersionData.crimeVersionId}`),
+      new Paragraph(`Crime reference: ${crimeVersionData.crimeReference}`),
       new Paragraph(`Selected device IDs: ${deviceIds.join(', ')}`),
       new Paragraph(`Overview image present: ${images.overviewUserViewJpg ? 'Yes' : 'No'}`),
     ]

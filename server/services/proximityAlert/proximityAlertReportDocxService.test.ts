@@ -16,7 +16,7 @@ describe('ProximityAlertReportDocxService', () => {
 
       const report: ProximityAlertReportData = {
         reportGeneratedAt: '2026-04-29T12:00:00.000Z',
-        crimeVersion: {
+        crimeVersionData: {
           crimeVersionId: '78d41bd9-5450-4bbb-89d4-42ba75659f50',
           crimeReference: 'crime1',
           crimeType: 'Aggravated Burglary',
