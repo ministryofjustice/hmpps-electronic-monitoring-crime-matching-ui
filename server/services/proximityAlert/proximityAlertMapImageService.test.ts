@@ -1,6 +1,17 @@
 import MapImageRendererService from './proximityAlertMapImageService'
 
 describe('MapImageRendererService', () => {
+  const capturedMapState = JSON.stringify({
+    mapWidthPx: 1200,
+    mapHeightPx: 800,
+    devicePixelRatio: 2,
+    view: {
+      center: [12345, 67890],
+      resolution: 4.5,
+      rotation: 0,
+    },
+  })
+
   const createMockPage = () => {
     // Fake screenshot buffers to be returned by the mocked map element's screenshot method
     const screenshotBuffers = [
@@ -55,24 +66,16 @@ describe('MapImageRendererService', () => {
     const browser = createMockBrowser(context)
     const service = new MapImageRendererService()
 
-    const capturedMapState = JSON.stringify({
-      mapWidthPx: 1200,
-      mapHeightPx: 800,
-      devicePixelRatio: 2,
-      view: {
-        center: [12345, 67890],
-        resolution: 4.5,
-        rotation: 0,
-      },
-    })
-
     const result = await service.render({
       browser: browser as never,
       pageUrl: 'https://example.test/proximity-alert/123',
       baseUrlForCookies: 'https://example.test',
       cookieHeader: 'connect.sid=fake-session; foo=bar',
       selectedDeviceIds: ['1', '2'],
+      selectedTrackDeviceIds: ['1'],
       capturedMapState,
+      showConfidenceCircles: false,
+      showLocationNumbering: true,
     })
 
     expect(browser.newContext).toHaveBeenCalledWith({
@@ -91,53 +94,91 @@ describe('MapImageRendererService', () => {
     expect(page.setDefaultNavigationTimeout).toHaveBeenCalledWith(30_000)
 
     expect(page.goto).toHaveBeenCalledWith(
-      'https://example.test/proximity-alert/123?headless=true&deviceIds=1%2C2&mapWidthPx=1200&mapHeightPx=800',
+      'https://example.test/proximity-alert/123?headless=true&mapWidthPx=1200&mapHeightPx=800&selectedDeviceIds=1%2C2',
       { waitUntil: 'domcontentloaded' },
     )
 
     expect(page.evaluate).toHaveBeenCalledWith(
       expect.any(Function),
       expect.objectContaining({
-        presetValue: 'overview-user-view',
-      }),
-    )
-
-    expect(page.evaluate).toHaveBeenCalledWith(
-      expect.any(Function),
-      expect.objectContaining({
-        presetValue: 'overview-fitted-to-device-wearers',
-      }),
-    )
-
-    expect(page.evaluate).toHaveBeenCalledWith(
-      expect.any(Function),
-      expect.objectContaining({
-        presetValue: 'device-wearer-with-tracks',
-        deviceIdValue: '1',
-      }),
-    )
-
-    expect(page.evaluate).toHaveBeenCalledWith(
-      expect.any(Function),
-      expect.objectContaining({
-        presetValue: 'device-wearer-fitted-without-tracks',
-        deviceIdValue: '1',
-      }),
-    )
-
-    expect(page.evaluate).toHaveBeenCalledWith(
-      expect.any(Function),
-      expect.objectContaining({
-        capturedMapStateValue: {
-          mapWidthPx: 1200,
-          mapHeightPx: 800,
-          devicePixelRatio: 2,
-          view: {
-            center: [12345, 67890],
-            resolution: 4.5,
-            rotation: 0,
+        renderConfig: expect.objectContaining({
+          selectedDeviceIds: [1, 2],
+          selectedTrackDeviceIds: [1],
+          showConfidenceCircles: false,
+          showLocationNumbering: true,
+          fitMode: 'none',
+          capturedMapState: {
+            mapWidthPx: 1200,
+            mapHeightPx: 800,
+            devicePixelRatio: 2,
+            view: {
+              center: [12345, 67890],
+              resolution: 4.5,
+              rotation: 0,
+            },
           },
-        },
+        }),
+      }),
+    )
+
+    expect(page.evaluate).toHaveBeenCalledWith(
+      expect.any(Function),
+      expect.objectContaining({
+        renderConfig: expect.objectContaining({
+          selectedDeviceIds: [1],
+          selectedTrackDeviceIds: [1],
+          focusedDeviceId: 1,
+          fitMode: 'none',
+        }),
+      }),
+    )
+
+    expect(page.evaluate).toHaveBeenCalledWith(
+      expect.any(Function),
+      expect.objectContaining({
+        renderConfig: expect.objectContaining({
+          selectedDeviceIds: [2],
+          selectedTrackDeviceIds: [2],
+          focusedDeviceId: 2,
+          fitMode: 'none',
+        }),
+      }),
+    )
+
+    expect(page.evaluate).toHaveBeenCalledWith(
+      expect.any(Function),
+      expect.objectContaining({
+        renderConfig: expect.objectContaining({
+          selectedDeviceIds: [1, 2],
+          selectedTrackDeviceIds: [],
+          showConfidenceCircles: true,
+          showLocationNumbering: true,
+          fitMode: 'selected-device-wearers',
+        }),
+      }),
+    )
+
+    expect(page.evaluate).toHaveBeenCalledWith(
+      expect.any(Function),
+      expect.objectContaining({
+        renderConfig: expect.objectContaining({
+          selectedDeviceIds: [1],
+          selectedTrackDeviceIds: [],
+          focusedDeviceId: 1,
+          fitMode: 'focused-device-wearer',
+        }),
+      }),
+    )
+
+    expect(page.evaluate).toHaveBeenCalledWith(
+      expect.any(Function),
+      expect.objectContaining({
+        renderConfig: expect.objectContaining({
+          selectedDeviceIds: [2],
+          selectedTrackDeviceIds: [],
+          focusedDeviceId: 2,
+          fitMode: 'focused-device-wearer',
+        }),
       }),
     )
 
@@ -171,16 +212,10 @@ describe('MapImageRendererService', () => {
         pageUrl: 'https://example.test/proximity-alert/123',
         baseUrlForCookies: 'https://example.test',
         selectedDeviceIds: [],
-        capturedMapState: JSON.stringify({
-          mapWidthPx: 1200,
-          mapHeightPx: 800,
-          devicePixelRatio: 2,
-          view: {
-            center: [12345, 67890],
-            resolution: 4.5,
-            rotation: 0,
-          },
-        }),
+        selectedTrackDeviceIds: [],
+        capturedMapState,
+        showConfidenceCircles: true,
+        showLocationNumbering: true,
       }),
     ).rejects.toThrow('cookieHeader is required to render proximity alert report images')
 
@@ -200,16 +235,10 @@ describe('MapImageRendererService', () => {
         baseUrlForCookies: 'https://example.test',
         cookieHeader: '   ;   ',
         selectedDeviceIds: [],
-        capturedMapState: JSON.stringify({
-          mapWidthPx: 1200,
-          mapHeightPx: 800,
-          devicePixelRatio: 2,
-          view: {
-            center: [12345, 67890],
-            resolution: 4.5,
-            rotation: 0,
-          },
-        }),
+        selectedTrackDeviceIds: [],
+        capturedMapState,
+        showConfidenceCircles: true,
+        showLocationNumbering: true,
       }),
     ).rejects.toThrow('cookieHeader must contain at least one valid cookie to render proximity alert report images')
 
@@ -236,6 +265,9 @@ describe('MapImageRendererService', () => {
         baseUrlForCookies: 'https://example.test',
         cookieHeader: 'connect.sid=fake-session; foo=bar',
         selectedDeviceIds: [],
+        selectedTrackDeviceIds: [],
+        showConfidenceCircles: true,
+        showLocationNumbering: true,
       }),
     ).rejects.toThrow('capturedMapState is required and must be valid to render proximity alert report images')
 
@@ -255,7 +287,10 @@ describe('MapImageRendererService', () => {
         baseUrlForCookies: 'https://example.test',
         cookieHeader: 'connect.sid=fake-session; foo=bar',
         selectedDeviceIds: ['1'],
+        selectedTrackDeviceIds: ['1'],
         capturedMapState: '{invalid-json}',
+        showConfidenceCircles: true,
+        showLocationNumbering: true,
       }),
     ).rejects.toThrow('capturedMapState is required and must be valid to render proximity alert report images')
 
@@ -277,16 +312,10 @@ describe('MapImageRendererService', () => {
         baseUrlForCookies: 'https://example.test',
         cookieHeader: 'connect.sid=fake-session; foo=bar',
         selectedDeviceIds: [],
-        capturedMapState: JSON.stringify({
-          mapWidthPx: 1200,
-          mapHeightPx: 800,
-          devicePixelRatio: 2,
-          view: {
-            center: [12345, 67890],
-            resolution: 4.5,
-            rotation: 0,
-          },
-        }),
+        selectedTrackDeviceIds: [],
+        capturedMapState,
+        showConfidenceCircles: true,
+        showLocationNumbering: true,
       }),
     ).rejects.toThrow('Map element <em-map> not found for screenshot')
 

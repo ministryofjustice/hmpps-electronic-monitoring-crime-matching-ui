@@ -446,16 +446,24 @@ describe('CrimeVersionController', () => {
   })
 
   describe('exportProximityAlert', () => {
-    it('should redirect back with a session error when the export request is invalid', async () => {
+    it('should redirect back with a session error when no device ids are selected', async () => {
       // Given
       const crimeVersionId = '78d41bd9-5450-4bbb-89d4-42ba75659f50'
       const req = createMockRequest({
         params: { crimeVersionId },
         body: {
-          'device-wearer-toggle': ['device-wearer-1'],
           'device-wearer-tracks': ['device-wearer-tracks-1'],
-          'analysis-toggles': ['device-wearer-labels-'],
-          capturedMapState: '{invalid-json}',
+          'analysis-toggles': ['device-wearer-circles-'],
+          capturedMapState: JSON.stringify({
+            mapWidthPx: 1200,
+            mapHeightPx: 800,
+            devicePixelRatio: 2,
+            view: {
+              center: [12345, 67890],
+              resolution: 4.5,
+              rotation: 0,
+            },
+          }),
         },
       })
       const res = createMockResponse()
@@ -482,7 +490,7 @@ describe('CrimeVersionController', () => {
           latitude: 10.0,
           longitude: 10.0,
           matching: {
-            deviceWearers: [{ name: 'name', deviceId: 1, nomisId: 'nomisId', positions: [] }],
+            deviceWearers: [{ name: 'name1', deviceId: 1, nomisId: 'nomisId1', positions: [] }],
           },
         },
       })
@@ -492,12 +500,21 @@ describe('CrimeVersionController', () => {
 
       // Then
       expect(req.session.exportProximityAlertState).toEqual({
-        error: 'Invalid export request.',
-        selectedDeviceIds: ['1'],
-        selectedTrackDeviceIds: ['1'],
-        showConfidenceCircles: false,
-        showLocationNumbering: true,
-        capturedMapState: '{invalid-json}',
+        error: 'Select at least one device wearer to export the Proximity Alert report.',
+        selectedDeviceIds: [],
+        selectedTrackDeviceIds: [],
+        showConfidenceCircles: true,
+        showLocationNumbering: false,
+        capturedMapState: JSON.stringify({
+          mapWidthPx: 1200,
+          mapHeightPx: 800,
+          devicePixelRatio: 2,
+          view: {
+            center: [12345, 67890],
+            resolution: 4.5,
+            rotation: 0,
+          },
+        }),
       })
       expect(res.redirect).toHaveBeenCalledWith(`/proximity-alert/${crimeVersionId}`)
       expect(next).not.toHaveBeenCalled()
@@ -665,7 +682,7 @@ describe('CrimeVersionController', () => {
       expect(req.session.exportProximityAlertState).toEqual({
         error: 'Select at least one device wearer to export the Proximity Alert report.',
         selectedDeviceIds: [],
-        selectedTrackDeviceIds: ['1'],
+        selectedTrackDeviceIds: [],
         showConfidenceCircles: true,
         showLocationNumbering: false,
         capturedMapState: JSON.stringify({
