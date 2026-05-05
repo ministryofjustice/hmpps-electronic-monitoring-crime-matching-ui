@@ -1,7 +1,9 @@
+import { ValidationResult } from '../../models/ValidationResult'
 import exportProximityAlertFormSchema, {
   formStringArraySchema,
   optionalTrimmedStringSchema,
 } from '../../schemas/proximityAlert/exportProximityAlert'
+import { convertZodErrorToValidationError } from '../../utils/errors'
 
 export type ExportProximityAlertState = {
   error?: string
@@ -38,6 +40,7 @@ export type ParsedExportProximityAlertRequest =
   | {
       success: false
       formState: ExportProximityAlertState
+      validationErrors: ValidationResult
     }
 
 // Default values for the form
@@ -103,6 +106,7 @@ export const parseExportProximityAlertRequest = (body: Record<string, unknown>):
   const formState = toExportProximityAlertState(body)
 
   const formData = exportProximityAlertFormSchema.safeParse({
+    authorisingManager: body.authorisingManager,
     deviceIds: formState.selectedDeviceIds,
     capturedMapState: formState.capturedMapState,
   })
@@ -111,6 +115,7 @@ export const parseExportProximityAlertRequest = (body: Record<string, unknown>):
     return {
       success: false,
       formState,
+      validationErrors: convertZodErrorToValidationError(formData.error),
     }
   }
 

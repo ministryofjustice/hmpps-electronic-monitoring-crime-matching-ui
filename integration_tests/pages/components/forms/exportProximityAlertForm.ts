@@ -1,5 +1,6 @@
 import { PageElement } from '../../page'
 import FormComponent from '../formComponent'
+import FormRadiosComponent from '../formRadiosComponent'
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 type ExportProximityAlertFormDate = {}
@@ -11,8 +12,12 @@ class ExportProximityAlertFormComponent extends FormComponent {
 
   // FIELDS
 
-  get exportButton(): PageElement {
-    return this.form.contains('button', 'Export proximity alert')
+  get authorisingManagerField(): FormRadiosComponent {
+    return new FormRadiosComponent(this.form, 'Assign to authorising manager')
+  }
+
+  get exportButton(): PageElement<HTMLButtonElement> {
+    return this.form.contains('button[type=submit]', 'Export')
   }
 
   // HELPERS

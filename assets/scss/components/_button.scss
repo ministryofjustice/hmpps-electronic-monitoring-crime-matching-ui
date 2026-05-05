@@ -6,3 +6,9 @@ button.govuk-link {
   cursor: pointer;
   font-size: 1.1875rem;
 }
+
+.govuk-button--full-width {
+  @media #{govuk-from-breakpoint(tablet)} {
+    width: 100%;
+  }
+}

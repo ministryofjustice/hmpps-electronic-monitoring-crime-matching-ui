@@ -69,6 +69,15 @@ class HubManagersService {
       ...getHubManagersDtoSchema.parse(result),
     }
   }
+
+  async getHubManagersWithSignatures(username: string): Promise<ServiceResult<Array<HubManager>>> {
+    const result = await this.crimeMatchingApiClient.getHubManagers(asSystem(username), true)
+
+    return {
+      ok: true,
+      ...getHubManagersDtoSchema.parse(result),
+    }
+  }
 }
 
 export default HubManagersService

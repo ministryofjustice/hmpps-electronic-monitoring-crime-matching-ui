@@ -20,6 +20,7 @@ describe('exportProximityAlert form page', () => {
       })
 
       const body = {
+        authorisingManager: 'a6e61168-f7ca-4056-8a2d-7db0fd77fb62',
         'device-wearer-toggle': ['device-wearer-1', 'device-wearer-2'],
         'device-wearer-tracks': ['device-wearer-tracks-1'],
         'analysis-toggles': ['device-wearer-circles-', 'device-wearer-labels-'],
@@ -33,6 +34,7 @@ describe('exportProximityAlert form page', () => {
       expect(result).toEqual({
         success: true,
         exportData: {
+          authorisingManager: 'a6e61168-f7ca-4056-8a2d-7db0fd77fb62',
           deviceIds: ['1', '2'],
           selectedTrackDeviceIds: ['1'],
           capturedMapState,
@@ -63,6 +65,7 @@ describe('exportProximityAlert form page', () => {
       })
 
       const body = {
+        authorisingManager: 'a6e61168-f7ca-4056-8a2d-7db0fd77fb62',
         'device-wearer-toggle': 'device-wearer-1',
         'device-wearer-tracks': 'device-wearer-tracks-1',
         'analysis-toggles': 'device-wearer-labels-',
@@ -76,6 +79,7 @@ describe('exportProximityAlert form page', () => {
       expect(result).toEqual({
         success: true,
         exportData: {
+          authorisingManager: 'a6e61168-f7ca-4056-8a2d-7db0fd77fb62',
           deviceIds: ['1'],
           selectedTrackDeviceIds: ['1'],
           capturedMapState,
@@ -95,6 +99,7 @@ describe('exportProximityAlert form page', () => {
     it('should treat missing checkbox fields as unchecked when parsing a submitted form', () => {
       // Given
       const body = {
+        authorisingManager: 'a6e61168-f7ca-4056-8a2d-7db0fd77fb62',
         'device-wearer-toggle': ['device-wearer-1'],
       }
 
@@ -105,6 +110,7 @@ describe('exportProximityAlert form page', () => {
       expect(result).toEqual({
         success: true,
         exportData: {
+          authorisingManager: 'a6e61168-f7ca-4056-8a2d-7db0fd77fb62',
           deviceIds: ['1'],
           selectedTrackDeviceIds: [],
           capturedMapState: undefined,
@@ -124,6 +130,7 @@ describe('exportProximityAlert form page', () => {
     it('should ignore malformed checkbox values', () => {
       // Given
       const body = {
+        authorisingManager: 'a6e61168-f7ca-4056-8a2d-7db0fd77fb62',
         'device-wearer-toggle': ['device-wearer-1', 'unexpected-value', 'device-wearer-2'],
         'device-wearer-tracks': ['device-wearer-tracks-1', 'bad-track-value'],
         'analysis-toggles': ['device-wearer-circles-', 'unexpected-toggle'],
@@ -136,6 +143,7 @@ describe('exportProximityAlert form page', () => {
       expect(result).toEqual({
         success: true,
         exportData: {
+          authorisingManager: 'a6e61168-f7ca-4056-8a2d-7db0fd77fb62',
           deviceIds: ['1', '2'],
           selectedTrackDeviceIds: ['1'],
           capturedMapState: undefined,
@@ -155,6 +163,7 @@ describe('exportProximityAlert form page', () => {
     it('should return unsuccessfully when capturedMapState is invalid json', () => {
       // Given
       const body = {
+        authorisingManager: 'a6e61168-f7ca-4056-8a2d-7db0fd77fb62',
         'device-wearer-toggle': ['device-wearer-1'],
         'device-wearer-tracks': ['device-wearer-tracks-1'],
         'analysis-toggles': ['device-wearer-labels-'],
@@ -174,6 +183,54 @@ describe('exportProximityAlert form page', () => {
           showLocationNumbering: true,
           capturedMapState: '{invalid-json}',
         },
+        validationErrors: [
+          {
+            field: 'capturedMapState_capturedMapState',
+            message: 'Captured map state must be valid JSON',
+          },
+        ],
+      })
+    })
+
+    it('should return unsuccessfully when authorising manager is missing', () => {
+      // Given
+      const capturedMapState = JSON.stringify({
+        mapWidthPx: 1200,
+        mapHeightPx: 800,
+        devicePixelRatio: 2,
+        view: {
+          center: [12345, 67890],
+          resolution: 4.5,
+          rotation: 0,
+        },
+      })
+
+      const body = {
+        'device-wearer-toggle': ['device-wearer-1', 'device-wearer-2'],
+        'device-wearer-tracks': ['device-wearer-tracks-1'],
+        'analysis-toggles': ['device-wearer-circles-', 'device-wearer-labels-'],
+        capturedMapState,
+      }
+
+      // When
+      const result = parseExportProximityAlertRequest(body)
+
+      // Then
+      expect(result).toEqual({
+        success: false,
+        formState: {
+          selectedDeviceIds: ['1', '2'],
+          selectedTrackDeviceIds: ['1'],
+          showConfidenceCircles: true,
+          showLocationNumbering: true,
+          capturedMapState,
+        },
+        validationErrors: [
+          {
+            field: 'authorisingManager',
+            message: 'Select an authorising manager',
+          },
+        ],
       })
     })
   })

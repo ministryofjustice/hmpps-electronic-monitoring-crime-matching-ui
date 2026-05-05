@@ -7,7 +7,7 @@ import MapImageRendererService from '../services/proximityAlert/proximityAlertMa
 import ProximityAlertReportDocxService from '../services/proximityAlert/proximityAlertReportDocxService'
 import populateBackLink from '../middleware/populateBackLink'
 
-const proximityAlertRoutes = ({ crimeService, playwrightBrowserService }: Services): Router => {
+const proximityAlertRoutes = ({ crimeService, hubManagersService, playwrightBrowserService }: Services): Router => {
   const router = Router()
   const crimeSearchController = new CrimeSearchController(crimeService)
   const mapImageRendererService = new MapImageRendererService()
@@ -18,6 +18,7 @@ const proximityAlertRoutes = ({ crimeService, playwrightBrowserService }: Servic
     playwrightBrowserService,
     mapImageRendererService,
     proximityAlertReportDocxService,
+    hubManagersService,
   )
 
   router.get('/', asyncMiddleware(crimeSearchController.view))

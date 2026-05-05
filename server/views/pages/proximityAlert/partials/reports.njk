@@ -1,6 +1,7 @@
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 {% from "govuk/components/tag/macro.njk" import govukTag %}
-{% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "moj/components/alert/macro.njk" import mojAlert %}
 
 {% set selectedDeviceIds = exportProximityAlertForm.selectedDeviceIds %}
@@ -181,17 +182,56 @@
       })
     }}
 
-    {% if not loop.last %}
-      <hr class="govuk-section-break govuk-section-break--visible govuk-section-break--m" />
-    {% endif %}
+    <hr class="govuk-section-break govuk-section-break--visible govuk-section-break--m" />
   {% endfor %}
 
   <div class="govuk-!-margin-top-4">
     {{
       govukButton({
         text: "Export proximity alert",
-        type: "submit"
+        classes: "govuk-button--secondary govuk-button--full-width",
+        type: "button"
       })
     }}
   </div>
+
+  {% set managers = [] %}
+
+  {% for manager in hubManagers %}
+    {%
+      set managers = (managers.push(
+        {
+          value: manager.id,
+          text: manager.name,
+          hint: {
+            text: "MOJ EM Hub Manager"
+          }
+        }
+      ), managers)
+    %}
+  {% endfor %}
+
+  {{
+    govukRadios({
+      formGroup: {
+        classes: "govuk-!-margin-bottom-6"
+      },
+      fieldset: {
+        legend: {
+          text: "Assign to authorising manager"
+        }
+      },
+      classes: "govuk-radios--small",
+      name: "authorisingManager",
+      errorMessage: errors.authorisingManager,
+      items: managers
+    })
+  }}
+
+  {{
+    govukButton({
+      text: "Export",
+      type: "submit"
+    })
+  }}
 {% endif %}

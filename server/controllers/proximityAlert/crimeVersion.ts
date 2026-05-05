@@ -14,6 +14,10 @@ import ProximityAlertReportDocxService from '../../services/proximityAlert/proxi
 import presentProximityAlertReportData from '../../presenters/proximityAlertReportData'
 import type { MojAlert } from '../../types/govUk/mojAlert'
 import { createMojAlertWarning } from '../../utils/alerts'
+import HubManagersService from '../../services/hubManagerService'
+import Result from '../../types/result'
+import { CrimeVersion } from '../../types/crimeVersion'
+import HubManager from '../../types/hubManager'
 
 const DOCX_CONTENT_TYPE = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
 const EXPORT_ERROR_MESSAGE = 'Could not export Proximity Alert report. Please try again.'
@@ -27,12 +31,38 @@ export default class CrimeVersionController {
     private readonly playwrightBrowserService: PlaywrightBrowserService,
     private readonly mapImageRendererService: MapImageRendererService,
     private readonly proximityAlertReportDocxService: ProximityAlertReportDocxService,
+    private readonly hubManagersService: HubManagersService,
   ) {}
+
+  private async getViewData(
+    username: string,
+    crimeVersionId: string,
+  ): Promise<Result<{ crimeVersion: CrimeVersion; hubManagers: Array<HubManager> }, string>> {
+    const result = await Promise.all([
+      this.crimeService.getCrimeVersion(username, crimeVersionId),
+      this.hubManagersService.getHubManagersWithSignatures(username),
+    ])
+
+    if (result[0].ok && result[1].ok) {
+      return {
+        ok: true,
+        data: {
+          crimeVersion: result[0].data,
+          hubManagers: result[1].data,
+        },
+      }
+    }
+
+    return {
+      ok: false,
+      error: 'Failed to fetch data',
+    }
+  }
 
   view: RequestHandler = async (req, res, next) => {
     const { username } = res.locals.user
     const { crimeVersionId } = req.params
-    const result = await this.crimeService.getCrimeVersion(username, crimeVersionId)
+    const result = await this.getViewData(username, crimeVersionId)
 
     if (result.ok) {
       const exportState = req.session.exportProximityAlertState
@@ -47,9 +77,10 @@ export default class CrimeVersionController {
 
       res.render('pages/proximityAlert/crimeVersion', {
         usesInternalOverlays: true,
-        crimeVersion: presentCrimeVersion(result.data),
+        crimeVersion: presentCrimeVersion(result.data.crimeVersion),
         alerts,
         exportProximityAlertForm: toExportProximityAlertForm(crimeVersionId, exportState),
+        hubManagers: result.data.hubManagers,
       })
     } else {
       next(createError(404, 'Not found'))
@@ -70,6 +101,7 @@ export default class CrimeVersionController {
         const parsedRequest = parseExportProximityAlertRequest(req.body as Record<string, unknown>)
 
         if (!parsedRequest.success) {
+          req.session.validationErrors = parsedRequest.validationErrors
           req.session.exportProximityAlertState = withExportProximityAlertError(
             parsedRequest.formState,
             INVALID_EXPORT_REQUEST_ERROR,
