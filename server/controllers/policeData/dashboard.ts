@@ -8,6 +8,7 @@ import CrimeMatchingResultsService from '../../services/crimeMatchingResultsServ
 import PoliceDataService from '../../services/policeDataService'
 import presentIngestionAttemptSummaries from '../../presenters/ingestionAttemptSummaries'
 import generateCrimeMatchingResultExport from '../../presenters/reports/crimeMatchingResults'
+import URLS from '../../constants/urls'
 
 export default class PoliceDataDashboardController {
   constructor(
@@ -30,7 +31,7 @@ export default class PoliceDataDashboardController {
     const { batchId, policeForceArea, fromDate, toDate } = policeDataDashboardQuerySchema.parse(req.body)
     const query = this.getQueryString(batchId, policeForceArea, fromDate, toDate)
 
-    return res.redirect(303, `/police-data/dashboard${query ? `?${query}` : ''}`)
+    return res.redirect(303, `${URLS.POLICE_DATA.INGESTION_ATTEMPTS.VIEW}${query ? `?${query}` : ''}`)
   }
 
   view: RequestHandler = async (req, res) => {

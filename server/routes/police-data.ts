@@ -4,6 +4,7 @@ import asyncMiddleware from '../middleware/asyncMiddleware'
 import PoliceDataDashboardController from '../controllers/policeData/dashboard'
 import PoliceDataIngestionAttemptController from '../controllers/policeData/ingestionAttempt'
 import populateBackLink from '../middleware/populateBackLink'
+import URLS from '../constants/urls'
 
 const policeDataRoutes = ({ crimeMatchingResultsService, policeDataService }: Services): Router => {
   const router = Router()
@@ -13,17 +14,22 @@ const policeDataRoutes = ({ crimeMatchingResultsService, policeDataService }: Se
   )
   const policeDataIngestionAttemptController = new PoliceDataIngestionAttemptController(policeDataService)
 
-  router.get('/dashboard', asyncMiddleware(policeDataDashboardController.view))
-  router.post('/dashboard', asyncMiddleware(policeDataDashboardController.search))
-  router.get('/dashboard/export', asyncMiddleware(policeDataDashboardController.export))
-
+  // Dashboard
+  router.get(URLS.POLICE_DATA.INGESTION_ATTEMPTS.VIEW, asyncMiddleware(policeDataDashboardController.view))
+  router.post(URLS.POLICE_DATA.INGESTION_ATTEMPTS.VIEW, asyncMiddleware(policeDataDashboardController.search))
   router.get(
-    '/ingestion-attempts/:ingestionAttemptId',
-    populateBackLink('/police-data/dashboard'),
+    URLS.POLICE_DATA.INGESTION_ATTEMPTS.EXPORT_MATCHING_RESULTS,
+    asyncMiddleware(policeDataDashboardController.export),
+  )
+
+  // Ingestion attempt
+  router.get(
+    URLS.POLICE_DATA.INGESTION_ATTEMPT.VIEW,
+    populateBackLink(URLS.POLICE_DATA.INGESTION_ATTEMPTS.VIEW),
     asyncMiddleware(policeDataIngestionAttemptController.view),
   )
   router.get(
-    '/ingestion-attempts/:ingestionAttemptId/export',
+    URLS.POLICE_DATA.INGESTION_ATTEMPT.EXPORT_VALIDATION_ERRORS,
     asyncMiddleware(policeDataIngestionAttemptController.export),
   )
 
