@@ -65,6 +65,7 @@ const capturedMapStateSchema = optionalTrimmedStringSchema.check(ctx => {
 })
 
 const exportProximityAlertFormSchema = z.object({
+  authorisingManager: z.string({ error: 'Select an authorising manager' }),
   deviceIds: formStringArraySchema,
   capturedMapState: capturedMapStateSchema,
 })

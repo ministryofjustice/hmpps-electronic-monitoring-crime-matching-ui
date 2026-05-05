@@ -12,6 +12,8 @@ import CrimeService from '../../services/crimeService'
 import PlaywrightBrowserService from '../../services/proximityAlert/playwrightBrowserService'
 import MapImageRendererService from '../../services/proximityAlert/proximityAlertMapImageService'
 import ProximityAlertReportDocxService from '../../services/proximityAlert/proximityAlertReportDocxService'
+import HubManagersService from '../../services/hubManagerService'
+import expectedAuthOptions from '../../testutils/expectedAuthOptions'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
@@ -20,12 +22,13 @@ dayjs.extend(customParseFormat)
 jest.mock('../../data/crimeMatchingClient')
 jest.mock('../../../logger')
 
-const expectedAuthOptions = {
-  tokenType: 'SYSTEM_TOKEN',
-  user: {
-    username: 'fakeUserName',
+const hubManagers = [
+  {
+    id: 'a6e61168-f7ca-4056-8a2d-7db0fd77fb62',
+    name: 'Test manager 1',
+    hasSignature: true,
   },
-}
+]
 
 describe('CrimeVersionController', () => {
   let mockRestClient: jest.Mocked<CrimeMatchingClient>
@@ -62,11 +65,13 @@ describe('CrimeVersionController', () => {
       const res = createMockResponse()
       const next = jest.fn()
       const crimeService = new CrimeService(mockRestClient)
+      const hubManagerService = new HubManagersService(mockRestClient)
       const controller = new CrimeVersionController(
         crimeService,
         mockPlaywrightBrowserService,
         mockMapImageRendererService,
         mockProximityAlertReportDocxService,
+        hubManagerService,
       )
 
       mockRestClient.getCrimeVersion.mockResolvedValue({
@@ -109,6 +114,7 @@ describe('CrimeVersionController', () => {
           },
         },
       })
+      mockRestClient.getHubManagers.mockResolvedValue({ data: hubManagers })
 
       // When
       await controller.view(req, res, next)
@@ -187,6 +193,7 @@ describe('CrimeVersionController', () => {
           showLocationNumbering: true,
           capturedMapState: undefined,
         },
+        hubManagers,
       })
     })
 
@@ -197,11 +204,13 @@ describe('CrimeVersionController', () => {
       const res = createMockResponse()
       const next = jest.fn()
       const crimeService = new CrimeService(mockRestClient)
+      const hubManagerService = new HubManagersService(mockRestClient)
       const controller = new CrimeVersionController(
         crimeService,
         mockPlaywrightBrowserService,
         mockMapImageRendererService,
         mockProximityAlertReportDocxService,
+        hubManagerService,
       )
 
       mockRestClient.getCrimeVersion.mockResolvedValue({
@@ -220,6 +229,7 @@ describe('CrimeVersionController', () => {
           matching: { deviceWearers: [] },
         },
       })
+      mockRestClient.getHubManagers.mockResolvedValue({ data: hubManagers })
 
       // When
       await controller.view(req, res, next)
@@ -260,6 +270,7 @@ describe('CrimeVersionController', () => {
           showLocationNumbering: true,
           capturedMapState: undefined,
         },
+        hubManagers,
       })
     })
 
@@ -270,11 +281,13 @@ describe('CrimeVersionController', () => {
       const res = createMockResponse()
       const next = jest.fn()
       const crimeService = new CrimeService(mockRestClient)
+      const hubManagerService = new HubManagersService(mockRestClient)
       const controller = new CrimeVersionController(
         crimeService,
         mockPlaywrightBrowserService,
         mockMapImageRendererService,
         mockProximityAlertReportDocxService,
+        hubManagerService,
       )
 
       mockRestClient.getCrimeVersion.mockResolvedValue({
@@ -293,6 +306,7 @@ describe('CrimeVersionController', () => {
           matching: null,
         },
       })
+      mockRestClient.getHubManagers.mockResolvedValue({ data: hubManagers })
 
       // When
       await controller.view(req, res, next)
@@ -333,6 +347,7 @@ describe('CrimeVersionController', () => {
           showLocationNumbering: true,
           capturedMapState: undefined,
         },
+        hubManagers,
       })
     })
 
@@ -360,11 +375,13 @@ describe('CrimeVersionController', () => {
       const res = createMockResponse()
       const next = jest.fn()
       const crimeService = new CrimeService(mockRestClient)
+      const hubManagerService = new HubManagersService(mockRestClient)
       const controller = new CrimeVersionController(
         crimeService,
         mockPlaywrightBrowserService,
         mockMapImageRendererService,
         mockProximityAlertReportDocxService,
+        hubManagerService,
       )
 
       mockRestClient.getCrimeVersion.mockResolvedValue({
@@ -383,6 +400,7 @@ describe('CrimeVersionController', () => {
           matching: { deviceWearers: [] },
         },
       })
+      mockRestClient.getHubManagers.mockResolvedValue({ data: hubManagers })
 
       // When
       await controller.view(req, res, next)
@@ -402,7 +420,6 @@ describe('CrimeVersionController', () => {
         crimeVersion: {
           crimeVersionId: '78d41bd9-5450-4bbb-89d4-42ba75659f50',
           crimeReference: 'crime1',
-
           crimeTypeDescription: 'Aggravated Burglary',
           crimeDateTimeFrom: '2025-01-01T00:00:00Z',
           crimeDateTimeTo: '2025-01-01T01:00:00Z',
@@ -440,13 +457,78 @@ describe('CrimeVersionController', () => {
             },
           }),
         },
+        hubManagers,
       })
       expect(req.session.exportProximityAlertState).toBeUndefined()
     })
   })
 
   describe('exportProximityAlert', () => {
-    it('should send a docx when the export request is valid', async () => {
+    it('should redirect back with a session error when the export request is invalid', async () => {
+      // Given
+      const crimeVersionId = '78d41bd9-5450-4bbb-89d4-42ba75659f50'
+      const req = createMockRequest({
+        params: { crimeVersionId },
+        body: {
+          authorisingManager: 'a6e61168-f7ca-4056-8a2d-7db0fd77fb62',
+          'device-wearer-toggle': ['device-wearer-1'],
+          'device-wearer-tracks': ['device-wearer-tracks-1'],
+          'analysis-toggles': ['device-wearer-labels-'],
+          capturedMapState: '{invalid-json}',
+        },
+      })
+      const res = createMockResponse()
+      const next = jest.fn()
+      const crimeService = new CrimeService(mockRestClient)
+      const hubManagerService = new HubManagersService(mockRestClient)
+      const controller = new CrimeVersionController(
+        crimeService,
+        mockPlaywrightBrowserService,
+        mockMapImageRendererService,
+        mockProximityAlertReportDocxService,
+        hubManagerService,
+      )
+
+      mockRestClient.getCrimeVersion.mockResolvedValue({
+        data: {
+          crimeVersionId,
+          crimeReference: 'crime1',
+          batchId: 'batch1',
+          crimeTypeDescription: 'Aggravated Burglary',
+          crimeTypeId: 'AB',
+          crimeDateTimeFrom: '2025-01-01T00:00:00Z',
+          crimeDateTimeTo: '2025-01-01T01:00:00Z',
+          crimeText: 'text',
+          versionLabel: 'Latest version',
+          latitude: 10.0,
+          longitude: 10.0,
+          matching: {
+            deviceWearers: [{ name: 'name', deviceId: 1, nomisId: 'nomisId', positions: [] }],
+          },
+        },
+      })
+
+      // When
+      await controller.exportProximityAlert(req, res, next)
+
+      // Then
+      expect(req.session.exportProximityAlertState).toEqual({
+        error: 'Invalid export request.',
+        selectedDeviceIds: ['1'],
+        selectedTrackDeviceIds: ['1'],
+        showConfidenceCircles: false,
+        showLocationNumbering: true,
+        capturedMapState: '{invalid-json}',
+      })
+      expect(req.session.validationErrors).toEqual([
+        { field: 'capturedMapState_capturedMapState', message: 'Captured map state must be valid JSON' },
+      ])
+      expect(res.redirect).toHaveBeenCalledWith(`/proximity-alert/${crimeVersionId}`)
+      expect(next).not.toHaveBeenCalled()
+    })
+
+    // Skipped as temporarily exporting a zipped file of images rather than the docx file
+    it.skip('should send a docx when the export request is valid', async () => {
       // Given
       const crimeVersionId = '78d41bd9-5450-4bbb-89d4-42ba75659f50'
       const capturedMapState = JSON.stringify({
@@ -466,6 +548,7 @@ describe('CrimeVersionController', () => {
           cookie: 'connect.sid=fake-session',
         },
         body: {
+          authorisingManager: 'a6e61168-f7ca-4056-8a2d-7db0fd77fb62',
           'device-wearer-toggle': ['device-wearer-1', 'device-wearer-2'],
           'device-wearer-tracks': ['device-wearer-tracks-1'],
           'analysis-toggles': ['device-wearer-circles-', 'device-wearer-labels-'],
@@ -475,11 +558,13 @@ describe('CrimeVersionController', () => {
       const res = createMockResponse()
       const next = jest.fn()
       const crimeService = new CrimeService(mockRestClient)
+      const hubManagerService = new HubManagersService(mockRestClient)
       const controller = new CrimeVersionController(
         crimeService,
         mockPlaywrightBrowserService,
         mockMapImageRendererService,
         mockProximityAlertReportDocxService,
+        hubManagerService,
       )
 
       const mockBrowser = {} as Awaited<ReturnType<PlaywrightBrowserService['getBrowser']>>
@@ -612,6 +697,7 @@ describe('CrimeVersionController', () => {
         body: {
           'device-wearer-tracks': ['device-wearer-tracks-1'],
           'analysis-toggles': ['device-wearer-circles-'],
+          authorisingManager: 'a6e61168-f7ca-4056-8a2d-7db0fd77fb62',
           capturedMapState: JSON.stringify({
             mapWidthPx: 1200,
             mapHeightPx: 800,
@@ -627,11 +713,13 @@ describe('CrimeVersionController', () => {
       const res = createMockResponse()
       const next = jest.fn()
       const crimeService = new CrimeService(mockRestClient)
+      const hubManagerService = new HubManagersService(mockRestClient)
       const controller = new CrimeVersionController(
         crimeService,
         mockPlaywrightBrowserService,
         mockMapImageRendererService,
         mockProximityAlertReportDocxService,
+        hubManagerService,
       )
 
       mockRestClient.getCrimeVersion.mockResolvedValue({
@@ -674,6 +762,94 @@ describe('CrimeVersionController', () => {
           },
         }),
       })
+      expect(req.session.validationErrors).toEqual(undefined)
+      expect(res.redirect).toHaveBeenCalledWith(`/proximity-alert/${crimeVersionId}`)
+      expect(next).not.toHaveBeenCalled()
+    })
+
+    it('should redirect back with a session error when no authorising manager selected', async () => {
+      // Given
+      const crimeVersionId = '78d41bd9-5450-4bbb-89d4-42ba75659f50'
+      const req = createMockRequest({
+        params: { crimeVersionId },
+        headers: {
+          cookie: 'connect.sid=fake-session',
+        },
+        body: {
+          'device-wearer-toggle': ['device-wearer-1', 'device-wearer-2'],
+          'device-wearer-tracks': ['device-wearer-tracks-1'],
+          'analysis-toggles': ['device-wearer-circles-', 'device-wearer-labels-'],
+          capturedMapState: JSON.stringify({
+            mapWidthPx: 1200,
+            mapHeightPx: 800,
+            devicePixelRatio: 2,
+            view: {
+              center: [12345, 67890],
+              resolution: 4.5,
+              rotation: 0,
+            },
+          }),
+        },
+      })
+
+      const res = createMockResponse()
+      const next = jest.fn()
+      const crimeService = new CrimeService(mockRestClient)
+      const hubManagerService = new HubManagersService(mockRestClient)
+      const controller = new CrimeVersionController(
+        crimeService,
+        mockPlaywrightBrowserService,
+        mockMapImageRendererService,
+        mockProximityAlertReportDocxService,
+        hubManagerService,
+      )
+
+      mockRestClient.getCrimeVersion.mockResolvedValue({
+        data: {
+          crimeVersionId,
+          crimeReference: 'crime1',
+          batchId: 'batch1',
+          crimeTypeDescription: 'Aggravated Burglary',
+          crimeTypeId: 'AB',
+          crimeDateTimeFrom: '2025-01-01T00:00:00Z',
+          crimeDateTimeTo: '2025-01-01T01:00:00Z',
+          crimeText: 'text',
+          versionLabel: 'Latest version',
+          latitude: 10.0,
+          longitude: 10.0,
+          matching: {
+            deviceWearers: [{ name: 'name1', deviceId: 1, nomisId: 'nomisId1', positions: [] }],
+          },
+        },
+      })
+
+      // When
+      await controller.exportProximityAlert(req, res, next)
+
+      // Then
+      expect(req.session.exportProximityAlertState).toEqual({
+        error: 'Invalid export request.',
+        selectedDeviceIds: ['1', '2'],
+        selectedTrackDeviceIds: ['1'],
+        showConfidenceCircles: true,
+        showLocationNumbering: true,
+        capturedMapState: JSON.stringify({
+          mapWidthPx: 1200,
+          mapHeightPx: 800,
+          devicePixelRatio: 2,
+          view: {
+            center: [12345, 67890],
+            resolution: 4.5,
+            rotation: 0,
+          },
+        }),
+      })
+      expect(req.session.validationErrors).toEqual([
+        {
+          field: 'authorisingManager',
+          message: 'Select an authorising manager',
+        },
+      ])
       expect(res.redirect).toHaveBeenCalledWith(`/proximity-alert/${crimeVersionId}`)
       expect(next).not.toHaveBeenCalled()
     })

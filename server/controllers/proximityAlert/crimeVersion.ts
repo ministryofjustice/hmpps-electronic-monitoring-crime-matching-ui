@@ -103,6 +103,7 @@ export default class CrimeVersionController {
         const parsedRequest = parseExportProximityAlertRequest(req.body as Record<string, unknown>)
 
         if (!parsedRequest.success) {
+          req.session.validationErrors = parsedRequest.validationErrors
           req.session.exportProximityAlertState = withExportProximityAlertError(
             parsedRequest.formState,
             INVALID_EXPORT_REQUEST_ERROR,
