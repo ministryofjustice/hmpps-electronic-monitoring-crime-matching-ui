@@ -19,6 +19,7 @@ describe('ProximityAlertReportDocxService', () => {
         crimeVersionData: {
           crimeVersionId: '78d41bd9-5450-4bbb-89d4-42ba75659f50',
           crimeReference: 'crime1',
+          batchId: 'batch1',
           crimeType: 'Aggravated Burglary',
           fromDateTime: '2025-01-01T00:00:00Z',
           toDateTime: '2025-01-01T01:00:00Z',

@@ -5,7 +5,7 @@ export type ProximityAlertReportPositionRow = {
   capturedDateTime: string
   latitude: number
   longitude: number
-  confidenceCircle: number
+  precision: number
 }
 
 export type ProximityAlertReportDeviceWearer = {
@@ -19,6 +19,7 @@ export type ProximityAlertReportDeviceWearer = {
 export type ProximityAlertReportCrimeVersion = {
   crimeVersionId: string
   crimeReference: string
+  batchId: string
   crimeType: string
   fromDateTime: string
   toDateTime: string
@@ -76,6 +77,7 @@ const presentProximityAlertReportData = (
     crimeVersionData: {
       crimeVersionId: crimeVersion.crimeVersionId,
       crimeReference: crimeVersion.crimeReference,
+      batchId: crimeVersion.batchId,
       crimeType: crimeVersion.crimeTypeDescription,
       fromDateTime: crimeVersion.crimeDateTimeFrom,
       toDateTime: crimeVersion.crimeDateTimeTo,

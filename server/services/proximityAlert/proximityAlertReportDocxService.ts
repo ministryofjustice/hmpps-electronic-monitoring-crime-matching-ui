@@ -17,6 +17,8 @@ import {
   WidthType,
 } from 'docx'
 import { imageSize } from 'image-size'
+import { readFileSync } from 'fs'
+import path from 'path'
 import type {
   ProximityAlertReportData,
   ProximityAlertReportDeviceWearer,
@@ -47,7 +49,10 @@ const MAP_IMAGE_WIDTH_SAFETY_MARGIN_PX = 8
 const MAX_MAP_IMAGE_WIDTH_PX =
   Math.floor(USABLE_PAGE_WIDTH_WORD_UNITS / WORD_UNITS_PER_PX) - MAP_IMAGE_WIDTH_SAFETY_MARGIN_PX
 
-const pxToWordUnits = (px: number) => Math.round(px * WORD_UNITS_PER_PX)
+// The map key image is a static asset, so can be read and processed once at module load time.
+const EXHIBIT_MAP_KEY_IMAGE_PATH = path.join(__dirname, 'assets/exhibit-emac-02-map-key.jpg')
+
+const pxToWordUnits = (px: number): number => Math.round(px * WORD_UNITS_PER_PX)
 
 // Scales an image buffer proportionally to fit within the maximum page width.
 const scaledImageSize = (jpg: Buffer, maxWidthPx = MAX_MAP_IMAGE_WIDTH_PX): { width: number; height: number } => {
@@ -85,7 +90,7 @@ const imageParagraph = (jpg: Buffer): Paragraph => {
   })
 }
 
-function fmtDateGb(iso: string): string {
+const fmtDateGb = (iso: string): string => {
   const date = new Date(iso)
   return new Intl.DateTimeFormat('en-GB', {
     day: '2-digit',
@@ -95,7 +100,7 @@ function fmtDateGb(iso: string): string {
   }).format(date)
 }
 
-function fmtDateTimeGb(iso: string): string {
+const fmtDateTimeGb = (iso: string): string => {
   const dateObj = new Date(iso)
 
   const date = new Intl.DateTimeFormat('en-GB', {
@@ -115,7 +120,7 @@ function fmtDateTimeGb(iso: string): string {
   return `${date} ${time}`
 }
 
-function cellParagraph(
+const cellParagraph = (
   text: string,
   opts?: {
     bold?: boolean
@@ -123,14 +128,18 @@ function cellParagraph(
     alignment?: AlignmentTypeValue
     spacingAfter?: number
     spacingBefore?: number
+    color?: string
+    size?: number
   },
-): Paragraph {
-  return new Paragraph({
+): Paragraph =>
+  new Paragraph({
     children: [
       new TextRun({
         text,
         bold: opts?.bold,
         underline: opts?.underline ? {} : undefined,
+        color: opts?.color,
+        size: opts?.size,
       }),
     ],
     alignment: opts?.alignment,
@@ -139,18 +148,19 @@ function cellParagraph(
       after: opts?.spacingAfter ?? 0,
     },
   })
-}
 
-function paragraph(text: string, opts?: { bold?: boolean; alignment?: AlignmentTypeValue; spacingAfter?: number }) {
-  return new Paragraph({
+const paragraph = (
+  text: string,
+  opts?: { bold?: boolean; alignment?: AlignmentTypeValue; spacingAfter?: number },
+): Paragraph =>
+  new Paragraph({
     children: [new TextRun({ text, bold: opts?.bold })],
     alignment: opts?.alignment,
     spacing: { before: 0, after: opts?.spacingAfter ?? 120 },
   })
-}
 
-function bulletPara(text: string, opts?: { spacingBefore?: number; spacingAfter?: number }): Paragraph {
-  return new Paragraph({
+const bulletPara = (text: string, opts?: { spacingBefore?: number; spacingAfter?: number }): Paragraph =>
+  new Paragraph({
     children: [new TextRun({ text })],
     bullet: { level: 0 },
     spacing: {
@@ -158,30 +168,29 @@ function bulletPara(text: string, opts?: { spacingBefore?: number; spacingAfter?
       after: opts?.spacingAfter ?? 0,
     },
   })
-}
 
-function spacer(lines = 1): Paragraph[] {
-  return Array.from({ length: Math.max(0, lines) }, () => new Paragraph(''))
-}
+const spacer = (lines = 1): Paragraph[] => Array.from({ length: Math.max(0, lines) }, () => new Paragraph(''))
 
 // Target borders: prominent black.
-function strongBlackBorders() {
-  return {
+const strongBlackBorders = () =>
+  ({
     top: { style: BorderStyle.SINGLE, size: 8, color: '000000' },
     bottom: { style: BorderStyle.SINGLE, size: 8, color: '000000' },
     left: { style: BorderStyle.SINGLE, size: 8, color: '000000' },
     right: { style: BorderStyle.SINGLE, size: 8, color: '000000' },
     insideHorizontal: { style: BorderStyle.SINGLE, size: 8, color: '000000' },
     insideVertical: { style: BorderStyle.SINGLE, size: 8, color: '000000' },
-  } as const
-}
+  }) as const
 
-function noBorder() {
-  return { style: BorderStyle.NONE, size: 0, color: 'FFFFFF' } as const
-}
+const noBorder = () => ({ style: BorderStyle.NONE, size: 0, color: 'FFFFFF' }) as const
+const noBottomBorder = () => ({
+  ...strongBlackBorders(),
+  bottom: noBorder(),
+})
 
-function sectionHeaderShading() {
-  return { type: ShadingType.CLEAR, color: 'auto', fill: 'E6E6E6' } as const
+const sectionHeaderShading = () => ({ type: ShadingType.CLEAR, color: 'auto', fill: 'E6E6E6' }) as const
+const sectionHeaderShadingGreen = () => {
+  return { type: ShadingType.CLEAR, color: 'auto', fill: '9ae098' } as const
 }
 
 // Cell padding (margins) in Word units
@@ -192,16 +201,31 @@ const CELL_PADDING_WORD_UNITS = {
   right: 120,
 } as const
 
-function cellArgsBase() {
-  return {
+const HEADER_CELL_PADDING_WORD_UNITS = {
+  top: 20,
+  bottom: 20,
+  left: 80,
+  right: 80,
+} as const
+
+const cellArgsBase = () =>
+  ({
     margins: CELL_PADDING_WORD_UNITS,
     verticalAlign: VerticalAlign.TOP,
-  } as const
-}
+  }) as const
+
+const headerCellArgsBase = () =>
+  ({
+    margins: HEADER_CELL_PADDING_WORD_UNITS,
+    verticalAlign: VerticalAlign.CENTER,
+  }) as const
 
 // Rows that shouldn't split across pages.
-function rowNoSplit(children: TableCell[], opts?: { heightWordUnits?: number; heightRule?: HeightRuleValue }) {
-  return new TableRow({
+const rowNoSplit = (
+  children: TableCell[],
+  opts?: { heightWordUnits?: number; heightRule?: HeightRuleValue },
+): TableRow =>
+  new TableRow({
     cantSplit: true,
     height: opts?.heightWordUnits
       ? {
@@ -211,10 +235,9 @@ function rowNoSplit(children: TableCell[], opts?: { heightWordUnits?: number; he
       : undefined,
     children,
   })
-}
 
 // Top boxed table: Date + Title + Summary.
-function topSummaryTable(report: ProximityAlertReportData): Table {
+const topSummaryTable = (report: ProximityAlertReportData): Table => {
   const borders = strongBlackBorders()
   const { crimeVersionData } = report
 
@@ -223,7 +246,7 @@ function topSummaryTable(report: ProximityAlertReportData): Table {
     children: [
       new TextRun({ text: 'Acquisitive Crime Proximity Alert', bold: true }),
       new TextRun({ text: '\n', break: 1 }),
-      new TextRun({ text: `Crime Reference Number – ${crimeVersionData.crimeReference}`, bold: true }),
+      new TextRun({ text: `Crime Reference Number - ${crimeVersionData.crimeReference}`, bold: true }),
     ],
     spacing: { before: 120, after: 120 },
   })
@@ -231,7 +254,7 @@ function topSummaryTable(report: ProximityAlertReportData): Table {
   const summaryParagraph1 =
     'The report below documents the results of a proximity search for the above crime reference number utilising the MoJ Acquisitive Crime Mapping Tool.'
   const summaryParagraph2 =
-    'This process is designed to identify persons who are tagged as part of the MoJ’s Acquisitive Crime Project being in proximity of an acquisitive crime during the window of opportunity. The MoJ EM Acquisitive Crime Hub have reviewed each match and based on accuracy of the data and the relevance to the enquiry, have qualified the following as proximity match(es).'
+    "This process is designed to identify persons who are tagged as part of the MoJ's Acquisitive Crime Project being in proximity of an acquisitive crime during the window of opportunity. The MoJ EM Acquisitive Crime Hub have reviewed each match and based on accuracy of the data and the relevance to the enquiry, have qualified the following as proximity match(es)."
 
   return new Table({
     width: { size: 100, type: WidthType.PERCENTAGE },
@@ -273,13 +296,16 @@ function topSummaryTable(report: ProximityAlertReportData): Table {
 }
 
 // Common section header row spanning the whole table.
-function sectionHeaderRow(text: string, opts?: { columnSpan?: number; center?: boolean }): TableRow {
+const sectionHeaderRow = (
+  text: string,
+  opts?: { columnSpan?: number; center?: boolean; useGreen?: boolean },
+): TableRow => {
   const borders = strongBlackBorders()
   return rowNoSplit([
     new TableCell({
       ...cellArgsBase(),
       borders,
-      shading: sectionHeaderShading(),
+      shading: opts?.useGreen ? sectionHeaderShadingGreen() : sectionHeaderShading(),
       columnSpan: opts?.columnSpan ?? 2,
       children: [cellParagraph(text, { bold: true, alignment: opts?.center ? AlignmentType.CENTER : undefined })],
     }),
@@ -287,7 +313,7 @@ function sectionHeaderRow(text: string, opts?: { columnSpan?: number; center?: b
 }
 
 // Key/value row: used in person details tables and result/request summary tables, with various formatting options.
-function keyValueRow(
+const keyValueRow = (
   key: string,
   value: string,
   opts?: {
@@ -297,7 +323,7 @@ function keyValueRow(
     keyBold?: boolean
     valueBold?: boolean
   },
-): TableRow {
+): TableRow => {
   const borders = strongBlackBorders()
 
   const keyWidthPct = opts?.keyWidthPct ?? 33
@@ -327,7 +353,7 @@ function keyValueRow(
 }
 
 // Person-only table: no result/request summary, just the person key/value rows.
-function personOnlyTable(args: { personTitle: string; personRows: Array<[string, string]> }): Table {
+const personOnlyTable = (args: { personTitle: string; personRows: Array<[string, string]> }): Table => {
   const borders = strongBlackBorders()
   const { personTitle, personRows } = args
 
@@ -339,7 +365,7 @@ function personOnlyTable(args: { personTitle: string; personRows: Array<[string,
     layout: TableLayoutType.FIXED,
     borders,
     rows: [
-      sectionHeaderRow(personTitle),
+      sectionHeaderRow(personTitle, { useGreen: true }),
       ...personRows.map(([key, value], rowIndex) =>
         keyValueRow(key, value, {
           keyWidthPct: personKeyWidthPct,
@@ -352,7 +378,7 @@ function personOnlyTable(args: { personTitle: string; personRows: Array<[string,
 }
 
 // Result Summary (single instance).
-function resultSummaryTable(matchedCount: number): Table {
+const resultSummaryTable = (matchedCount: number): Table => {
   const borders = strongBlackBorders()
 
   return new Table({
@@ -360,7 +386,7 @@ function resultSummaryTable(matchedCount: number): Table {
     layout: TableLayoutType.FIXED,
     borders,
     rows: [
-      sectionHeaderRow('Result Summary'),
+      sectionHeaderRow('Result Summary', { useGreen: true }),
       keyValueRow('Number of qualified matches:', String(matchedCount), {
         keyWidthPct: 50,
         valueWidthPct: 50,
@@ -372,12 +398,12 @@ function resultSummaryTable(matchedCount: number): Table {
 }
 
 // Request Summary (single instance).
-function requestSummaryTable(report: ProximityAlertReportData): Table {
+const requestSummaryTable = (report: ProximityAlertReportData): Table => {
   const borders = strongBlackBorders()
   const { crimeVersionData } = report
 
   const rows: Array<[string, string]> = [
-    ['Crime mapping Batch ID:', ''],
+    ['Crime mapping Batch ID:', crimeVersionData.batchId],
     ['Crime Reference number:', crimeVersionData.crimeReference],
     ['Crime Type:', crimeVersionData.crimeType],
     ['Crime Date/Time from:', fmtDateTimeGb(crimeVersionData.fromDateTime)],
@@ -392,7 +418,7 @@ function requestSummaryTable(report: ProximityAlertReportData): Table {
     layout: TableLayoutType.FIXED,
     borders,
     rows: [
-      sectionHeaderRow('Request Summary'),
+      sectionHeaderRow('Request Summary', { useGreen: true }),
       ...rows.map(([key, value]) =>
         keyValueRow(key, value, { keyWidthPct: 50, valueWidthPct: 50, valueAlign: AlignmentType.CENTER }),
       ),
@@ -401,14 +427,14 @@ function requestSummaryTable(report: ProximityAlertReportData): Table {
 }
 
 // Details of Allegation (nested table for map pages).
-function detailsOfAllegationTable(report: ProximityAlertReportData): Table {
+const detailsOfAllegationTable = (report: ProximityAlertReportData): Table => {
   const borders = strongBlackBorders()
   const { crimeVersionData } = report
 
   const detailRows: Array<[string, string]> = [
     ['Crime Type', crimeVersionData.crimeType],
     ['Crime Reference', crimeVersionData.crimeReference],
-    ['Crime Batch', ''],
+    ['Crime Batch', crimeVersionData.batchId],
     ['From Date/Time', fmtDateTimeGb(crimeVersionData.fromDateTime)],
     ['To Date/Time', fmtDateTimeGb(crimeVersionData.toDateTime)],
     ['Crime Location\n(Lat/Long)', `${crimeVersionData.latitude}\n${crimeVersionData.longitude}`],
@@ -454,7 +480,13 @@ function detailsOfAllegationTable(report: ProximityAlertReportData): Table {
           borders: { ...borders, bottom: borders.bottom },
           width: { size: 45, type: WidthType.PERCENTAGE },
           rowSpan: additionalInfoRowSpan,
-          children: [cellParagraph('Additional Information', { alignment: AlignmentType.CENTER })],
+          children: [
+            cellParagraph('Additional Information', { alignment: AlignmentType.CENTER }),
+            cellParagraph(crimeVersionData.crimeText || '', {
+              alignment: AlignmentType.CENTER,
+              spacingBefore: 120,
+            }),
+          ],
         }),
       ]),
 
@@ -481,13 +513,13 @@ function detailsOfAllegationTable(report: ProximityAlertReportData): Table {
 }
 
 // Map page “frame” table: optional title row + image + allegation table + filler.
-function mapImagePageTable(args: {
+const mapImagePageTable = (args: {
   title?: string
   showTitleRow?: boolean
   jpg: Buffer
   report: ProximityAlertReportData
   fillerHeightWordUnits: number
-}): Table {
+}): Table => {
   const { title, showTitleRow = true, jpg, report, fillerHeightWordUnits } = args
 
   const borders = strongBlackBorders()
@@ -554,7 +586,7 @@ function mapImagePageTable(args: {
   })
 }
 
-function fillerHeightForMapPage(jpg: Buffer, hasTitleRow: boolean) {
+const fillerHeightForMapPage = (jpg: Buffer, hasTitleRow: boolean): number => {
   const imageSizeForPage = scaledImageSize(jpg)
   const imageHeightWordUnits = pxToWordUnits(imageSizeForPage.height)
   const titleRowWordUnits = hasTitleRow ? 520 : 0
@@ -568,69 +600,163 @@ function fillerHeightForMapPage(jpg: Buffer, hasTitleRow: boolean) {
   )
 }
 
-function positionsTable(wearer: ProximityAlertReportDeviceWearer): Table {
+const exhibitMapKeySection = (): Table => {
   const borders = strongBlackBorders()
-
-  const headerRow = rowNoSplit([
-    new TableCell({
-      ...cellArgsBase(),
-      borders,
-      shading: sectionHeaderShading(),
-      children: [cellParagraph('Seq', { bold: true })],
-    }),
-    new TableCell({
-      ...cellArgsBase(),
-      borders,
-      shading: sectionHeaderShading(),
-      children: [cellParagraph('Captured date/time', { bold: true })],
-    }),
-    new TableCell({
-      ...cellArgsBase(),
-      borders,
-      shading: sectionHeaderShading(),
-      children: [cellParagraph('Latitude', { bold: true })],
-    }),
-    new TableCell({
-      ...cellArgsBase(),
-      borders,
-      shading: sectionHeaderShading(),
-      children: [cellParagraph('Longitude', { bold: true })],
-    }),
-    new TableCell({
-      ...cellArgsBase(),
-      borders,
-      shading: sectionHeaderShading(),
-      children: [cellParagraph('Confidence (m)', { bold: true })],
-    }),
-  ])
-
-  const dataRows = wearer.positions.map(position =>
-    rowNoSplit([
-      new TableCell({ ...cellArgsBase(), borders, children: [cellParagraph(position.sequenceLabel)] }),
-      new TableCell({
-        ...cellArgsBase(),
-        borders,
-        children: [cellParagraph(fmtDateTimeGb(position.capturedDateTime))],
-      }),
-      new TableCell({ ...cellArgsBase(), borders, children: [cellParagraph(String(position.latitude))] }),
-      new TableCell({ ...cellArgsBase(), borders, children: [cellParagraph(String(position.longitude))] }),
-      new TableCell({ ...cellArgsBase(), borders, children: [cellParagraph(String(position.confidenceCircle))] }),
-    ]),
-  )
+  const exhibitMapKeyImage = readFileSync(EXHIBIT_MAP_KEY_IMAGE_PATH)
 
   return new Table({
     width: { size: 100, type: WidthType.PERCENTAGE },
     layout: TableLayoutType.FIXED,
     borders,
-    rows: [headerRow, ...dataRows],
+    rows: [
+      rowNoSplit([
+        new TableCell({
+          ...cellArgsBase(),
+          borders,
+          shading: sectionHeaderShading(),
+          columnSpan: 7,
+          children: [
+            cellParagraph('Exhibit EMAC/02 Key for interpreting symbols on the map', {
+              bold: true,
+              alignment: AlignmentType.CENTER,
+            }),
+          ],
+        }),
+      ]),
+      rowNoSplit([
+        new TableCell({
+          ...cellArgsBase(),
+          borders: noBottomBorder(),
+          columnSpan: 7,
+          children: [
+            new Paragraph({
+              children: [
+                new TextRun(
+                  'The key below explains how to interpret the visual elements that appear in proximity alert images. ',
+                ),
+                new TextRun({
+                  text: 'Note: Not all visual elements demonstrated will be displayed in the proximity alert images; this will be determined as necessary.',
+                  italics: true,
+                }),
+              ],
+              spacing: { before: 0, after: 200 },
+            }),
+            imageParagraph(exhibitMapKeyImage),
+          ],
+        }),
+      ]),
+    ],
   })
 }
 
-function disclaimerTable(): Table {
+const positionsTable = (wearer: ProximityAlertReportDeviceWearer): Table => {
+  const borders = strongBlackBorders()
+
+  const headingRow = rowNoSplit([
+    new TableCell({
+      ...cellArgsBase(),
+      borders,
+      shading: sectionHeaderShading(),
+      columnSpan: 7,
+      children: [
+        cellParagraph(`Exhibit EMAC/03 - Table of ${wearer.name}'s locations within the vicinity`, {
+          bold: true,
+          alignment: AlignmentType.CENTER,
+        }),
+      ],
+    }),
+  ])
+
+  const descriptionRow = rowNoSplit([
+    new TableCell({
+      ...cellArgsBase(),
+      borders,
+      columnSpan: 7,
+      children: [
+        new Paragraph({
+          children: [
+            new TextRun(
+              'The below table displays the location points within the crime vicinity. Please note the sequence number is ordered chronologically based on locations within the vicinity. ',
+            ),
+            new TextRun({
+              text: "Note: Consecutive numbers do not necessarily indicate sequential movement - please review the time stamps of each point to understand the offender's movements.",
+              italics: true,
+              bold: true,
+            }),
+          ],
+          spacing: { before: 0, after: 0 },
+        }),
+      ],
+    }),
+  ])
+
+  const headerCell = (text: string, widthPct: number): TableCell =>
+    new TableCell({
+      ...headerCellArgsBase(),
+      borders,
+      shading: { type: ShadingType.CLEAR, color: 'auto', fill: '4472C4' },
+      width: { size: widthPct, type: WidthType.PERCENTAGE },
+      children: [
+        cellParagraph(text, {
+          bold: true,
+          color: 'FFFFFF',
+          alignment: AlignmentType.CENTER,
+          size: 17,
+          spacingBefore: 5,
+          spacingAfter: 5,
+        }),
+      ],
+    })
+
+  const dataCell = (text: string, shaded: boolean): TableCell =>
+    new TableCell({
+      ...cellArgsBase(),
+      borders,
+      shading: shaded ? { type: ShadingType.CLEAR, color: 'auto', fill: 'D9E2F3' } : undefined,
+      children: [cellParagraph(text, { alignment: AlignmentType.CENTER })],
+    })
+
+  const headerRow = rowNoSplit([
+    headerCell('SEQUENCE NO.', 13),
+    headerCell('DATE/TIME', 15),
+    headerCell('LATITUDE\n(WGS84)', 13),
+    headerCell('LONGITUDE\n(WGS84)', 14),
+    headerCell('CONFIDENCE\nCIRCLE (Radius - m)', 18),
+    headerCell('SPEED (km/h)', 13),
+    headerCell('DIRECTION\n(degrees)', 14),
+  ])
+
+  const dataRows = wearer.positions.map((position, index) => {
+    const shaded = index % 2 === 1
+    const speed = 'speed' in position ? String(position.speed) : ''
+    const direction = 'direction' in position ? String(position.direction) : ''
+
+    return rowNoSplit([
+      dataCell(position.sequenceLabel, shaded),
+      dataCell(fmtDateTimeGb(position.capturedDateTime), shaded),
+      dataCell(String(position.latitude), shaded),
+      dataCell(String(position.longitude), shaded),
+      dataCell(String(position.precision), shaded),
+      dataCell(speed, shaded),
+      dataCell(direction, shaded),
+    ])
+  })
+
+  return new Table({
+    width: { size: 100, type: WidthType.PERCENTAGE },
+    layout: TableLayoutType.FIXED,
+    borders,
+    rows: [headingRow, descriptionRow, headerRow, ...dataRows],
+  })
+}
+
+const exhibitPositionsSection = (wearer: ProximityAlertReportDeviceWearer): Table => positionsTable(wearer)
+
+const disclaimerTable = (): Table => {
   const borders = strongBlackBorders()
 
   const disclaimerParagraph1 =
-    'The data disclosed in this report does not confirm that the tag wearer perpetrated or witnessed a crime. In addition, it does not rule out other EM tag wearers being in the vicinity of the crime during the window of opportunity. The results of this process are also limited to persons tagged as part of the MoJ’s Acquisitive Crime Project and only where there has been an ability to monitor the equipment during the window of opportunity of the crime.'
+    "The data disclosed in this report does not confirm that the tag wearer perpetrated or witnessed a crime. In addition, it does not rule out other EM tag wearers being in the vicinity of the crime during the window of opportunity. The results of this process are also limited to persons tagged as part of the MoJ's Acquisitive Crime Project and only where there has been an ability to monitor the equipment during the window of opportunity of the crime."
   const disclaimerParagraph2 = 'Examples of an inability to monitor a person include:'
   const bullet1 = 'Where the person has failed to charge the EM tag,'
   const bullet2 = 'Where the tag has been removed from the person but is still able to transmit its location,'
@@ -671,10 +797,10 @@ function disclaimerTable(): Table {
   })
 }
 
-function witnessStatementTable(args: {
+const witnessStatementTable = (args: {
   report: ProximityAlertReportData
   wearer: ProximityAlertReportDeviceWearer
-}): Table {
+}): Table => {
   const { report, wearer } = args
   const borders = strongBlackBorders()
   const { crimeVersionData } = report
@@ -795,7 +921,7 @@ function witnessStatementTable(args: {
               '. As a result of this process, I can confirm the attached match in relation to an allegation of ',
             ),
             new TextRun({ text: crimeVersionData.crimeType, bold: true }),
-            new TextRun(' – Crime Reference No. '),
+            new TextRun(' - Crime Reference No. '),
             new TextRun({ text: crimeVersionData.crimeReference, bold: true }),
             new TextRun('.'),
           ],
@@ -872,16 +998,16 @@ function witnessStatementTable(args: {
         new Paragraph({
           children: [
             new TextRun(
-              'I further produce the attached screen shot which documents the subject’s movements within proximity of this allegation of crime:',
+              "I further produce the attached screen shot which documents the subject's movements within proximity of this allegation of crime:",
             ),
           ],
           spacing: { before: 200, after: 200 },
         }),
         witnessMiniTable,
         new Paragraph({ children: [], spacing: { before: 200, after: 0 } }),
-        bulletPara(`Exhibit EMAC/01 – Image of the tracks for ${wearer.name} on the data.`, { spacingAfter: 60 }),
-        bulletPara('Exhibit EMAC/02 – Key for interpreting symbols on crime map', { spacingAfter: 60 }),
-        bulletPara(`Exhibit EMAC/03 – Table of ${wearer.name}’s locations within the vicinity.`, { spacingAfter: 200 }),
+        bulletPara(`Exhibit EMAC/01 - Image of the tracks for ${wearer.name} on the data.`, { spacingAfter: 60 }),
+        bulletPara('Exhibit EMAC/02 - Key for interpreting symbols on crime map', { spacingAfter: 60 }),
+        bulletPara(`Exhibit EMAC/03 - Table of ${wearer.name}'s locations within the vicinity.`, { spacingAfter: 200 }),
         new Paragraph({
           children: [new TextRun({ text: 'SIGNATURE:', bold: true })],
           spacing: { before: 0, after: 0 },
@@ -935,24 +1061,36 @@ export default class ProximityAlertReportDocxService {
   // The report is returned as a Buffer of the generated DOCX file.
   async build(args: BuildProximityAlertReportDocxArgs): Promise<Buffer> {
     const { report, images } = args
-    const { crimeVersionData, matchedDeviceWearers } = report
-    const deviceIds = matchedDeviceWearers.map(deviceWearer => deviceWearer.deviceWearerId)
+    const children: Array<Paragraph | Table> = []
 
-    const children: Array<Paragraph | Table> = [
-      new Paragraph({
-        children: [new TextRun({ text: 'Proximity Alert report', bold: true })],
-      }),
-      new Paragraph(`Crime version ID: ${crimeVersionData.crimeVersionId}`),
-      new Paragraph(`Crime reference: ${crimeVersionData.crimeReference}`),
-      new Paragraph(`Selected device IDs: ${deviceIds.join(', ')}`),
-      new Paragraph(`Overview image present: ${images.overviewUserViewJpg ? 'Yes' : 'No'}`),
-    ]
+    children.push(topSummaryTable(report))
+    children.push(...spacer(1))
+
+    report.matchedDeviceWearers.forEach((wearer, index) => {
+      children.push(
+        personOnlyTable({
+          personTitle: `Person ${index + 1}`,
+          personRows: [
+            ['Full name', wearer.name],
+            ['DOB:', ''],
+            ['PNC number:', ''],
+            ['Specified Address:', ''],
+            ['EMS ID:', wearer.deviceWearerId],
+            ['Offender Manager:', ''],
+          ],
+        }),
+      )
+      children.push(...spacer(1))
+    })
+
+    children.push(resultSummaryTable(report.matchedDeviceWearers.length))
+    children.push(requestSummaryTable(report))
 
     if (images.overviewUserViewJpg) {
       children.push(new Paragraph({ children: [new PageBreak()] }))
       children.push(
         mapImagePageTable({
-          title: 'Images of the crime map with all person’s proximity tracks',
+          title: "Images of the crime map with all person's proximity tracks",
           showTitleRow: true,
           jpg: images.overviewUserViewJpg,
           report,
@@ -1011,27 +1149,9 @@ export default class ProximityAlertReportDocxService {
       }
 
       children.push(new Paragraph({ children: [new PageBreak()] }))
-      children.push(
-        new Paragraph({
-          children: [
-            new TextRun({
-              text: `Exhibit EMAC/03 – Table of ${wearer.name} locations within the vicinity`,
-              bold: true,
-            }),
-          ],
-        }),
-      )
-      children.push(
-        new Paragraph({
-          children: [
-            new TextRun(
-              'The below table displays the location points within the crime vicinity. Please note the sequence number is ordered chronologically based on locations within the vicinity.',
-            ),
-          ],
-        }),
-      )
-      children.push(...spacer(1))
-      children.push(positionsTable(wearer))
+      children.push(exhibitMapKeySection())
+
+      children.push(exhibitPositionsSection(wearer))
     })
 
     const document = new Document({

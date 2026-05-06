@@ -540,8 +540,7 @@ describe('CrimeVersionController', () => {
       expect(next).not.toHaveBeenCalled()
     })
 
-    // Skipped as temporarily exporting a zipped file of images rather than the docx file
-    it.skip('should send a docx when the export request is valid', async () => {
+    it('should send a docx when the export request is valid', async () => {
       // Given
       const crimeVersionId = '78d41bd9-5450-4bbb-89d4-42ba75659f50'
       const capturedMapState = JSON.stringify({
@@ -614,7 +613,7 @@ describe('CrimeVersionController', () => {
                     latitude: 10.1,
                     longitude: 20.1,
                     sequenceLabel: 'A1',
-                    confidence: 15,
+                    precision: 15,
                     capturedDateTime: '2025-01-01T00:30:00Z',
                   },
                 ],
@@ -657,6 +656,7 @@ describe('CrimeVersionController', () => {
             crimeVersionId,
             latestCrimeVersionId: null,
             crimeReference: 'crime1',
+            batchId: 'batch1',
             crimeType: 'Aggravated Burglary',
             fromDateTime: '2025-01-01T00:00:00Z',
             toDateTime: '2025-01-01T01:00:00Z',
@@ -676,7 +676,7 @@ describe('CrimeVersionController', () => {
                   capturedDateTime: '2025-01-01T00:30:00Z',
                   latitude: 10.1,
                   longitude: 20.1,
-                  confidenceCircle: 15,
+                  precision: 15,
                 },
               ],
             },
