@@ -3,6 +3,7 @@
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 {% from "govuk/components/tag/macro.njk" import govukTag %}
 {% from "moj/components/alert/macro.njk" import mojAlert %}
+{% from "../../../components/revealable-content/macro.njk" import revealableContent %}
 
 {% set selectedDeviceIds = exportProximityAlertForm.selectedDeviceIds %}
 {% set selectedTrackDeviceIds = exportProximityAlertForm.selectedTrackDeviceIds %}
@@ -185,16 +186,6 @@
     <hr class="govuk-section-break govuk-section-break--visible govuk-section-break--m" />
   {% endfor %}
 
-  <div class="govuk-!-margin-top-4">
-    {{
-      govukButton({
-        text: "Export proximity alert",
-        classes: "govuk-button--secondary govuk-button--full-width",
-        type: "button"
-      })
-    }}
-  </div>
-
   {% set managers = [] %}
 
   {% for manager in hubManagers %}
@@ -211,27 +202,57 @@
     %}
   {% endfor %}
 
+
+  {% set contentHtml %}
+    {{
+      govukRadios({
+        formGroup: {
+          classes: "govuk-!-margin-bottom-6"
+        },
+        fieldset: {
+          legend: {
+            text: "Assign to authorising manager"
+          }
+        },
+        classes: "govuk-radios--small",
+        name: "authorisingManager",
+        errorMessage: errors.authorisingManager,
+        items: managers
+      })
+    }}
+
+    {{
+      govukButton({
+        text: "Export",
+        type: "submit"
+      })
+    }}
+  {% endset %}
+
   {{
-    govukRadios({
-      formGroup: {
-        classes: "govuk-!-margin-bottom-6"
+    revealableContent({
+      button: {
+        text: "Export proximity alert",
+        classes: "govuk-button--secondary govuk-button--full-width"
       },
-      fieldset: {
-        legend: {
-          text: "Assign to authorising manager"
-        }
-      },
-      classes: "govuk-radios--small",
-      name: "authorisingManager",
-      errorMessage: errors.authorisingManager,
-      items: managers
+      classes: "govuk-!-margin-top-4",
+      content: {
+        html: contentHtml
+      }
     })
   }}
 
-  {{
-    govukButton({
-      text: "Export",
-      type: "submit"
-    })
-  }}
+  {# <div class="govuk-!-margin-top-4" data-module="button-reveal">
+    {{
+      govukButton({
+        text: "Export proximity alert",
+        classes: "govuk-button--secondary govuk-button--full-width",
+        type: "button"
+      })
+    }}
+
+    <div class="reveal govuk-tabs__panel--hidden">
+
+    </div>
+  </div> #}
 {% endif %}

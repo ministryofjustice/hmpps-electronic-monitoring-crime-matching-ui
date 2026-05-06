@@ -1,0 +1,7 @@
+.revealable-content {
+    .revealable-content__content {
+        &.revealable-content__content--hidden {
+            display: none;
+        }
+    }
+}
