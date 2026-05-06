@@ -32,6 +32,7 @@ context('Crime Version', () => {
       let page = Page.verifyOnPage(CrimeVersionPage)
 
       // And clicks export
+      page.exportProximityAlertButton.click()
       page.map.sidebar.exportProximityAlertForm.exportButton.click()
 
       // Then the page should have reloaded
@@ -39,6 +40,8 @@ context('Crime Version', () => {
       page = Page.verifyOnPage(CrimeVersionPage)
 
       // And should have validation messages
+      page.map.sidebar.element.scrollTo('bottom')
+      page.map.sidebar.exportProximityAlertForm.authorisingManagerField.element.should('be.visible')
       page.map.sidebar.exportProximityAlertForm.authorisingManagerField.shouldHaveValidationMessage(
         'Select an authorising manager',
       )

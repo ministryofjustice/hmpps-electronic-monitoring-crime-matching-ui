@@ -237,22 +237,9 @@
       },
       classes: "govuk-!-margin-top-4",
       content: {
+        visible: true if errors.authorisingManager,
         html: contentHtml
       }
     })
   }}
-
-  {# <div class="govuk-!-margin-top-4" data-module="button-reveal">
-    {{
-      govukButton({
-        text: "Export proximity alert",
-        classes: "govuk-button--secondary govuk-button--full-width",
-        type: "button"
-      })
-    }}
-
-    <div class="reveal govuk-tabs__panel--hidden">
-
-    </div>
-  </div> #}
 {% endif %}

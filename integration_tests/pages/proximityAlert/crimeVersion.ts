@@ -15,6 +15,10 @@ export default class CrimeVersionPage extends AppPage {
     return new MapComponent()
   }
 
+  get exportProximityAlertButton(): PageElement<HTMLButtonElement> {
+    return cy.contains('button[type=button]', 'Export proximity alert')
+  }
+
   checkOnPage(): void {
     super.checkOnPage()
 
