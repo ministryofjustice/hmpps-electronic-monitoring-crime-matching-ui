@@ -14,16 +14,18 @@ type CrimeVersion = {
 }
 
 type DeviceWearerPosition = {
+  capturedDateTime: string
+  direction: number
   latitude: number
   longitude: number
+  precision: number
   sequenceLabel: string
-  confidence: number
-  capturedDateTime: string
+  speed: number
 }
 
 type DeviceWearer = {
-  name: string
   deviceId: number
+  name: string
   nomisId: string
   positions: Array<DeviceWearerPosition>
 }

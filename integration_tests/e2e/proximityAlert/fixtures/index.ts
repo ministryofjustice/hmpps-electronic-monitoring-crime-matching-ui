@@ -29,11 +29,13 @@ const matchedDeviceWearer1 = {
   nomisId: 'nomisId',
   positions: [
     {
+      capturedDateTime: '2025-01-01T00:00',
+      direction: 10,
       longitude: deviceLocation[0],
       latitude: deviceLocation[1],
+      precision: 10,
       sequenceLabel: 'A1',
-      confidence: 10,
-      capturedDateTime: '2025-01-01T00:00',
+      speed: 10,
     },
   ],
 }
@@ -44,11 +46,13 @@ const matchedDeviceWearer2 = {
   nomisId: 'nomisId2',
   positions: [
     {
+      capturedDateTime: '2025-01-01T00:00',
+      direction: 10,
       longitude: -2.528865717,
       latitude: 53.43157277,
+      precision: 10,
       sequenceLabel: 'A1',
-      confidence: 10,
-      capturedDateTime: '2025-01-01T00:00',
+      speed: 10,
     },
   ],
 }

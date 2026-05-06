@@ -17,16 +17,18 @@ const getCrimeVersionDtoSchema = z.object({
       .object({
         deviceWearers: z.array(
           z.object({
-            name: z.string(),
             deviceId: z.number(),
+            name: z.string(),
             nomisId: z.string(),
             positions: z.array(
               z.object({
+                capturedDateTime: z.string(),
+                direction: z.number(),
                 latitude: z.number(),
                 longitude: z.number(),
+                precision: z.number(),
                 sequenceLabel: z.string(),
-                confidence: z.number(),
-                capturedDateTime: z.string(),
+                speed: z.number(),
               }),
             ),
           }),
