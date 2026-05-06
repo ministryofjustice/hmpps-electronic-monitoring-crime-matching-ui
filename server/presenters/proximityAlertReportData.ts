@@ -67,7 +67,7 @@ const presentProximityAlertReportData = (
           capturedDateTime: position.capturedDateTime,
           latitude: position.latitude,
           longitude: position.longitude,
-          confidenceCircle: position.confidence,
+          confidenceCircle: position.precision,
         })),
       })) ?? []
 

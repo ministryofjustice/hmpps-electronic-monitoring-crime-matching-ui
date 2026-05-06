@@ -39,20 +39,20 @@ const presentDevicePositions = ({
   nomisId,
   positions,
 }: DeviceWearer): Array<Position & Record<string, unknown>> => {
-  return positions.map(({ capturedDateTime, confidence, latitude, longitude, sequenceLabel }) => {
+  return positions.map(({ capturedDateTime, direction, latitude, longitude, precision, sequenceLabel, speed }) => {
     return {
       latitude,
       longitude,
-      precision: confidence,
+      precision,
       capturedDateTime: formatDateTime(capturedDateTime, 'DD/MM/YYYY HH:mm'),
       deviceId,
-      direction: 0,
+      direction,
       name,
       nomisId,
       overlayTitleTemplateId: 'overlay-title-device-location',
       overlayBodyTemplateId: 'overlay-body-device-location',
       sequenceLabel,
-      speed: 0,
+      speed,
     }
   })
 }

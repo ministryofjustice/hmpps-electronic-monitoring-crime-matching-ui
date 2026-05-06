@@ -5,7 +5,7 @@ const baseUrl = '/crime-matching'
 
 type StubGetCrimeVersion200Options = {
   status: 200
-  crimeVersionId
+  crimeVersionId: string
   response: {
     data: {
       crimeVersionId: string
@@ -25,11 +25,13 @@ type StubGetCrimeVersion200Options = {
           deviceId: number
           nomisId: string
           positions: Array<{
+            capturedDateTime: string
+            direction: number
             latitude: number
             longitude: number
+            precision: number
             sequenceLabel: string
-            confidence: number
-            capturedDateTime: string
+            speed: number
           }>
         }>
       } | null
@@ -39,7 +41,7 @@ type StubGetCrimeVersion200Options = {
 
 type StubGetCrimeVersionErrorOptions = {
   status: 404 | 500
-  crimeVersionId
+  crimeVersionId: string
   response: string
 }
 
