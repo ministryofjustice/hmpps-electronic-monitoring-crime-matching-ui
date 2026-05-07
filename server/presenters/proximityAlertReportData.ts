@@ -5,7 +5,9 @@ export type ProximityAlertReportPositionRow = {
   capturedDateTime: string
   latitude: number
   longitude: number
-  precision: number
+  confidenceCircle: number
+  speed: number
+  direction: number
 }
 
 export type ProximityAlertReportDeviceWearer = {
@@ -69,6 +71,8 @@ const presentProximityAlertReportData = (
           latitude: position.latitude,
           longitude: position.longitude,
           confidenceCircle: position.precision,
+          speed: position.speed,
+          direction: position.direction,
         })),
       })) ?? []
 

@@ -615,6 +615,8 @@ describe('CrimeVersionController', () => {
                     sequenceLabel: 'A1',
                     precision: 15,
                     capturedDateTime: '2025-01-01T00:30:00Z',
+                    direction: 10,
+                    speed: 5,
                   },
                 ],
               },
@@ -629,6 +631,7 @@ describe('CrimeVersionController', () => {
         },
       })
 
+      mockRestClient.getHubManagers.mockResolvedValue({ data: hubManagers })
       mockPlaywrightBrowserService.getBrowser.mockResolvedValue(mockBrowser)
       mockMapImageRendererService.render.mockResolvedValue(mockImages)
       mockProximityAlertReportDocxService.build.mockResolvedValue(docxBuffer)
@@ -676,7 +679,9 @@ describe('CrimeVersionController', () => {
                   capturedDateTime: '2025-01-01T00:30:00Z',
                   latitude: 10.1,
                   longitude: 20.1,
-                  precision: 15,
+                  confidenceCircle: 15,
+                  direction: 10,
+                  speed: 5,
                 },
               ],
             },

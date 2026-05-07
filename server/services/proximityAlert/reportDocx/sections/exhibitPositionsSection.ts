@@ -91,17 +91,15 @@ const exhibitPositionsSection = (wearer: ProximityAlertReportDeviceWearer): Tabl
 
   const dataRows = wearer.positions.map((position, index) => {
     const shaded = index % 2 === 1
-    const speed = 'speed' in position ? String(position.speed) : ''
-    const direction = 'direction' in position ? String(position.direction) : ''
 
     return rowNoSplitAcrossPages([
       dataCell(position.sequenceLabel, shaded),
       dataCell(fmtDateTime(position.capturedDateTime), shaded),
       dataCell(String(position.latitude), shaded),
       dataCell(String(position.longitude), shaded),
-      dataCell(String(position.precision), shaded),
-      dataCell(speed, shaded),
-      dataCell(direction, shaded),
+      dataCell(String(position.confidenceCircle), shaded),
+      dataCell(String(position.speed ?? ''), shaded),
+      dataCell(String(position.direction ?? ''), shaded),
     ])
   })
 
