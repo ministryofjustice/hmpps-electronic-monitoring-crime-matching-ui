@@ -158,7 +158,7 @@ context('Crime Version', () => {
     })
 
     it('should display a map showing crime version data with a link to the latest crime version', () => {
-      // Given an API response containing a crime version with no matches
+      // Given an API response containing a crime version with a latest crime version id
       cy.stubGetCrimeVersion({
         status: 200,
         crimeVersionId,
