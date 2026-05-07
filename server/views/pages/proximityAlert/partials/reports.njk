@@ -3,6 +3,7 @@
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 {% from "govuk/components/tag/macro.njk" import govukTag %}
 {% from "moj/components/alert/macro.njk" import mojAlert %}
+{% from "../../../components/revealable-content/macro.njk" import revealableContent %}
 
 {% set selectedDeviceIds = exportProximityAlertForm.selectedDeviceIds %}
 {% set selectedTrackDeviceIds = exportProximityAlertForm.selectedTrackDeviceIds %}
@@ -185,16 +186,6 @@
     <hr class="govuk-section-break govuk-section-break--visible govuk-section-break--m" />
   {% endfor %}
 
-  <div class="govuk-!-margin-top-4">
-    {{
-      govukButton({
-        text: "Export proximity alert",
-        classes: "govuk-button--secondary govuk-button--full-width",
-        type: "button"
-      })
-    }}
-  </div>
-
   {% set managers = [] %}
 
   {% for manager in hubManagers %}
@@ -211,27 +202,44 @@
     %}
   {% endfor %}
 
-  {{
-    govukRadios({
-      formGroup: {
-        classes: "govuk-!-margin-bottom-6"
-      },
-      fieldset: {
-        legend: {
-          text: "Assign to authorising manager"
-        }
-      },
-      classes: "govuk-radios--small",
-      name: "authorisingManager",
-      errorMessage: errors.authorisingManager,
-      items: managers
-    })
-  }}
+
+  {% set contentHtml %}
+    {{
+      govukRadios({
+        formGroup: {
+          classes: "govuk-!-margin-bottom-6"
+        },
+        fieldset: {
+          legend: {
+            text: "Assign to authorising manager"
+          }
+        },
+        classes: "govuk-radios--small",
+        name: "authorisingManager",
+        errorMessage: errors.authorisingManager,
+        items: managers
+      })
+    }}
+
+    {{
+      govukButton({
+        text: "Export",
+        type: "submit"
+      })
+    }}
+  {% endset %}
 
   {{
-    govukButton({
-      text: "Export",
-      type: "submit"
+    revealableContent({
+      button: {
+        text: "Export proximity alert",
+        classes: "govuk-button--secondary govuk-button--full-width"
+      },
+      classes: "govuk-!-margin-top-4",
+      content: {
+        visible: true if errors.authorisingManager,
+        html: contentHtml
+      }
     })
   }}
 {% endif %}

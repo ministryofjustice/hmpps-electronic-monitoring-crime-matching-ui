@@ -1,0 +1,19 @@
+{% from "govuk/components/button/macro.njk" import govukButton %}
+
+{% if params.content.visible %}
+  {% set contentClasses = "revealable-content__content" %}
+{% else %}
+  {% set contentClasses = "revealable-content__content revealable-content__content--hidden" %}
+{% endif %}
+
+<div class="revealable-content {% if params.classes %}{{ params.classes }}{% endif %}" data-module="revealable-content">
+  {{
+    govukButton({
+      text: params.button.text,
+      classes: params.button.classes,
+      type: "button"
+    })
+  }}
+
+  <div class="{{ contentClasses }}">{{ params.content.html | safe | trim | indent(2) }}</div>
+</div>
