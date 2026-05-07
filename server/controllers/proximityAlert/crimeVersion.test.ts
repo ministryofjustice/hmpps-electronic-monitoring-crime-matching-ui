@@ -11,7 +11,7 @@ import createMockResponse from '../../testutils/createMockResponse'
 import CrimeService from '../../services/crimeService'
 import PlaywrightBrowserService from '../../services/proximityAlert/playwrightBrowserService'
 import MapImageRendererService from '../../services/proximityAlert/proximityAlertMapImageService'
-import ProximityAlertReportDocxService from '../../services/proximityAlert/proximityAlertReportDocxService'
+import ProximityAlertReportDocxService from '../../services/proximityAlert/reportDocx/proximityAlertReportDocxService'
 import HubManagersService from '../../services/hubManagerService'
 import expectedAuthOptions from '../../testutils/expectedAuthOptions'
 
