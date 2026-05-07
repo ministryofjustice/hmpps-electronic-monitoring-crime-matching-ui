@@ -3,7 +3,7 @@ import { CrimeVersion, DeviceWearer } from '../types/crimeVersion'
 import { formatDateTime } from '../utils/date'
 
 const getVersionColour = (crimeVersion: CrimeVersion) => {
-  if (crimeVersion.versionLabel === 'Latest version') {
+  if (crimeVersion.versionLabel.includes('Latest version')) {
     return 'green'
   }
 
@@ -73,6 +73,7 @@ const presentMatchingResult = (crimeVersion: CrimeVersion) => {
 const presentCrimeVersion = (crimeVersion: CrimeVersion) => {
   return {
     crimeVersionId: crimeVersion.crimeVersionId,
+    latestCrimeVersionId: crimeVersion.latestCrimeVersionId,
     crimeDateTimeFrom: crimeVersion.crimeDateTimeFrom,
     crimeDateTimeTo: crimeVersion.crimeDateTimeTo,
     crimePosition: presentCrimePosition(crimeVersion),

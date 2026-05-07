@@ -14,6 +14,15 @@ const URLS = {
       EXPORT_MATCHING_RESULTS: '/police-data/dashboard/export' as const,
     },
   },
+  PROXIMITY_ALERT: {
+    CRIME_VERSION: {
+      VIEW: '/proximity-alert/:crimeVersionId' as const,
+      EXPORT: '/proximity-alert/:crimeVersionId/export-proximity-alert' as const,
+    },
+    CRIME_VERSIONS: {
+      VIEW: '/proximity-alert' as const,
+    },
+  },
 }
 
 export default URLS

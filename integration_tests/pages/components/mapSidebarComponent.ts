@@ -48,6 +48,10 @@ export default class MapSidebarComponent {
     return this.element.get('.govuk-link').contains('View on map')
   }
 
+  get latestVersionLink() {
+    return this.element.get('.govuk-link').contains('View latest version')
+  }
+
   get versionLabel() {
     return this.element.get('.govuk-tag')
   }

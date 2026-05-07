@@ -11,6 +11,7 @@ const deviceLocation = [-2.5282, 53.43159]
 
 const crimeVersion = {
   crimeVersionId,
+  latestCrimeVersionId: null,
   crimeReference: 'crimeRef',
   batchId: 'batch1',
   crimeTypeDescription: 'Aggravated Burglary',
@@ -20,7 +21,7 @@ const crimeVersion = {
   crimeText: 'crimeText',
   longitude: crimeLocation[0],
   latitude: crimeLocation[1],
-  versionLabel: 'Latest Version',
+  versionLabel: 'Latest version',
 }
 
 const matchedDeviceWearer1 = {
@@ -83,12 +84,20 @@ const crimeVersionAwaitingMatching = {
   matching: null,
 }
 
+const crimeVersionWithLatestCrimeVersionId = {
+  ...crimeVersion,
+  versionLabel: 'Version 1',
+  latestCrimeVersionId: 'b7e61168-f7ca-4056-8a2d-7db0fd77fb62',
+  matching: null,
+}
+
 export {
   crimeLocation,
   crimeVersionAwaitingMatching,
   crimeVersionWithOneMatch,
   crimeVersionWithManyMatches,
   crimeVersionWithZeroMatches,
+  crimeVersionWithLatestCrimeVersionId,
   crimeVersionId,
   deviceLocation,
   hubManager,

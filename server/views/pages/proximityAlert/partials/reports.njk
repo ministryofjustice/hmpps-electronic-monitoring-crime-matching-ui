@@ -17,9 +17,18 @@
 {{
   govukTag({
     text: crimeVersion.versionLabel,
-    classes: "govuk-tag--" + crimeVersion.versionColour
+    classes: "govuk-!-margin-right-2 govuk-tag--" + crimeVersion.versionColour
   })
 }}
+
+{% if crimeVersion.latestCrimeVersionId %}
+  {%
+    set latestVersionPath = URLS.PROXIMITY_ALERT.CRIME_VERSION.VIEW
+    | replace(':crimeVersionId', crimeVersion.latestCrimeVersionId)
+  %}
+
+  <a href="{{ latestVersionPath }}" class="govuk-link"> View latest version </a>
+{% endif %}
 
 <div class="govuk-grid-row govuk-!-static-margin-top-4">
   <div class="govuk-grid-column-three-quarters govuk-!-static-margin-top-1">
