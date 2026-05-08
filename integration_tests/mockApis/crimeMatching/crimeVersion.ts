@@ -9,6 +9,7 @@ type StubGetCrimeVersion200Options = {
   response: {
     data: {
       crimeVersionId: string
+      latestCrimeVersionId: string | null
       crimeReference: string
       batchId: string
       crimeTypeDescription: string

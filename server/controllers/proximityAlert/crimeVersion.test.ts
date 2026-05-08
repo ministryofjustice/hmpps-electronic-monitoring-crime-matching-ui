@@ -77,6 +77,7 @@ describe('CrimeVersionController', () => {
       mockRestClient.getCrimeVersion.mockResolvedValue({
         data: {
           crimeVersionId: '78d41bd9-5450-4bbb-89d4-42ba75659f50',
+          latestCrimeVersionId: null,
           crimeReference: 'crime1',
           batchId: 'batch1',
           crimeTypeDescription: 'Aggravated Burglary',
@@ -130,6 +131,7 @@ describe('CrimeVersionController', () => {
         alerts: [],
         crimeVersion: {
           crimeVersionId: '78d41bd9-5450-4bbb-89d4-42ba75659f50',
+          latestCrimeVersionId: null,
           crimeReference: 'crime1',
           crimeTypeDescription: 'Aggravated Burglary',
           crimeDateTimeFrom: '2025-01-01T00:00:00Z',
@@ -220,6 +222,7 @@ describe('CrimeVersionController', () => {
       mockRestClient.getCrimeVersion.mockResolvedValue({
         data: {
           crimeVersionId: '78d41bd9-5450-4bbb-89d4-42ba75659f50',
+          latestCrimeVersionId: null,
           crimeReference: 'crime1',
           batchId: 'batch1',
           crimeTypeDescription: 'Aggravated Burglary',
@@ -245,6 +248,7 @@ describe('CrimeVersionController', () => {
         alerts: [],
         crimeVersion: {
           crimeVersionId: '78d41bd9-5450-4bbb-89d4-42ba75659f50',
+          latestCrimeVersionId: null,
           crimeReference: 'crime1',
           crimeTypeDescription: 'Aggravated Burglary',
           crimeDateTimeFrom: '2025-01-01T00:00:00Z',
@@ -297,6 +301,7 @@ describe('CrimeVersionController', () => {
       mockRestClient.getCrimeVersion.mockResolvedValue({
         data: {
           crimeVersionId: '78d41bd9-5450-4bbb-89d4-42ba75659f50',
+          latestCrimeVersionId: null,
           crimeReference: 'crime1',
           batchId: 'batch1',
           crimeTypeDescription: 'Aggravated Burglary',
@@ -322,6 +327,7 @@ describe('CrimeVersionController', () => {
         alerts: [],
         crimeVersion: {
           crimeVersionId: '78d41bd9-5450-4bbb-89d4-42ba75659f50',
+          latestCrimeVersionId: null,
           crimeReference: 'crime1',
           crimeTypeDescription: 'Aggravated Burglary',
           crimeDateTimeFrom: '2025-01-01T00:00:00Z',
@@ -391,6 +397,7 @@ describe('CrimeVersionController', () => {
       mockRestClient.getCrimeVersion.mockResolvedValue({
         data: {
           crimeVersionId: '78d41bd9-5450-4bbb-89d4-42ba75659f50',
+          latestCrimeVersionId: null,
           crimeReference: 'crime1',
           batchId: 'batch1',
           crimeTypeDescription: 'Aggravated Burglary',
@@ -423,6 +430,7 @@ describe('CrimeVersionController', () => {
         ],
         crimeVersion: {
           crimeVersionId: '78d41bd9-5450-4bbb-89d4-42ba75659f50',
+          latestCrimeVersionId: null,
           crimeReference: 'crime1',
           crimeTypeDescription: 'Aggravated Burglary',
           crimeDateTimeFrom: '2025-01-01T00:00:00Z',
@@ -496,6 +504,7 @@ describe('CrimeVersionController', () => {
       mockRestClient.getCrimeVersion.mockResolvedValue({
         data: {
           crimeVersionId,
+          latestCrimeVersionId: null,
           crimeReference: 'crime1',
           batchId: 'batch1',
           crimeTypeDescription: 'Aggravated Burglary',
@@ -583,6 +592,7 @@ describe('CrimeVersionController', () => {
       mockRestClient.getCrimeVersion.mockResolvedValue({
         data: {
           crimeVersionId,
+          latestCrimeVersionId: null,
           crimeReference: 'crime1',
           batchId: 'batch1',
           crimeTypeDescription: 'Aggravated Burglary',
@@ -645,6 +655,7 @@ describe('CrimeVersionController', () => {
           reportGeneratedAt: expect.any(String),
           crimeVersionData: {
             crimeVersionId,
+            latestCrimeVersionId: null,
             crimeReference: 'crime1',
             crimeType: 'Aggravated Burglary',
             fromDateTime: '2025-01-01T00:00:00Z',
@@ -729,6 +740,7 @@ describe('CrimeVersionController', () => {
       mockRestClient.getCrimeVersion.mockResolvedValue({
         data: {
           crimeVersionId,
+          latestCrimeVersionId: null,
           crimeReference: 'crime1',
           batchId: 'batch1',
           crimeTypeDescription: 'Aggravated Burglary',
@@ -811,6 +823,7 @@ describe('CrimeVersionController', () => {
       mockRestClient.getCrimeVersion.mockResolvedValue({
         data: {
           crimeVersionId,
+          latestCrimeVersionId: null,
           crimeReference: 'crime1',
           batchId: 'batch1',
           crimeTypeDescription: 'Aggravated Burglary',
