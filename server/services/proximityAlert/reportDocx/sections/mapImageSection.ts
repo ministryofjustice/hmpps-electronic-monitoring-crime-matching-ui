@@ -79,9 +79,11 @@ const detailsOfAllegationTable = (report: ProximityAlertReportData): Table => {
           width: { size: 45, type: WidthType.PERCENTAGE },
           rowSpan: additionalInfoRowSpan,
           children: [
-            cellParagraph('Additional Information', { alignment: AlignmentType.CENTER }),
-            cellParagraph(crimeVersionData.crimeText || '', {
+            cellParagraph('Additional Information', {
               alignment: AlignmentType.CENTER,
+              underline: true,
+            }),
+            cellParagraph(crimeVersionData.crimeText || 'N/A', {
               spacingBefore: 120,
             }),
           ],

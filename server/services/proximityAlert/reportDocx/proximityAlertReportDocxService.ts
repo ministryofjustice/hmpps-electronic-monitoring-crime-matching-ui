@@ -63,45 +63,53 @@ export default class ProximityAlertReportDocxService {
     children.push(...spacer(1))
     children.push(disclaimerTable())
 
-    report.matchedDeviceWearers.forEach(wearer => {
-      children.push(new Paragraph({ children: [new PageBreak()] }))
-      children.push(witnessStatementTable({ report, wearer }))
+    const wearerSections = await Promise.all(
+      report.matchedDeviceWearers.map(async wearer => {
+        const sections: Array<Paragraph | Table> = []
 
-      const withTracks = images.deviceWearerWithTracksJpgByDeviceId[wearer.deviceWearerId]
+        sections.push(new Paragraph({ children: [new PageBreak()] }))
+        sections.push(await witnessStatementTable({ report, wearer }))
 
-      if (withTracks) {
-        children.push(new Paragraph({ children: [new PageBreak()] }))
-        children.push(
-          mapImagePageTable({
-            title: `Exhibit EMAC/01 - Image of maps and tracks for ${wearer.name}`,
-            showTitleRow: true,
-            jpg: withTracks,
-            report,
-            fillerHeightWordUnits: fillerHeightForMapPage(withTracks, true),
-          }),
-        )
-      }
+        const withTracks = images.deviceWearerWithTracksJpgByDeviceId[wearer.deviceWearerId]
 
-      const fittedWithoutTracks = images.deviceWearerFittedWithoutTracksJpgByDeviceId[wearer.deviceWearerId]
+        if (withTracks) {
+          sections.push(new Paragraph({ children: [new PageBreak()] }))
+          sections.push(
+            mapImagePageTable({
+              title: `Exhibit EMAC/01 - Image of maps and tracks for ${wearer.name}`,
+              showTitleRow: true,
+              jpg: withTracks,
+              report,
+              fillerHeightWordUnits: fillerHeightForMapPage(withTracks, true),
+            }),
+          )
+        }
 
-      if (fittedWithoutTracks) {
-        children.push(new Paragraph({ children: [new PageBreak()] }))
-        children.push(
-          mapImagePageTable({
-            title: `Exhibit EMAC/01 - Image of maps and tracks for ${wearer.name}`,
-            showTitleRow: true,
-            jpg: fittedWithoutTracks,
-            report,
-            fillerHeightWordUnits: fillerHeightForMapPage(fittedWithoutTracks, true),
-          }),
-        )
-      }
+        const fittedWithoutTracks = images.deviceWearerFittedWithoutTracksJpgByDeviceId[wearer.deviceWearerId]
 
-      children.push(new Paragraph({ children: [new PageBreak()] }))
-      children.push(exhibitMapKeySection())
+        if (fittedWithoutTracks) {
+          sections.push(new Paragraph({ children: [new PageBreak()] }))
+          sections.push(
+            mapImagePageTable({
+              title: `Exhibit EMAC/02 - Detailed view of map and locations for ${wearer.name}`,
+              showTitleRow: true,
+              jpg: fittedWithoutTracks,
+              report,
+              fillerHeightWordUnits: fillerHeightForMapPage(fittedWithoutTracks, true),
+            }),
+          )
+        }
 
-      children.push(exhibitPositionsSection(wearer))
-    })
+        sections.push(new Paragraph({ children: [new PageBreak()] }))
+        sections.push(exhibitMapKeySection())
+
+        sections.push(exhibitPositionsSection(wearer))
+
+        return sections
+      }),
+    )
+
+    children.push(...wearerSections.flat())
 
     const document = new Document({
       styles: {

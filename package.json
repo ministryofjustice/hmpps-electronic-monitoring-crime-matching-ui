@@ -52,6 +52,7 @@
     "docx": "9.6.1",
     "express": "^5.2.1",
     "express-session": "^1.19.0",
+    "file-type": "22.0.1",
     "govuk-frontend": "^6.1.0",
     "helmet": "^8.1.0",
     "http-errors": "^2.0.1",

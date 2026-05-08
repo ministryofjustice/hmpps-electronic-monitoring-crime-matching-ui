@@ -30,7 +30,7 @@ const exhibitMapKeySection = (): Table => {
           shading: sectionHeaderShading(),
           columnSpan: 7,
           children: [
-            cellParagraph('Exhibit EMAC/02 Key for interpreting symbols on the map', {
+            cellParagraph('Exhibit EMAC/03 Key for interpreting symbols on the map', {
               bold: true,
               alignment: 'center',
             }),

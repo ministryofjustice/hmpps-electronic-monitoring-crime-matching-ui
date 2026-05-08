@@ -22,7 +22,7 @@ const exhibitPositionsSection = (wearer: ProximityAlertReportDeviceWearer): Tabl
       shading: sectionHeaderShading(),
       columnSpan: 7,
       children: [
-        cellParagraph(`Exhibit EMAC/03 - Table of ${wearer.name}'s locations within the vicinity`, {
+        cellParagraph(`Exhibit EMAC/04 - Table of ${wearer.name}'s locations within the vicinity`, {
           bold: true,
           alignment: AlignmentType.CENTER,
         }),
@@ -33,18 +33,21 @@ const exhibitPositionsSection = (wearer: ProximityAlertReportDeviceWearer): Tabl
   const descriptionRow = rowNoSplitAcrossPages([
     new TableCell({
       ...defaultCellProps(),
+      margins: { top: 160, bottom: 160, left: 80, right: 80 },
       borders,
       columnSpan: 7,
       children: [
         new Paragraph({
           children: [
-            new TextRun(
-              'The below table displays the location points within the crime vicinity. Please note the sequence number is ordered chronologically based on locations within the vicinity. ',
-            ),
+            new TextRun({
+              text: 'The below table displays the location points within the crime vicinity. Please note the sequence number is ordered chronologically based on locations within the vicinity. ',
+              size: 19,
+            }),
             new TextRun({
               text: "Note: Consecutive numbers do not necessarily indicate sequential movement - please review the time stamps of each point to understand the offender's movements.",
               italics: true,
               bold: true,
+              size: 19,
             }),
           ],
           spacing: { before: 0, after: 0 },
@@ -76,7 +79,7 @@ const exhibitPositionsSection = (wearer: ProximityAlertReportDeviceWearer): Tabl
       ...defaultCellProps(),
       borders,
       shading: shaded ? { type: ShadingType.CLEAR, color: 'auto', fill: 'D9E2F3' } : undefined,
-      children: [cellParagraph(text, { alignment: AlignmentType.CENTER })],
+      children: [cellParagraph(text, { alignment: AlignmentType.CENTER, size: 18 })],
     })
 
   const headerRow = rowNoSplitAcrossPages([

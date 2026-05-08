@@ -1,4 +1,5 @@
-import { AlignmentType, Paragraph, Table, TableCell, TableLayoutType, TextRun, WidthType } from 'docx'
+import { AlignmentType, ImageRun, Paragraph, Table, TableCell, TableLayoutType, TextRun, WidthType } from 'docx'
+import { fileTypeFromBuffer } from 'file-type'
 import type {
   ProximityAlertReportData,
   ProximityAlertReportDeviceWearer,
@@ -13,30 +14,61 @@ import {
   sectionHeaderShading,
   spacer,
   strongBlackBorders,
+  noBottomBorder,
+  noTopBorder,
 } from '../docxComponents'
 
 const fmtDate = (dateString: string): string => formatDateTime(dateString, 'DD/MM/YYYY')
 const fmtDateTime = (dateString: string): string => formatDateTime(dateString, 'DD/MM/YYYY HH:mm')
 
+const signatureImageType = async (signature: Buffer): Promise<'png' | 'jpg'> => {
+  const fileType = await fileTypeFromBuffer(signature)
+  return fileType?.mime === 'image/png' ? 'png' : 'jpg'
+}
+
+const signatureParagraphs = async (signature?: Buffer): Promise<Paragraph[]> => {
+  if (!signature) {
+    return spacer(3)
+  }
+
+  return [
+    new Paragraph({
+      children: [
+        new ImageRun({
+          data: signature,
+          type: await signatureImageType(signature),
+          transformation: {
+            width: 160,
+            height: 60,
+          },
+        }),
+      ],
+      spacing: { before: 0, after: 0 },
+    }),
+  ]
+}
+
 // This section contains the witness statement content of the report and a narrative statement
 // from the hub manager.
-const witnessStatementTable = (args: {
+const witnessStatementTable = async (args: {
   report: ProximityAlertReportData
   wearer: ProximityAlertReportDeviceWearer
-}): Table => {
+}): Promise<Table> => {
   const { report, wearer } = args
   const borders = strongBlackBorders()
-  const { crimeVersionData } = report
+  const { crimeVersionData, authorisingManager, authorisingManagerSignature } = report
 
-  const statementOf = ''
-  const occupation = ''
-  const preferredEmail = ''
-  const address = ''
+  const statementOf = authorisingManager.name
+  const occupation = 'MoJ EM Hub Manager'
+  const preferredEmail = 'mojacquisitivecrimehub@justice.gov.uk'
+  const address = '102 Petty France, Westminster, London, SW1H 9AJ'
 
   const firstPosition = wearer.positions[0]
   const lastPosition = wearer.positions[wearer.positions.length - 1]
   const firstDateTime = firstPosition ? fmtDateTime(firstPosition.capturedDateTime) : ''
   const lastDateTime = lastPosition ? fmtDateTime(lastPosition.capturedDateTime) : ''
+
+  const signature = await signatureParagraphs(authorisingManagerSignature)
 
   const witnessHeaderParas: Paragraph[] = [
     paragraph('WITNESS STATEMENT', { bold: true, alignment: AlignmentType.CENTER, spacingAfter: 60 }),
@@ -53,7 +85,7 @@ const witnessStatementTable = (args: {
       width: { size: 50, type: WidthType.PERCENTAGE },
       children: [
         new Paragraph({
-          children: [new TextRun({ text: 'Statement of: ', bold: true }), new TextRun({ text: statementOf })],
+          children: [new TextRun({ text: `Statement of: ${statementOf}`, bold: true })],
           spacing: { before: 0, after: 0 },
         }),
       ],
@@ -64,7 +96,7 @@ const witnessStatementTable = (args: {
       width: { size: 50, type: WidthType.PERCENTAGE },
       children: [
         new Paragraph({
-          children: [new TextRun({ text: 'Occupation: ', bold: true }), new TextRun({ text: occupation })],
+          children: [new TextRun({ text: `Occupation: ${occupation}`, bold: true })],
           spacing: { before: 0, after: 0 },
         }),
       ],
@@ -78,15 +110,12 @@ const witnessStatementTable = (args: {
       columnSpan: 2,
       children: [
         new Paragraph({
-          children: [new TextRun({ text: 'Age: ', bold: true }), new TextRun({ text: 'Over 18' })],
+          children: [new TextRun({ text: 'Age: Over 18', bold: true })],
           spacing: { before: 0, after: 0 },
         }),
       ],
     }),
   ])
-
-  const declarationText =
-    'This statement consisting of ______ pages, signed by me, is true to the best of my knowledge and belief. I make it known that, if it is given in evidence, I shall be liable to prosecution if I have wilfully stated in it, anything that I know to be false or do not believe to be true.'
 
   const declarationRow = rowNoSplitAcrossPages([
     new TableCell({
@@ -94,12 +123,21 @@ const witnessStatementTable = (args: {
       borders,
       columnSpan: 2,
       children: [
-        new Paragraph({ children: [new TextRun(declarationText)], spacing: { before: 120, after: 120 } }),
+        new Paragraph({
+          children: [
+            new TextRun('This statement consisting of '),
+            new TextRun({ text: 'XX', bold: true, color: 'FF0000' }),
+            new TextRun(
+              ' pages, signed by me, is true to the best of my knowledge and belief. I make it known that, if it is given in evidence, I shall be liable to prosecution if I have wilfully stated in it, anything that I know to be false or do not believe to be true.',
+            ),
+          ],
+          spacing: { before: 120, after: 120 },
+        }),
         new Paragraph({
           children: [new TextRun({ text: 'Signature:', bold: true })],
           spacing: { before: 0, after: 0 },
         }),
-        ...spacer(3),
+        ...signature,
         new Paragraph({
           children: [new TextRun({ text: statementOf || ' ', bold: true })],
           spacing: { before: 0, after: 0 },
@@ -115,14 +153,14 @@ const witnessStatementTable = (args: {
   const narrativeRow = rowNoSplitAcrossPages([
     new TableCell({
       ...defaultCellProps(),
-      borders,
+      borders: noBottomBorder(),
       columnSpan: 2,
       children: [
         new Paragraph({
           children: [
-            new TextRun(
-              'I am currently employed by the Ministry of Justice (MoJ) as MoJ EM Hub Manager within the Electronic Monitoring Acquisitive Crime Hub (EMAC Hub).',
-            ),
+            new TextRun('I am currently employed by the Ministry of Justice (MoJ) as '),
+            new TextRun({ text: occupation, bold: true }),
+            new TextRun(' within the Electronic Monitoring Acquisitive Crime Hub (EMAC Hub).'),
           ],
           spacing: { before: 200, after: 200 },
         }),
@@ -136,17 +174,17 @@ const witnessStatementTable = (args: {
         }),
         new Paragraph({
           children: [
-            new TextRun(
-              `On ${fmtDate(report.reportGeneratedAt)} I reviewed a qualified match in relation to crime data supplied by `,
-            ),
+            new TextRun('On '),
+            new TextRun({ text: fmtDate(report.reportGeneratedAt), bold: true }),
+            new TextRun(' I reviewed a qualified match in relation to crime data supplied by '),
             new TextRun({ text: '', bold: true }),
             new TextRun(
               '. As a result of this process, I can confirm the attached match in relation to an allegation of ',
             ),
-            new TextRun({ text: crimeVersionData.crimeType, bold: true }),
-            new TextRun(' - Crime Reference No. '),
-            new TextRun({ text: crimeVersionData.crimeReference, bold: true }),
-            new TextRun('.'),
+            new TextRun({
+              text: `${crimeVersionData.crimeType} - Crime Reference No. ${crimeVersionData.crimeReference}.`,
+              bold: true,
+            }),
           ],
           spacing: { before: 0, after: 200 },
         }),
@@ -196,17 +234,17 @@ const witnessStatementTable = (args: {
         new TableCell({
           ...defaultCellProps(),
           borders,
-          children: [cellParagraph(wearer.name, { alignment: AlignmentType.CENTER, bold: true })],
+          children: [cellParagraph(wearer.name, { alignment: AlignmentType.CENTER, bold: false })],
         }),
         new TableCell({
           ...defaultCellProps(),
           borders,
-          children: [cellParagraph(firstDateTime, { alignment: AlignmentType.CENTER, bold: true })],
+          children: [cellParagraph(firstDateTime, { alignment: AlignmentType.CENTER, bold: false })],
         }),
         new TableCell({
           ...defaultCellProps(),
           borders,
-          children: [cellParagraph(lastDateTime, { alignment: AlignmentType.CENTER, bold: true })],
+          children: [cellParagraph(lastDateTime, { alignment: AlignmentType.CENTER, bold: false })],
         }),
       ]),
     ],
@@ -215,9 +253,10 @@ const witnessStatementTable = (args: {
   const exhibitsRow = rowNoSplitAcrossPages([
     new TableCell({
       ...defaultCellProps(),
-      borders,
+      borders: noTopBorder(),
       columnSpan: 2,
       children: [
+        witnessMiniTable,
         new Paragraph({
           children: [
             new TextRun(
@@ -226,18 +265,19 @@ const witnessStatementTable = (args: {
           ],
           spacing: { before: 200, after: 200 },
         }),
-        witnessMiniTable,
-        new Paragraph({ children: [], spacing: { before: 200, after: 0 } }),
         bulletParagraph(`Exhibit EMAC/01 - Image of the tracks for ${wearer.name} on the data.`, { spacingAfter: 60 }),
-        bulletParagraph('Exhibit EMAC/02 - Key for interpreting symbols on crime map', { spacingAfter: 60 }),
-        bulletParagraph(`Exhibit EMAC/03 - Table of ${wearer.name}'s locations within the vicinity.`, {
+        bulletParagraph(`Exhibit EMAC/02 - Detailed image of map and locations for ${wearer.name}`, {
+          spacingAfter: 60,
+        }),
+        bulletParagraph('Exhibit EMAC/03 - Key for interpreting symbols on crime map', { spacingAfter: 60 }),
+        bulletParagraph(`Exhibit EMAC/04 - Table of ${wearer.name}'s locations within the vicinity.`, {
           spacingAfter: 200,
         }),
         new Paragraph({
           children: [new TextRun({ text: 'SIGNATURE:', bold: true })],
           spacing: { before: 0, after: 0 },
         }),
-        ...spacer(3),
+        ...signature,
         new Paragraph({
           children: [new TextRun({ text: statementOf || ' ', bold: true })],
           spacing: { before: 0, after: 0 },
@@ -248,7 +288,11 @@ const witnessStatementTable = (args: {
         }),
         new Paragraph({ children: [], spacing: { before: 200, after: 0 } }),
         new Paragraph({
-          children: [new TextRun({ text: `Email: ${preferredEmail}`, bold: true })],
+          children: [
+            new TextRun({ text: 'Email: ', bold: true }),
+            new TextRun({ text: preferredEmail, underline: {}, bold: true }),
+            new TextRun({ text: ' (preferred communication method)', bold: true }),
+          ],
           spacing: { before: 0, after: 60 },
         }),
         new Paragraph({

@@ -9,6 +9,7 @@ import {
   sectionHeaderRow,
   sectionHeaderShading,
   spacer,
+  noBorder,
   strongBlackBorders,
 } from '../docxComponents'
 import { USABLE_PAGE_WIDTH_WORD_UNITS } from '../constants'
@@ -83,7 +84,7 @@ export const personOnlyTable = (args: { personTitle: string; personRows: Array<[
   const personKeyWidthPct = 33
   const personValueWidthPct = 67
 
-  return new Table({
+  const innerTable = new Table({
     width: { size: USABLE_PAGE_WIDTH_WORD_UNITS, type: WidthType.DXA },
     layout: TableLayoutType.FIXED,
     borders,
@@ -98,6 +99,31 @@ export const personOnlyTable = (args: { personTitle: string; personRows: Array<[
       ),
     ],
   })
+
+  return new Table({
+    width: { size: USABLE_PAGE_WIDTH_WORD_UNITS, type: WidthType.DXA },
+    layout: TableLayoutType.FIXED,
+    borders,
+    rows: [
+      rowNoSplitAcrossPages([
+        new TableCell({
+          margins: {
+            top: 0,
+            bottom: 0,
+            left: 0,
+            right: 0,
+          },
+          borders: {
+            top: noBorder(),
+            bottom: noBorder(),
+            left: noBorder(),
+            right: noBorder(),
+          },
+          children: [innerTable],
+        }),
+      ]),
+    ],
+  })
 }
 
 export const personSummarySections = (report: ProximityAlertReportData): Array<Paragraph | Table> =>
@@ -106,11 +132,10 @@ export const personSummarySections = (report: ProximityAlertReportData): Array<P
       personTitle: `Person ${index + 1}`,
       personRows: [
         ['Full name', wearer.name],
-        ['DOB:', ''],
-        ['PNC number:', ''],
-        ['Specified Address:', ''],
+        ['DOB:', 'N/A'],
+        ['PNC number:', 'N/A'],
+        ['Specified Address:', 'N/A'],
         ['EMS ID:', wearer.deviceWearerId],
-        ['Offender Manager:', ''],
       ],
     }),
     ...spacer(1),
@@ -149,7 +174,7 @@ export const requestSummaryTable = (report: ProximityAlertReportData): Table => 
     ['Crime Date/Time to:', fmtDateTime(crimeVersionData.toDateTime)],
     ['Latitude:', String(crimeVersionData.latitude)],
     ['Longitude:', String(crimeVersionData.longitude)],
-    ['Crime Text:', crimeVersionData.crimeText || ''],
+    ['Crime Text:', crimeVersionData.crimeText || 'N/A'],
   ]
 
   return new Table({

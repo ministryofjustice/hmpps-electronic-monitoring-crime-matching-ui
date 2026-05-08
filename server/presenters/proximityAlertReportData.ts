@@ -1,4 +1,5 @@
 import type { CrimeVersion } from '../types/crimeVersion'
+import type HubManager from '../types/hubManager'
 
 export type ProximityAlertReportPositionRow = {
   sequenceLabel: string
@@ -32,11 +33,15 @@ export type ProximityAlertReportCrimeVersion = {
 
 export type ProximityAlertReportData = {
   reportGeneratedAt: string
+  authorisingManager: HubManager
+  authorisingManagerSignature?: Buffer
   crimeVersionData: ProximityAlertReportCrimeVersion
   matchedDeviceWearers: ProximityAlertReportDeviceWearer[]
 }
 
 export type PresentProximityAlertReportDataOptions = {
+  authorisingManager: HubManager
+  authorisingManagerSignature?: Buffer
   selectedDeviceIds?: string[]
 }
 
@@ -50,7 +55,7 @@ const normaliseSelectedDeviceIds = (selectedDeviceIds?: string[]): Set<string> |
 
 const presentProximityAlertReportData = (
   crimeVersion: CrimeVersion,
-  options: PresentProximityAlertReportDataOptions = {},
+  options: PresentProximityAlertReportDataOptions,
 ): ProximityAlertReportData => {
   const selectedDeviceIdSet = normaliseSelectedDeviceIds(options.selectedDeviceIds)
 
@@ -89,6 +94,8 @@ const presentProximityAlertReportData = (
       longitude: crimeVersion.longitude,
       crimeText: crimeVersion.crimeText,
     },
+    authorisingManager: options.authorisingManager,
+    authorisingManagerSignature: options.authorisingManagerSignature,
     matchedDeviceWearers,
   }
 }

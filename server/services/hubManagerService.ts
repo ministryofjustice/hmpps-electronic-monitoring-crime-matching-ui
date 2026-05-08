@@ -78,6 +78,15 @@ class HubManagersService {
       ...getHubManagersDtoSchema.parse(result),
     }
   }
+
+  async getHubManagerSignature(username: string, id: string): Promise<ServiceResult<Buffer>> {
+    const result = await this.crimeMatchingApiClient.getHubManagerSignature(asSystem(username), id)
+
+    return {
+      ok: true,
+      data: Buffer.isBuffer(result) ? result : Buffer.from(result as string, 'base64'),
+    }
+  }
 }
 
 export default HubManagersService

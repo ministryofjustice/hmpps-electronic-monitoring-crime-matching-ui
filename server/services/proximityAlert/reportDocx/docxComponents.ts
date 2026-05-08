@@ -79,6 +79,11 @@ export const strongBlackBorders = () =>
 
 export const noBorder = () => ({ style: BorderStyle.NONE, size: 0, color: 'FFFFFF' }) as const
 
+export const noTopBorder = () => ({
+  ...strongBlackBorders(),
+  top: noBorder(),
+})
+
 export const noBottomBorder = () => ({
   ...strongBlackBorders(),
   bottom: noBorder(),

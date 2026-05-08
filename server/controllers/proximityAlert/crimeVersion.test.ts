@@ -527,6 +527,7 @@ describe('CrimeVersionController', () => {
       // Then
       expect(req.session.exportProximityAlertState).toEqual({
         error: 'Invalid export request.',
+        authorisingManager: 'a6e61168-f7ca-4056-8a2d-7db0fd77fb62',
         selectedDeviceIds: ['1'],
         selectedTrackDeviceIds: ['1'],
         showConfidenceCircles: false,
@@ -587,6 +588,7 @@ describe('CrimeVersionController', () => {
         deviceWearerFittedWithoutTracksJpgByDeviceId: {},
       }
       const docxBuffer = Buffer.from('fake-docx')
+      const signatureBuffer = Buffer.from('fake-signature')
 
       mockRestClient.getCrimeVersion.mockResolvedValue({
         data: {
@@ -632,6 +634,7 @@ describe('CrimeVersionController', () => {
       })
 
       mockRestClient.getHubManagers.mockResolvedValue({ data: hubManagers })
+      mockRestClient.getHubManagerSignature.mockResolvedValue(signatureBuffer)
       mockPlaywrightBrowserService.getBrowser.mockResolvedValue(mockBrowser)
       mockMapImageRendererService.render.mockResolvedValue(mockImages)
       mockProximityAlertReportDocxService.build.mockResolvedValue(docxBuffer)
@@ -655,6 +658,12 @@ describe('CrimeVersionController', () => {
       expect(mockProximityAlertReportDocxService.build).toHaveBeenCalledWith({
         report: expect.objectContaining({
           reportGeneratedAt: expect.any(String),
+          authorisingManager: {
+            id: 'a6e61168-f7ca-4056-8a2d-7db0fd77fb62',
+            name: 'Test manager 1',
+            hasSignature: true,
+          },
+          authorisingManagerSignature: signatureBuffer,
           crimeVersionData: {
             crimeVersionId,
             latestCrimeVersionId: null,
@@ -768,6 +777,7 @@ describe('CrimeVersionController', () => {
       // Then
       expect(req.session.exportProximityAlertState).toEqual({
         error: 'Select at least one device wearer to export the Proximity Alert report.',
+        authorisingManager: 'a6e61168-f7ca-4056-8a2d-7db0fd77fb62',
         selectedDeviceIds: [],
         selectedTrackDeviceIds: [],
         showConfidenceCircles: true,

@@ -6,6 +6,7 @@ import exportProximityAlertFormSchema, {
 import { convertZodErrorToValidationError } from '../../utils/errors'
 
 export type ExportProximityAlertState = {
+  authorisingManager?: string
   error?: string
   selectedDeviceIds: string[]
   selectedTrackDeviceIds: string[]
@@ -15,6 +16,7 @@ export type ExportProximityAlertState = {
 }
 
 export type ExportProximityAlertForm = {
+  authorisingManager?: string
   url: string
   selectedDeviceIds: string[]
   selectedTrackDeviceIds: string[]
@@ -24,6 +26,7 @@ export type ExportProximityAlertForm = {
 }
 
 type ParsedExportProximityAlertData = {
+  authorisingManager?: string
   deviceIds: string[]
   selectedTrackDeviceIds: string[]
   capturedMapState?: string
@@ -45,6 +48,7 @@ export type ParsedExportProximityAlertRequest =
 
 // Default values for the form
 const defaultExportProximityAlertState = (): ExportProximityAlertState => ({
+  authorisingManager: undefined,
   selectedDeviceIds: [],
   selectedTrackDeviceIds: [],
   showConfidenceCircles: true,
@@ -79,6 +83,7 @@ const parseAnalysisToggles = (
 }
 
 const toExportProximityAlertState = (body: Record<string, unknown>): ExportProximityAlertState => {
+  const authorisingManager = optionalTrimmedStringSchema.parse(body.authorisingManager)
   const selectedDeviceIds = parseDeviceIdsFromDeviceWearerToggle(body['device-wearer-toggle'])
   const selectedTrackDeviceIds = parseTrackDeviceIds(body['device-wearer-tracks'])
   const { showConfidenceCircles, showLocationNumbering } = parseAnalysisToggles(body['analysis-toggles'])
@@ -86,6 +91,7 @@ const toExportProximityAlertState = (body: Record<string, unknown>): ExportProxi
 
   return {
     ...defaultExportProximityAlertState(),
+    authorisingManager,
     selectedDeviceIds,
     selectedTrackDeviceIds,
     showConfidenceCircles,
@@ -157,6 +163,7 @@ export const toExportProximityAlertForm = (
 
   return {
     url: `/proximity-alert/${encodeURIComponent(crimeVersionId)}/export-proximity-alert`,
+    authorisingManager: resolvedState.authorisingManager,
     selectedDeviceIds: resolvedState.selectedDeviceIds,
     selectedTrackDeviceIds: resolvedState.selectedTrackDeviceIds,
     showConfidenceCircles: resolvedState.showConfidenceCircles,

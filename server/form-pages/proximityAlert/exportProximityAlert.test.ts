@@ -42,6 +42,7 @@ describe('exportProximityAlert form page', () => {
           showLocationNumbering: true,
         },
         formState: {
+          authorisingManager: 'a6e61168-f7ca-4056-8a2d-7db0fd77fb62',
           selectedDeviceIds: ['1', '2'],
           selectedTrackDeviceIds: ['1'],
           showConfidenceCircles: true,
@@ -87,6 +88,7 @@ describe('exportProximityAlert form page', () => {
           showLocationNumbering: true,
         },
         formState: {
+          authorisingManager: 'a6e61168-f7ca-4056-8a2d-7db0fd77fb62',
           selectedDeviceIds: ['1'],
           selectedTrackDeviceIds: ['1'],
           showConfidenceCircles: false,
@@ -118,6 +120,7 @@ describe('exportProximityAlert form page', () => {
           showLocationNumbering: false,
         },
         formState: {
+          authorisingManager: 'a6e61168-f7ca-4056-8a2d-7db0fd77fb62',
           selectedDeviceIds: ['1'],
           selectedTrackDeviceIds: [],
           showConfidenceCircles: false,
@@ -151,6 +154,7 @@ describe('exportProximityAlert form page', () => {
           showLocationNumbering: false,
         },
         formState: {
+          authorisingManager: 'a6e61168-f7ca-4056-8a2d-7db0fd77fb62',
           selectedDeviceIds: ['1', '2'],
           selectedTrackDeviceIds: ['1'],
           showConfidenceCircles: true,
@@ -177,6 +181,7 @@ describe('exportProximityAlert form page', () => {
       expect(result).toEqual({
         success: false,
         formState: {
+          authorisingManager: 'a6e61168-f7ca-4056-8a2d-7db0fd77fb62',
           selectedDeviceIds: ['1'],
           selectedTrackDeviceIds: ['1'],
           showConfidenceCircles: false,

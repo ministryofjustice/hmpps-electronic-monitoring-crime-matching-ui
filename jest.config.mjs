@@ -21,4 +21,7 @@ export default {
     ],
   ],
   moduleFileExtensions: ['web.js', 'js', 'json', 'node', 'ts'],
+  moduleNameMapper: {
+    '^file-type$': '<rootDir>/server/testutils/createMockFileType.ts',
+  },
 }
