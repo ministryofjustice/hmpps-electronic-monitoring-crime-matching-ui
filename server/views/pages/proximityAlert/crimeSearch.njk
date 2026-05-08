@@ -10,14 +10,13 @@
 {% set mainClasses = "app-container govuk-body" %}
 {% set activeLinkId = "proximity-alert" %}
 {% set rows = [] %}
+{% set returnTo = (URLS.PROXIMITY_ALERT.CRIME_VERSIONS.VIEW + '?' ~ paginationHrefPrefix) | urlencode %}
 
 {% for crime in crimes %}
+  {% set path = URLS.PROXIMITY_ALERT.CRIME_VERSION.VIEW | replace(':crimeVersionId', crime.crimeVersionId) %}
+  {% set href = path + "?returnTo=" + returnTo %}
   {% set link %}
-    <a
-      href="/proximity-alert/{{ crime.crimeVersionId }}?returnTo={{ ('/proximity-alert?' ~ paginationHrefPrefix) | urlencode }}"
-    >
-      {{ crime.crimeReference }}
-    </a>
+    <a href="{{ href }}"> {{ crime.crimeReference }} </a>
   {% endset %}
 
 
