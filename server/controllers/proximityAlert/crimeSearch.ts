@@ -2,6 +2,7 @@ import { RequestHandler } from 'express'
 import { crimeSearchQuerySchema } from '../../schemas/proximityAlert/crimeSearch'
 import CrimeService from '../../services/crimeService'
 import presentCrimeVersionSummaries from '../../presenters/crimeVersionSummary'
+import URLS from '../../constants/urls'
 
 export default class CrimeSearchController {
   constructor(private readonly crimeService: CrimeService) {}
@@ -18,7 +19,7 @@ export default class CrimeSearchController {
     const { crimeReference } = crimeSearchQuerySchema.parse(req.body)
     const query = this.getQueryString(crimeReference)
 
-    return res.redirect(303, `/proximity-alert${query ? `?${query}` : ''}`)
+    return res.redirect(303, `${URLS.PROXIMITY_ALERT.CRIME_VERSIONS.VIEW}${query ? `?${query}` : ''}`)
   }
 
   view: RequestHandler = async (req, res) => {

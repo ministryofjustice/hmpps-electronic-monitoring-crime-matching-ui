@@ -6,7 +6,7 @@ const getMatchedText = (crimeVersionSummary: CrimeVersionSummary) => {
 }
 
 const getVersionColour = (crimeVersionSummary: CrimeVersionSummary) => {
-  if (crimeVersionSummary.versionLabel === 'Latest version') {
+  if (crimeVersionSummary.versionLabel.includes('Latest version')) {
     return 'green'
   }
 
