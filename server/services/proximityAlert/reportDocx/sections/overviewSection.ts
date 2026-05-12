@@ -132,9 +132,9 @@ export const personSummarySections = (report: ProximityAlertReportData): Array<P
       personTitle: `Person ${index + 1}`,
       personRows: [
         ['Full name', wearer.name],
-        ['DOB:', 'N/A'],
-        ['PNC number:', 'N/A'],
-        ['Specified Address:', 'N/A'],
+        ['DOB:', wearer.dateOfBirth],
+        ['PNC number:', wearer.pncRef],
+        ['Specified Address:', wearer.address],
         ['EMS ID:', wearer.deviceWearerId],
       ],
     }),

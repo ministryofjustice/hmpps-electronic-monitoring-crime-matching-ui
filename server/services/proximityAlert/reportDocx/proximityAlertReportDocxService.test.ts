@@ -28,6 +28,7 @@ describe('ProximityAlertReportDocxService', () => {
         crimeVersionData: {
           crimeVersionId: '78d41bd9-5450-4bbb-89d4-42ba75659f50',
           crimeReference: 'crime1',
+          policeForceArea: 'Metropolitan',
           batchId: 'batch1',
           crimeType: 'Aggravated Burglary',
           fromDateTime: '2025-01-01T00:00:00Z',
@@ -41,6 +42,9 @@ describe('ProximityAlertReportDocxService', () => {
             deviceWearerId: '1',
             deviceId: 1,
             name: 'name1',
+            address: '1 Test Street',
+            dateOfBirth: '1985-10-05',
+            pncRef: 'PNC123',
             nomisId: 'nomisId1',
             positions: [],
           },

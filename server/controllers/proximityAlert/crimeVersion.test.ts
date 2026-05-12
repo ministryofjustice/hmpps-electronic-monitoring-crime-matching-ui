@@ -79,6 +79,7 @@ describe('CrimeVersionController', () => {
           crimeVersionId: '78d41bd9-5450-4bbb-89d4-42ba75659f50',
           latestCrimeVersionId: null,
           crimeReference: 'crime1',
+          policeForceArea: 'Metropolitan',
           batchId: 'batch1',
           crimeTypeDescription: 'Aggravated Burglary',
           crimeTypeId: 'AB',
@@ -92,6 +93,9 @@ describe('CrimeVersionController', () => {
             deviceWearers: [
               {
                 name: 'name',
+                address: '1 Test Street',
+                dateOfBirth: '1985-10-05',
+                pncRef: 'PNC123',
                 deviceId: 1,
                 nomisId: 'nomisId',
                 positions: [
@@ -141,6 +145,9 @@ describe('CrimeVersionController', () => {
             deviceWearers: [
               {
                 name: 'name',
+                address: '1 Test Street',
+                dateOfBirth: '1985-10-05',
+                pncRef: 'PNC123',
                 deviceId: 1,
                 nomisId: 'nomisId',
                 positions: [
@@ -193,6 +200,7 @@ describe('CrimeVersionController', () => {
         },
         exportProximityAlertForm: {
           url: `/proximity-alert/${crimeVersionId}/export-proximity-alert`,
+          authorisingManager: undefined,
           selectedDeviceIds: [],
           selectedTrackDeviceIds: [],
           showConfidenceCircles: true,
@@ -224,6 +232,7 @@ describe('CrimeVersionController', () => {
           crimeVersionId: '78d41bd9-5450-4bbb-89d4-42ba75659f50',
           latestCrimeVersionId: null,
           crimeReference: 'crime1',
+          policeForceArea: 'Metropolitan',
           batchId: 'batch1',
           crimeTypeDescription: 'Aggravated Burglary',
           crimeTypeId: 'AB',
@@ -272,6 +281,7 @@ describe('CrimeVersionController', () => {
         },
         exportProximityAlertForm: {
           url: `/proximity-alert/${crimeVersionId}/export-proximity-alert`,
+          authorisingManager: undefined,
           selectedDeviceIds: [],
           selectedTrackDeviceIds: [],
           showConfidenceCircles: true,
@@ -303,6 +313,7 @@ describe('CrimeVersionController', () => {
           crimeVersionId: '78d41bd9-5450-4bbb-89d4-42ba75659f50',
           latestCrimeVersionId: null,
           crimeReference: 'crime1',
+          policeForceArea: 'Metropolitan',
           batchId: 'batch1',
           crimeTypeDescription: 'Aggravated Burglary',
           crimeTypeId: 'AB',
@@ -351,6 +362,7 @@ describe('CrimeVersionController', () => {
         },
         exportProximityAlertForm: {
           url: `/proximity-alert/${crimeVersionId}/export-proximity-alert`,
+          authorisingManager: undefined,
           selectedDeviceIds: [],
           selectedTrackDeviceIds: [],
           showConfidenceCircles: true,
@@ -399,6 +411,7 @@ describe('CrimeVersionController', () => {
           crimeVersionId: '78d41bd9-5450-4bbb-89d4-42ba75659f50',
           latestCrimeVersionId: null,
           crimeReference: 'crime1',
+          policeForceArea: 'Metropolitan',
           batchId: 'batch1',
           crimeTypeDescription: 'Aggravated Burglary',
           crimeTypeId: 'AB',
@@ -454,6 +467,7 @@ describe('CrimeVersionController', () => {
         },
         exportProximityAlertForm: {
           url: `/proximity-alert/${crimeVersionId}/export-proximity-alert`,
+          authorisingManager: undefined,
           selectedDeviceIds: ['1'],
           selectedTrackDeviceIds: ['1'],
           showConfidenceCircles: false,
@@ -506,6 +520,7 @@ describe('CrimeVersionController', () => {
           crimeVersionId,
           latestCrimeVersionId: null,
           crimeReference: 'crime1',
+          policeForceArea: 'Metropolitan',
           batchId: 'batch1',
           crimeTypeDescription: 'Aggravated Burglary',
           crimeTypeId: 'AB',
@@ -516,7 +531,17 @@ describe('CrimeVersionController', () => {
           latitude: 10.0,
           longitude: 10.0,
           matching: {
-            deviceWearers: [{ name: 'name', deviceId: 1, nomisId: 'nomisId', positions: [] }],
+            deviceWearers: [
+              {
+                name: 'name',
+                address: '1 Test Street',
+                dateOfBirth: '1985-10-05',
+                pncRef: 'PNC123',
+                deviceId: 1,
+                nomisId: 'nomisId',
+                positions: [],
+              },
+            ],
           },
         },
       })
@@ -595,6 +620,7 @@ describe('CrimeVersionController', () => {
           crimeVersionId,
           latestCrimeVersionId: null,
           crimeReference: 'crime1',
+          policeForceArea: 'Metropolitan',
           batchId: 'batch1',
           crimeTypeDescription: 'Aggravated Burglary',
           crimeTypeId: 'AB',
@@ -608,6 +634,9 @@ describe('CrimeVersionController', () => {
             deviceWearers: [
               {
                 name: 'name1',
+                address: '1 Test Street',
+                dateOfBirth: '1985-10-05',
+                pncRef: 'PNC123',
                 deviceId: 1,
                 nomisId: 'nomisId1',
                 positions: [
@@ -624,6 +653,9 @@ describe('CrimeVersionController', () => {
               },
               {
                 name: 'name2',
+                address: '2 Test Street',
+                dateOfBirth: '1985-10-05',
+                pncRef: 'PNC456',
                 deviceId: 2,
                 nomisId: 'nomisId2',
                 positions: [],
@@ -667,6 +699,7 @@ describe('CrimeVersionController', () => {
           crimeVersionData: expect.objectContaining({
             crimeVersionId,
             crimeReference: 'crime1',
+            policeForceArea: 'Metropolitan',
             batchId: 'batch1',
             crimeType: 'Aggravated Burglary',
             fromDateTime: '2025-01-01T00:00:00Z',
@@ -679,6 +712,9 @@ describe('CrimeVersionController', () => {
             {
               deviceWearerId: '1',
               deviceId: 1,
+              address: '1 Test Street',
+              dateOfBirth: '05/10/1985',
+              pncRef: 'PNC123',
               name: 'name1',
               nomisId: 'nomisId1',
               positions: [
@@ -697,6 +733,9 @@ describe('CrimeVersionController', () => {
               deviceWearerId: '2',
               deviceId: 2,
               name: 'name2',
+              address: '2 Test Street',
+              dateOfBirth: '05/10/1985',
+              pncRef: 'PNC456',
               nomisId: 'nomisId2',
               positions: [],
             },
@@ -755,6 +794,7 @@ describe('CrimeVersionController', () => {
           crimeVersionId,
           latestCrimeVersionId: null,
           crimeReference: 'crime1',
+          policeForceArea: 'Metropolitan',
           batchId: 'batch1',
           crimeTypeDescription: 'Aggravated Burglary',
           crimeTypeId: 'AB',
@@ -765,7 +805,17 @@ describe('CrimeVersionController', () => {
           latitude: 10.0,
           longitude: 10.0,
           matching: {
-            deviceWearers: [{ name: 'name1', deviceId: 1, nomisId: 'nomisId1', positions: [] }],
+            deviceWearers: [
+              {
+                name: 'name1',
+                address: '1 Test Street',
+                dateOfBirth: '1985-10-05',
+                pncRef: 'PNC123',
+                deviceId: 1,
+                nomisId: 'nomisId1',
+                positions: [],
+              },
+            ],
           },
         },
       })
@@ -839,6 +889,7 @@ describe('CrimeVersionController', () => {
           crimeVersionId,
           latestCrimeVersionId: null,
           crimeReference: 'crime1',
+          policeForceArea: 'Metropolitan',
           batchId: 'batch1',
           crimeTypeDescription: 'Aggravated Burglary',
           crimeTypeId: 'AB',
@@ -849,7 +900,17 @@ describe('CrimeVersionController', () => {
           latitude: 10.0,
           longitude: 10.0,
           matching: {
-            deviceWearers: [{ name: 'name1', deviceId: 1, nomisId: 'nomisId1', positions: [] }],
+            deviceWearers: [
+              {
+                name: 'name1',
+                address: '1 Test Street',
+                dateOfBirth: '1985-10-05',
+                pncRef: 'PNC123',
+                deviceId: 1,
+                nomisId: 'nomisId1',
+                positions: [],
+              },
+            ],
           },
         },
       })

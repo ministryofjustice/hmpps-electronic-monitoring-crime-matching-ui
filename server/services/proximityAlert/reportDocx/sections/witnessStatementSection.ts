@@ -177,7 +177,7 @@ const witnessStatementTable = async (args: {
             new TextRun('On '),
             new TextRun({ text: fmtDate(report.reportGeneratedAt), bold: true }),
             new TextRun(' I reviewed a qualified match in relation to crime data supplied by '),
-            new TextRun({ text: '', bold: true }),
+            new TextRun({ text: report.crimeVersionData.policeForceArea, bold: true }),
             new TextRun(
               '. As a result of this process, I can confirm the attached match in relation to an allegation of ',
             ),

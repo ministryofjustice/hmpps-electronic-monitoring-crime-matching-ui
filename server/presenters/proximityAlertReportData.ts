@@ -1,5 +1,6 @@
 import type { CrimeVersion } from '../types/crimeVersion'
 import type HubManager from '../types/hubManager'
+import { formatDateTime } from '../utils/date'
 
 export type ProximityAlertReportPositionRow = {
   sequenceLabel: string
@@ -16,12 +17,16 @@ export type ProximityAlertReportDeviceWearer = {
   deviceId: number
   name: string
   nomisId: string
+  dateOfBirth: string
+  pncRef: string
+  address: string
   positions: ProximityAlertReportPositionRow[]
 }
 
 export type ProximityAlertReportCrimeVersion = {
   crimeVersionId: string
   crimeReference: string
+  policeForceArea: string
   batchId: string
   crimeType: string
   fromDateTime: string
@@ -70,6 +75,9 @@ const presentProximityAlertReportData = (
         deviceId: Number(deviceWearer.deviceId),
         name: deviceWearer.name,
         nomisId: deviceWearer.nomisId,
+        dateOfBirth: formatDateTime(deviceWearer.dateOfBirth, 'DD/MM/YYYY'),
+        pncRef: deviceWearer.pncRef,
+        address: deviceWearer.address,
         positions: deviceWearer.positions.map(position => ({
           sequenceLabel: position.sequenceLabel,
           capturedDateTime: position.capturedDateTime,
@@ -86,6 +94,7 @@ const presentProximityAlertReportData = (
     crimeVersionData: {
       crimeVersionId: crimeVersion.crimeVersionId,
       crimeReference: crimeVersion.crimeReference,
+      policeForceArea: crimeVersion.policeForceArea,
       batchId: crimeVersion.batchId,
       crimeType: crimeVersion.crimeTypeDescription,
       fromDateTime: crimeVersion.crimeDateTimeFrom,
