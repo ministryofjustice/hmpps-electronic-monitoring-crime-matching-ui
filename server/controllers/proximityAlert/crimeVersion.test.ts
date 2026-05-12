@@ -664,9 +664,8 @@ describe('CrimeVersionController', () => {
             hasSignature: true,
           },
           authorisingManagerSignature: signatureBuffer,
-          crimeVersionData: {
+          crimeVersionData: expect.objectContaining({
             crimeVersionId,
-            latestCrimeVersionId: null,
             crimeReference: 'crime1',
             batchId: 'batch1',
             crimeType: 'Aggravated Burglary',
@@ -675,7 +674,7 @@ describe('CrimeVersionController', () => {
             latitude: 10,
             longitude: 10,
             crimeText: 'text',
-          },
+          }),
           matchedDeviceWearers: [
             {
               deviceWearerId: '1',

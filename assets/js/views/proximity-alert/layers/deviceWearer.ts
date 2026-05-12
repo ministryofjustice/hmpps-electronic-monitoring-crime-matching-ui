@@ -20,9 +20,9 @@ class DeviceWearerLayer extends LayerGroup {
           positions,
           entryExit: {
             enabled: true,
-            extensionDistanceMeters: 100,
-            centre: [crime.latitude, crime.longitude],
-            radiusMeters: 100,
+            extensionDistanceMeters: 50,
+            centre: [crime.longitude, crime.latitude],
+            radiusMeters: crime.precision,
           },
           zIndex: 2,
           visible: false,
