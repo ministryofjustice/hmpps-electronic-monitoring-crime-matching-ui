@@ -15,6 +15,11 @@ ENV BUILD_NUMBER=${BUILD_NUMBER}
 ENV GIT_REF=${GIT_REF}
 ENV GIT_BRANCH=${GIT_BRANCH}
 
+# Chromium is used by playwright for capturing screenshots
+ENV CHROMIUM_EXECUTABLE_PATH=/usr/bin/chromium-browser
+RUN apk add --no-cache \
+        chromium
+
 # Stage: build assets
 FROM base AS build
 
