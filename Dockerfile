@@ -39,10 +39,6 @@ RUN apk add --no-cache \
         chromium
 
 COPY --from=build --chown=appuser:appgroup \
-        /root/.cache/ms-playwright/chromium_headless_shell-1217 \
-        /home/appuser/.cache/ms-playwright/chromium_headless_shell-1217
-
-COPY --from=build --chown=appuser:appgroup \
         /app/package.json \
         /app/package-lock.json \
         ./
