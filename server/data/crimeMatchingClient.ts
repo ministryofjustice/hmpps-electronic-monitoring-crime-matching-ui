@@ -164,6 +164,15 @@ export default class CrimeMatchingClient extends RestClient {
     )
   }
 
+  getHubManagerSignature(authOptions: AuthOptions, id: string): Promise<unknown> {
+    return this.get(
+      {
+        path: `/hub-managers/${id}/signature`,
+      },
+      authOptions,
+    )
+  }
+
   updateHubManagerSignature(
     authOptions: AuthOptions,
     id: string,

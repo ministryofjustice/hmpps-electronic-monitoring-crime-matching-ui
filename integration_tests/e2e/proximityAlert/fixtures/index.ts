@@ -13,6 +13,7 @@ const crimeVersion = {
   crimeVersionId,
   latestCrimeVersionId: null,
   crimeReference: 'crimeRef',
+  policeForceArea: 'Metropolitan',
   batchId: 'batch1',
   crimeTypeDescription: 'Aggravated Burglary',
   crimeTypeId: 'AB',
@@ -26,6 +27,9 @@ const crimeVersion = {
 
 const matchedDeviceWearer1 = {
   name: 'wearer-1',
+  address: '1 Test Street',
+  dateOfBirth: '1985-10-05',
+  pncRef: 'PNC123',
   deviceId: 1,
   nomisId: 'nomisId',
   positions: [
@@ -43,8 +47,11 @@ const matchedDeviceWearer1 = {
 
 const matchedDeviceWearer2 = {
   name: 'wearer-2',
+  address: '2 Test Street',
+  dateOfBirth: '1985-10-05',
   deviceId: 2,
   nomisId: 'nomisId2',
+  pncRef: 'PNC456',
   positions: [
     {
       capturedDateTime: '2025-01-01T00:00',

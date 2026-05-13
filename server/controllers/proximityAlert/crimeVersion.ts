@@ -10,7 +10,7 @@ import presentCrimeVersion from '../../presenters/crimeVersion'
 import CrimeService from '../../services/crimeService'
 import MapImageRendererService from '../../services/proximityAlert/proximityAlertMapImageService'
 import PlaywrightBrowserService from '../../services/proximityAlert/playwrightBrowserService'
-import ProximityAlertReportDocxService from '../../services/proximityAlert/proximityAlertReportDocxService'
+import ProximityAlertReportDocxService from '../../services/proximityAlert/reportDocx/proximityAlertReportDocxService'
 import presentProximityAlertReportData from '../../presenters/proximityAlertReportData'
 import type { MojAlert } from '../../types/govUk/mojAlert'
 import { createMojAlertWarning } from '../../utils/alerts'
@@ -108,8 +108,14 @@ export default class CrimeVersionController {
           )
           res.redirect(redirectUrl)
         } else {
-          const { deviceIds, selectedTrackDeviceIds, capturedMapState, showConfidenceCircles, showLocationNumbering } =
-            parsedRequest.exportData
+          const {
+            authorisingManager,
+            deviceIds,
+            selectedTrackDeviceIds,
+            capturedMapState,
+            showConfidenceCircles,
+            showLocationNumbering,
+          } = parsedRequest.exportData
 
           if (deviceIds.length === 0) {
             req.session.exportProximityAlertState = withExportProximityAlertError(
@@ -118,38 +124,77 @@ export default class CrimeVersionController {
             )
             res.redirect(redirectUrl)
           } else {
-            const browser = await this.playwrightBrowserService.getBrowser()
+            const hubManagersResult = await this.hubManagersService.getHubManagersWithSignatures(username)
 
-            const images = await this.mapImageRendererService.render({
-              browser,
-              pageUrl: `${config.ingressUrl}/proximity-alert/${encodeURIComponent(crimeVersionId)}`,
-              baseUrlForCookies: config.ingressUrl,
-              cookieHeader: req.headers.cookie,
-              selectedDeviceIds: deviceIds,
-              selectedTrackDeviceIds,
-              capturedMapState,
-              showConfidenceCircles,
-              showLocationNumbering,
-            })
+            if (!hubManagersResult.ok) {
+              next(createError(404, 'Not found'))
+            } else {
+              const selectedHubManager = hubManagersResult.data.find(manager => manager.id === authorisingManager)
 
-            const report = presentProximityAlertReportData(result.data, {
-              selectedDeviceIds: deviceIds,
-            })
+              if (!selectedHubManager) {
+                req.session.validationErrors = [
+                  {
+                    field: 'authorisingManager',
+                    message: 'Select an authorising manager',
+                  },
+                ]
 
-            const docxBuffer = await this.proximityAlertReportDocxService.build({
-              report,
-              images,
-            })
+                req.session.exportProximityAlertState = withExportProximityAlertError(
+                  parsedRequest.formState,
+                  INVALID_EXPORT_REQUEST_ERROR,
+                )
 
-            res.setHeader('Content-Type', DOCX_CONTENT_TYPE)
-            res.setHeader('Content-Disposition', `attachment; filename="proximity-alert-${crimeVersionId}.docx"`)
-            res.send(docxBuffer)
+                res.redirect(redirectUrl)
+              } else {
+                const signatureResult = await this.hubManagersService.getHubManagerSignature(
+                  username,
+                  selectedHubManager.id,
+                )
+
+                if (!signatureResult.ok) {
+                  req.session.exportProximityAlertState = withExportProximityAlertError(
+                    parsedRequest.formState,
+                    EXPORT_ERROR_MESSAGE,
+                  )
+
+                  res.redirect(redirectUrl)
+                } else {
+                  const browser = await this.playwrightBrowserService.getBrowser()
+
+                  const images = await this.mapImageRendererService.render({
+                    browser,
+                    pageUrl: `${config.ingressUrl}/proximity-alert/${encodeURIComponent(crimeVersionId)}`,
+                    baseUrlForCookies: config.ingressUrl,
+                    cookieHeader: req.headers.cookie,
+                    selectedDeviceIds: deviceIds,
+                    selectedTrackDeviceIds,
+                    capturedMapState,
+                    showConfidenceCircles,
+                    showLocationNumbering,
+                  })
+
+                  const report = presentProximityAlertReportData(result.data, {
+                    authorisingManager: selectedHubManager,
+                    authorisingManagerSignature: signatureResult.data,
+                    selectedDeviceIds: deviceIds,
+                  })
+
+                  const docxBuffer = await this.proximityAlertReportDocxService.build({
+                    report,
+                    images,
+                  })
+
+                  res.setHeader('Content-Type', DOCX_CONTENT_TYPE)
+                  res.setHeader('Content-Disposition', `attachment; filename="proximity-alert-${crimeVersionId}.docx"`)
+                  res.send(docxBuffer)
+                }
+              }
+            }
           }
         }
       }
     } catch {
       const parsedRequest = parseExportProximityAlertRequest(req.body as Record<string, unknown>)
-
       req.session.exportProximityAlertState = withExportProximityAlertError(
         parsedRequest.formState,
         EXPORT_ERROR_MESSAGE,

@@ -24,6 +24,11 @@ const getBuildConfig = () => {
           to: path.join(cwd, 'dist/server/views'),
           watch: isWatchMode,
         },
+        {
+          from: path.join(cwd, 'server/services/proximityAlert/assets/**/*'),
+          to: path.join(cwd, 'dist/server/services/proximityAlert/assets'),
+          watch: isWatchMode,
+        },
       ],
     },
 

@@ -56,11 +56,18 @@ const applyHeadlessUiTweaks = (emMap: EmMap) => {
   const { shadowRoot } = emMap
   if (!shadowRoot) return
 
-  const controls = shadowRoot.querySelectorAll<HTMLElement>('.ol-control, .ol-attribution')
+  // Hide all controls except the compass
+  const controls = shadowRoot.querySelectorAll<HTMLElement>('.ol-control:not(.ol-rotate), .ol-attribution')
   controls.forEach(controlEl => {
     const el = controlEl
     el.style.display = 'none'
   })
+
+  // Reposition compass to the top
+  const rotateCtrl = shadowRoot.querySelector<HTMLElement>('.ol-control.ol-rotate')
+  if (rotateCtrl) {
+    rotateCtrl.style.top = '0'
+  }
 }
 
 // Applies headless export settings (hide UI controls and resize map to match captured dimensions)

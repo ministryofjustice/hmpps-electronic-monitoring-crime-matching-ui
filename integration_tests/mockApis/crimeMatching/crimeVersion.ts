@@ -11,6 +11,7 @@ type StubGetCrimeVersion200Options = {
       crimeVersionId: string
       latestCrimeVersionId: string | null
       crimeReference: string
+      policeForceArea: string
       batchId: string
       crimeTypeDescription: string
       crimeTypeId: string
@@ -23,8 +24,11 @@ type StubGetCrimeVersion200Options = {
       matching: {
         deviceWearers: Array<{
           name: string
+          address: string
+          dateOfBirth: string
           deviceId: number
           nomisId: string
+          pncRef: string
           positions: Array<{
             capturedDateTime: string
             direction: number

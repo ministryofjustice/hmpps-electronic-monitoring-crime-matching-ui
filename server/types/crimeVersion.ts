@@ -2,6 +2,7 @@ type CrimeVersion = {
   crimeVersionId: string
   latestCrimeVersionId: string | null
   crimeReference: string
+  policeForceArea: string
   batchId: string
   crimeTypeDescription: string
   crimeTypeId: string
@@ -25,9 +26,12 @@ type DeviceWearerPosition = {
 }
 
 type DeviceWearer = {
+  address: string
+  dateOfBirth: string
   deviceId: number
   name: string
   nomisId: string
+  pncRef: string
   positions: Array<DeviceWearerPosition>
 }
 

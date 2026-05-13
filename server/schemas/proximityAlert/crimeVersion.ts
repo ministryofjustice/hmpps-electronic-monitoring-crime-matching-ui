@@ -5,6 +5,7 @@ const getCrimeVersionDtoSchema = z.object({
     crimeVersionId: z.string(),
     latestCrimeVersionId: z.string().nullable(),
     crimeReference: z.string(),
+    policeForceArea: z.string(),
     batchId: z.string(),
     crimeTypeDescription: z.string(),
     crimeTypeId: z.string(),
@@ -18,9 +19,12 @@ const getCrimeVersionDtoSchema = z.object({
       .object({
         deviceWearers: z.array(
           z.object({
+            address: z.string(),
+            dateOfBirth: z.string(),
             deviceId: z.number(),
             name: z.string(),
             nomisId: z.string(),
+            pncRef: z.string(),
             positions: z.array(
               z.object({
                 capturedDateTime: z.string(),

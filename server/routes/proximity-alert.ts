@@ -4,7 +4,7 @@ import asyncMiddleware from '../middleware/asyncMiddleware'
 import CrimeSearchController from '../controllers/proximityAlert/crimeSearch'
 import CrimeVersionController from '../controllers/proximityAlert/crimeVersion'
 import MapImageRendererService from '../services/proximityAlert/proximityAlertMapImageService'
-import ProximityAlertReportDocxService from '../services/proximityAlert/proximityAlertReportDocxService'
+import ProximityAlertReportDocxService from '../services/proximityAlert/reportDocx/proximityAlertReportDocxService'
 import populateBackLink from '../middleware/populateBackLink'
 import URLS from '../constants/urls'
 

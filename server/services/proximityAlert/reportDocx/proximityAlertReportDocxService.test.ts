@@ -1,6 +1,15 @@
+import dayjs from 'dayjs'
+import utc from 'dayjs/plugin/utc'
+import timezone from 'dayjs/plugin/timezone'
+import customParseFormat from 'dayjs/plugin/customParseFormat'
+
 import ProximityAlertReportDocxService from './proximityAlertReportDocxService'
-import type { ProximityAlertReportData } from '../../presenters/proximityAlertReportData'
-import type { ProximityAlertReportImages } from './proximityAlertMapImageService'
+import type { ProximityAlertReportData } from '../../../presenters/proximityAlertReportData'
+import type { ProximityAlertReportImages } from '../proximityAlertMapImageService'
+
+dayjs.extend(utc)
+dayjs.extend(timezone)
+dayjs.extend(customParseFormat)
 
 // Minimal valid 1x1 JPEG
 const tinyJpeg = Buffer.from(
@@ -19,6 +28,8 @@ describe('ProximityAlertReportDocxService', () => {
         crimeVersionData: {
           crimeVersionId: '78d41bd9-5450-4bbb-89d4-42ba75659f50',
           crimeReference: 'crime1',
+          policeForceArea: 'Metropolitan',
+          batchId: 'batch1',
           crimeType: 'Aggravated Burglary',
           fromDateTime: '2025-01-01T00:00:00Z',
           toDateTime: '2025-01-01T01:00:00Z',
@@ -31,10 +42,18 @@ describe('ProximityAlertReportDocxService', () => {
             deviceWearerId: '1',
             deviceId: 1,
             name: 'name1',
+            address: '1 Test Street',
+            dateOfBirth: '1985-10-05',
+            pncRef: 'PNC123',
             nomisId: 'nomisId1',
             positions: [],
           },
         ],
+        authorisingManager: {
+          id: 'a6e61168-f7ca-4056-8a2d-7db0fd77fb62',
+          name: 'Test manager 1',
+          hasSignature: true,
+        },
       }
 
       const images: ProximityAlertReportImages = {
