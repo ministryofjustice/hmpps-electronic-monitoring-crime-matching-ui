@@ -1,5 +1,6 @@
 import { chromium, type Browser } from 'playwright'
 import logger from '../../../logger'
+import config from '../../config'
 
 export default class PlaywrightBrowserService {
   private browser?: Browser
@@ -13,9 +14,15 @@ export default class PlaywrightBrowserService {
     this.launching = (async () => {
       try {
         logger.info('[playwright] launching shared browser')
-        const chromiumBrowser = await chromium.launch({ headless: true })
+        const chromiumBrowser = await chromium.launch({
+          executablePath: config.playwright.chromiumExecutablePath,
+          headless: true,
+        })
         this.browser = chromiumBrowser
         return chromiumBrowser
+      } catch (e) {
+        logger.error(e)
+        throw e
       } finally {
         this.launching = undefined
       }
