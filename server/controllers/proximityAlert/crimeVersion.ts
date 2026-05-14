@@ -77,6 +77,7 @@ export default class CrimeVersionController {
 
       res.render('pages/proximityAlert/crimeVersion', {
         usesInternalOverlays: true,
+        isHeadless: req.query.headless === 'true',
         crimeVersion: presentCrimeVersion(result.data.crimeVersion),
         alerts,
         exportProximityAlertForm: toExportProximityAlertForm(crimeVersionId, exportState),

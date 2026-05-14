@@ -16,6 +16,7 @@
 {% endset %}
 
 {% block beforeContent %}
+
   <div class="govuk-!-static-padding-left-4">
     {{
       govukBackLink({
@@ -101,7 +102,11 @@
       positions: [],
       alerts: alerts,
       usesInternalOverlays: true,
-      sidebarHtml: sidebarHtml
+      sidebarHtml: sidebarHtml,
+      controls: {
+        zoomControl: not isHeadless,
+        zoomSlider: not isHeadless
+      }
     })
   }}
 
