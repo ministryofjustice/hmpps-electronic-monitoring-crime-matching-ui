@@ -1,6 +1,5 @@
 import { RequestHandler } from 'express'
 import createError from 'http-errors'
-import config from '../../config'
 import {
   parseExportProximityAlertRequest,
   toExportProximityAlertForm,
@@ -8,10 +7,7 @@ import {
 } from '../../form-pages/proximityAlert/exportProximityAlert'
 import presentCrimeVersion from '../../presenters/crimeVersion'
 import CrimeService from '../../services/crimeService'
-import MapImageRendererService from '../../services/proximityAlert/proximityAlertMapImageService'
-import PlaywrightBrowserService from '../../services/proximityAlert/playwrightBrowserService'
-import ProximityAlertReportDocxService from '../../services/proximityAlert/reportDocx/proximityAlertReportDocxService'
-import presentProximityAlertReportData from '../../presenters/proximityAlertReportData'
+import ProximityAlertReportExportService from '../../services/proximityAlert/proximityAlertReportExportService'
 import type { MojAlert } from '../../types/govUk/mojAlert'
 import { createMojAlertWarning } from '../../utils/alerts'
 import HubManagersService from '../../services/hubManagerService'
@@ -28,9 +24,7 @@ const INVALID_EXPORT_REQUEST_ERROR = 'Invalid export request.'
 export default class CrimeVersionController {
   constructor(
     private readonly crimeService: CrimeService,
-    private readonly playwrightBrowserService: PlaywrightBrowserService,
-    private readonly mapImageRendererService: MapImageRendererService,
-    private readonly proximityAlertReportDocxService: ProximityAlertReportDocxService,
+    private readonly proximityAlertReportExportService: ProximityAlertReportExportService,
     private readonly hubManagersService: HubManagersService,
   ) {}
 
@@ -158,13 +152,12 @@ export default class CrimeVersionController {
 
                 res.redirect(redirectUrl)
               } else {
-                const browser = await this.playwrightBrowserService.getBrowser()
-
-                const images = await this.mapImageRendererService.render({
-                  browser,
-                  pageUrl: `${config.ingressUrl}/proximity-alert/${encodeURIComponent(crimeVersionId)}`,
-                  baseUrlForCookies: config.ingressUrl,
+                const reportBuffer = await this.proximityAlertReportExportService.build({
+                  crimeVersion: result.data,
+                  crimeVersionId,
                   cookieHeader: req.headers.cookie,
+                  authorisingManager: selectedHubManagerResult.data,
+                  authorisingManagerSignature: signatureResult.data,
                   selectedDeviceIds: deviceIds,
                   selectedTrackDeviceIds,
                   capturedMapState,
@@ -172,20 +165,9 @@ export default class CrimeVersionController {
                   showLocationNumbering,
                 })
 
-                const report = presentProximityAlertReportData(result.data, {
-                  authorisingManager: selectedHubManagerResult.data,
-                  authorisingManagerSignature: signatureResult.data,
-                  selectedDeviceIds: deviceIds,
-                })
-
-                const docxBuffer = await this.proximityAlertReportDocxService.build({
-                  report,
-                  images,
-                })
-
                 res.setHeader('Content-Type', DOCX_CONTENT_TYPE)
                 res.setHeader('Content-Disposition', `attachment; filename="proximity-alert-${crimeVersionId}.docx"`)
-                res.send(docxBuffer)
+                res.send(reportBuffer)
               }
             }
           }

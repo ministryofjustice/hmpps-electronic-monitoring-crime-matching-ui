@@ -5,6 +5,7 @@ import CrimeSearchController from '../controllers/proximityAlert/crimeSearch'
 import CrimeVersionController from '../controllers/proximityAlert/crimeVersion'
 import MapImageRendererService from '../services/proximityAlert/proximityAlertMapImageService'
 import ProximityAlertReportDocxService from '../services/proximityAlert/reportDocx/proximityAlertReportDocxService'
+import ProximityAlertReportExportService from '../services/proximityAlert/proximityAlertReportExportService'
 import populateBackLink from '../middleware/populateBackLink'
 import URLS from '../constants/urls'
 
@@ -13,12 +14,15 @@ const proximityAlertRoutes = ({ crimeService, hubManagersService, playwrightBrow
   const crimeSearchController = new CrimeSearchController(crimeService)
   const mapImageRendererService = new MapImageRendererService()
   const proximityAlertReportDocxService = new ProximityAlertReportDocxService()
-
-  const crimeVersionController = new CrimeVersionController(
-    crimeService,
+  const proximityAlertReportExportService = new ProximityAlertReportExportService(
     playwrightBrowserService,
     mapImageRendererService,
     proximityAlertReportDocxService,
+  )
+
+  const crimeVersionController = new CrimeVersionController(
+    crimeService,
+    proximityAlertReportExportService,
     hubManagersService,
   )
 
@@ -32,7 +36,7 @@ const proximityAlertRoutes = ({ crimeService, hubManagersService, playwrightBrow
   )
 
   // Ensure that when signing in, the redirected route doesn't land the user on the export action route
-  router.get(URLS.PROXIMITY_ALERT.CRIME_VERSION.EXPORT, (res: Response) => {
+  router.get(URLS.PROXIMITY_ALERT.CRIME_VERSION.EXPORT, (_req, res: Response) => {
     res.redirect(URLS.PROXIMITY_ALERT.CRIME_VERSION.VIEW)
   })
 
