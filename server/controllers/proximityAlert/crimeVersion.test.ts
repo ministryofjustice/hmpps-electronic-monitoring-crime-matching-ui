@@ -669,7 +669,7 @@ describe('CrimeVersionController', () => {
         },
       })
 
-      mockRestClient.getHubManagers.mockResolvedValue({ data: hubManagers })
+      mockRestClient.getHubManager.mockResolvedValue({ data: hubManagers[0] })
       mockRestClient.getHubManagerSignature.mockResolvedValue(signatureBuffer)
       mockPlaywrightBrowserService.getBrowser.mockResolvedValue(mockBrowser)
       mockMapImageRendererService.render.mockResolvedValue(mockImages)
@@ -679,6 +679,14 @@ describe('CrimeVersionController', () => {
       await controller.exportProximityAlert(req, res, next)
 
       // Then
+      expect(mockRestClient.getHubManager).toHaveBeenCalledWith(
+        expectedAuthOptions,
+        'a6e61168-f7ca-4056-8a2d-7db0fd77fb62',
+      )
+      expect(mockRestClient.getHubManagerSignature).toHaveBeenCalledWith(
+        expectedAuthOptions,
+        'a6e61168-f7ca-4056-8a2d-7db0fd77fb62',
+      )
       expect(mockPlaywrightBrowserService.getBrowser).toHaveBeenCalled()
       expect(mockMapImageRendererService.render).toHaveBeenCalledWith({
         browser: mockBrowser,
