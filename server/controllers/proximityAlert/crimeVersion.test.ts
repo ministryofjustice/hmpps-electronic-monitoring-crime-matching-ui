@@ -26,6 +26,7 @@ const hubManagers = [
   {
     id: 'a6e61168-f7ca-4056-8a2d-7db0fd77fb62',
     name: 'Test manager 1',
+    occupation: 'MoJ EM Hub Manager',
     hasSignature: true,
   },
 ]
@@ -705,6 +706,7 @@ describe('CrimeVersionController', () => {
           authorisingManager: {
             id: 'a6e61168-f7ca-4056-8a2d-7db0fd77fb62',
             name: 'Test manager 1',
+            occupation: 'MoJ EM Hub Manager',
             hasSignature: true,
           },
           authorisingManagerSignature: signatureBuffer,
