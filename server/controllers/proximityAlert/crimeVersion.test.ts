@@ -612,10 +612,16 @@ describe('CrimeVersionController', () => {
 
       const mockBrowser = {} as Awaited<ReturnType<PlaywrightBrowserService['getBrowser']>>
       const mockImages = {
-        overviewUserViewJpg: undefined,
-        overviewFittedToDeviceWearersJpg: undefined,
-        deviceWearerWithTracksJpgByDeviceId: {},
-        deviceWearerFittedWithoutTracksJpgByDeviceId: {},
+        overviewUserViewJpg: Buffer.from('overview-user-view'),
+        overviewFittedToDeviceWearersJpg: Buffer.from('overview-fitted-to-device-wearers'),
+        deviceWearerWithTracksJpgByDeviceId: {
+          '1': Buffer.from('device-wearer-1-with-tracks'),
+          '2': Buffer.from('device-wearer-2-with-tracks'),
+        },
+        deviceWearerFittedWithoutTracksJpgByDeviceId: {
+          '1': Buffer.from('device-wearer-1-fitted-without-tracks'),
+          '2': Buffer.from('device-wearer-2-fitted-without-tracks'),
+        },
       }
       const docxBuffer = Buffer.from('fake-docx')
       const signatureBuffer = Buffer.from('fake-signature')

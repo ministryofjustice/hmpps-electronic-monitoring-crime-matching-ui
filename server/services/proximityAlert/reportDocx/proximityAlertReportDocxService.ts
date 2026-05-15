@@ -20,6 +20,20 @@ export type BuildProximityAlertReportDocxArgs = {
   images: ProximityAlertReportImages
 }
 
+const requiredImage = (
+  imagesByDeviceId: Record<string, Buffer>,
+  deviceWearerId: string,
+  imageDescription: string,
+): Buffer => {
+  const image = imagesByDeviceId[String(deviceWearerId)]
+
+  if (!image) {
+    throw new Error(`${imageDescription} image is required for device wearer ${deviceWearerId}`)
+  }
+
+  return image
+}
+
 export default class ProximityAlertReportDocxService {
   // Builds a DOCX report containing the provided images and metadata.
   // The report is returned as a Buffer of the generated DOCX file.
@@ -35,30 +49,26 @@ export default class ProximityAlertReportDocxService {
     children.push(resultSummaryTable(report.matchedDeviceWearers.length))
     children.push(requestSummaryTable(report))
 
-    if (images.overviewUserViewJpg) {
-      children.push(new Paragraph({ children: [new PageBreak()] }))
-      children.push(
-        mapImagePageTable({
-          title: "Images of the crime map with all person's proximity tracks",
-          showTitleRow: true,
-          jpg: images.overviewUserViewJpg,
-          report,
-          fillerHeightWordUnits: fillerHeightForMapPage(images.overviewUserViewJpg, true),
-        }),
-      )
-    }
+    children.push(new Paragraph({ children: [new PageBreak()] }))
+    children.push(
+      mapImagePageTable({
+        title: "Images of the crime map with all person's proximity tracks",
+        showTitleRow: true,
+        jpg: images.overviewUserViewJpg,
+        report,
+        fillerHeightWordUnits: fillerHeightForMapPage(images.overviewUserViewJpg, true),
+      }),
+    )
 
-    if (images.overviewFittedToDeviceWearersJpg) {
-      children.push(new Paragraph({ children: [new PageBreak()] }))
-      children.push(
-        mapImagePageTable({
-          showTitleRow: false,
-          jpg: images.overviewFittedToDeviceWearersJpg,
-          report,
-          fillerHeightWordUnits: fillerHeightForMapPage(images.overviewFittedToDeviceWearersJpg, false),
-        }),
-      )
-    }
+    children.push(new Paragraph({ children: [new PageBreak()] }))
+    children.push(
+      mapImagePageTable({
+        showTitleRow: false,
+        jpg: images.overviewFittedToDeviceWearersJpg,
+        report,
+        fillerHeightWordUnits: fillerHeightForMapPage(images.overviewFittedToDeviceWearersJpg, false),
+      }),
+    )
 
     children.push(...spacer(1))
     children.push(disclaimerTable())
@@ -70,35 +80,39 @@ export default class ProximityAlertReportDocxService {
         sections.push(new Paragraph({ children: [new PageBreak()] }))
         sections.push(await witnessStatementTable({ report, wearer }))
 
-        const withTracks = images.deviceWearerWithTracksJpgByDeviceId[wearer.deviceWearerId]
+        const withTracks = requiredImage(
+          images.deviceWearerWithTracksJpgByDeviceId,
+          wearer.deviceWearerId,
+          'Device wearer with tracks',
+        )
 
-        if (withTracks) {
-          sections.push(new Paragraph({ children: [new PageBreak()] }))
-          sections.push(
-            mapImagePageTable({
-              title: `Exhibit EMAC/01 - Image of maps and tracks for ${wearer.name}`,
-              showTitleRow: true,
-              jpg: withTracks,
-              report,
-              fillerHeightWordUnits: fillerHeightForMapPage(withTracks, true),
-            }),
-          )
-        }
+        sections.push(new Paragraph({ children: [new PageBreak()] }))
+        sections.push(
+          mapImagePageTable({
+            title: `Exhibit EMAC/01 - Image of maps and tracks for ${wearer.name}`,
+            showTitleRow: true,
+            jpg: withTracks,
+            report,
+            fillerHeightWordUnits: fillerHeightForMapPage(withTracks, true),
+          }),
+        )
 
-        const fittedWithoutTracks = images.deviceWearerFittedWithoutTracksJpgByDeviceId[wearer.deviceWearerId]
+        const fittedWithoutTracks = requiredImage(
+          images.deviceWearerFittedWithoutTracksJpgByDeviceId,
+          wearer.deviceWearerId,
+          'Device wearer fitted without tracks',
+        )
 
-        if (fittedWithoutTracks) {
-          sections.push(new Paragraph({ children: [new PageBreak()] }))
-          sections.push(
-            mapImagePageTable({
-              title: `Exhibit EMAC/02 - Detailed view of map and locations for ${wearer.name}`,
-              showTitleRow: true,
-              jpg: fittedWithoutTracks,
-              report,
-              fillerHeightWordUnits: fillerHeightForMapPage(fittedWithoutTracks, true),
-            }),
-          )
-        }
+        sections.push(new Paragraph({ children: [new PageBreak()] }))
+        sections.push(
+          mapImagePageTable({
+            title: `Exhibit EMAC/02 - Detailed view of map and locations for ${wearer.name}`,
+            showTitleRow: true,
+            jpg: fittedWithoutTracks,
+            report,
+            fillerHeightWordUnits: fillerHeightForMapPage(fittedWithoutTracks, true),
+          }),
+        )
 
         sections.push(new Paragraph({ children: [new PageBreak()] }))
         sections.push(exhibitMapKeySection())

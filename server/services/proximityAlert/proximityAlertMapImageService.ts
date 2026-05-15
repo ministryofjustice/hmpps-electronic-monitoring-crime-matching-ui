@@ -17,8 +17,8 @@ type ExportMapRenderConfig = {
 }
 
 export type ProximityAlertReportImages = {
-  overviewUserViewJpg?: Buffer
-  overviewFittedToDeviceWearersJpg?: Buffer
+  overviewUserViewJpg: Buffer
+  overviewFittedToDeviceWearersJpg: Buffer
   deviceWearerWithTracksJpgByDeviceId: Record<string, Buffer>
   deviceWearerFittedWithoutTracksJpgByDeviceId: Record<string, Buffer>
 }
