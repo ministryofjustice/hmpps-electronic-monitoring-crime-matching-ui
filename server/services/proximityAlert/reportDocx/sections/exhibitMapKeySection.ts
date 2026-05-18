@@ -12,7 +12,10 @@ import {
 import { imageParagraph } from '../imageHelpers'
 
 // The map key image is a static asset, so can be read and processed once at module load time.
-const EXHIBIT_MAP_KEY_IMAGE_PATH = path.join(__dirname, '../../assets/exhibit-emac-02-map-key.jpg')
+const EXHIBIT_MAP_KEY_IMAGE_PATH = path.resolve(
+  process.cwd(),
+  'dist/assets/images/proximityAlert/exhibit-emac-02-map-key.jpg',
+)
 
 const exhibitMapKeySection = (): Table => {
   const borders = strongBlackBorders()

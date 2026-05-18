@@ -17,7 +17,8 @@
             locationDisplay: 'dms',
             rotateControl: 'true',
             olRotationMode: 'right-drag',
-            zoomSlider: true
+            zoomControl: params.controls.zoomControl if params.controls.zoomControl is defined else true,
+            zoomSlider: params.controls.zoomSlider if params.controls.zoomSlider is defined else true
           }
         })
       }}

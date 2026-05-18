@@ -79,6 +79,15 @@ class HubManagersService {
     }
   }
 
+  async getHubManager(username: string, id: string): Promise<ServiceResult<HubManager>> {
+    const result = await this.crimeMatchingApiClient.getHubManager(asSystem(username), id)
+
+    return {
+      ok: true,
+      ...getHubManagerDtoSchema.parse(result),
+    }
+  }
+
   async getHubManagerSignature(username: string, id: string): Promise<ServiceResult<Buffer>> {
     const result = await this.crimeMatchingApiClient.getHubManagerSignature(asSystem(username), id)
 

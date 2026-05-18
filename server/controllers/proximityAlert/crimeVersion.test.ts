@@ -5,13 +5,10 @@ import customParseFormat from 'dayjs/plugin/customParseFormat'
 import CrimeMatchingClient from '../../data/crimeMatchingClient'
 import CrimeVersionController from './crimeVersion'
 import logger from '../../../logger'
-import config from '../../config'
 import createMockRequest from '../../testutils/createMockRequest'
 import createMockResponse from '../../testutils/createMockResponse'
 import CrimeService from '../../services/crimeService'
-import PlaywrightBrowserService from '../../services/proximityAlert/playwrightBrowserService'
-import MapImageRendererService from '../../services/proximityAlert/proximityAlertMapImageService'
-import ProximityAlertReportDocxService from '../../services/proximityAlert/reportDocx/proximityAlertReportDocxService'
+import ProximityAlertReportExportService from '../../services/proximityAlert/proximityAlertReportExportService'
 import HubManagersService from '../../services/hubManagerService'
 import expectedAuthOptions from '../../testutils/expectedAuthOptions'
 
@@ -26,31 +23,21 @@ const hubManagers = [
   {
     id: 'a6e61168-f7ca-4056-8a2d-7db0fd77fb62',
     name: 'Test manager 1',
+    occupation: 'MoJ EM Hub Manager',
     hasSignature: true,
   },
 ]
 
 describe('CrimeVersionController', () => {
   let mockRestClient: jest.Mocked<CrimeMatchingClient>
-  let mockPlaywrightBrowserService: jest.Mocked<PlaywrightBrowserService>
-  let mockMapImageRendererService: jest.Mocked<MapImageRendererService>
-  let mockProximityAlertReportDocxService: jest.Mocked<ProximityAlertReportDocxService>
+  let mockProximityAlertReportExportService: jest.Mocked<ProximityAlertReportExportService>
 
   beforeEach(() => {
     mockRestClient = new CrimeMatchingClient(logger) as jest.Mocked<CrimeMatchingClient>
 
-    mockPlaywrightBrowserService = {
-      getBrowser: jest.fn(),
-      close: jest.fn(),
-    } as unknown as jest.Mocked<PlaywrightBrowserService>
-
-    mockMapImageRendererService = {
-      render: jest.fn(),
-    } as unknown as jest.Mocked<MapImageRendererService>
-
-    mockProximityAlertReportDocxService = {
+    mockProximityAlertReportExportService = {
       build: jest.fn(),
-    } as unknown as jest.Mocked<ProximityAlertReportDocxService>
+    } as unknown as jest.Mocked<ProximityAlertReportExportService>
   })
 
   afterEach(() => {
@@ -68,9 +55,7 @@ describe('CrimeVersionController', () => {
       const hubManagerService = new HubManagersService(mockRestClient)
       const controller = new CrimeVersionController(
         crimeService,
-        mockPlaywrightBrowserService,
-        mockMapImageRendererService,
-        mockProximityAlertReportDocxService,
+        mockProximityAlertReportExportService,
         hubManagerService,
       )
 
@@ -132,6 +117,7 @@ describe('CrimeVersionController', () => {
       expect(mockRestClient.getCrimeVersion).toHaveBeenCalledWith(expectedAuthOptions, crimeVersionId)
       expect(res.render).toHaveBeenCalledWith('pages/proximityAlert/crimeVersion', {
         usesInternalOverlays: true,
+        isHeadless: false,
         alerts: [],
         crimeVersion: {
           crimeVersionId: '78d41bd9-5450-4bbb-89d4-42ba75659f50',
@@ -221,9 +207,7 @@ describe('CrimeVersionController', () => {
       const hubManagerService = new HubManagersService(mockRestClient)
       const controller = new CrimeVersionController(
         crimeService,
-        mockPlaywrightBrowserService,
-        mockMapImageRendererService,
-        mockProximityAlertReportDocxService,
+        mockProximityAlertReportExportService,
         hubManagerService,
       )
 
@@ -254,6 +238,7 @@ describe('CrimeVersionController', () => {
       expect(mockRestClient.getCrimeVersion).toHaveBeenCalledWith(expectedAuthOptions, crimeVersionId)
       expect(res.render).toHaveBeenCalledWith('pages/proximityAlert/crimeVersion', {
         usesInternalOverlays: true,
+        isHeadless: false,
         alerts: [],
         crimeVersion: {
           crimeVersionId: '78d41bd9-5450-4bbb-89d4-42ba75659f50',
@@ -302,9 +287,7 @@ describe('CrimeVersionController', () => {
       const hubManagerService = new HubManagersService(mockRestClient)
       const controller = new CrimeVersionController(
         crimeService,
-        mockPlaywrightBrowserService,
-        mockMapImageRendererService,
-        mockProximityAlertReportDocxService,
+        mockProximityAlertReportExportService,
         hubManagerService,
       )
 
@@ -335,6 +318,7 @@ describe('CrimeVersionController', () => {
       expect(mockRestClient.getCrimeVersion).toHaveBeenCalledWith(expectedAuthOptions, crimeVersionId)
       expect(res.render).toHaveBeenCalledWith('pages/proximityAlert/crimeVersion', {
         usesInternalOverlays: true,
+        isHeadless: false,
         alerts: [],
         crimeVersion: {
           crimeVersionId: '78d41bd9-5450-4bbb-89d4-42ba75659f50',
@@ -400,9 +384,7 @@ describe('CrimeVersionController', () => {
       const hubManagerService = new HubManagersService(mockRestClient)
       const controller = new CrimeVersionController(
         crimeService,
-        mockPlaywrightBrowserService,
-        mockMapImageRendererService,
-        mockProximityAlertReportDocxService,
+        mockProximityAlertReportExportService,
         hubManagerService,
       )
 
@@ -432,6 +414,7 @@ describe('CrimeVersionController', () => {
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/proximityAlert/crimeVersion', {
         usesInternalOverlays: true,
+        isHeadless: false,
         alerts: [
           {
             variant: 'warning',
@@ -509,9 +492,7 @@ describe('CrimeVersionController', () => {
       const hubManagerService = new HubManagersService(mockRestClient)
       const controller = new CrimeVersionController(
         crimeService,
-        mockPlaywrightBrowserService,
-        mockMapImageRendererService,
-        mockProximityAlertReportDocxService,
+        mockProximityAlertReportExportService,
         hubManagerService,
       )
 
@@ -564,6 +545,7 @@ describe('CrimeVersionController', () => {
       ])
       expect(res.redirect).toHaveBeenCalledWith(`/proximity-alert/${crimeVersionId}`)
       expect(next).not.toHaveBeenCalled()
+      expect(mockProximityAlertReportExportService.build).not.toHaveBeenCalled()
     })
 
     it('should send a docx when the export request is valid', async () => {
@@ -599,19 +581,10 @@ describe('CrimeVersionController', () => {
       const hubManagerService = new HubManagersService(mockRestClient)
       const controller = new CrimeVersionController(
         crimeService,
-        mockPlaywrightBrowserService,
-        mockMapImageRendererService,
-        mockProximityAlertReportDocxService,
+        mockProximityAlertReportExportService,
         hubManagerService,
       )
 
-      const mockBrowser = {} as Awaited<ReturnType<PlaywrightBrowserService['getBrowser']>>
-      const mockImages = {
-        overviewUserViewJpg: undefined,
-        overviewFittedToDeviceWearersJpg: undefined,
-        deviceWearerWithTracksJpgByDeviceId: {},
-        deviceWearerFittedWithoutTracksJpgByDeviceId: {},
-      }
       const docxBuffer = Buffer.from('fake-docx')
       const signatureBuffer = Buffer.from('fake-signature')
 
@@ -665,83 +638,40 @@ describe('CrimeVersionController', () => {
         },
       })
 
-      mockRestClient.getHubManagers.mockResolvedValue({ data: hubManagers })
+      mockRestClient.getHubManager.mockResolvedValue({ data: hubManagers[0] })
       mockRestClient.getHubManagerSignature.mockResolvedValue(signatureBuffer)
-      mockPlaywrightBrowserService.getBrowser.mockResolvedValue(mockBrowser)
-      mockMapImageRendererService.render.mockResolvedValue(mockImages)
-      mockProximityAlertReportDocxService.build.mockResolvedValue(docxBuffer)
+      mockProximityAlertReportExportService.build.mockResolvedValue(docxBuffer)
 
       // When
       await controller.exportProximityAlert(req, res, next)
 
       // Then
-      expect(mockPlaywrightBrowserService.getBrowser).toHaveBeenCalled()
-      expect(mockMapImageRendererService.render).toHaveBeenCalledWith({
-        browser: mockBrowser,
-        pageUrl: `${config.ingressUrl}/proximity-alert/${encodeURIComponent(crimeVersionId)}`,
-        baseUrlForCookies: config.ingressUrl,
+      expect(mockRestClient.getHubManager).toHaveBeenCalledWith(
+        expectedAuthOptions,
+        'a6e61168-f7ca-4056-8a2d-7db0fd77fb62',
+      )
+      expect(mockRestClient.getHubManagerSignature).toHaveBeenCalledWith(
+        expectedAuthOptions,
+        'a6e61168-f7ca-4056-8a2d-7db0fd77fb62',
+      )
+      expect(mockProximityAlertReportExportService.build).toHaveBeenCalledWith({
+        crimeVersion: expect.objectContaining({
+          crimeVersionId,
+          crimeReference: 'crime1',
+        }),
         cookieHeader: 'connect.sid=fake-session',
+        authorisingManager: {
+          id: 'a6e61168-f7ca-4056-8a2d-7db0fd77fb62',
+          name: 'Test manager 1',
+          occupation: 'MoJ EM Hub Manager',
+          hasSignature: true,
+        },
+        authorisingManagerSignature: signatureBuffer,
         selectedDeviceIds: ['1', '2'],
         selectedTrackDeviceIds: ['1'],
         capturedMapState,
         showConfidenceCircles: true,
         showLocationNumbering: true,
-      })
-      expect(mockProximityAlertReportDocxService.build).toHaveBeenCalledWith({
-        report: expect.objectContaining({
-          reportGeneratedAt: expect.any(String),
-          authorisingManager: {
-            id: 'a6e61168-f7ca-4056-8a2d-7db0fd77fb62',
-            name: 'Test manager 1',
-            hasSignature: true,
-          },
-          authorisingManagerSignature: signatureBuffer,
-          crimeVersionData: expect.objectContaining({
-            crimeVersionId,
-            crimeReference: 'crime1',
-            policeForceArea: 'Metropolitan',
-            batchId: 'batch1',
-            crimeType: 'Aggravated Burglary',
-            fromDateTime: '2025-01-01T00:00:00Z',
-            toDateTime: '2025-01-01T01:00:00Z',
-            latitude: 10,
-            longitude: 10,
-            crimeText: 'text',
-          }),
-          matchedDeviceWearers: [
-            {
-              deviceWearerId: '1',
-              deviceId: 1,
-              address: '1 Test Street',
-              dateOfBirth: '05/10/1985',
-              pncRef: 'PNC123',
-              name: 'name1',
-              nomisId: 'nomisId1',
-              positions: [
-                {
-                  sequenceLabel: 'A1',
-                  capturedDateTime: '2025-01-01T00:30:00Z',
-                  latitude: 10.1,
-                  longitude: 20.1,
-                  confidenceCircle: 15,
-                  direction: 10,
-                  speed: 5,
-                },
-              ],
-            },
-            {
-              deviceWearerId: '2',
-              deviceId: 2,
-              name: 'name2',
-              address: '2 Test Street',
-              dateOfBirth: '05/10/1985',
-              pncRef: 'PNC456',
-              nomisId: 'nomisId2',
-              positions: [],
-            },
-          ],
-        }),
-        images: mockImages,
       })
       expect(res.setHeader).toHaveBeenCalledWith(
         'Content-Type',
@@ -783,9 +713,7 @@ describe('CrimeVersionController', () => {
       const hubManagerService = new HubManagersService(mockRestClient)
       const controller = new CrimeVersionController(
         crimeService,
-        mockPlaywrightBrowserService,
-        mockMapImageRendererService,
-        mockProximityAlertReportDocxService,
+        mockProximityAlertReportExportService,
         hubManagerService,
       )
 
@@ -845,6 +773,7 @@ describe('CrimeVersionController', () => {
       expect(req.session.validationErrors).toEqual(undefined)
       expect(res.redirect).toHaveBeenCalledWith(`/proximity-alert/${crimeVersionId}`)
       expect(next).not.toHaveBeenCalled()
+      expect(mockProximityAlertReportExportService.build).not.toHaveBeenCalled()
     })
 
     it('should redirect back with a session error when no authorising manager selected', async () => {
@@ -878,9 +807,7 @@ describe('CrimeVersionController', () => {
       const hubManagerService = new HubManagersService(mockRestClient)
       const controller = new CrimeVersionController(
         crimeService,
-        mockPlaywrightBrowserService,
-        mockMapImageRendererService,
-        mockProximityAlertReportDocxService,
+        mockProximityAlertReportExportService,
         hubManagerService,
       )
 
@@ -944,6 +871,7 @@ describe('CrimeVersionController', () => {
       ])
       expect(res.redirect).toHaveBeenCalledWith(`/proximity-alert/${crimeVersionId}`)
       expect(next).not.toHaveBeenCalled()
+      expect(mockProximityAlertReportExportService.build).not.toHaveBeenCalled()
     })
   })
 })

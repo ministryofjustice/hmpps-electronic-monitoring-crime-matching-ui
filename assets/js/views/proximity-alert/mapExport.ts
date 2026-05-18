@@ -51,32 +51,11 @@ const getHeadlessMapSizeFromUrl = (): { widthPx: number; heightPx: number } | nu
   return { widthPx, heightPx }
 }
 
-// Headless-only UI tweaks for export screenshots:
-const applyHeadlessUiTweaks = (emMap: EmMap) => {
-  const { shadowRoot } = emMap
-  if (!shadowRoot) return
-
-  // Hide all controls except the compass
-  const controls = shadowRoot.querySelectorAll<HTMLElement>('.ol-control:not(.ol-rotate), .ol-attribution')
-  controls.forEach(controlEl => {
-    const el = controlEl
-    el.style.display = 'none'
-  })
-
-  // Reposition compass to the top
-  const rotateCtrl = shadowRoot.querySelector<HTMLElement>('.ol-control.ol-rotate')
-  if (rotateCtrl) {
-    rotateCtrl.style.top = '0'
-  }
-}
-
 // Applies headless export settings (hide UI controls and resize map to match captured dimensions)
 // before rendering screenshots.
 const applyHeadlessMapMode = (emMap: EmMap) => {
   const map = emMap.olMapInstance
   if (!map) return
-
-  applyHeadlessUiTweaks(emMap)
 
   const headlessMapSize = getHeadlessMapSizeFromUrl()
   if (headlessMapSize) {

@@ -35,6 +35,7 @@ describe('ListHubManagersController', () => {
           {
             id: 'c0350a84-5a82-40aa-8daa-9de3dcd9a15f',
             name: 'Test manager 1',
+            occupation: 'MoJ EM Hub Manager',
             hasSignature: true,
           },
         ],
@@ -50,6 +51,7 @@ describe('ListHubManagersController', () => {
           {
             id: 'c0350a84-5a82-40aa-8daa-9de3dcd9a15f',
             name: 'Test manager 1',
+            occupation: 'MoJ EM Hub Manager',
             hasSignature: true,
           },
         ],
