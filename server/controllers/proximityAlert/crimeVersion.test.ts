@@ -659,7 +659,6 @@ describe('CrimeVersionController', () => {
           crimeVersionId,
           crimeReference: 'crime1',
         }),
-        crimeVersionId,
         cookieHeader: 'connect.sid=fake-session',
         authorisingManager: {
           id: 'a6e61168-f7ca-4056-8a2d-7db0fd77fb62',

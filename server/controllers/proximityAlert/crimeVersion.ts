@@ -154,7 +154,6 @@ export default class CrimeVersionController {
               } else {
                 const reportBuffer = await this.proximityAlertReportExportService.build({
                   crimeVersion: result.data,
-                  crimeVersionId,
                   cookieHeader: req.headers.cookie,
                   authorisingManager: selectedHubManagerResult.data,
                   authorisingManagerSignature: signatureResult.data,

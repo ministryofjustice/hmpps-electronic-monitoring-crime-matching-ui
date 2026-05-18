@@ -8,7 +8,6 @@ import ProximityAlertReportDocxService from './reportDocx/proximityAlertReportDo
 
 export type BuildProximityAlertReportExportArgs = {
   crimeVersion: CrimeVersion
-  crimeVersionId: string
   cookieHeader?: string
   authorisingManager: HubManager
   authorisingManagerSignature: Buffer
@@ -29,7 +28,6 @@ export default class ProximityAlertReportExportService {
   async build(args: BuildProximityAlertReportExportArgs): Promise<Buffer> {
     const {
       crimeVersion,
-      crimeVersionId,
       cookieHeader,
       authorisingManager,
       authorisingManagerSignature,
@@ -44,7 +42,7 @@ export default class ProximityAlertReportExportService {
 
     const images = await this.mapImageRendererService.render({
       browser,
-      pageUrl: `${config.ingressUrl}/proximity-alert/${encodeURIComponent(crimeVersionId)}`,
+      pageUrl: `${config.ingressUrl}/proximity-alert/${encodeURIComponent(crimeVersion.crimeVersionId)}`,
       baseUrlForCookies: config.ingressUrl,
       cookieHeader,
       selectedDeviceIds,
