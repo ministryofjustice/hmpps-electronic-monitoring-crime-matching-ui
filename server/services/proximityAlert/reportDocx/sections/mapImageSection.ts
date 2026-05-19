@@ -20,6 +20,7 @@ import {
   sectionHeaderShading,
   strongBlackBorders,
 } from '../docxComponents'
+import PROXIMITY_ALERT_REPORT_CONTENT from '../../../../constants/proximityAlert/reportContent'
 import { imageParagraph, pxToWordUnits, scaledImageSize } from '../imageHelpers'
 
 const fmtDateTime = (dateString: string): string => formatDateTime(dateString, 'DD/MM/YYYY HH:mm')
@@ -28,14 +29,15 @@ const fmtDateTime = (dateString: string): string => formatDateTime(dateString, '
 const detailsOfAllegationTable = (report: ProximityAlertReportData): Table => {
   const borders = strongBlackBorders()
   const { crimeVersionData } = report
+  const detailsOfAllegationContent = PROXIMITY_ALERT_REPORT_CONTENT.detailsOfAllegation
 
   const detailRows: Array<[string, string]> = [
-    ['Crime Type', crimeVersionData.crimeType],
-    ['Crime Reference', crimeVersionData.crimeReference],
-    ['Crime Batch', crimeVersionData.batchId],
-    ['From Date/Time', fmtDateTime(crimeVersionData.fromDateTime)],
-    ['To Date/Time', fmtDateTime(crimeVersionData.toDateTime)],
-    ['Crime Location\n(Lat/Long)', `${crimeVersionData.latitude}\n${crimeVersionData.longitude}`],
+    [detailsOfAllegationContent.rows.crimeType, crimeVersionData.crimeType],
+    [detailsOfAllegationContent.rows.crimeReference, crimeVersionData.crimeReference],
+    [detailsOfAllegationContent.rows.batchId, crimeVersionData.batchId],
+    [detailsOfAllegationContent.rows.fromDateTime, fmtDateTime(crimeVersionData.fromDateTime)],
+    [detailsOfAllegationContent.rows.toDateTime, fmtDateTime(crimeVersionData.toDateTime)],
+    [detailsOfAllegationContent.rows.crimeLocation, `${crimeVersionData.latitude}\n${crimeVersionData.longitude}`],
   ]
 
   const additionalInfoRowSpan = detailRows.length
@@ -52,7 +54,7 @@ const detailsOfAllegationTable = (report: ProximityAlertReportData): Table => {
           shading: sectionHeaderShading(),
           columnSpan: 3,
           children: [
-            cellParagraph('Details of Allegation', {
+            cellParagraph(detailsOfAllegationContent.heading, {
               bold: true,
               alignment: AlignmentType.CENTER,
             }),
@@ -79,11 +81,11 @@ const detailsOfAllegationTable = (report: ProximityAlertReportData): Table => {
           width: { size: 45, type: WidthType.PERCENTAGE },
           rowSpan: additionalInfoRowSpan,
           children: [
-            cellParagraph('Additional Information', {
+            cellParagraph(detailsOfAllegationContent.additionalInformation, {
               alignment: AlignmentType.CENTER,
               underline: true,
             }),
-            cellParagraph(crimeVersionData.crimeText || 'N/A', {
+            cellParagraph(crimeVersionData.crimeText || detailsOfAllegationContent.noAdditionalInformation, {
               spacingBefore: 120,
             }),
           ],

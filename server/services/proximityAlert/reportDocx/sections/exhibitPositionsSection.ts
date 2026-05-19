@@ -9,11 +9,13 @@ import {
   sectionHeaderShading,
   strongBlackBorders,
 } from '../docxComponents'
+import PROXIMITY_ALERT_REPORT_CONTENT from '../../../../constants/proximityAlert/reportContent'
 
 const fmtDateTime = (dateString: string): string => formatDateTime(dateString, 'DD/MM/YYYY HH:mm')
 
 const exhibitPositionsSection = (wearer: ProximityAlertReportDeviceWearer): Table => {
   const borders = strongBlackBorders()
+  const { exhibitPositions } = PROXIMITY_ALERT_REPORT_CONTENT
 
   const headingRow = rowNoSplitAcrossPages([
     new TableCell({
@@ -22,7 +24,7 @@ const exhibitPositionsSection = (wearer: ProximityAlertReportDeviceWearer): Tabl
       shading: sectionHeaderShading(),
       columnSpan: 7,
       children: [
-        cellParagraph(`Exhibit EMAC/04 - Table of ${wearer.name}'s locations within the vicinity`, {
+        cellParagraph(`${exhibitPositions.heading.prefix}${wearer.name}'s ${exhibitPositions.heading.suffix}`, {
           bold: true,
           alignment: AlignmentType.CENTER,
         }),
@@ -40,11 +42,11 @@ const exhibitPositionsSection = (wearer: ProximityAlertReportDeviceWearer): Tabl
         new Paragraph({
           children: [
             new TextRun({
-              text: 'The below table displays the location points within the crime vicinity. Please note the sequence number is ordered chronologically based on locations within the vicinity. ',
+              text: `${exhibitPositions.description} `,
               size: 19,
             }),
             new TextRun({
-              text: "Note: Consecutive numbers do not necessarily indicate sequential movement - please review the time stamps of each point to understand the offender's movements.",
+              text: exhibitPositions.note,
               italics: true,
               bold: true,
               size: 19,
@@ -83,13 +85,13 @@ const exhibitPositionsSection = (wearer: ProximityAlertReportDeviceWearer): Tabl
     })
 
   const headerRow = rowNoSplitAcrossPages([
-    headerCell('SEQUENCE NO.', 13),
-    headerCell('DATE/TIME', 15),
-    headerCell('LATITUDE\n(WGS84)', 13),
-    headerCell('LONGITUDE\n(WGS84)', 14),
-    headerCell('CONFIDENCE\nCIRCLE (Radius - m)', 18),
-    headerCell('SPEED (km/h)', 13),
-    headerCell('DIRECTION\n(degrees)', 14),
+    headerCell(exhibitPositions.columns[0], 13),
+    headerCell(exhibitPositions.columns[1], 15),
+    headerCell(exhibitPositions.columns[2], 13),
+    headerCell(exhibitPositions.columns[3], 14),
+    headerCell(exhibitPositions.columns[4], 18),
+    headerCell(exhibitPositions.columns[5], 13),
+    headerCell(exhibitPositions.columns[6], 14),
   ])
 
   const dataRows = wearer.positions.map((position, index) => {

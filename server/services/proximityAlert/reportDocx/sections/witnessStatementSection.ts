@@ -17,6 +17,7 @@ import {
   noBottomBorder,
   noTopBorder,
 } from '../docxComponents'
+import PROXIMITY_ALERT_REPORT_CONTENT from '../../../../constants/proximityAlert/reportContent'
 
 const fmtDate = (dateString: string): string => formatDateTime(dateString, 'DD/MM/YYYY')
 const fmtDateTime = (dateString: string): string => formatDateTime(dateString, 'DD/MM/YYYY HH:mm')
@@ -57,11 +58,10 @@ const witnessStatementTable = async (args: {
   const { report, wearer } = args
   const borders = strongBlackBorders()
   const { crimeVersionData, authorisingManager, authorisingManagerSignature } = report
+  const { witnessStatement } = PROXIMITY_ALERT_REPORT_CONTENT
 
   const statementOf = authorisingManager.name
-  const occupation = 'MoJ EM Hub Manager'
-  const preferredEmail = 'mojacquisitivecrimehub@justice.gov.uk'
-  const address = '102 Petty France, Westminster, London, SW1H 9AJ'
+  const { occupation } = authorisingManager
 
   const firstPosition = wearer.positions[0]
   const lastPosition = wearer.positions[wearer.positions.length - 1]
@@ -71,8 +71,8 @@ const witnessStatementTable = async (args: {
   const signature = await signatureParagraphs(authorisingManagerSignature)
 
   const witnessHeaderParas: Paragraph[] = [
-    paragraph('WITNESS STATEMENT', { bold: true, alignment: AlignmentType.CENTER, spacingAfter: 60 }),
-    paragraph('(CJ Act 1967, s.9; MC Act 1980, ss.5A(3) (a) and 5B; Criminal Procedure Rules 2005, Rule 27.1)', {
+    paragraph(witnessStatement.heading, { bold: true, alignment: AlignmentType.CENTER, spacingAfter: 60 }),
+    paragraph(witnessStatement.legislation, {
       alignment: AlignmentType.CENTER,
       spacingAfter: 0,
     }),
@@ -85,7 +85,7 @@ const witnessStatementTable = async (args: {
       width: { size: 50, type: WidthType.PERCENTAGE },
       children: [
         new Paragraph({
-          children: [new TextRun({ text: `Statement of: ${statementOf}`, bold: true })],
+          children: [new TextRun({ text: `${witnessStatement.statementOfLabel}: ${statementOf}`, bold: true })],
           spacing: { before: 0, after: 0 },
         }),
       ],
@@ -96,7 +96,7 @@ const witnessStatementTable = async (args: {
       width: { size: 50, type: WidthType.PERCENTAGE },
       children: [
         new Paragraph({
-          children: [new TextRun({ text: `Occupation: ${occupation}`, bold: true })],
+          children: [new TextRun({ text: `${witnessStatement.occupationLabel}: ${occupation}`, bold: true })],
           spacing: { before: 0, after: 0 },
         }),
       ],
@@ -110,7 +110,7 @@ const witnessStatementTable = async (args: {
       columnSpan: 2,
       children: [
         new Paragraph({
-          children: [new TextRun({ text: 'Age: Over 18', bold: true })],
+          children: [new TextRun({ text: witnessStatement.age, bold: true })],
           spacing: { before: 0, after: 0 },
         }),
       ],
@@ -125,16 +125,18 @@ const witnessStatementTable = async (args: {
       children: [
         new Paragraph({
           children: [
-            new TextRun('This statement consisting of '),
-            new TextRun({ text: 'XX', bold: true, color: 'FF0000' }),
-            new TextRun(
-              ' pages, signed by me, is true to the best of my knowledge and belief. I make it known that, if it is given in evidence, I shall be liable to prosecution if I have wilfully stated in it, anything that I know to be false or do not believe to be true.',
-            ),
+            new TextRun(`${witnessStatement.declaration.prefix} `),
+            new TextRun({
+              text: witnessStatement.declaration.pageCountPlaceholder,
+              bold: true,
+              color: 'FF0000',
+            }),
+            new TextRun(` ${witnessStatement.declaration.suffix}`),
           ],
           spacing: { before: 120, after: 120 },
         }),
         new Paragraph({
-          children: [new TextRun({ text: 'Signature:', bold: true })],
+          children: [new TextRun({ text: `${witnessStatement.signatureLabel}: `, bold: true })],
           spacing: { before: 0, after: 0 },
         }),
         ...signature,
@@ -143,7 +145,9 @@ const witnessStatementTable = async (args: {
           spacing: { before: 0, after: 0 },
         }),
         new Paragraph({
-          children: [new TextRun({ text: `Date: ${fmtDate(report.reportGeneratedAt)}`, bold: true })],
+          children: [
+            new TextRun({ text: `${witnessStatement.dateLabel}: ${fmtDate(report.reportGeneratedAt)}`, bold: true }),
+          ],
           spacing: { before: 0, after: 0 },
         }),
       ],
@@ -158,31 +162,25 @@ const witnessStatementTable = async (args: {
       children: [
         new Paragraph({
           children: [
-            new TextRun('I am currently employed by the Ministry of Justice (MoJ) as '),
+            new TextRun(witnessStatement.narrative.employedByPrefix),
             new TextRun({ text: occupation, bold: true }),
-            new TextRun(' within the Electronic Monitoring Acquisitive Crime Hub (EMAC Hub).'),
+            new TextRun(` ${witnessStatement.narrative.employedBySuffix}`),
           ],
           spacing: { before: 200, after: 200 },
         }),
         new Paragraph({
-          children: [
-            new TextRun(
-              'The main function of the EMAC Hub is to utilise the MoJ crime mapping tool to cross check acquisitive crime data supplied by participating Police Forces with the movement data of persons who are subject to acquisitive crime licence conditions. An EMAC Hub Caseworker manually reviews matches and based on accuracy of the data will qualify matches based on their own professional judgement.',
-            ),
-          ],
+          children: [new TextRun(witnessStatement.narrative.hubFunction)],
           spacing: { before: 0, after: 200 },
         }),
         new Paragraph({
           children: [
-            new TextRun('On '),
+            new TextRun(`${witnessStatement.narrative.reviewDatePrefix} `),
             new TextRun({ text: fmtDate(report.reportGeneratedAt), bold: true }),
-            new TextRun(' I reviewed a qualified match in relation to crime data supplied by '),
+            new TextRun(` ${witnessStatement.narrative.reviewedMatchPrefix} `),
             new TextRun({ text: report.crimeVersionData.policeForceArea, bold: true }),
-            new TextRun(
-              '. As a result of this process, I can confirm the attached match in relation to an allegation of ',
-            ),
+            new TextRun(`. ${witnessStatement.narrative.reviewedMatchSuffix} `),
             new TextRun({
-              text: `${crimeVersionData.crimeType} - Crime Reference No. ${crimeVersionData.crimeReference}.`,
+              text: `${crimeVersionData.crimeType} - ${witnessStatement.narrative.crimeReferencePrefix} ${crimeVersionData.crimeReference}.`,
               bold: true,
             }),
           ],
@@ -203,7 +201,12 @@ const witnessStatementTable = async (args: {
           borders,
           shading: sectionHeaderShading(),
           width: { size: 33, type: WidthType.PERCENTAGE },
-          children: [cellParagraph('Person name', { bold: true, alignment: AlignmentType.CENTER })],
+          children: [
+            cellParagraph(witnessStatement.miniTableHeaders.personName, {
+              bold: true,
+              alignment: AlignmentType.CENTER,
+            }),
+          ],
         }),
         new TableCell({
           ...defaultCellProps(),
@@ -211,7 +214,7 @@ const witnessStatementTable = async (args: {
           shading: sectionHeaderShading(),
           width: { size: 34, type: WidthType.PERCENTAGE },
           children: [
-            cellParagraph('First location point in vicinity\ndate/time', {
+            cellParagraph(witnessStatement.miniTableHeaders.firstLocationDateTime, {
               bold: true,
               alignment: AlignmentType.CENTER,
             }),
@@ -223,7 +226,7 @@ const witnessStatementTable = async (args: {
           shading: sectionHeaderShading(),
           width: { size: 33, type: WidthType.PERCENTAGE },
           children: [
-            cellParagraph('Last location point in vicinity\ndate/time', {
+            cellParagraph(witnessStatement.miniTableHeaders.lastLocationDateTime, {
               bold: true,
               alignment: AlignmentType.CENTER,
             }),
@@ -258,23 +261,29 @@ const witnessStatementTable = async (args: {
       children: [
         witnessMiniTable,
         new Paragraph({
-          children: [
-            new TextRun(
-              "I further produce the attached screen shot which documents the subject's movements within proximity of this allegation of crime:",
-            ),
-          ],
+          children: [new TextRun(witnessStatement.exhibitsIntro)],
           spacing: { before: 200, after: 200 },
         }),
-        bulletParagraph(`Exhibit EMAC/01 - Image of the tracks for ${wearer.name} on the data.`, { spacingAfter: 60 }),
-        bulletParagraph(`Exhibit EMAC/02 - Detailed image of map and locations for ${wearer.name}`, {
+        bulletParagraph(
+          `${witnessStatement.exhibits.emac01.prefix} ${wearer.name} ${witnessStatement.exhibits.emac01.suffix}`,
+          {
+            spacingAfter: 60,
+          },
+        ),
+        bulletParagraph(`${witnessStatement.exhibits.emac02.prefix} ${wearer.name}`, {
           spacingAfter: 60,
         }),
-        bulletParagraph('Exhibit EMAC/03 - Key for interpreting symbols on crime map', { spacingAfter: 60 }),
-        bulletParagraph(`Exhibit EMAC/04 - Table of ${wearer.name}'s locations within the vicinity.`, {
-          spacingAfter: 200,
+        bulletParagraph(witnessStatement.exhibits.emac03, {
+          spacingAfter: 60,
         }),
+        bulletParagraph(
+          `${witnessStatement.exhibits.emac04.prefix} ${wearer.name}'s ${witnessStatement.exhibits.emac04.suffix}`,
+          {
+            spacingAfter: 200,
+          },
+        ),
         new Paragraph({
-          children: [new TextRun({ text: 'SIGNATURE:', bold: true })],
+          children: [new TextRun({ text: `${witnessStatement.signatureLabel.toUpperCase()}: `, bold: true })],
           spacing: { before: 0, after: 0 },
         }),
         ...signature,
@@ -283,20 +292,24 @@ const witnessStatementTable = async (args: {
           spacing: { before: 0, after: 0 },
         }),
         new Paragraph({
-          children: [new TextRun({ text: `Date: ${fmtDate(report.reportGeneratedAt)}`, bold: true })],
+          children: [
+            new TextRun({ text: `${witnessStatement.dateLabel}: ${fmtDate(report.reportGeneratedAt)}`, bold: true }),
+          ],
           spacing: { before: 0, after: 0 },
         }),
         new Paragraph({ children: [], spacing: { before: 200, after: 0 } }),
         new Paragraph({
           children: [
-            new TextRun({ text: 'Email: ', bold: true }),
-            new TextRun({ text: preferredEmail, underline: {}, bold: true }),
-            new TextRun({ text: ' (preferred communication method)', bold: true }),
+            new TextRun({ text: `${witnessStatement.emailLabel}: `, bold: true }),
+            new TextRun({ text: witnessStatement.preferredEmail, underline: {}, bold: true }),
+            new TextRun({ text: ` (${witnessStatement.preferredCommunicationMethod})`, bold: true }),
           ],
           spacing: { before: 0, after: 60 },
         }),
         new Paragraph({
-          children: [new TextRun({ text: `Address: ${address}`, bold: true })],
+          children: [
+            new TextRun({ text: `${witnessStatement.addressLabel}: ${witnessStatement.address}`, bold: true }),
+          ],
           spacing: { before: 0, after: 0 },
         }),
       ],
