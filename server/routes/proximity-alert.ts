@@ -36,8 +36,10 @@ const proximityAlertRoutes = ({ crimeService, hubManagersService, playwrightBrow
   )
 
   // Ensure that when signing in, the redirected route doesn't land the user on the export action route
-  router.get(URLS.PROXIMITY_ALERT.CRIME_VERSION.EXPORT, (_req, res: Response) => {
-    res.redirect(URLS.PROXIMITY_ALERT.CRIME_VERSION.VIEW)
+  router.get(URLS.PROXIMITY_ALERT.CRIME_VERSION.EXPORT, (req, res: Response) => {
+    res.redirect(
+      URLS.PROXIMITY_ALERT.CRIME_VERSION.VIEW.replace(':crimeVersionId', encodeURIComponent(req.params.crimeVersionId)),
+    )
   })
 
   router.post(URLS.PROXIMITY_ALERT.CRIME_VERSION.EXPORT, asyncMiddleware(crimeVersionController.exportProximityAlert))

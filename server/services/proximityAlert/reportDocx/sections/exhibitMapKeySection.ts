@@ -9,6 +9,7 @@ import {
   sectionHeaderShading,
   strongBlackBorders,
 } from '../docxComponents'
+import PROXIMITY_ALERT_REPORT_CONTENT from '../../../../constants/proximityAlert/reportContent'
 import { imageParagraph } from '../imageHelpers'
 
 // The map key image is a static asset, so can be read and processed once at module load time.
@@ -20,6 +21,7 @@ const EXHIBIT_MAP_KEY_IMAGE_PATH = path.resolve(
 const exhibitMapKeySection = (): Table => {
   const borders = strongBlackBorders()
   const exhibitMapKeyImage = readFileSync(EXHIBIT_MAP_KEY_IMAGE_PATH)
+  const { exhibitMapKey } = PROXIMITY_ALERT_REPORT_CONTENT
 
   return new Table({
     width: { size: 100, type: WidthType.PERCENTAGE },
@@ -33,7 +35,7 @@ const exhibitMapKeySection = (): Table => {
           shading: sectionHeaderShading(),
           columnSpan: 7,
           children: [
-            cellParagraph('Exhibit EMAC/03 Key for interpreting symbols on the map', {
+            cellParagraph(exhibitMapKey.heading, {
               bold: true,
               alignment: 'center',
             }),
@@ -48,11 +50,9 @@ const exhibitMapKeySection = (): Table => {
           children: [
             new Paragraph({
               children: [
-                new TextRun(
-                  'The key below explains how to interpret the visual elements that appear in proximity alert images. ',
-                ),
+                new TextRun(`${exhibitMapKey.intro} `),
                 new TextRun({
-                  text: 'Note: Not all visual elements demonstrated will be displayed in the proximity alert images; this will be determined as necessary.',
+                  text: exhibitMapKey.note,
                   italics: true,
                 }),
               ],

@@ -12,6 +12,7 @@ import {
   noBorder,
   strongBlackBorders,
 } from '../docxComponents'
+import PROXIMITY_ALERT_REPORT_CONTENT from '../../../../constants/proximityAlert/reportContent'
 import { USABLE_PAGE_WIDTH_WORD_UNITS } from '../constants'
 
 const fmtDate = (dateString: string): string => formatDateTime(dateString, 'DD/MM/YYYY')
@@ -21,21 +22,17 @@ const fmtDateTime = (dateTimeString: string): string => formatDateTime(dateTimeS
 export const topSummaryTable = (report: ProximityAlertReportData): Table => {
   const borders = strongBlackBorders()
   const { crimeVersionData } = report
+  const { summary } = PROXIMITY_ALERT_REPORT_CONTENT
 
   const titlePara = new Paragraph({
     alignment: AlignmentType.CENTER,
     children: [
-      new TextRun({ text: 'Acquisitive Crime Proximity Alert', bold: true }),
+      new TextRun({ text: summary.title, bold: true }),
       new TextRun({ text: '\n', break: 1 }),
-      new TextRun({ text: `Crime Reference Number - ${crimeVersionData.crimeReference}`, bold: true }),
+      new TextRun({ text: `${summary.crimeReferencePrefix} - ${crimeVersionData.crimeReference}`, bold: true }),
     ],
     spacing: { before: 120, after: 120 },
   })
-
-  const summaryParagraph1 =
-    'The report below documents the results of a proximity search for the above crime reference number utilising the MoJ Acquisitive Crime Mapping Tool.'
-  const summaryParagraph2 =
-    "This process is designed to identify persons who are tagged as part of the MoJ's Acquisitive Crime Project being in proximity of an acquisitive crime during the window of opportunity. The MoJ EM Acquisitive Crime Hub have reviewed each match and based on accuracy of the data and the relevance to the enquiry, have qualified the following as proximity match(es)."
 
   return new Table({
     width: { size: USABLE_PAGE_WIDTH_WORD_UNITS, type: WidthType.DXA },
@@ -47,7 +44,7 @@ export const topSummaryTable = (report: ProximityAlertReportData): Table => {
           ...defaultCellProps(),
           borders,
           shading: sectionHeaderShading(),
-          children: [cellParagraph(`Date: ${fmtDate(report.reportGeneratedAt)}`, { bold: true })],
+          children: [cellParagraph(`${summary.dateLabel}: ${fmtDate(report.reportGeneratedAt)}`, { bold: true })],
         }),
       ]),
       rowNoSplitAcrossPages([
@@ -62,14 +59,14 @@ export const topSummaryTable = (report: ProximityAlertReportData): Table => {
           ...defaultCellProps(),
           borders,
           shading: sectionHeaderShading(),
-          children: [cellParagraph('Summary', { bold: true })],
+          children: [cellParagraph(summary.heading, { bold: true })],
         }),
       ]),
       rowNoSplitAcrossPages([
         new TableCell({
           ...defaultCellProps(),
           borders,
-          children: [cellParagraph(summaryParagraph1, { spacingAfter: 160 }), cellParagraph(summaryParagraph2)],
+          children: [cellParagraph(summary.paragraph1, { spacingAfter: 160 }), cellParagraph(summary.paragraph2)],
         }),
       ]),
     ],
@@ -126,32 +123,36 @@ export const personOnlyTable = (args: { personTitle: string; personRows: Array<[
   })
 }
 
-export const personSummarySections = (report: ProximityAlertReportData): Array<Paragraph | Table> =>
-  report.matchedDeviceWearers.flatMap((wearer, index) => [
+export const personSummarySections = (report: ProximityAlertReportData): Array<Paragraph | Table> => {
+  const { personSummary } = PROXIMITY_ALERT_REPORT_CONTENT
+
+  return report.matchedDeviceWearers.flatMap((wearer, personIndex) => [
     personOnlyTable({
-      personTitle: `Person ${index + 1}`,
+      personTitle: `${personSummary.titlePrefix} ${personIndex + 1}`,
       personRows: [
-        ['Full name', wearer.name],
-        ['DOB:', wearer.dateOfBirth],
-        ['PNC number:', wearer.pncRef],
-        ['Specified Address:', wearer.address],
-        ['EMS ID:', wearer.deviceWearerId],
+        [personSummary.rows.fullName, wearer.name],
+        [personSummary.rows.dateOfBirth, wearer.dateOfBirth],
+        [personSummary.rows.pncNumber, wearer.pncRef],
+        [personSummary.rows.address, wearer.address],
+        [personSummary.rows.emsId, wearer.deviceWearerId],
       ],
     }),
     ...spacer(1),
   ])
+}
 
 // Result Summary (single instance).
 export const resultSummaryTable = (matchedCount: number): Table => {
   const borders = strongBlackBorders()
+  const { resultSummary } = PROXIMITY_ALERT_REPORT_CONTENT
 
   return new Table({
     width: { size: USABLE_PAGE_WIDTH_WORD_UNITS, type: WidthType.DXA },
     layout: TableLayoutType.FIXED,
     borders,
     rows: [
-      sectionHeaderRow('Result Summary', { useGreen: true }),
-      labelValueRow('Number of qualified matches:', String(matchedCount), {
+      sectionHeaderRow(resultSummary.heading, { useGreen: true }),
+      labelValueRow(resultSummary.matchedCountLabel, String(matchedCount), {
         keyWidthPct: 50,
         valueWidthPct: 50,
         valueAlign: AlignmentType.CENTER,
@@ -165,16 +166,17 @@ export const resultSummaryTable = (matchedCount: number): Table => {
 export const requestSummaryTable = (report: ProximityAlertReportData): Table => {
   const borders = strongBlackBorders()
   const { crimeVersionData } = report
+  const { requestSummary } = PROXIMITY_ALERT_REPORT_CONTENT
 
   const rows: Array<[string, string]> = [
-    ['Crime mapping Batch ID:', crimeVersionData.batchId],
-    ['Crime Reference number:', crimeVersionData.crimeReference],
-    ['Crime Type:', crimeVersionData.crimeType],
-    ['Crime Date/Time from:', fmtDateTime(crimeVersionData.fromDateTime)],
-    ['Crime Date/Time to:', fmtDateTime(crimeVersionData.toDateTime)],
-    ['Latitude:', String(crimeVersionData.latitude)],
-    ['Longitude:', String(crimeVersionData.longitude)],
-    ['Crime Text:', crimeVersionData.crimeText || 'N/A'],
+    [requestSummary.rows.batchId, crimeVersionData.batchId],
+    [requestSummary.rows.crimeReference, crimeVersionData.crimeReference],
+    [requestSummary.rows.crimeType, crimeVersionData.crimeType],
+    [requestSummary.rows.fromDateTime, fmtDateTime(crimeVersionData.fromDateTime)],
+    [requestSummary.rows.toDateTime, fmtDateTime(crimeVersionData.toDateTime)],
+    [requestSummary.rows.latitude, String(crimeVersionData.latitude)],
+    [requestSummary.rows.longitude, String(crimeVersionData.longitude)],
+    [requestSummary.rows.crimeText, crimeVersionData.crimeText || requestSummary.noCrimeText],
   ]
 
   return new Table({
@@ -182,7 +184,7 @@ export const requestSummaryTable = (report: ProximityAlertReportData): Table => 
     layout: TableLayoutType.FIXED,
     borders,
     rows: [
-      sectionHeaderRow('Request Summary', { useGreen: true }),
+      sectionHeaderRow(requestSummary.heading, { useGreen: true }),
       ...rows.map(([key, value]) =>
         labelValueRow(key, value, { keyWidthPct: 50, valueWidthPct: 50, valueAlign: AlignmentType.CENTER }),
       ),
