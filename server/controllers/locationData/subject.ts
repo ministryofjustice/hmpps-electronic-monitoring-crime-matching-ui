@@ -32,7 +32,7 @@ export default class SubjectController {
     fromDate: Dayjs,
     toDate: Dayjs,
   ): Promise<[Person, Position[]]> {
-    const deviceWearerPromise = this.personsService.getPerson(username, deviceActivation!.personId.toString())
+    const deviceWearerPromise = this.personsService.getPerson(username, deviceActivation!.personId)
     const positionsPromise = this.deviceActivationsService.getDeviceActivationPositions(
       username,
       deviceActivation!,
