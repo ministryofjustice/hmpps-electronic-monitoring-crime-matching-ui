@@ -233,7 +233,7 @@ context('Location Data', () => {
             deviceActivationId: 1,
             deviceId: 123456789,
             deviceName: '123456789',
-            personId: 123456789,
+            personId: '123456789',
             deviceActivationDate: '2025-01-01T00:00:00.000Z',
             deviceDeactivationDate: '2025-01-03T00:00:00.000Z',
             orderStart: '2024-12-01T00:00:00.000Z',
@@ -249,10 +249,10 @@ context('Location Data', () => {
       })
       cy.stubGetPerson({
         status: 200,
-        personId: 123456789,
+        personId: '123456789',
         response: {
           data: {
-            personId: 123456789,
+            personId: '123456789',
             name: 'Jane Doe',
             nomisId: 'Nomis 1',
             pncRef: 'YY/NNNNNNND',
@@ -316,7 +316,7 @@ context('Location Data', () => {
             deviceActivationId: 1,
             deviceId: 123456789,
             deviceName: '123456789',
-            personId: 123456789,
+            personId: '123456789',
             deviceActivationDate: '2025-01-01T00:00:00.000Z',
             deviceDeactivationDate: '2025-01-03T00:00:00.000Z',
             orderStart: '2024-12-01T00:00:00.000Z',
@@ -332,10 +332,10 @@ context('Location Data', () => {
       })
       cy.stubGetPerson({
         status: 200,
-        personId: 123456789,
+        personId: '123456789',
         response: {
           data: {
-            personId: 123456789,
+            personId: '123456789',
             name: 'Jane Doe',
             nomisId: 'Nomis 1',
             pncRef: 'YY/NNNNNNND',

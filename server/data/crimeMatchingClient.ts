@@ -104,7 +104,7 @@ export default class CrimeMatchingClient extends RestClient {
     )
   }
 
-  getPerson(authOptions: AuthOptions, personId: number): Promise<unknown> {
+  getPerson(authOptions: AuthOptions, personId: string): Promise<unknown> {
     return this.get(
       {
         path: `/persons/${personId}`,
@@ -124,7 +124,6 @@ export default class CrimeMatchingClient extends RestClient {
         path: '/persons',
         query: {
           [searchField]: searchTerm,
-          includeDeviceActivations: true,
           page,
         },
       },

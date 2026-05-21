@@ -7,7 +7,7 @@ type StubGetPersons200Options = {
   query: string
   response: {
     data: Array<{
-      personId: number
+      personId: string
       nomisId: string
       pncRef: string
       name: string
@@ -18,7 +18,7 @@ type StubGetPersons200Options = {
         deviceActivationId: number
         deviceId: number
         deviceName: string
-        personId: number
+        personId: string
         deviceActivationDate: string
         deviceDeactivationDate: string | null
         orderStart: string

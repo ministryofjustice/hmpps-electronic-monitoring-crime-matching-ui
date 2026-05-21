@@ -55,7 +55,7 @@ describe('SubjectController', () => {
           deviceActivationId: 1,
           deviceId: 123456,
           deviceName: '123456',
-          personId: 1,
+          personId: '1',
           deviceActivationDate: '2024-12-01T00:00:00.000Z',
           deviceDeactivationDate: null,
           orderStart: '2024-12-01T00:00:00.000Z',
@@ -225,7 +225,7 @@ describe('SubjectController', () => {
           deviceActivationId: 1,
           deviceId: 123456,
           deviceName: '123456',
-          personId: 1,
+          personId: '1',
           deviceActivationDate: '2024-12-01T00:00:00.000Z',
           deviceDeactivationDate: '2024-12-02T00:00:00.000Z',
           orderStart: '2024-12-01T00:00:00.000Z',
@@ -278,7 +278,7 @@ describe('SubjectController', () => {
           deviceActivationId: 1,
           deviceId: 123456,
           deviceName: '123456',
-          personId: 1,
+          personId: '1',
           deviceActivationDate: '2024-12-01T00:00:00.000Z',
           deviceDeactivationDate: '2024-12-02T00:00:00.000Z',
           orderStart: '2024-12-01T00:00:00.000Z',
@@ -329,7 +329,7 @@ describe('SubjectController', () => {
           deviceActivationId: 1,
           deviceId: 123456789,
           deviceName: '123456789',
-          personId: 123456789,
+          personId: '123456789',
           deviceActivationDate: '2025-01-01T00:00:00.000Z',
           deviceDeactivationDate: null,
           orderStart: '2024-12-01T00:00:00.000Z',
@@ -351,7 +351,7 @@ describe('SubjectController', () => {
       // GET /persons/1
       mockRestClient.getPerson.mockResolvedValue({
         data: {
-          personId: 1,
+          personId: '1',
           name: 'Jane Doe',
           nomisId: 'Nomis 1',
           pncRef: 'YY/NNNNNNND',
@@ -389,7 +389,7 @@ describe('SubjectController', () => {
           },
         ],
         deviceWearer: {
-          personId: 1,
+          personId: '1',
           name: 'Jane Doe',
           nomisId: 'Nomis 1',
           pncRef: 'YY/NNNNNNND',
@@ -439,7 +439,7 @@ describe('SubjectController', () => {
           deviceActivationId: 1,
           deviceId: 123456789,
           deviceName: '123456789',
-          personId: 123456789,
+          personId: '123456789',
           deviceActivationDate: '2025-01-01T00:00:00.000Z',
           deviceDeactivationDate: null,
           orderStart: '2024-12-01T00:00:00.000Z',
@@ -482,7 +482,7 @@ describe('SubjectController', () => {
       // GET /persons/1
       mockRestClient.getPerson.mockResolvedValue({
         data: {
-          personId: 1,
+          personId: '1',
           name: 'Jane Doe',
           nomisId: 'Nomis 1',
           pncRef: 'YY/NNNNNNND',
@@ -512,7 +512,7 @@ describe('SubjectController', () => {
       expect(res.render).toHaveBeenCalledWith('pages/locationData/subject', {
         alerts: [],
         deviceWearer: {
-          personId: 1,
+          personId: '1',
           name: 'Jane Doe',
           nomisId: 'Nomis 1',
           pncRef: 'YY/NNNNNNND',

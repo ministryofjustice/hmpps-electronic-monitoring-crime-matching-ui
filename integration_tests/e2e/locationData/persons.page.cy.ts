@@ -43,7 +43,7 @@ context('Location Data', () => {
         response: {
           data: [
             {
-              personId: 1,
+              personId: '1',
               nomisId: 'Nomis 1',
               pncRef: 'YY/NNNNNNND',
               name: 'John',
@@ -55,7 +55,7 @@ context('Location Data', () => {
                   deviceActivationId: 123456,
                   deviceId: 123456,
                   deviceName: '123456',
-                  personId: 123456,
+                  personId: '1',
                   deviceActivationDate: '2024-12-01T00:00:00.000Z',
                   deviceDeactivationDate: null,
                   orderStart: '2024-12-01T00:00:00.000Z',
@@ -64,7 +64,7 @@ context('Location Data', () => {
               ],
             },
             {
-              personId: 2,
+              personId: '2',
               nomisId: 'Nomis 2',
               pncRef: 'YY/NNNNNNND',
               name: 'Lee',
@@ -76,7 +76,7 @@ context('Location Data', () => {
                   deviceActivationId: 123456,
                   deviceId: 654321,
                   deviceName: '654321',
-                  personId: 123456,
+                  personId: '2',
                   deviceActivationDate: '2024-12-01T00:00:00.000Z',
                   deviceDeactivationDate: '2024-12-01T00:00:00.000Z',
                   orderStart: '2024-12-01T00:00:00.000Z',
@@ -124,11 +124,11 @@ context('Location Data', () => {
       // Stub the api to simulate the query returning the first page results
       cy.stubGetPersons({
         status: 200,
-        query: '\\?name=foo&includeDeviceActivations=true&page=1',
+        query: '\\?name=foo&page=1',
         response: {
           data: [
             {
-              personId: 1,
+              personId: '1',
               nomisId: 'Nomis 1',
               pncRef: 'YY/NNNNNNND',
               name: 'John',
@@ -140,7 +140,7 @@ context('Location Data', () => {
                   deviceActivationId: 123456,
                   deviceId: 123456,
                   deviceName: '123456',
-                  personId: 123456,
+                  personId: '1',
                   deviceActivationDate: '2024-12-01T00:00:00.000Z',
                   deviceDeactivationDate: null,
                   orderStart: '2024-12-01T00:00:00.000Z',
@@ -157,11 +157,11 @@ context('Location Data', () => {
       // Stub the api to simulate the query returning the second page results
       cy.stubGetPersons({
         status: 200,
-        query: '\\?name=foo&includeDeviceActivations=true&page=2',
+        query: '\\?name=foo&page=2',
         response: {
           data: [
             {
-              personId: 2,
+              personId: '2',
               nomisId: 'Nomis 2',
               pncRef: 'YY/NNNNNNND',
               name: 'Lee',
@@ -173,7 +173,7 @@ context('Location Data', () => {
                   deviceActivationId: 123456,
                   deviceId: 654321,
                   deviceName: '654321',
-                  personId: 123456,
+                  personId: '2',
                   deviceActivationDate: '2024-12-01T00:00:00.000Z',
                   deviceDeactivationDate: '2024-12-01T00:00:00.000Z',
                   orderStart: '2024-12-01T00:00:00.000Z',
@@ -244,7 +244,7 @@ context('Location Data', () => {
         response: {
           data: [
             {
-              personId: 1,
+              personId: '1',
               nomisId: 'Nomis 1',
               pncRef: 'YY/NNNNNNND',
               name: 'John',
@@ -256,7 +256,7 @@ context('Location Data', () => {
                   deviceActivationId: 123456,
                   deviceId: 123456,
                   deviceName: '123456',
-                  personId: 123456,
+                  personId: '1',
                   deviceActivationDate: '2024-12-01T00:00:00.000Z',
                   deviceDeactivationDate: null,
                   orderStart: '2024-12-01T00:00:00.000Z',
@@ -265,7 +265,7 @@ context('Location Data', () => {
               ],
             },
             {
-              personId: 2,
+              personId: '2',
               nomisId: 'Nomis 2',
               pncRef: 'YY/NNNNNNND',
               name: 'Lee',
@@ -277,7 +277,7 @@ context('Location Data', () => {
                   deviceActivationId: 123456,
                   deviceId: 654321,
                   deviceName: '654321',
-                  personId: 123456,
+                  personId: '2',
                   deviceActivationDate: '2024-12-01T00:00:00.000Z',
                   deviceDeactivationDate: '2024-12-01T00:00:00.000Z',
                   orderStart: '2024-12-01T00:00:00.000Z',

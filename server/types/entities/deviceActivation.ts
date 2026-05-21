@@ -2,7 +2,7 @@ type DeviceActivation = {
   deviceActivationId: number
   deviceId: number
   deviceName: string
-  personId: number
+  personId: string
   deviceActivationDate: string
   deviceDeactivationDate: string | null
   orderStart: string

@@ -4,10 +4,10 @@ const baseUrl = '/crime-matching'
 
 type StubGetPerson200Options = {
   status: 200
-  personId: number
+  personId: string
   response: {
     data: {
-      personId: number
+      personId: string
       name: string
       nomisId: string
       pncRef: string
@@ -21,7 +21,7 @@ type StubGetPerson200Options = {
 
 type StubGetPerson404Options = {
   status: 404 | 500
-  personId: number
+  personId: string
   response: string
 }
 
@@ -29,10 +29,10 @@ type StubGetPersonOptions = StubGetPerson200Options | StubGetPerson404Options
 
 const defaultGetPersonOptions: StubGetPersonOptions = {
   status: 200,
-  personId: 1,
+  personId: '1',
   response: {
     data: {
-      personId: 1,
+      personId: '1',
       name: 'Jane Doe',
       nomisId: 'Nomis 1"',
       pncRef: 'YY/NNNNNNND',
