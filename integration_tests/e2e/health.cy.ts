@@ -9,7 +9,17 @@ context('Healthcheck', () => {
     })
 
     it('Health check page is visible and UP', () => {
-      cy.request('/health').its('body.status').should('equal', 'UP')
+      cy.request('/health').then(response => {
+        expect(response.body.status).to.equal('UP')
+        expect(response.body.components.playwright.status).to.equal('UP')
+      })
+    })
+
+    it('Readiness check is visible and UP', () => {
+      cy.request('/readiness').then(response => {
+        expect(response.body.status).to.equal('UP')
+        expect(response.body.components.playwright.status).to.equal('UP')
+      })
     })
 
     it('Ping is visible and UP', () => {
@@ -37,11 +47,19 @@ context('Healthcheck', () => {
         expect(response.body.components.tokenVerification.details).to.contain({ status: 500, attempts: 3 })
         expect(response.body.components.crimeMatchingApi.status).to.equal('UP')
         expect(response.body.components.probationApi.status).to.equal('DOWN')
+        expect(response.body.components.playwright.status).to.equal('UP')
       })
     })
 
     it('Health check page is visible and DOWN', () => {
       cy.request({ url: '/health', method: 'GET', failOnStatusCode: false }).its('body.status').should('equal', 'DOWN')
+    })
+
+    it('Readiness check remains UP when APIs are unhealthy', () => {
+      cy.request('/readiness').then(response => {
+        expect(response.body.status).to.equal('UP')
+        expect(response.body.components.playwright.status).to.equal('UP')
+      })
     })
   })
 })
