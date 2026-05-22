@@ -8,7 +8,7 @@ export default class PlaywrightBrowserService {
   private launching?: Promise<Browser>
 
   async getBrowser(): Promise<Browser> {
-    if (this.browser) return this.browser
+    if (this.browser?.isConnected()) return this.browser
     if (this.launching) return this.launching
 
     this.launching = (async () => {
@@ -18,17 +18,27 @@ export default class PlaywrightBrowserService {
           executablePath: config.playwright.chromiumExecutablePath,
           headless: true,
         })
+
+        chromiumBrowser.on('disconnected', () => {
+          logger.error('[playwright] shared browser disconnected')
+
+          if (this.browser === chromiumBrowser) {
+            this.browser = undefined
+          }
+        })
+
         this.browser = chromiumBrowser
         return chromiumBrowser
-      } catch (e) {
-        logger.error(e)
-        throw e
       } finally {
         this.launching = undefined
       }
     })()
 
     return this.launching
+  }
+
+  isReady(): boolean {
+    return Boolean(this.browser?.isConnected())
   }
 
   async close(): Promise<void> {

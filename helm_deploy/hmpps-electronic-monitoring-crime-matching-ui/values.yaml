@@ -23,7 +23,7 @@ generic-service:
 
   readinessProbe:
     httpGet:
-      path: /ping
+      path: /readiness
 
   # Environment variables to load into the deployment
   env:
@@ -74,4 +74,3 @@ generic-prometheus-alerts:
 # Override in values-dev.yaml
 # Also update the environment variables to point the application to the mocked services (on port 80)
 deploy_stubs: false
-
