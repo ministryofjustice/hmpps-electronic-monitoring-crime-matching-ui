@@ -3,7 +3,7 @@
     "deviceActivationId": 2,
     "deviceId": 123456,
     "deviceName": "123456",
-    "personId": 1,
+    "personId": "1",
     "deviceActivationDate": "2024-12-01T00:00:00.000Z",
     "deviceDeactivationDate": "2024-12-02T00:00:00.000Z",
     "orderStart": "2024-12-01T00:00:00.000Z",

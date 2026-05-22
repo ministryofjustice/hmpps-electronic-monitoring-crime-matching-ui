@@ -27,7 +27,7 @@ context('Location Data', () => {
         response: {
           data: [
             {
-              personId: 1,
+              personId: '1',
               nomisId: 'Nomis 1',
               pncRef: 'YY/NNNNNNND',
               name: 'John',
@@ -39,7 +39,7 @@ context('Location Data', () => {
                   deviceActivationId: 1,
                   deviceId: 123456,
                   deviceName: '123456',
-                  personId: 123456,
+                  personId: '1',
                   deviceActivationDate: '2024-12-01T00:00:00.000Z',
                   deviceDeactivationDate: null,
                   orderStart: '2024-12-01T00:00:00.000Z',
@@ -97,7 +97,7 @@ context('Location Data', () => {
         response: {
           data: [
             {
-              personId: 1,
+              personId: '1',
               nomisId: 'Nomis 1',
               pncRef: 'YY/NNNNNNND',
               name: 'John',
@@ -109,7 +109,7 @@ context('Location Data', () => {
                   deviceActivationId: 1,
                   deviceId: 123456,
                   deviceName: '123456',
-                  personId: 123456,
+                  personId: '1',
                   deviceActivationDate: '2024-12-01T00:00:00.000Z',
                   deviceDeactivationDate: null,
                   orderStart: '2024-12-01T00:00:00.000Z',

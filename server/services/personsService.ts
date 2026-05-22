@@ -18,7 +18,7 @@ class PersonsService {
     return getPersonsDtoSchema.parse(response)
   }
 
-  async getPerson(username: string, personId: number): Promise<Person> {
+  async getPerson(username: string, personId: string): Promise<Person> {
     const response = await this.crimeMatchingApiClient.getPerson(asSystem(username), personId)
 
     return getPersonDtoSchema.parse(response).data

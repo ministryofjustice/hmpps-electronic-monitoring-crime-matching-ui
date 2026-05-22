@@ -2,7 +2,7 @@ import { z } from 'zod/v4'
 import deviceActivationSchema from './deviceActivation'
 
 const personSchema = z.object({
-  personId: z.number(),
+  personId: z.string(),
   name: z.string(),
   nomisId: z.string(),
   pncRef: z.string(),
