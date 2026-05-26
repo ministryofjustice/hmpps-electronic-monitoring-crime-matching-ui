@@ -4,7 +4,11 @@ import { formatDateTime } from '../utils/date'
 import DeviceActivation from '../types/entities/deviceActivation'
 import Person from '../types/entities/person'
 
-export default function presentPositionsWithDeviceInfo(positions: Array<Position>, deviceWearer: Person, deviceActivation: DeviceActivation): Array<Position> {
+export default function presentPositionsWithDeviceInfo(
+  positions: Array<Position>,
+  deviceWearer: Person,
+  deviceActivation: DeviceActivation,
+): Array<Position> {
   return positions.map(position => ({
     ...position,
 
