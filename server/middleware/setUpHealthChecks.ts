@@ -36,7 +36,9 @@ export default function setUpHealthChecks(
     ],
   })
 
-  router.get('/readiness', async (_req, res, next) => {
+  router.get('/health/liveness', middleware.ping)
+
+  router.get('/health/readiness', async (_req, res, next) => {
     try {
       const playwrightHealth = await playwrightHealthComponent.health()
 
