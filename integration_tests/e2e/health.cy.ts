@@ -16,10 +16,14 @@ context('Healthcheck', () => {
     })
 
     it('Readiness check is visible and UP', () => {
-      cy.request('/readiness').then(response => {
+      cy.request('/health/readiness').then(response => {
         expect(response.body.status).to.equal('UP')
         expect(response.body.components.playwright.status).to.equal('UP')
       })
+    })
+
+    it('Liveness check is visible and UP', () => {
+      cy.request('/health/liveness').its('body.status').should('equal', 'UP')
     })
 
     it('Ping is visible and UP', () => {
@@ -56,7 +60,7 @@ context('Healthcheck', () => {
     })
 
     it('Readiness check remains UP when APIs are unhealthy', () => {
-      cy.request('/readiness').then(response => {
+      cy.request('health/readiness').then(response => {
         expect(response.body.status).to.equal('UP')
         expect(response.body.components.playwright.status).to.equal('UP')
       })
