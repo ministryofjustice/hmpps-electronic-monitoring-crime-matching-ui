@@ -1,11 +1,12 @@
 import Page from '../../pages/page'
 import LegalPage from '../../pages/legal/legal'
+import { hubCaseworker } from '../../fixtures/auth'
 
 context('Legal', () => {
   context('Index', () => {
     beforeEach(() => {
       cy.task('reset')
-      cy.task('stubSignIn')
+      cy.task('stubSignIn', hubCaseworker)
       cy.signIn()
     })
 

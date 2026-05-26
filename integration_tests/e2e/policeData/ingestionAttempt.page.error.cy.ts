@@ -1,3 +1,4 @@
+import { hubCaseworker } from '../../fixtures/auth'
 import ErrorPage from '../../pages/error'
 import Page from '../../pages/page'
 
@@ -5,7 +6,7 @@ context('Police Data Ingestion Attempt', () => {
   context('Error states', () => {
     beforeEach(() => {
       cy.task('reset')
-      cy.task('stubSignIn')
+      cy.task('stubSignIn', hubCaseworker)
       cy.signIn()
     })
 

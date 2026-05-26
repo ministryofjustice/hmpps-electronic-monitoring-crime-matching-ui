@@ -1,3 +1,4 @@
+import { hubCaseworker } from '../../fixtures/auth'
 import Page from '../../pages/page'
 import CrimeVersionPage from '../../pages/proximityAlert/crimeVersion'
 import { crimeVersionId, hubManager, crimeVersionWithManyMatches } from './fixtures'
@@ -6,7 +7,7 @@ context('Crime Version', () => {
   context('Exporting a proximity alert', () => {
     beforeEach(() => {
       cy.task('reset')
-      cy.task('stubSignIn')
+      cy.task('stubSignIn', hubCaseworker)
       cy.signIn()
 
       cy.stubMapMiddleware()

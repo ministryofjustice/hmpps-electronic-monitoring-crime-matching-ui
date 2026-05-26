@@ -1,3 +1,4 @@
+import { hubCaseworker } from '../../fixtures/auth'
 import SubjectPage from '../../pages/locationData/subject'
 import Page from '../../pages/page'
 
@@ -8,7 +9,7 @@ context('Location Data', () => {
   context('Viewing a device activation - Error States', () => {
     beforeEach(() => {
       cy.task('reset')
-      cy.task('stubSignIn')
+      cy.task('stubSignIn', hubCaseworker)
       cy.signIn()
     })
 

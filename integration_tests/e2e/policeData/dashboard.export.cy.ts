@@ -3,6 +3,7 @@ import Page from '../../pages/page'
 import PoliceDataDashboardPage from '../../pages/policeData/dashboard'
 import expectedCrimeMatchingResultsCSV from './fixtures/crime-matching-results'
 import ErrorPage from '../../pages/error'
+import { hubCaseworker } from '../../fixtures/auth'
 
 const downloadsFolder = Cypress.config('downloadsFolder')
 
@@ -11,7 +12,7 @@ context('Police Data Dashboard', () => {
     beforeEach(() => {
       cy.task('reset')
       cy.task('resetDownloads', downloadsFolder)
-      cy.task('stubSignIn')
+      cy.task('stubSignIn', hubCaseworker)
       cy.signIn()
       cy.stubGetIngestionAttempts({
         status: 200,

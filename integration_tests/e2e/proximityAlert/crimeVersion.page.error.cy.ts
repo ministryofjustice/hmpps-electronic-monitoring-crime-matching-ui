@@ -1,3 +1,4 @@
+import { hubCaseworker } from '../../fixtures/auth'
 import ErrorPage from '../../pages/error'
 import Page from '../../pages/page'
 import { crimeVersionWithOneMatch, crimeVersionId, hubManager } from './fixtures'
@@ -6,7 +7,7 @@ context('Crime Version', () => {
   context('Error states', () => {
     beforeEach(() => {
       cy.task('reset')
-      cy.task('stubSignIn')
+      cy.task('stubSignIn', hubCaseworker)
       cy.signIn()
     })
 

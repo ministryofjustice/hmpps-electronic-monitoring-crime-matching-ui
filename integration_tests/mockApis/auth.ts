@@ -4,7 +4,7 @@ import type { Response } from 'superagent'
 import { stubFor, getMatchingRequests } from './wiremock'
 import tokenVerification from './tokenVerification'
 
-interface UserToken {
+export interface UserToken {
   name?: string
   roles?: string[]
 }
