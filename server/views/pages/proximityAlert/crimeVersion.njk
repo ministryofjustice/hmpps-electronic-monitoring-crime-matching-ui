@@ -116,23 +116,27 @@
 
     <template id="overlay-body-crime-location">
       <div class="app-map__overlay-row">
-        <span class="app-map__overlay-label">Crime Ref</span>
+        <span class="app-map__overlay-label">Crime ref</span>
         <span class="app-map__overlay-value">{{ crimeReference }}</span>
       </div>
       <div class="app-map__overlay-row">
-        <span class="app-map__overlay-label">Crime Batch</span>
+        <span class="app-map__overlay-label">Crime batch</span>
         <span class="app-map__overlay-value">{{ batchId }} </span>
       </div>
       <div class="app-map__overlay-row">
-        <span class="app-map__overlay-label">Location</span>
+        <span class="app-map__overlay-label">Location (latitude, longitude)</span>
         <span class="app-map__overlay-value" data-copy-value="{{ latitude }}, {{ longitude }}">
           {{ latitude }}, {{ longitude }}
         </span>
         <a href="#" class="app-map__copy-link govuk-link">Copy</a>
       </div>
       <div class="app-map__overlay-row">
-        <span class="app-map__overlay-label">Crime Window</span>
-        <span class="app-map__overlay-value">{{ crimeDateTimeFrom }} <br />{{ crimeDateTimeTo }}</span>
+        <span class="app-map__overlay-label">Crime window from</span>
+        <span class="app-map__overlay-value">{{ crimeDateTimeFrom }}</span>
+      </div>
+      <div class="app-map__overlay-row">
+        <span class="app-map__overlay-label">Crime window to</span>
+        <span class="app-map__overlay-value">{{ crimeDateTimeTo }}</span>
       </div>
     </template>
 
@@ -156,11 +160,11 @@
         <span class="app-map__overlay-value">{{ direction }} </span>
       </div>
       <div class="app-map__overlay-row">
-        <span class="app-map__overlay-label">Recorded Date</span>
+        <span class="app-map__overlay-label">Recorded date/time</span>
         <span class="app-map__overlay-value">{{ capturedDateTime }} </span>
       </div>
       <div class="app-map__overlay-row">
-        <span class="app-map__overlay-label">Location</span>
+        <span class="app-map__overlay-label">Location (latitude, longitude)</span>
         <span class="app-map__overlay-value" data-copy-value="{{ latitude }}, {{ longitude }}">
           {{ latitude }}, {{ longitude }}
         </span>
