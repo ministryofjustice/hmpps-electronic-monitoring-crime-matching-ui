@@ -17,14 +17,6 @@ generic-service:
     host: app-hostname.local # override per environment
     tlsSecretName: hmpps-electronic-monitoring-crime-matching-cert
 
-  livenessProbe:
-    httpGet:
-      path: /ping
-
-  readinessProbe:
-    httpGet:
-      path: /ping
-
   # Environment variables to load into the deployment
   env:
     NODE_ENV: 'production'
@@ -74,4 +66,3 @@ generic-prometheus-alerts:
 # Override in values-dev.yaml
 # Also update the environment variables to point the application to the mocked services (on port 80)
 deploy_stubs: false
-
