@@ -17,12 +17,8 @@ dayjs.extend(isSameOrAfter)
 dayjs.extend(isSameOrBefore)
 
 async function start(): Promise<void> {
-  try {
-    await services.playwrightBrowserService.getBrowser()
-    logger.info('[playwright] browser launched at startup')
-  } catch (error) {
-    logger.error({ error }, '[playwright] failed to launch browser at startup')
-  }
+  await services.playwrightBrowserService.getBrowser()
+  logger.info('[playwright] browser launched at startup')
 
   const port = app.get('port')
 
@@ -39,7 +35,7 @@ async function start(): Promise<void> {
         await services.playwrightBrowserService.close()
         logger.info('[playwright] browser closed')
       } catch (error) {
-        logger.warn({ error }, '[playwright] error closing browser')
+        logger.warn(error, '[playwright] error closing browser')
       }
 
       process.exit(0)
@@ -49,7 +45,7 @@ async function start(): Promise<void> {
   // Listen for termination signals to allow for graceful shutdown
   process.on('SIGTERM', () => {
     shutdown('SIGTERM').catch(error => {
-      logger.error({ error }, 'SIGTERM shutdown failed')
+      logger.error(error, 'SIGTERM shutdown failed')
       process.exit(1)
     })
   })
@@ -57,7 +53,7 @@ async function start(): Promise<void> {
   // Also listen for SIGINT (e.g. Ctrl+C) to allow for graceful shutdown in development
   process.on('SIGINT', () => {
     shutdown('SIGINT').catch(error => {
-      logger.error({ error }, 'SIGINT shutdown failed')
+      logger.error(error, 'SIGINT shutdown failed')
       process.exit(1)
     })
   })
@@ -65,6 +61,6 @@ async function start(): Promise<void> {
 
 // Start the server
 start().catch(error => {
-  logger.error({ error }, 'Startup failed')
+  logger.error(error, '[playwright] failed to launch browser at startup')
   process.exit(1)
 })

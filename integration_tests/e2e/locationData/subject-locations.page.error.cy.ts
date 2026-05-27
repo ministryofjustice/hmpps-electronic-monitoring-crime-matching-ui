@@ -1,3 +1,4 @@
+import { hubCaseworker } from '../../fixtures/auth'
 import PersonsPage from '../../pages/locationData/persons'
 import Page from '../../pages/page'
 
@@ -7,7 +8,7 @@ context('Location Data', () => {
   context('Subject Location Search', () => {
     beforeEach(() => {
       cy.task('reset')
-      cy.task('stubSignIn')
+      cy.task('stubSignIn', hubCaseworker)
       cy.signIn()
     })
 

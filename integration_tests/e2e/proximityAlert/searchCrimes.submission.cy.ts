@@ -1,3 +1,4 @@
+import { hubCaseworker } from '../../fixtures/auth'
 import Page from '../../pages/page'
 import CrimeSearchPage from '../../pages/proximityAlert/crimeSearch'
 
@@ -5,7 +6,7 @@ context('Search Crimes', () => {
   context('Submitting the form', () => {
     beforeEach(() => {
       cy.task('reset')
-      cy.task('stubSignIn')
+      cy.task('stubSignIn', hubCaseworker)
       cy.signIn()
     })
 

@@ -1,3 +1,4 @@
+import { hubCaseworker } from '../../fixtures/auth'
 /* eslint-disable cypress/no-unnecessary-waiting */
 import { fromLonLat } from 'ol/proj'
 import SubjectPage from '../../pages/locationData/subject'
@@ -12,7 +13,7 @@ context('Location Data', () => {
   context('Viewing a device activation', () => {
     beforeEach(() => {
       cy.task('reset')
-      cy.task('stubSignIn')
+      cy.task('stubSignIn', hubCaseworker)
       cy.signIn()
 
       cy.stubMapMiddleware()
@@ -187,7 +188,7 @@ context('Interacting with the map', () => {
 
   beforeEach(() => {
     cy.task('reset')
-    cy.task('stubSignIn')
+    cy.task('stubSignIn', hubCaseworker)
     cy.signIn()
     cy.stubMapMiddleware()
     cy.stubGetDeviceActivation()

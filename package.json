@@ -20,9 +20,10 @@
     "security_audit": "npx audit-ci --config audit-ci.json",
     "int-test": "cypress run --config video=false",
     "int-test-ui": "cypress open --e2e --browser chrome",
+    "int-test-init:ci": "npx playwright install --with-deps chromium",
     "clean": "rm -rf dist test_results",
     "rebuild": "npm run clean && npm run setup && npm run build",
-    "setup": "npm ci && hmpps-npm-script-run-allowlist && npx playwright install chromium"
+    "setup": "npm ci && hmpps-npm-script-run-allowlist"
   },
   "engines": {
     "node": "^24",

@@ -2,6 +2,7 @@ import path from 'path'
 import Page from '../../pages/page'
 import PoliceDataIngestionAttemptPage from '../../pages/policeData/ingestionAttempt'
 import ErrorPage from '../../pages/error'
+import { hubCaseworker } from '../../fixtures/auth'
 
 const downloadsFolder = Cypress.config('downloadsFolder')
 
@@ -10,7 +11,7 @@ context('Police Data Ingestion Attempt', () => {
     beforeEach(() => {
       cy.task('reset')
       cy.task('resetDownloads', downloadsFolder)
-      cy.task('stubSignIn')
+      cy.task('stubSignIn', hubCaseworker)
       cy.signIn()
       cy.stubGetIngestionAttempt({
         ingestionAttemptId: '64d41bd9-5450-4bbb-89d4-42ba75659f49',

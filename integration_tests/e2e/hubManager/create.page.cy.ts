@@ -1,3 +1,4 @@
+import { hubManager } from '../../fixtures/auth'
 import CreateHubManagerPage from '../../pages/hubManagers/create'
 import ListHubManagersPage from '../../pages/hubManagers/list'
 import Page from '../../pages/page'
@@ -6,7 +7,7 @@ context('Create Hub Manager', () => {
   context('Creating a hub manager', () => {
     beforeEach(() => {
       cy.task('reset')
-      cy.task('stubSignIn')
+      cy.task('stubSignIn', hubManager)
       cy.signIn()
       cy.stubGetHubManagers()
       cy.stubCreateHubManager({
