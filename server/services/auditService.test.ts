@@ -50,7 +50,7 @@ describe('Audit service', () => {
       })
 
       expect(hmppsAuditClient.sendMessage).toHaveBeenCalledWith({
-        what: 'PAGE_VIEW_EXAMPLE_PAGE',
+        what: 'PAGE_VIEW_HOMEPAGE',
         who: 'user1',
         subjectId: 'subject123',
         subjectType: 'exampleType',
