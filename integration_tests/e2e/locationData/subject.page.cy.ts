@@ -219,7 +219,7 @@ context('Interacting with the map', () => {
     const location = [0.060977, 51.574865]
 
     page.map.mapInstance.then(map => {
-      cy.wait(600).then(() => {
+      cy.wait(1000).then(() => {
         const canvas = map.getViewport().querySelector('canvas')!
 
         cy.window().then(window => {

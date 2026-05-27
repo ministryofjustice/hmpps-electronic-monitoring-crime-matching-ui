@@ -492,7 +492,7 @@ context('Crime Version', () => {
 
       // And the map is ready
       page.map.mapInstance.then(map => {
-        cy.wait(200).then(() => {
+        cy.wait(400).then(() => {
           const canvas = map.getViewport().querySelector('canvas')!
 
           cy.window().then(window => {
