@@ -1,3 +1,4 @@
+import { hubCaseworker } from '../../fixtures/auth'
 import Page from '../../pages/page'
 import CrimeVersionPage from '../../pages/proximityAlert/crimeVersion'
 import {
@@ -14,7 +15,7 @@ context('Crime Version', () => {
   context('Viewing a crime version', () => {
     beforeEach(() => {
       cy.task('reset')
-      cy.task('stubSignIn')
+      cy.task('stubSignIn', hubCaseworker)
       cy.signIn()
 
       cy.stubMapMiddleware()

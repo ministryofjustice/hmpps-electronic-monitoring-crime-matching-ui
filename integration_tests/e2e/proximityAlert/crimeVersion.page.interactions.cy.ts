@@ -7,6 +7,7 @@ import { Style } from 'ol/style'
 import Page from '../../pages/page'
 import CrimeVersionPage from '../../pages/proximityAlert/crimeVersion'
 import { crimeLocation, crimeVersionId, crimeVersionWithManyMatches, deviceLocation, hubManager } from './fixtures'
+import { hubCaseworker } from '../../fixtures/auth'
 
 const getTitle = (layer: BaseLayer): string => {
   const title = layer.get('title')
@@ -50,7 +51,7 @@ context('Crime Version', () => {
   context('Viewing a crime Version', () => {
     beforeEach(() => {
       cy.task('reset')
-      cy.task('stubSignIn')
+      cy.task('stubSignIn', hubCaseworker)
       cy.signIn()
       cy.stubMapMiddleware()
       cy.stubGetHubManagers({

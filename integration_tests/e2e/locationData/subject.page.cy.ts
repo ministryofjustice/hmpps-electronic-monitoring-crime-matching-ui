@@ -1,3 +1,4 @@
+import { hubCaseworker } from '../../fixtures/auth'
 import SubjectPage from '../../pages/locationData/subject'
 import Page from '../../pages/page'
 import sampleLocations from './fixtures/sample-locations'
@@ -10,7 +11,7 @@ context('Location Data', () => {
   context('Viewing a device activation', () => {
     beforeEach(() => {
       cy.task('reset')
-      cy.task('stubSignIn')
+      cy.task('stubSignIn', hubCaseworker)
       cy.signIn()
 
       cy.stubMapMiddleware()
@@ -185,7 +186,7 @@ context('Interacting with the map', () => {
 
   beforeEach(() => {
     cy.task('reset')
-    cy.task('stubSignIn')
+    cy.task('stubSignIn', hubCaseworker)
     cy.signIn()
     cy.stubMapMiddleware()
     cy.stubGetDeviceActivation()

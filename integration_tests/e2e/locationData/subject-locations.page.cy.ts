@@ -2,6 +2,7 @@ import PersonsPage from '../../pages/locationData/persons'
 import Page from '../../pages/page'
 import SubjectPage from '../../pages/locationData/subject'
 import sampleLocations from './fixtures/sample-locations'
+import { hubCaseworker } from '../../fixtures/auth'
 
 const url = '/location-data/persons'
 
@@ -9,7 +10,7 @@ context('Location Data', () => {
   context('Subject Location Search', () => {
     beforeEach(() => {
       cy.task('reset')
-      cy.task('stubSignIn')
+      cy.task('stubSignIn', hubCaseworker)
       cy.signIn()
     })
 

@@ -27,6 +27,7 @@ import setUpWebSession from './middleware/setUpWebSession'
 import routes from './routes'
 import type { Services } from './services'
 import populateConstants from './middleware/populateConstants'
+import { CRIME_MATCHING_ROLES } from './constants/roles'
 
 // Loads Probation Design System components into the request
 async function loadPdsComponents(req: express.Request, res: express.Response): Promise<void> {
@@ -72,7 +73,7 @@ export default function createApp(services: Services): express.Application {
   app.use(setUpStaticResources())
   nunjucksSetup(app)
   app.use(setUpAuthentication())
-  app.use(authorisationMiddleware())
+  app.use(authorisationMiddleware(CRIME_MATCHING_ROLES))
   app.use(multer().single('file'))
   app.use(setUpCsrf())
   app.use(setUpCurrentUser())

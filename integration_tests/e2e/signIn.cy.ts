@@ -2,11 +2,12 @@ import IndexPage from '../pages/index'
 import AuthSignInPage from '../pages/authSignIn'
 import Page from '../pages/page'
 import AuthManageDetailsPage from '../pages/authManageDetails'
+import { hubCaseworker } from '../fixtures/auth'
 
 context('Sign In', () => {
   beforeEach(() => {
     cy.task('reset')
-    cy.task('stubSignIn')
+    cy.task('stubSignIn', hubCaseworker)
   })
 
   it('Unauthenticated user directed to auth', () => {
@@ -79,7 +80,7 @@ context('Sign In', () => {
     Page.verifyOnPage(AuthSignInPage)
 
     cy.task('stubVerifyToken', true)
-    cy.task('stubSignIn', { name: 'bobby brown' })
+    cy.task('stubSignIn', { ...hubCaseworker, name: 'bobby brown' })
 
     cy.signIn()
 

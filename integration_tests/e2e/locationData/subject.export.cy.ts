@@ -3,6 +3,7 @@ import SubjectPage from '../../pages/locationData/subject'
 import Page from '../../pages/page'
 import sampleLocations from './fixtures/sample-locations'
 import { condensedReport, fullReport } from './fixtures/location-data-reports'
+import { hubCaseworker } from '../../fixtures/auth'
 
 const deviceActivationId = '1'
 const from = '2025-01-01T01:20:03.000Z'
@@ -15,7 +16,7 @@ context('Location Data', () => {
   context('Export location data', () => {
     beforeEach(() => {
       cy.task('reset')
-      cy.task('stubSignIn')
+      cy.task('stubSignIn', hubCaseworker)
       cy.signIn()
       cy.stubMapMiddleware()
       cy.stubGetDeviceActivation()
