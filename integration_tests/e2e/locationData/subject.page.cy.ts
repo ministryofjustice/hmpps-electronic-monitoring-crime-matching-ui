@@ -1,6 +1,6 @@
-import { hubCaseworker } from '../../fixtures/auth'
 /* eslint-disable cypress/no-unnecessary-waiting */
 import { fromLonLat } from 'ol/proj'
+import { hubCaseworker } from '../../fixtures/auth'
 import SubjectPage from '../../pages/locationData/subject'
 import Page from '../../pages/page'
 import sampleLocations from './fixtures/sample-locations'
