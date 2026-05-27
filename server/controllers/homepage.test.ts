@@ -11,31 +11,31 @@ jest.mock('../data/hmppsAuditClient')
 jest.mock('@ministryofjustice/hmpps-rest-client')
 
 const createProximityAlertFeature = {
-  description: 'Search for a crime and create a new proximity alert',
+  description: 'Search for a crime and create a new proximity alert.',
   heading: 'Create a proximity alert',
   href: '/proximity-alert',
   id: 'create-proximity-alert',
 }
 
 const viewLocationDataFeature = {
-  description: 'Search for a person and view location data',
+  description: 'Search for a person and view location data.',
   heading: 'View location data',
   href: '/location-data/persons',
   id: 'view-location-data',
 }
 
 const viewPoliceDataFeature = {
-  description: 'Search for a person and view location data',
+  description: 'View ingested crime batches and export crime matching results.',
   heading: 'View crime batches',
   href: '/police-data/dashboard',
   id: 'view-police-data',
 }
 
 const manageAuthorisingManagersFeature = {
-  id: 'view-hub-managers',
-  href: '/hub-managers',
   heading: 'Manage authorising managers',
-  description: 'View managers that can review and authorise proximity alerts',
+  href: '/hub-managers',
+  description: 'View managers that can review and authorise proximity alerts.',
+  id: 'view-hub-managers',
 }
 
 describe('HomepageController', () => {

@@ -13,7 +13,7 @@ class FeaturesService {
         section: 'caseworker',
         href: URLS.PROXIMITY_ALERT.CRIME_VERSIONS.VIEW,
         heading: 'Create a proximity alert',
-        description: 'Search for a crime and create a new proximity alert',
+        description: 'Search for a crime and create a new proximity alert.',
         permittedRoles: [ROLES.CRIME_MATCHING_HUB_CASEWORKER, ROLES.CRIME_MATCHING_HUB_MANAGER],
       },
       {
@@ -21,7 +21,7 @@ class FeaturesService {
         section: 'caseworker',
         href: '/location-data/persons',
         heading: 'View location data',
-        description: 'Search for a person and view location data',
+        description: 'Search for a person and view location data.',
         permittedRoles: [ROLES.CRIME_MATCHING_HUB_CASEWORKER, ROLES.CRIME_MATCHING_HUB_MANAGER],
       },
       {
@@ -29,7 +29,7 @@ class FeaturesService {
         section: 'caseworker',
         href: URLS.POLICE_DATA.INGESTION_ATTEMPTS.VIEW,
         heading: 'View crime batches',
-        description: 'Search for a person and view location data',
+        description: 'View ingested crime batches and export crime matching results.',
         permittedRoles: [ROLES.CRIME_MATCHING_HUB_CASEWORKER, ROLES.CRIME_MATCHING_HUB_MANAGER],
       },
       {
@@ -37,7 +37,7 @@ class FeaturesService {
         section: 'admin',
         href: URLS.HUB_MANAGERS.VIEW,
         heading: 'Manage authorising managers',
-        description: 'View managers that can review and authorise proximity alerts',
+        description: 'View managers that can review and authorise proximity alerts.',
         permittedRoles: [ROLES.CRIME_MATCHING_HUB_MANAGER],
       },
     ]
