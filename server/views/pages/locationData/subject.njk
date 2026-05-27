@@ -98,38 +98,41 @@
       Implemented this way to avoid large Template Literals in the JavaScript file. #}
   {% raw %}
     <template id="overlay-title-mdss-location">
-      <div><strong>Name (NOMIS ID): {{ subjectName }}</strong></div>
-      <div><strong>Device ID: {{ subjectNomisId }}</strong></div>
+      <div><strong>Name (NOMIS ID):</strong> {{ subjectName }} ({{ subjectNomisId }})</div>
+      <div><strong>Device ID:</strong> {{ subjectDeviceId }}</div>
+      <div><strong>Date of birth:</strong> {{ subjectDateOfBirth }}</div>
+      <div><strong>Main address:</strong> {{ subjectAddress }}</div>
+      <div><strong>Tag start date:</strong> {{ subjectTagStartDate }}</div>
+      <div><strong>Tag end date:</strong> {{ subjectTagEndDate }}</div>
     </template>
 
     <template id="overlay-body-mdss-location">
-      <div class="app-map__overlay-row">
-        <span class="app-map__overlay-label">Speed:</span>
-        <span class="app-map__overlay-value">{{ displaySpeed }}</span>
+      <div class="app-map__overlay-row" part="app-map__overlay-row">
+        <span class="app-map__overlay-label">Confidence (m)</span>
+        <span class="app-map__overlay-value">{{ precision }}</span>
       </div>
       <div class="app-map__overlay-row">
-        <span class="app-map__overlay-label">Direction:</span>
+        <span class="app-map__overlay-label">Speed (km/h)</span>
+        <span class="app-map__overlay-value">{{ speed }}</span>
+      </div>
+      <div class="app-map__overlay-row">
+        <span class="app-map__overlay-label">Direction (degrees)</span>
         <span class="app-map__overlay-value">{{ displayDirection }}</span>
       </div>
       <div class="app-map__overlay-row" part="app-map__overlay-row">
-        <span class="app-map__overlay-label">Geolocation Mechanism:</span>
-        <span class="app-map__overlay-value">{{ displayGeolocationMechanism }}</span>
+        <span class="app-map__overlay-label">Geolocation mechanism</span>
+        <span class="app-map__overlay-value">{{ geolocationMechanism }}</span>
       </div>
       <div class="app-map__overlay-row" part="app-map__overlay-row">
-        <span class="app-map__overlay-label">Recorded Date:</span>
+        <span class="app-map__overlay-label">Recorded date/time</span>
         <span class="app-map__overlay-value">{{ displayTimestamp }}</span>
       </div>
       <div class="app-map__overlay-row" part="app-map__overlay-row">
-        <span class="app-map__overlay-label">Confidence:</span>
-        <span class="app-map__overlay-value">{{ displayConfidence }}</span>
-      </div>
-      <div class="app-map__overlay-row" part="app-map__overlay-row">
-        <span class="app-map__overlay-label">Latitude:</span>
-        <span class="app-map__overlay-value">{{ displayLatitude }}</span>
-      </div>
-      <div class="app-map__overlay-row" part="app-map__overlay-row">
-        <span class="app-map__overlay-label">Longitude:</span>
-        <span class="app-map__overlay-value">{{ displayLongitude }}</span>
+        <span class="app-map__overlay-label">Location (latitude, longitude)</span>
+        <span class="app-map__overlay-value" data-copy-value="{{ latitude }}, {{ longitude }}">
+          {{ latitude }}, {{ longitude }}
+        </span>
+        <a href="#" class="app-map__copy-link govuk-link">Copy</a>
       </div>
     </template>
   {% endraw %}

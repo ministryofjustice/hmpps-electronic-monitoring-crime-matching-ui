@@ -28,8 +28,8 @@ const presentCrimePosition = ({
     overlayTitleTemplateId: 'overlay-title-crime-location',
     overlayBodyTemplateId: 'overlay-body-crime-location',
     batchId,
-    crimeDateTimeFrom: formatDateTime(crimeDateTimeFrom, 'DD/MM/YYYY HH:mm'),
-    crimeDateTimeTo: formatDateTime(crimeDateTimeTo, 'DD/MM/YYYY HH:mm'),
+    crimeDateTimeFrom: formatDateTime(crimeDateTimeFrom, 'DD/MM/YYYY, HH:mm:ss'),
+    crimeDateTimeTo: formatDateTime(crimeDateTimeTo, 'DD/MM/YYYY, HH:mm:ss'),
   }
 }
 
@@ -44,7 +44,7 @@ const presentDevicePositions = ({
       latitude,
       longitude,
       precision,
-      capturedDateTime: formatDateTime(capturedDateTime, 'DD/MM/YYYY HH:mm'),
+      capturedDateTime: formatDateTime(capturedDateTime, 'DD/MM/YYYY, HH:mm:ss'),
       deviceId,
       direction,
       name,

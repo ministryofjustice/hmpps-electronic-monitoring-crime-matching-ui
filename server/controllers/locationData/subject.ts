@@ -16,7 +16,7 @@ import PersonsService from '../../services/personsService'
 import DeviceActivation from '../../types/entities/deviceActivation'
 import Position from '../../types/entities/position'
 import Person from '../../types/entities/person'
-import annotatePositionsWithDisplayProperties from '../../presenters/helpers/positions'
+import presentPositionsWithDeviceInfo from '../../presenters/subject'
 
 export default class SubjectController {
   constructor(
@@ -96,14 +96,8 @@ export default class SubjectController {
         toDate,
       )
 
-      const annotatedPositions = annotatePositionsWithDisplayProperties(positions)
+      const positionsWithDeviceInfo = presentPositionsWithDeviceInfo(positions, deviceWearer, deviceActivation!)
       const alerts: Array<MojAlert> = []
-
-      const positionsWithDeviceInfo = annotatedPositions.map(position => ({
-        ...position,
-        subjectName: deviceWearer.name,
-        subjectNomisId: deviceWearer.nomisId,
-      }))
 
       if (positions.length === 0) {
         alerts.push(createMojAlertWarning('No GPS Data for Dates and Times Selected'))
