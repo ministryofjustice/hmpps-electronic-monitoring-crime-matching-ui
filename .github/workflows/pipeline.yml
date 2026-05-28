@@ -1,8 +1,5 @@
 name: Pipeline [test -> build -> deploy]
 
-env:
-  PLAYWRIGHT_BROWSERS_PATH: /tmp/playwright
-
 on:
   push:
     branches:
