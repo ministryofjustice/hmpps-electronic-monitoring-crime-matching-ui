@@ -1,8 +1,53 @@
 {% extends "../partials/layout.njk" %}
+{% from "components/card/macro.njk" import card %}
 
 {% set pageTitle = applicationName + " - Home" %}
 {% set mainClasses = "app-container govuk-body" %}
 
 {% block content %}
-  <h1>Welcome to Electronic Monitoring Crime Matching</h1>
+  <h1 class="govuk-heading-l">Crime matching tool</h1>
+
+  <div class="govuk-grid-row">
+    <div class="card-group">
+      {% for feature in features.caseworker %}
+        <div class="govuk-grid-column-one-third card-group__item">
+          {{
+            card({
+                "id": feature.id,
+                "href": feature.href,
+                "clickable": "true",
+                "heading": feature.heading,
+                "description": feature.description,
+                "data-qa": feature.id
+            })
+          }}
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+  {% if features.admin.length %}
+    <hr
+      class="govuk-section-break govuk-section-break--xl govuk-section-break--visible govuk-!-margin-bottom-5 govuk-!-margin-top-2"
+      data-qa="section-break"
+    />
+    <h2>Admin</h2>
+    <div class="govuk-grid-row">
+      <div class="card-group">
+        {% for feature in features.admin %}
+          <div class="govuk-grid-column-one-third card-group__item">
+            {{
+              card({
+                  "id": feature.id,
+                  "href": feature.href,
+                  "clickable": "true",
+                  "heading": feature.heading,
+                  "description": feature.description,
+                  "data-qa": feature.id
+              })
+            }}
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  {% endif %}
 {% endblock %}

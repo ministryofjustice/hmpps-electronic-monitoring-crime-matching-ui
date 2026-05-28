@@ -1,6 +1,6 @@
 import type { Response } from 'express'
 
-const createMockResponse = (): Response => {
+const createMockResponse = (roles: Array<string> = ['fakeRole']): Response => {
   // @ts-expect-error stubbing res.render
   return {
     locals: {
@@ -11,7 +11,7 @@ const createMockResponse = (): Response => {
         userId: 'fakeId',
         name: 'fake user',
         displayName: 'fuser',
-        userRoles: ['fakeRole'],
+        userRoles: roles,
         staffId: 123,
       },
       errors: {},

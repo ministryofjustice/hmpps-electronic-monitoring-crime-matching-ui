@@ -1,5 +1,6 @@
 import type { Request } from 'express'
 import { SessionData } from 'express-session'
+import { randomUUID } from 'crypto'
 
 const createMockRequest = (
   overrideProperties: Partial<Request> = {},
@@ -10,6 +11,7 @@ const createMockRequest = (
     session: {
       ...sessionData,
     },
+    id: randomUUID(),
     query: {},
     params: {},
     user: {

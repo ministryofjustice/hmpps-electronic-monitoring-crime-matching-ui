@@ -3,6 +3,7 @@ import request from 'supertest'
 import { appWithAllRoutes, user } from './testutils/appSetup'
 import AuditService, { Page } from '../services/auditService'
 import HmppsAuditClient from '../data/hmppsAuditClient'
+import FeaturesService from '../services/featuresService'
 
 jest.mock('../services/auditService')
 jest.mock('../data/hmppsAuditClient')
@@ -15,6 +16,7 @@ const hmppsAuditClient = new HmppsAuditClient({
   serviceName: '',
 }) as jest.Mocked<HmppsAuditClient>
 const auditService = new AuditService(hmppsAuditClient) as jest.Mocked<AuditService>
+const featuresService = new FeaturesService()
 
 let app: Express
 
@@ -22,6 +24,7 @@ beforeEach(() => {
   app = appWithAllRoutes({
     services: {
       auditService,
+      featuresService,
     },
     userSupplier: () => user,
   })
@@ -39,8 +42,8 @@ describe('GET /', () => {
       .get('/')
       .expect('Content-Type', /html/)
       .expect(res => {
-        expect(res.text).toContain('Welcome to Electronic Monitoring Crime Matching')
-        expect(auditService.logPageView).toHaveBeenCalledWith(Page.EXAMPLE_PAGE, {
+        expect(res.text).toContain('Crime matching tool')
+        expect(auditService.logPageView).toHaveBeenCalledWith(Page.HOMEPAGE, {
           who: user.username,
           correlationId: expect.any(String),
         })

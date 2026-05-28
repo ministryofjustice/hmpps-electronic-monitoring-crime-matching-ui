@@ -8,6 +8,7 @@ import CrimeService from './crimeService'
 import CrimeMatchingResultsService from './crimeMatchingResultsService'
 import PlaywrightBrowserService from './proximityAlert/playwrightBrowserService'
 import HubManagersService from './hubManagerService'
+import FeaturesService from './featuresService'
 
 export const services = () => {
   const { applicationInfo, hmppsAuditClient, crimeMatchingApiClient } = dataAccess()
@@ -16,6 +17,7 @@ export const services = () => {
   const crimeService = new CrimeService(crimeMatchingApiClient)
   const crimeMatchingResultsService = new CrimeMatchingResultsService(crimeMatchingApiClient)
   const deviceActivationsService = new DeviceActivationsService(crimeMatchingApiClient)
+  const featuresService = new FeaturesService()
   const hubManagersService = new HubManagersService(crimeMatchingApiClient)
   const validationService = new ValidationService(deviceActivationsService)
   const personsService = new PersonsService(crimeMatchingApiClient)
@@ -28,6 +30,7 @@ export const services = () => {
     crimeService,
     crimeMatchingResultsService,
     deviceActivationsService,
+    featuresService,
     hubManagersService,
     personsService,
     policeDataService,
