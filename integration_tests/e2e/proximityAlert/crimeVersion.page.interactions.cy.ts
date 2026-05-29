@@ -453,10 +453,10 @@ context('Crime Version', () => {
         // And the viewport + canvas are ready
         cy.wrap(null).should(() => {
           const viewport = map.getViewport()
-          expect(viewport).to.exist
+          expect(viewport).to.not.equal(undefined)
 
           canvas = viewport.querySelector('canvas') as HTMLCanvasElement
-          expect(canvas).to.exist
+          expect(canvas).to.not.equal(undefined)
         })
 
         cy.wrap(null).should(() => {
@@ -467,7 +467,7 @@ context('Crime Version', () => {
           const clientY = rect.top + pixel[1]
           const events = ['pointerdown', 'pointerup', 'click']
 
-          expect(pixel).to.exist
+          expect(pixel).to.not.equal(undefined)
 
           // And clicks the crime marker
           events.forEach(type => {

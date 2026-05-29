@@ -225,22 +225,25 @@ context('Interacting with the map', () => {
       // And the viewport + canvas are ready
       cy.wrap(null).should(() => {
         const viewport = map.getViewport()
-        expect(viewport).to.exist
+        expect(viewport).to.not.equal(undefined)
 
         canvas = viewport.querySelector('canvas') as HTMLCanvasElement
-        expect(canvas).to.exist
+        expect(canvas).to.not.equal(undefined)
       })
 
       // And the points layer exists
-      const layer = map.getLayers().getArray().find(l => l.get('title') === 'pointsLayer')
-      expect(layer).to.exist
+      const layer = map
+        .getLayers()
+        .getArray()
+        .find(l => l.get('title') === 'pointsLayer')
+      expect(layer).to.not.equal(undefined)
 
       // And the point is clickable on the map
       cy.wrap(null).should(() => {
         const coordinate = fromLonLat(location)
         const pixel = map.getPixelFromCoordinate(coordinate)
 
-        expect(pixel).to.exist
+        expect(pixel).to.not.equal(undefined)
 
         const features = map.getFeaturesAtPixel(pixel, {
           layerFilter: l => l === layer,
