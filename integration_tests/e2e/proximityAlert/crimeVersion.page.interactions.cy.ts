@@ -448,39 +448,48 @@ context('Crime Version', () => {
 
       // And the map is ready
       page.map.mapInstance.then(map => {
-        cy.wait(100).then(() => {
-          const canvas = map.getViewport().querySelector('canvas')!
+        let canvas: HTMLCanvasElement
 
-          cy.window().then(window => {
-            const coordinate = fromLonLat(crimeLocation)
-            const rect = canvas.getBoundingClientRect()
-            const pixel = map.getPixelFromCoordinate(coordinate)
-            const clientX = rect.left + pixel[0]
-            const clientY = rect.top + pixel[1]
-            const events = ['pointerdown', 'pointerup', 'click']
+        // And the viewport + canvas are ready
+        cy.wrap(null).should(() => {
+          const viewport = map.getViewport()
+          expect(viewport).to.exist
 
-            // And clicks the crime marker
-            events.forEach(type => {
-              const event = new window.PointerEvent(type, {
-                clientX,
-                clientY,
-                bubbles: true,
-                cancelable: true,
-                view: window,
-              })
-              canvas.dispatchEvent(event)
+          canvas = viewport.querySelector('canvas') as HTMLCanvasElement
+          expect(canvas).to.exist
+        })
+
+        cy.wrap(null).should(() => {
+          const coordinate = fromLonLat(crimeLocation)
+          const rect = canvas.getBoundingClientRect()
+          const pixel = map.getPixelFromCoordinate(coordinate)
+          const clientX = rect.left + pixel[0]
+          const clientY = rect.top + pixel[1]
+          const events = ['pointerdown', 'pointerup', 'click']
+
+          expect(pixel).to.exist
+
+          // And clicks the crime marker
+          events.forEach(type => {
+            const event = new window.PointerEvent(type, {
+              clientX,
+              clientY,
+              bubbles: true,
+              cancelable: true,
+              view: window,
             })
-
-            // Then the crime overlay should be shown
-            page.map.overlay.shouldBeVisible()
-            page.map.overlay.shouldHaveTitle('Crime Ref: crimeRef')
-            page.map.overlay.shouldHaveNthRow(0, 'Crime ref', 'crimeRef')
-            page.map.overlay.shouldHaveNthRow(1, 'Crime batch', 'batch1')
-            page.map.overlay.shouldHaveNthRow(2, 'Location', '53.43157277, -2.528865717')
-            page.map.overlay.shouldHaveNthRow(3, 'Crime window from', '01/01/2025, 00:00:00')
-            page.map.overlay.shouldHaveNthRow(4, 'Crime window to', '01/01/2025, 01:00:00')
+            canvas.dispatchEvent(event)
           })
         })
+
+        // Then the crime overlay should be shown
+        page.map.overlay.shouldBeVisible()
+        page.map.overlay.shouldHaveTitle('Crime Ref: crimeRef')
+        page.map.overlay.shouldHaveNthRow(0, 'Crime ref', 'crimeRef')
+        page.map.overlay.shouldHaveNthRow(1, 'Crime batch', 'batch1')
+        page.map.overlay.shouldHaveNthRow(2, 'Location', '53.43157277, -2.528865717')
+        page.map.overlay.shouldHaveNthRow(3, 'Crime window from', '01/01/2025, 00:00:00')
+        page.map.overlay.shouldHaveNthRow(4, 'Crime window to', '01/01/2025, 01:00:00')
       })
     })
 
