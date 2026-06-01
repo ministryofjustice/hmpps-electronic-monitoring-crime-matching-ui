@@ -457,6 +457,10 @@ context('Crime Version', () => {
 
           canvas = viewport.querySelector('canvas') as HTMLCanvasElement
           expect(canvas).to.not.equal(undefined)
+
+          const rect = canvas.getBoundingClientRect()
+          expect(rect.width).to.be.greaterThan(0)
+          expect(rect.height).to.be.greaterThan(0)
         })
 
         cy.wrap(null).should(() => {
