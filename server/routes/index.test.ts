@@ -1,6 +1,6 @@
 import type { Express } from 'express'
 import request from 'supertest'
-import { appWithAllRoutes, user } from './testutils/appSetup'
+import { appWithAllRoutes, hubCaseworker } from './testutils/appSetup'
 import AuditService, { Page } from '../services/auditService'
 import HmppsAuditClient from '../data/hmppsAuditClient'
 import FeaturesService from '../services/featuresService'
@@ -26,7 +26,7 @@ beforeEach(() => {
       auditService,
       featuresService,
     },
-    userSupplier: () => user,
+    userSupplier: () => hubCaseworker,
   })
 })
 
@@ -44,7 +44,7 @@ describe('GET /', () => {
       .expect(res => {
         expect(res.text).toContain('Crime matching tool')
         expect(auditService.logPageView).toHaveBeenCalledWith(Page.HOMEPAGE, {
-          who: user.username,
+          who: hubCaseworker.username,
           correlationId: expect.any(String),
         })
       })

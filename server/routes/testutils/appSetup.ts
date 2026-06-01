@@ -15,6 +15,7 @@ import AuditService from '../../services/auditService'
 import { HmppsUser } from '../../interfaces/hmppsUser'
 import setUpWebSession from '../../middleware/setUpWebSession'
 import HmppsAuditClient from '../../data/hmppsAuditClient'
+import { ROLES } from '../../constants/roles'
 
 jest.mock('../../services/auditService')
 jest.mock('../../data/hmppsAuditClient')
@@ -24,7 +25,7 @@ dayjs.extend(timezone)
 dayjs.extend(isSameOrAfter)
 dayjs.extend(isSameOrBefore)
 
-export const user: HmppsUser = {
+export const hubCaseworker: HmppsUser = {
   name: 'FIRST LAST',
   userId: 'id',
   token: 'token',
@@ -32,7 +33,12 @@ export const user: HmppsUser = {
   displayName: 'First Last',
   authSource: 'nomis',
   staffId: 1234,
-  userRoles: [],
+  userRoles: [ROLES.CRIME_MATCHING_HUB_CASEWORKER],
+}
+
+export const hubManager: HmppsUser = {
+  ...hubCaseworker,
+  userRoles: [ROLES.CRIME_MATCHING_HUB_MANAGER],
 }
 
 const hmppsAuditClient = new HmppsAuditClient({
@@ -77,7 +83,7 @@ export function appWithAllRoutes({
   services = {
     auditService: new AuditService(hmppsAuditClient) as jest.Mocked<AuditService>,
   },
-  userSupplier = () => user,
+  userSupplier = () => hubCaseworker,
 }: {
   production?: boolean
   services?: Partial<Services>

@@ -1,5 +1,5 @@
 import request from 'supertest'
-import { appWithAllRoutes, user } from './testutils/appSetup'
+import { appWithAllRoutes } from './testutils/appSetup'
 import logger from '../../logger'
 import DeviceActivationsService from '../services/deviceActivationsService'
 import ValidationService from '../services/locationData/validationService'
@@ -31,7 +31,6 @@ describe('/location-data', () => {
           personsService,
           validationService,
         },
-        userSupplier: () => user,
       })
 
       return request(app)
@@ -54,7 +53,6 @@ describe('/location-data', () => {
           personsService,
           validationService,
         },
-        userSupplier: () => user,
       })
 
       restClient.getDeviceActivation.mockRejectedValue({
@@ -84,7 +82,6 @@ describe('/location-data', () => {
           personsService,
           validationService,
         },
-        userSupplier: () => user,
       })
 
       restClient.getDeviceActivation.mockResolvedValueOnce({
