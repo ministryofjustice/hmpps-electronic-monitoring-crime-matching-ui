@@ -1,4 +1,3 @@
-/* eslint-disable cypress/no-unnecessary-waiting */
 import Map from 'ol/Map'
 import BaseLayer from 'ol/layer/Base'
 import { fromLonLat, transform } from 'ol/proj'
@@ -8,6 +7,7 @@ import Page from '../../pages/page'
 import CrimeVersionPage from '../../pages/proximityAlert/crimeVersion'
 import { crimeLocation, crimeVersionId, crimeVersionWithManyMatches, deviceLocation, hubManager } from './fixtures'
 import { hubCaseworker } from '../../fixtures/auth'
+import LayerGroup from 'ol/layer/Group'
 
 const getTitle = (layer: BaseLayer): string => {
   const title = layer.get('title')
@@ -463,12 +463,36 @@ context('Crime Version', () => {
           expect(rect.height).to.be.greaterThan(0)
         })
 
+        // And the crime layer exists
+        const layerGroup = map
+          .getLayers()
+          .getArray()
+          .find(l => l.get('title') === 'crime') as LayerGroup
+        expect(layerGroup).to.not.equal(undefined)
+
+        const subLayer = layerGroup.getLayers().getArray().find(l => l.get('title') === 'crime-marker')
+
         cy.wrap(null).should(() => {
+          const coordinate = fromLonLat(crimeLocation)
+          const pixel = map.getPixelFromCoordinate(coordinate)
+
+          expect(pixel).to.not.equal(undefined)
+
+          const features = map.getFeaturesAtPixel(pixel, {
+            layerFilter: l => l === subLayer,
+          })
+
+          expect(features.length).to.be.greaterThan(0)
+        })
+
+        cy.window().then(window => {
           const coordinate = fromLonLat(crimeLocation)
           const rect = canvas.getBoundingClientRect()
           const pixel = map.getPixelFromCoordinate(coordinate)
+
           const clientX = rect.left + pixel[0]
           const clientY = rect.top + pixel[1]
+
           const events = ['pointerdown', 'pointerup', 'click']
 
           expect(pixel).to.not.equal(undefined)
@@ -484,16 +508,16 @@ context('Crime Version', () => {
             })
             canvas.dispatchEvent(event)
           })
-        })
 
-        // Then the crime overlay should be shown
-        page.map.overlay.shouldBeVisible()
-        page.map.overlay.shouldHaveTitle('Crime Ref: crimeRef')
-        page.map.overlay.shouldHaveNthRow(0, 'Crime ref', 'crimeRef')
-        page.map.overlay.shouldHaveNthRow(1, 'Crime batch', 'batch1')
-        page.map.overlay.shouldHaveNthRow(2, 'Location', '53.43157277, -2.528865717')
-        page.map.overlay.shouldHaveNthRow(3, 'Crime window from', '01/01/2025, 00:00:00')
-        page.map.overlay.shouldHaveNthRow(4, 'Crime window to', '01/01/2025, 01:00:00')
+          // Then the crime overlay should be shown
+          page.map.overlay.shouldBeVisible()
+          page.map.overlay.shouldHaveTitle('Crime Ref: crimeRef')
+          page.map.overlay.shouldHaveNthRow(0, 'Crime ref', 'crimeRef')
+          page.map.overlay.shouldHaveNthRow(1, 'Crime batch', 'batch1')
+          page.map.overlay.shouldHaveNthRow(2, 'Location', '53.43157277, -2.528865717')
+          page.map.overlay.shouldHaveNthRow(3, 'Crime window from', '01/01/2025, 00:00:00')
+          page.map.overlay.shouldHaveNthRow(4, 'Crime window to', '01/01/2025, 01:00:00')
+        })
       })
     })
 
@@ -505,38 +529,75 @@ context('Crime Version', () => {
 
       // And the map is ready
       page.map.mapInstance.then(map => {
-        cy.wait(200).then(() => {
-          const canvas = map.getViewport().querySelector('canvas')!
+        let canvas: HTMLCanvasElement
 
-          cy.window().then(window => {
-            const coordinate = fromLonLat(deviceLocation)
-            const rect = canvas.getBoundingClientRect()
-            const pixel = map.getPixelFromCoordinate(coordinate)
-            const clientX = rect.left + pixel[0]
-            const clientY = rect.top + pixel[1]
-            const events = ['pointerdown', 'pointerup', 'click']
+        // And the viewport + canvas are ready
+        cy.wrap(null).should(() => {
+          const viewport = map.getViewport()
+          expect(viewport).to.not.equal(undefined)
 
-            // And clicks the crime marker
-            events.forEach(type => {
-              const event = new window.PointerEvent(type, {
-                clientX,
-                clientY,
-                bubbles: true,
-                cancelable: true,
-                view: window,
-              })
-              canvas.dispatchEvent(event)
-            })
+          canvas = viewport.querySelector('canvas') as HTMLCanvasElement
+          expect(canvas).to.not.equal(undefined)
 
-            // Then the crime overlay should be shown
-            page.map.overlay.shouldBeVisible()
-            page.map.overlay.shouldHaveTitle('Name (NOMIS ID): wearer-1 (nomisId)Device ID: 1')
-            page.map.overlay.shouldHaveNthRow(0, 'Confidence (m)', '10')
-            page.map.overlay.shouldHaveNthRow(1, 'Speed (km/h)', '0')
-            page.map.overlay.shouldHaveNthRow(2, 'Direction (degrees)', '0')
-            page.map.overlay.shouldHaveNthRow(3, 'Recorded date/time', '01/01/2025, 00:00:00')
-            page.map.overlay.shouldHaveNthRow(4, 'Location (latitude, longitude)', '53.43159, -2.5282')
+          const rect = canvas.getBoundingClientRect()
+          expect(rect.width).to.be.greaterThan(0)
+          expect(rect.height).to.be.greaterThan(0)
+        })
+
+        // And the device wearer layer exists
+        const layerGroup = map
+          .getLayers()
+          .getArray()
+          .find(l => l.get('title') === 'device-wearer-1') as LayerGroup
+        expect(layerGroup).to.not.equal(undefined)
+
+        const subLayer = layerGroup.getLayers().getArray().find(l => l.get('title') === 'device-wearer-positions-1')
+
+        cy.wrap(null).should(() => {
+          const coordinate = fromLonLat(deviceLocation)
+          const pixel = map.getPixelFromCoordinate(coordinate)
+
+          expect(pixel).to.not.equal(undefined)
+
+          const features = map.getFeaturesAtPixel(pixel, {
+            layerFilter: l => l === subLayer,
           })
+
+          expect(features.length).to.be.greaterThan(0)
+        })
+
+        cy.window().then(window => {
+          const coordinate = fromLonLat(deviceLocation)
+          const rect = canvas.getBoundingClientRect()
+          const pixel = map.getPixelFromCoordinate(coordinate)
+
+          const clientX = rect.left + pixel[0]
+          const clientY = rect.top + pixel[1]
+
+          const events = ['pointerdown', 'pointerup', 'click']
+
+          expect(pixel).to.not.equal(undefined)
+
+          // And clicks the device position
+          events.forEach(type => {
+            const event = new window.PointerEvent(type, {
+              clientX,
+              clientY,
+              bubbles: true,
+              cancelable: true,
+              view: window,
+            })
+            canvas.dispatchEvent(event)
+          })
+
+          // Then the device position overlay should be shown
+          page.map.overlay.shouldBeVisible()
+          page.map.overlay.shouldHaveTitle('Name (NOMIS ID): wearer-1 (nomisId)Device ID: 1')
+          page.map.overlay.shouldHaveNthRow(0, 'Confidence (m)', '10')
+          page.map.overlay.shouldHaveNthRow(1, 'Speed (km/h)', '0')
+          page.map.overlay.shouldHaveNthRow(2, 'Direction (degrees)', '0')
+          page.map.overlay.shouldHaveNthRow(3, 'Recorded date/time', '01/01/2025, 00:00:00')
+          page.map.overlay.shouldHaveNthRow(4, 'Location (latitude, longitude)', '53.43159, -2.5282')
         })
       })
     })
