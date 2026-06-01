@@ -1,5 +1,7 @@
+/* eslint-disable cypress/no-unnecessary-waiting */
 import Map from 'ol/Map'
 import BaseLayer from 'ol/layer/Base'
+import LayerGroup from 'ol/layer/Group'
 import { fromLonLat, transform } from 'ol/proj'
 import VectorLayer from 'ol/layer/Vector'
 import { Style } from 'ol/style'
@@ -7,7 +9,6 @@ import Page from '../../pages/page'
 import CrimeVersionPage from '../../pages/proximityAlert/crimeVersion'
 import { crimeLocation, crimeVersionId, crimeVersionWithManyMatches, deviceLocation, hubManager } from './fixtures'
 import { hubCaseworker } from '../../fixtures/auth'
-import LayerGroup from 'ol/layer/Group'
 
 const getTitle = (layer: BaseLayer): string => {
   const title = layer.get('title')
@@ -471,7 +472,10 @@ context('Crime Version', () => {
           .find(l => l.get('title') === 'crime') as LayerGroup
         expect(layerGroup).to.not.equal(undefined)
 
-        const subLayer = layerGroup.getLayers().getArray().find(l => l.get('title') === 'crime-marker')
+        const subLayer = layerGroup
+          .getLayers()
+          .getArray()
+          .find(l => l.get('title') === 'crime-marker')
 
         cy.wrap(null).should(() => {
           const pixel = map.getPixelFromCoordinate(coordinate)
@@ -551,7 +555,10 @@ context('Crime Version', () => {
           .find(l => l.get('title') === 'device-wearer-1') as LayerGroup
         expect(layerGroup).to.not.equal(undefined)
 
-        const subLayer = layerGroup.getLayers().getArray().find(l => l.get('title') === 'device-wearer-positions-1')
+        const subLayer = layerGroup
+          .getLayers()
+          .getArray()
+          .find(l => l.get('title') === 'device-wearer-positions-1')
 
         cy.wrap(null).should(() => {
           const pixel = map.getPixelFromCoordinate(coordinate)
