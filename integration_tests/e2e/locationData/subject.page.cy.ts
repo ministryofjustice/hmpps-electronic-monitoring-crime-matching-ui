@@ -220,6 +220,7 @@ context('Interacting with the map', () => {
     // When the map is ready
     page.map.mapInstance.then(map => {
       let canvas: HTMLCanvasElement
+      const coordinate = fromLonLat(location)
 
       // And the viewport + canvas are ready
       cy.wrap(null).should(() => {
@@ -243,9 +244,7 @@ context('Interacting with the map', () => {
 
       // And the point is clickable on the map
       cy.wrap(null).should(() => {
-        const coordinate = fromLonLat(location)
         const pixel = map.getPixelFromCoordinate(coordinate)
-
         expect(pixel).to.not.equal(undefined)
 
         const features = map.getFeaturesAtPixel(pixel, {
@@ -257,7 +256,6 @@ context('Interacting with the map', () => {
 
       // And position marker is clicked
       cy.window().then(window => {
-        const coordinate = fromLonLat(location)
         const rect = canvas.getBoundingClientRect()
         const pixel = map.getPixelFromCoordinate(coordinate)
 

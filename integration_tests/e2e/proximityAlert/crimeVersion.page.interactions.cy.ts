@@ -449,6 +449,7 @@ context('Crime Version', () => {
       // And the map is ready
       page.map.mapInstance.then(map => {
         let canvas: HTMLCanvasElement
+        const coordinate = fromLonLat(crimeLocation)
 
         // And the viewport + canvas are ready
         cy.wrap(null).should(() => {
@@ -473,7 +474,6 @@ context('Crime Version', () => {
         const subLayer = layerGroup.getLayers().getArray().find(l => l.get('title') === 'crime-marker')
 
         cy.wrap(null).should(() => {
-          const coordinate = fromLonLat(crimeLocation)
           const pixel = map.getPixelFromCoordinate(coordinate)
 
           expect(pixel).to.not.equal(undefined)
@@ -486,7 +486,6 @@ context('Crime Version', () => {
         })
 
         cy.window().then(window => {
-          const coordinate = fromLonLat(crimeLocation)
           const rect = canvas.getBoundingClientRect()
           const pixel = map.getPixelFromCoordinate(coordinate)
 
@@ -530,6 +529,7 @@ context('Crime Version', () => {
       // And the map is ready
       page.map.mapInstance.then(map => {
         let canvas: HTMLCanvasElement
+        const coordinate = fromLonLat(deviceLocation)
 
         // And the viewport + canvas are ready
         cy.wrap(null).should(() => {
@@ -554,7 +554,6 @@ context('Crime Version', () => {
         const subLayer = layerGroup.getLayers().getArray().find(l => l.get('title') === 'device-wearer-positions-1')
 
         cy.wrap(null).should(() => {
-          const coordinate = fromLonLat(deviceLocation)
           const pixel = map.getPixelFromCoordinate(coordinate)
 
           expect(pixel).to.not.equal(undefined)
@@ -567,7 +566,6 @@ context('Crime Version', () => {
         })
 
         cy.window().then(window => {
-          const coordinate = fromLonLat(deviceLocation)
           const rect = canvas.getBoundingClientRect()
           const pixel = map.getPixelFromCoordinate(coordinate)
 
