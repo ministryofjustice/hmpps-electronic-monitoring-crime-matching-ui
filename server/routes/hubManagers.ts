@@ -12,7 +12,7 @@ const hubManagersRoutes = ({ hubManagersService }: Services): Router => {
   const listController = new ListHubManagersController(hubManagersService)
   const createController = new CreateHubManagersController(hubManagersService)
 
-  router.use('/hub-managers', hasRole(ROLES.CRIME_MATCHING_HUB_MANAGER))
+  router.use(URLS.HUB_MANAGERS.VIEW, hasRole(ROLES.CRIME_MATCHING_HUB_MANAGER))
 
   router.get(URLS.HUB_MANAGERS.VIEW, asyncMiddleware(listController.view))
   router.post(URLS.HUB_MANAGERS.DELETE, asyncMiddleware(listController.delete))
