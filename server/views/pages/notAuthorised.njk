@@ -1,0 +1,11 @@
+{% extends "partials/layout.njk" %}
+
+{% set pageTitle = "Not Authorised - " + applicationName %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+      <h1 class="govuk-heading-l">You do not have permission to complete this action.</h1>
+    </div>
+  </div>
+{% endblock %}

@@ -7,6 +7,7 @@ import timezone from 'dayjs/plugin/timezone'
 import isSameOrAfter from 'dayjs/plugin/isSameOrAfter'
 import isSameOrBefore from 'dayjs/plugin/isSameOrBefore'
 
+import multer from 'multer'
 import routes from '../index'
 import nunjucksSetup from '../../utils/nunjucksSetup'
 import errorHandler from '../../errorHandler'
@@ -15,6 +16,7 @@ import AuditService from '../../services/auditService'
 import { HmppsUser } from '../../interfaces/hmppsUser'
 import setUpWebSession from '../../middleware/setUpWebSession'
 import HmppsAuditClient from '../../data/hmppsAuditClient'
+import { ROLES } from '../../constants/roles'
 
 jest.mock('../../services/auditService')
 jest.mock('../../data/hmppsAuditClient')
@@ -24,7 +26,7 @@ dayjs.extend(timezone)
 dayjs.extend(isSameOrAfter)
 dayjs.extend(isSameOrBefore)
 
-export const user: HmppsUser = {
+export const hubCaseworker: HmppsUser = {
   name: 'FIRST LAST',
   userId: 'id',
   token: 'token',
@@ -32,7 +34,12 @@ export const user: HmppsUser = {
   displayName: 'First Last',
   authSource: 'nomis',
   staffId: 1234,
-  userRoles: [],
+  userRoles: [ROLES.CRIME_MATCHING_HUB_CASEWORKER],
+}
+
+export const hubManager: HmppsUser = {
+  ...hubCaseworker,
+  userRoles: [ROLES.CRIME_MATCHING_HUB_MANAGER],
 }
 
 const hmppsAuditClient = new HmppsAuditClient({
@@ -65,6 +72,7 @@ function appSetup(services: Services, production: boolean, userSupplier: () => H
   })
   app.use(express.json())
   app.use(express.urlencoded({ extended: true }))
+  app.use(multer().single('file'))
   app.use(routes(services))
   app.use((req, res, next) => next(new NotFound()))
   app.use(errorHandler(production))
@@ -77,7 +85,7 @@ export function appWithAllRoutes({
   services = {
     auditService: new AuditService(hmppsAuditClient) as jest.Mocked<AuditService>,
   },
-  userSupplier = () => user,
+  userSupplier = () => hubCaseworker,
 }: {
   production?: boolean
   services?: Partial<Services>
