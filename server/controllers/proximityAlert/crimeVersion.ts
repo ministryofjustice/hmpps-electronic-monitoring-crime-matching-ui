@@ -14,6 +14,7 @@ import HubManagersService from '../../services/hubManagerService'
 import Result from '../../types/result'
 import { CrimeVersion } from '../../types/crimeVersion'
 import HubManager from '../../types/hubManager'
+import AuditService, { Page } from '../../services/auditService'
 
 const DOCX_CONTENT_TYPE = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
 const EXPORT_ERROR_MESSAGE = 'Could not export Proximity Alert report. Please try again.'
@@ -23,6 +24,7 @@ const INVALID_EXPORT_REQUEST_ERROR = 'Invalid export request.'
 
 export default class CrimeVersionController {
   constructor(
+    private readonly auditService: AuditService,
     private readonly crimeService: CrimeService,
     private readonly proximityAlertReportExportService: ProximityAlertReportExportService,
     private readonly hubManagersService: HubManagersService,
@@ -54,6 +56,15 @@ export default class CrimeVersionController {
   }
 
   view: RequestHandler = async (req, res, next) => {
+    await this.auditService.logPageView(Page.PROXIMITY_ALERT_CRIME_VERSION, { 
+      who: res.locals.user.username,
+      correlationId: req.id,
+      details: {
+        params: req.params,
+        query: req.query, // Includes returnto
+      }
+    })
+    
     const { username } = res.locals.user
     const { crimeVersionId } = req.params
     const result = await this.getViewData(username, crimeVersionId)
@@ -83,6 +94,15 @@ export default class CrimeVersionController {
   }
 
   exportProximityAlert: RequestHandler = async (req, res, next) => {
+    await this.auditService.logExport(Page.PROXIMITY_ALERT_CRIME_VERSION, { 
+      who: res.locals.user.username,
+      correlationId: req.id,
+      details: {
+        params: req.params,
+        query: req.query,
+      }
+    })
+    
     const { username } = res.locals.user
     const { crimeVersionId } = req.params
     const redirectUrl = `/proximity-alert/${encodeURIComponent(crimeVersionId)}`

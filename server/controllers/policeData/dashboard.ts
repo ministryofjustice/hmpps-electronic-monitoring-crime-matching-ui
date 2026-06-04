@@ -9,9 +9,11 @@ import PoliceDataService from '../../services/policeDataService'
 import presentIngestionAttemptSummaries from '../../presenters/ingestionAttemptSummaries'
 import generateCrimeMatchingResultExport from '../../presenters/reports/crimeMatchingResults'
 import URLS from '../../constants/urls'
+import AuditService, { Page } from '../../services/auditService'
 
 export default class PoliceDataDashboardController {
   constructor(
+    private readonly auditService: AuditService,
     private readonly policeDataService: PoliceDataService,
     private readonly crimeMatchingResultsService: CrimeMatchingResultsService,
   ) {}
@@ -31,10 +33,34 @@ export default class PoliceDataDashboardController {
     const { batchId, policeForceArea, fromDate, toDate } = policeDataDashboardQuerySchema.parse(req.body)
     const query = this.getQueryString(batchId, policeForceArea, fromDate, toDate)
 
+    await this.auditService.logSearch(
+      Page.POLICE_DATA_INGESTION_ATTEMPTS, 
+      {
+        who: res.locals.user.username,
+        correlationId: req.id,
+        details: {
+          params: req.params,
+          query: req.query,
+        }
+      }
+    )
+
     return res.redirect(303, `${URLS.POLICE_DATA.INGESTION_ATTEMPTS.VIEW}${query ? `?${query}` : ''}`)
   }
 
   view: RequestHandler = async (req, res) => {
+    await this.auditService.logPageView(
+      Page.POLICE_DATA_INGESTION_ATTEMPTS,
+      { 
+        who: res.locals.user.username,
+        correlationId: req.id,
+        details: {
+          params: req.params,
+          query: req.query,
+        }
+      }
+    )
+
     const { query } = req
     const { username } = res.locals.user
     const { batchId, policeForceArea, fromDate, toDate, page } = policeDataDashboardQuerySchema.parse(query)
@@ -78,6 +104,14 @@ export default class PoliceDataDashboardController {
   export: RequestHandler = async (req, res, next) => {
     const { username } = res.locals.user
     const { batchIds } = policeDataDashboardExportQuerySchema.parse(req.query)
+    await this.auditService.logExport(Page.POLICE_DATA_INGESTION_ATTEMPTS, { 
+      who: res.locals.user.username, 
+      correlationId: req.id,
+      details: {
+        params: req.params,
+        query: req.query,
+      }
+    })
     const result = await this.crimeMatchingResultsService.getCrimeMatchingResultsForBatches(username, batchIds)
 
     if (result.ok) {
