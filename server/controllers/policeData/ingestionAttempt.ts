@@ -11,14 +11,6 @@ export default class PoliceDataIngestionAttemptController {
   ) {}
 
   view: RequestHandler = async (req, res) => {
-    await this.auditService.logPageView(Page.POLICE_DATA_INGESTION_ATTEMPT, { 
-      who: res.locals.user.username,
-      correlationId: req.id,
-      details: {
-        params: req.params,
-        query: req.query,
-      }
-    })
     const { username } = res.locals.user
     const { ingestionAttemptId } = req.params
     const ingestionAttempt = await this.policeDataService.getIngestionAttempt(username, ingestionAttemptId)

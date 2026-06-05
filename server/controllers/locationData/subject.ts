@@ -88,15 +88,6 @@ export default class SubjectController {
   }
 
   view: RequestHandler = async (req, res) => {
-    await this.auditService.logPageView(Page.LOCATION_DATA_DEVICE_ACTIVATION, { 
-      who: res.locals.user.username,
-      correlationId: req.id,
-      details: {
-        params: req.params,
-        query: req.query,
-      }
-    })
-    
     const { username } = res.locals.user
     const { query, deviceActivation } = req
     const { from, to } = viewLocationsQueryParametersSchema.parse(query)

@@ -11,14 +11,6 @@ export default class PersonsController {
   ) {}
 
   view: RequestHandler = async (req, res) => {
-    await this.auditService.logPageView(Page.LOCATION_DATA_DEVICE_ACTIVATIONS, { 
-      who: res.locals.user.username,
-      correlationId: req.id,
-      details: {
-        params: req.params,
-        query: req.query,
-      }
-    })
     const { query } = req
     const { username } = res.locals.user
     const parsedQuery = personsQueryParametersSchema.parse(query)

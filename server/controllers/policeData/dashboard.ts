@@ -49,18 +49,6 @@ export default class PoliceDataDashboardController {
   }
 
   view: RequestHandler = async (req, res) => {
-    await this.auditService.logPageView(
-      Page.POLICE_DATA_INGESTION_ATTEMPTS,
-      { 
-        who: res.locals.user.username,
-        correlationId: req.id,
-        details: {
-          params: req.params,
-          query: req.query,
-        }
-      }
-    )
-
     const { query } = req
     const { username } = res.locals.user
     const { batchId, policeForceArea, fromDate, toDate, page } = policeDataDashboardQuerySchema.parse(query)
