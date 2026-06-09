@@ -354,7 +354,7 @@ describe('PersonsController', () => {
 
       // When
       await controller.search(req, res, next)
-      
+
       // Then
       expect(auditService.logSearch).toHaveBeenCalledWith(Page.LOCATION_DATA_DEVICE_ACTIVATIONS, {
         who: 'fakeUserName',

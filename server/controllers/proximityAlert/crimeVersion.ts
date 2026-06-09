@@ -85,15 +85,15 @@ export default class CrimeVersionController {
   }
 
   exportProximityAlert: RequestHandler = async (req, res, next) => {
-    await this.auditService.logExport(Page.PROXIMITY_ALERT_CRIME_VERSION, { 
+    await this.auditService.logExport(Page.PROXIMITY_ALERT_CRIME_VERSION, {
       who: res.locals.user.username,
       correlationId: req.id,
       details: {
         params: req.params,
         query: req.query,
-      }
+      },
     })
-    
+
     const { username } = res.locals.user
     const { crimeVersionId } = req.params
     const redirectUrl = `/proximity-alert/${encodeURIComponent(crimeVersionId)}`

@@ -20,11 +20,11 @@ const expectedAuthOptions = {
 
 describe('CrimeSearchController', () => {
   const hmppsAuditClient = new HmppsAuditClient({
-        queueUrl: '',
-        enabled: true,
-        region: 'eu-west-2',
-        serviceName: '',
-      }) as jest.Mocked<HmppsAuditClient>
+    queueUrl: '',
+    enabled: true,
+    region: 'eu-west-2',
+    serviceName: '',
+  }) as jest.Mocked<HmppsAuditClient>
   const auditService = new AuditService(hmppsAuditClient) as jest.Mocked<AuditService>
   let mockRestClient: jest.Mocked<CrimeMatchingClient>
 

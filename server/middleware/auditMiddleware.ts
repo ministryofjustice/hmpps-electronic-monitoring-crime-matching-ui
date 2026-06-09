@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response, Router } from 'express'
-import { Services } from "../services"
-import asyncMiddleware from "./asyncMiddleware"
-import { Page, PageViewEventDetails } from "../services/auditService"
+import { Services } from '../services'
+import asyncMiddleware from './asyncMiddleware'
+import { Page, PageViewEventDetails } from '../services/auditService'
 import URLS from '../constants/urls'
 
 const pageViewEventMap: Record<string, Page> = {
@@ -18,7 +18,6 @@ export default function auditMiddleware({ auditService }: Services) {
   const auditPageView = (route: string) =>
     // Creates middleware per route
     asyncMiddleware(async (req: Request, res: Response, next: NextFunction) => {
-
       // Assign page based on route
       const page = pageViewEventMap[route]
 
@@ -52,14 +51,12 @@ export default function auditMiddleware({ auditService }: Services) {
         }
       })
 
-
       return next()
     })
 
-    const router = Router()
+  const router = Router()
+  // Attach middleware to all routes
+  Object.keys(pageViewEventMap).forEach(route => router.get(route, auditPageView(route)))
 
-    // Attach middleware to all routes
-    Object.keys(pageViewEventMap).forEach(route => router.get(route, auditPageView(route)))
-
-    return router
+  return router
 }

@@ -179,7 +179,11 @@ describe('PoliceDataDashboardController', () => {
         const next = jest.fn()
         const policeDataService = new PoliceDataService(mockRestClient)
         const crimeMatchingResultService = new CrimeMatchingResultsService(mockRestClient)
-        const controller = new PoliceDataDashboardController(auditService, policeDataService, crimeMatchingResultService)
+        const controller = new PoliceDataDashboardController(
+          auditService,
+          policeDataService,
+          crimeMatchingResultService,
+        )
 
         // When
         await controller.view(req, res, next)
@@ -228,7 +232,11 @@ describe('PoliceDataDashboardController', () => {
         const next = jest.fn()
         const policeDataService = new PoliceDataService(mockRestClient)
         const crimeMatchingResultService = new CrimeMatchingResultsService(mockRestClient)
-        const controller = new PoliceDataDashboardController(auditService, policeDataService, crimeMatchingResultService)
+        const controller = new PoliceDataDashboardController(
+          auditService,
+          policeDataService,
+          crimeMatchingResultService,
+        )
 
         mockRestClient.getIngestionAttempts.mockResolvedValue({
           data: [ingestionAttemptSummary],

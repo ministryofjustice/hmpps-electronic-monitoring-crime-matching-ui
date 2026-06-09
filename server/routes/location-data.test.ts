@@ -6,7 +6,7 @@ import ValidationService from '../services/locationData/validationService'
 import PersonsService from '../services/personsService'
 import CrimeMatchingClient from '../data/crimeMatchingClient'
 import HmppsAuditClient from '../data/hmppsAuditClient'
-import AuditService, { Page } from '../services/auditService'
+import AuditService from '../services/auditService'
 
 jest.mock('../services/auditService')
 jest.mock('../data/crimeMatchingClient')

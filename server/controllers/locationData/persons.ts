@@ -7,10 +7,10 @@ import AuditService, { Page } from '../../services/auditService'
 export default class PersonsController {
   constructor(
     private readonly auditService: AuditService,
-    private readonly service: PersonsService
+    private readonly service: PersonsService,
   ) {}
 
-  view: RequestHandler = async (req, res) => {    
+  view: RequestHandler = async (req, res) => {
     const { query } = req
     const { username } = res.locals.user
     const parsedQuery = personsQueryParametersSchema.parse(query)
@@ -43,15 +43,15 @@ export default class PersonsController {
   }
 
   search: RequestHandler = async (req, res) => {
-    await this.auditService.logSearch(Page.LOCATION_DATA_DEVICE_ACTIVATIONS, { 
+    await this.auditService.logSearch(Page.LOCATION_DATA_DEVICE_ACTIVATIONS, {
       who: res.locals.user.username,
       correlationId: req.id,
       details: {
         params: req.params,
         query: req.query,
-      }
+      },
     })
-    
+
     const formData = personsFormDataSchema.safeParse(req.body)
     req.session.formData = {
       ...req.body,

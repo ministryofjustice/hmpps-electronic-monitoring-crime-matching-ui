@@ -8,7 +8,7 @@ import AuditService, { Page } from '../../services/auditService'
 export default class CrimeSearchController {
   constructor(
     private readonly auditService: AuditService,
-    private readonly crimeService: CrimeService
+    private readonly crimeService: CrimeService,
   ) {}
 
   private getQueryString = (crimeReference: string | null): string => {
@@ -20,22 +20,22 @@ export default class CrimeSearchController {
   }
 
   search: RequestHandler = async (req, res) => {
-    await this.auditService.logSearch(Page.PROXIMITY_ALERT_CRIME_VERSIONS, { 
+    await this.auditService.logSearch(Page.PROXIMITY_ALERT_CRIME_VERSIONS, {
       who: res.locals.user.username,
       correlationId: req.id,
       details: {
         params: req.params,
         query: req.query,
-      }
+      },
     })
-    
+
     const { crimeReference } = crimeSearchQuerySchema.parse(req.body)
     const query = this.getQueryString(crimeReference)
 
     return res.redirect(303, `${URLS.PROXIMITY_ALERT.CRIME_VERSIONS.VIEW}${query ? `?${query}` : ''}`)
   }
 
-  view: RequestHandler = async (req, res) => {  
+  view: RequestHandler = async (req, res) => {
     const { query } = req
     const { username } = res.locals.user
     const { crimeReference, page } = crimeSearchQuerySchema.parse(query)

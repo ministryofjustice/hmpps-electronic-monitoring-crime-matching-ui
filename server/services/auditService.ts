@@ -8,7 +8,7 @@ export enum Page {
   POLICE_DATA_INGESTION_ATTEMPT = 'POLICE_DATA_INGESTION_ATTEMPT',
   POLICE_DATA_INGESTION_ATTEMPTS = 'POLICE_DATA_INGESTION_ATTEMPTS',
   PROXIMITY_ALERT_CRIME_VERSION = 'PROXIMITY_ALERT_CRIME_VERSION',
-  PROXIMITY_ALERT_CRIME_VERSIONS = 'PROXIMITY_ALERT_CRIME_VERSIONS'
+  PROXIMITY_ALERT_CRIME_VERSIONS = 'PROXIMITY_ALERT_CRIME_VERSIONS',
 }
 
 export interface PageViewEventDetails {
@@ -53,7 +53,7 @@ export default class AuditService {
   async logExport(page: Page, eventDetails: PageViewEventDetails) {
     const event: AuditEvent = {
       ...eventDetails,
-      what: `EXPORT_${page}`
+      what: `EXPORT_${page}`,
     }
     await this.hmppsAuditClient.sendMessage(event)
   }

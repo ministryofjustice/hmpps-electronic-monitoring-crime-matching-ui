@@ -53,12 +53,12 @@ describe('/hub-managers', () => {
           expect(res.text).toContain('You do not have permission to complete this action')
           expect(auditService.logPageView).not.toHaveBeenCalled()
           expect(auditService.logPageViewAttempt).toHaveBeenCalledWith(Page.HUB_MANAGERS, {
-              who: 'user1',
-              correlationId: expect.any(String),
-              details: {
-                params: {},
-                query: {},
-              },
+            who: 'user1',
+            correlationId: expect.any(String),
+            details: {
+              params: {},
+              query: {},
+            },
           })
         })
     })
@@ -85,12 +85,12 @@ describe('/hub-managers', () => {
           expect(res.text).toContain('Hub managers')
           expect(auditService.logPageViewAttempt).not.toHaveBeenCalled()
           expect(auditService.logPageView).toHaveBeenCalledWith(Page.HUB_MANAGERS, {
-              who: 'user1',
-              correlationId: expect.any(String),
-              details: {
-                params: {},
-                query: {},
-              },
+            who: 'user1',
+            correlationId: expect.any(String),
+            details: {
+              params: {},
+              query: {},
+            },
           })
         })
     })

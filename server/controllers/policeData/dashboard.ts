@@ -30,18 +30,15 @@ export default class PoliceDataDashboardController {
   }
 
   search: RequestHandler = async (req, res) => {
-    await this.auditService.logSearch(
-      Page.POLICE_DATA_INGESTION_ATTEMPTS, 
-      {
-        who: res.locals.user.username,
-        correlationId: req.id,
-        details: {
-          params: req.params,
-          query: req.query,
-        }
-      }
-    )
-    
+    await this.auditService.logSearch(Page.POLICE_DATA_INGESTION_ATTEMPTS, {
+      who: res.locals.user.username,
+      correlationId: req.id,
+      details: {
+        params: req.params,
+        query: req.query,
+      },
+    })
+
     const { batchId, policeForceArea, fromDate, toDate } = policeDataDashboardQuerySchema.parse(req.body)
     const query = this.getQueryString(batchId, policeForceArea, fromDate, toDate)
 
@@ -90,15 +87,15 @@ export default class PoliceDataDashboardController {
   }
 
   export: RequestHandler = async (req, res, next) => {
-    await this.auditService.logExport(Page.POLICE_DATA_INGESTION_ATTEMPTS, { 
-      who: res.locals.user.username, 
+    await this.auditService.logExport(Page.POLICE_DATA_INGESTION_ATTEMPTS, {
+      who: res.locals.user.username,
       correlationId: req.id,
       details: {
         params: req.params,
         query: req.query,
-      }
+      },
     })
-    
+
     const { username } = res.locals.user
     const { batchIds } = policeDataDashboardExportQuerySchema.parse(req.query)
     const result = await this.crimeMatchingResultsService.getCrimeMatchingResultsForBatches(username, batchIds)
