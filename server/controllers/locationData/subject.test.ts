@@ -7,6 +7,8 @@ import isSameOrBefore from 'dayjs/plugin/isSameOrBefore'
 import logger from '../../../logger'
 import createMockRequest from '../../testutils/createMockRequest'
 import createMockResponse from '../../testutils/createMockResponse'
+import AuditService, { Page } from '../../services/auditService'
+import HmppsAuditClient from '../../data/hmppsAuditClient'
 import SubjectController from './subject'
 import DeviceActivationsService from '../../services/deviceActivationsService'
 import ValidationService from '../../services/locationData/validationService'
@@ -19,10 +21,18 @@ dayjs.extend(customParseFormat)
 dayjs.extend(isSameOrAfter)
 dayjs.extend(isSameOrBefore)
 
+jest.mock('../../services/auditService')
 jest.mock('../../data/crimeMatchingClient')
 jest.mock('../../../logger')
 
 describe('SubjectController', () => {
+  const hmppsAuditClient = new HmppsAuditClient({
+    queueUrl: '',
+    enabled: true,
+    region: 'eu-west-2',
+    serviceName: '',
+  }) as jest.Mocked<HmppsAuditClient>
+  const auditService = new AuditService(hmppsAuditClient) as jest.Mocked<AuditService>
   let mockRestClient: jest.Mocked<CrimeMatchingClient>
 
   beforeEach(() => {
@@ -67,12 +77,17 @@ describe('SubjectController', () => {
       const deviceActivationsService = new DeviceActivationsService(mockRestClient)
       const personsService = new PersonsService(mockRestClient)
       const validationService = new ValidationService(deviceActivationsService)
-      const controller = new SubjectController(deviceActivationsService, personsService, validationService)
+      const controller = new SubjectController(auditService, deviceActivationsService, personsService, validationService)
 
       // When
       await controller.search(req, res, next)
 
       // Then
+      expect(auditService.logSearch).toHaveBeenCalledWith(Page.LOCATION_DATA_DEVICE_ACTIVATION, {
+        who: 'fakeUserName',
+        correlationId: expect.any(String),
+        details: expect.any(Object),
+      })
       expect(res.redirect).toHaveBeenCalledWith(
         '/location-data/device-activations/1?from=2025-02-01T01:01:01.000Z&to=2025-02-02T01:01:01.000Z',
       )
@@ -99,12 +114,17 @@ describe('SubjectController', () => {
       const deviceActivationsService = new DeviceActivationsService(mockRestClient)
       const personsService = new PersonsService(mockRestClient)
       const validationService = new ValidationService(deviceActivationsService)
-      const controller = new SubjectController(deviceActivationsService, personsService, validationService)
+      const controller = new SubjectController(auditService, deviceActivationsService, personsService, validationService)
 
       // When
       await controller.search(req, res, next)
 
       // Then
+      expect(auditService.logSearch).toHaveBeenCalledWith(Page.LOCATION_DATA_DEVICE_ACTIVATION, {
+        who: 'fakeUserName',
+        correlationId: expect.any(String),
+        details: expect.any(Object),
+      })
       expect(res.redirect).toHaveBeenCalledWith('/location-data/persons?name=foo&nomisId=')
       expect(req.session.validationErrors).toEqual([
         {
@@ -146,12 +166,17 @@ describe('SubjectController', () => {
       const deviceActivationsService = new DeviceActivationsService(mockRestClient)
       const personsService = new PersonsService(mockRestClient)
       const validationService = new ValidationService(deviceActivationsService)
-      const controller = new SubjectController(deviceActivationsService, personsService, validationService)
+      const controller = new SubjectController(auditService, deviceActivationsService, personsService, validationService)
 
       // When
       await controller.search(req, res, next)
 
       // Then
+      expect(auditService.logSearch).toHaveBeenCalledWith(Page.LOCATION_DATA_DEVICE_ACTIVATION, {
+        who: 'fakeUserName',
+        correlationId: expect.any(String),
+        details: expect.any(Object),
+      })
       expect(res.redirect).toHaveBeenCalledWith('/location-data/device-activations/1')
       expect(req.session.validationErrors).toEqual([
         {
@@ -189,12 +214,17 @@ describe('SubjectController', () => {
       const deviceActivationsService = new DeviceActivationsService(mockRestClient)
       const personsService = new PersonsService(mockRestClient)
       const validationService = new ValidationService(deviceActivationsService)
-      const controller = new SubjectController(deviceActivationsService, personsService, validationService)
+      const controller = new SubjectController(auditService, deviceActivationsService, personsService, validationService)
 
       // When
       await controller.search(req, res, next)
 
       // Then
+      expect(auditService.logSearch).toHaveBeenCalledWith(Page.LOCATION_DATA_DEVICE_ACTIVATION, {
+        who: 'fakeUserName',
+        correlationId: expect.any(String),
+        details: expect.any(Object),
+      })
       expect(res.redirect).toHaveBeenCalledWith('/location-data/device-activations/1')
       expect(req.session.validationErrors).toEqual([
         {
@@ -242,12 +272,17 @@ describe('SubjectController', () => {
       const deviceActivationsService = new DeviceActivationsService(mockRestClient)
       const personsService = new PersonsService(mockRestClient)
       const validationService = new ValidationService(deviceActivationsService)
-      const controller = new SubjectController(deviceActivationsService, personsService, validationService)
+      const controller = new SubjectController(auditService, deviceActivationsService, personsService, validationService)
 
       // When
       await controller.search(req, res, next)
 
       // Then
+      expect(auditService.logSearch).toHaveBeenCalledWith(Page.LOCATION_DATA_DEVICE_ACTIVATION, {
+        who: 'fakeUserName',
+        correlationId: expect.any(String),
+        details: expect.any(Object),
+      })
       expect(res.redirect).toHaveBeenCalledWith('/location-data/device-activations/1')
       expect(req.session.validationErrors).toEqual([
         {
@@ -295,12 +330,17 @@ describe('SubjectController', () => {
       const deviceActivationsService = new DeviceActivationsService(mockRestClient)
       const personsService = new PersonsService(mockRestClient)
       const validationService = new ValidationService(deviceActivationsService)
-      const controller = new SubjectController(deviceActivationsService, personsService, validationService)
+      const controller = new SubjectController(auditService, deviceActivationsService, personsService, validationService)
 
       // When
       await controller.search(req, res, next)
 
       // Then
+      expect(auditService.logSearch).toHaveBeenCalledWith(Page.LOCATION_DATA_DEVICE_ACTIVATION, {
+        who: 'fakeUserName',
+        correlationId: expect.any(String),
+        details: expect.any(Object),
+      })
       expect(res.redirect).toHaveBeenCalledWith('/location-data/device-activations/1')
       expect(req.session.validationErrors).toEqual([
         {
@@ -341,7 +381,7 @@ describe('SubjectController', () => {
       const deviceActivationsService = new DeviceActivationsService(mockRestClient)
       const personsService = new PersonsService(mockRestClient)
       const validationService = new ValidationService(deviceActivationsService)
-      const controller = new SubjectController(deviceActivationsService, personsService, validationService)
+      const controller = new SubjectController(auditService, deviceActivationsService, personsService, validationService)
 
       // GET /device-activations/1/positions
       mockRestClient.getDeviceActivationPositions.mockResolvedValue({
@@ -451,7 +491,7 @@ describe('SubjectController', () => {
       const deviceActivationsService = new DeviceActivationsService(mockRestClient)
       const personsService = new PersonsService(mockRestClient)
       const validationService = new ValidationService(deviceActivationsService)
-      const controller = new SubjectController(deviceActivationsService, personsService, validationService)
+      const controller = new SubjectController(auditService, deviceActivationsService, personsService, validationService)
 
       // GET /device-activations/1/positions
       mockRestClient.getDeviceActivationPositions.mockResolvedValue({

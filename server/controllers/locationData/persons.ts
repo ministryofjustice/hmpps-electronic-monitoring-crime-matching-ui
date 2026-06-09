@@ -10,7 +10,7 @@ export default class PersonsController {
     private readonly service: PersonsService
   ) {}
 
-  view: RequestHandler = async (req, res) => {
+  view: RequestHandler = async (req, res) => {    
     const { query } = req
     const { username } = res.locals.user
     const parsedQuery = personsQueryParametersSchema.parse(query)
@@ -51,7 +51,7 @@ export default class PersonsController {
         query: req.query,
       }
     })
-
+    
     const formData = personsFormDataSchema.safeParse(req.body)
     req.session.formData = {
       ...req.body,

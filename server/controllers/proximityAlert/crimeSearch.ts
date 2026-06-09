@@ -28,22 +28,14 @@ export default class CrimeSearchController {
         query: req.query,
       }
     })
+    
     const { crimeReference } = crimeSearchQuerySchema.parse(req.body)
     const query = this.getQueryString(crimeReference)
 
     return res.redirect(303, `${URLS.PROXIMITY_ALERT.CRIME_VERSIONS.VIEW}${query ? `?${query}` : ''}`)
   }
 
-  view: RequestHandler = async (req, res) => {
-    await this.auditService.logPageView(Page.PROXIMITY_ALERT_CRIME_VERSIONS, { 
-      who: res.locals.user.username,
-      correlationId: req.id,
-      details: {
-        params: req.params,
-        query: req.query,
-      }
-    })
-    
+  view: RequestHandler = async (req, res) => {  
     const { query } = req
     const { username } = res.locals.user
     const { crimeReference, page } = crimeSearchQuerySchema.parse(query)

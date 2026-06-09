@@ -5,6 +5,8 @@ import customParseFormat from 'dayjs/plugin/customParseFormat'
 import isSameOrAfter from 'dayjs/plugin/isSameOrAfter'
 import isSameOrBefore from 'dayjs/plugin/isSameOrBefore'
 import logger from '../../../logger'
+import AuditService, { Page } from '../../services/auditService'
+import HmppsAuditClient from '../../data/hmppsAuditClient'
 import CrimeMatchingClient from '../../data/crimeMatchingClient'
 import PoliceDataService from '../../services/policeDataService'
 import createMockRequest from '../../testutils/createMockRequest'
@@ -18,6 +20,7 @@ dayjs.extend(customParseFormat)
 dayjs.extend(isSameOrAfter)
 dayjs.extend(isSameOrBefore)
 
+jest.mock('../../services/auditService')
 jest.mock('../../data/crimeMatchingClient')
 jest.mock('../../../logger')
 
@@ -53,6 +56,13 @@ const expectedIngestionAttemptSummary = {
 }
 
 describe('PoliceDataDashboardController', () => {
+  const hmppsAuditClient = new HmppsAuditClient({
+    queueUrl: '',
+    enabled: true,
+    region: 'eu-west-2',
+    serviceName: '',
+  }) as jest.Mocked<HmppsAuditClient>
+  const auditService = new AuditService(hmppsAuditClient) as jest.Mocked<AuditService>
   let mockRestClient: jest.Mocked<CrimeMatchingClient>
 
   beforeEach(() => {
@@ -83,12 +93,17 @@ describe('PoliceDataDashboardController', () => {
       const next = jest.fn()
       const policeDataService = new PoliceDataService(mockRestClient)
       const crimeMatchingResultService = new CrimeMatchingResultsService(mockRestClient)
-      const controller = new PoliceDataDashboardController(policeDataService, crimeMatchingResultService)
+      const controller = new PoliceDataDashboardController(auditService, policeDataService, crimeMatchingResultService)
 
       // When
       await controller.search(req, res, next)
 
       // Then
+      expect(auditService.logSearch).toHaveBeenCalledWith(Page.POLICE_DATA_INGESTION_ATTEMPTS, {
+        who: 'fakeUserName',
+        correlationId: expect.any(String),
+        details: expect.any(Object),
+      })
       expect(res.redirect).toHaveBeenCalledWith(303, expected)
       expect(next).not.toHaveBeenCalled()
     })
@@ -100,12 +115,17 @@ describe('PoliceDataDashboardController', () => {
       const next = jest.fn()
       const policeDataService = new PoliceDataService(mockRestClient)
       const crimeMatchingResultService = new CrimeMatchingResultsService(mockRestClient)
-      const controller = new PoliceDataDashboardController(policeDataService, crimeMatchingResultService)
+      const controller = new PoliceDataDashboardController(auditService, policeDataService, crimeMatchingResultService)
 
       // When
       await controller.search(req, res, next)
 
       // Then
+      expect(auditService.logSearch).toHaveBeenCalledWith(Page.POLICE_DATA_INGESTION_ATTEMPTS, {
+        who: 'fakeUserName',
+        correlationId: expect.any(String),
+        details: expect.any(Object),
+      })
       expect(res.redirect).toHaveBeenCalledWith(303, '/police-data/dashboard')
       expect(next).not.toHaveBeenCalled()
     })
@@ -117,12 +137,17 @@ describe('PoliceDataDashboardController', () => {
       const next = jest.fn()
       const policeDataService = new PoliceDataService(mockRestClient)
       const crimeMatchingResultService = new CrimeMatchingResultsService(mockRestClient)
-      const controller = new PoliceDataDashboardController(policeDataService, crimeMatchingResultService)
+      const controller = new PoliceDataDashboardController(auditService, policeDataService, crimeMatchingResultService)
 
       // When
       await controller.search(req, res, next)
 
       // Then
+      expect(auditService.logSearch).toHaveBeenCalledWith(Page.POLICE_DATA_INGESTION_ATTEMPTS, {
+        who: 'fakeUserName',
+        correlationId: expect.any(String),
+        details: expect.any(Object),
+      })
       expect(res.redirect).toHaveBeenCalledWith(303, '/police-data/dashboard?batchId=A%26B%3DC')
       expect(next).not.toHaveBeenCalled()
     })
@@ -154,7 +179,7 @@ describe('PoliceDataDashboardController', () => {
         const next = jest.fn()
         const policeDataService = new PoliceDataService(mockRestClient)
         const crimeMatchingResultService = new CrimeMatchingResultsService(mockRestClient)
-        const controller = new PoliceDataDashboardController(policeDataService, crimeMatchingResultService)
+        const controller = new PoliceDataDashboardController(auditService, policeDataService, crimeMatchingResultService)
 
         // When
         await controller.view(req, res, next)
@@ -203,7 +228,7 @@ describe('PoliceDataDashboardController', () => {
         const next = jest.fn()
         const policeDataService = new PoliceDataService(mockRestClient)
         const crimeMatchingResultService = new CrimeMatchingResultsService(mockRestClient)
-        const controller = new PoliceDataDashboardController(policeDataService, crimeMatchingResultService)
+        const controller = new PoliceDataDashboardController(auditService, policeDataService, crimeMatchingResultService)
 
         mockRestClient.getIngestionAttempts.mockResolvedValue({
           data: [ingestionAttemptSummary],
@@ -245,7 +270,7 @@ describe('PoliceDataDashboardController', () => {
       const next = jest.fn()
       const policeDataService = new PoliceDataService(mockRestClient)
       const crimeMatchingResultService = new CrimeMatchingResultsService(mockRestClient)
-      const controller = new PoliceDataDashboardController(policeDataService, crimeMatchingResultService)
+      const controller = new PoliceDataDashboardController(auditService, policeDataService, crimeMatchingResultService)
 
       mockRestClient.getIngestionAttempts.mockResolvedValue({
         data: [ingestionAttemptSummary],
@@ -286,7 +311,7 @@ describe('PoliceDataDashboardController', () => {
       const next = jest.fn()
       const policeDataService = new PoliceDataService(mockRestClient)
       const crimeMatchingResultService = new CrimeMatchingResultsService(mockRestClient)
-      const controller = new PoliceDataDashboardController(policeDataService, crimeMatchingResultService)
+      const controller = new PoliceDataDashboardController(auditService, policeDataService, crimeMatchingResultService)
 
       // Given
       mockRestClient.getIngestionAttempts.mockResolvedValue({
@@ -510,7 +535,7 @@ describe('PoliceDataDashboardController', () => {
       const next = jest.fn()
       const policeDataService = new PoliceDataService(mockRestClient)
       const crimeMatchingResultService = new CrimeMatchingResultsService(mockRestClient)
-      const controller = new PoliceDataDashboardController(policeDataService, crimeMatchingResultService)
+      const controller = new PoliceDataDashboardController(auditService, policeDataService, crimeMatchingResultService)
 
       mockRestClient.getCrimeMatchingResults.mockResolvedValue({
         data: [
@@ -541,6 +566,11 @@ describe('PoliceDataDashboardController', () => {
       await controller.export(req, res, next)
 
       // Then
+      expect(auditService.logExport).toHaveBeenCalledWith(Page.POLICE_DATA_INGESTION_ATTEMPTS, {
+        who: 'fakeUserName',
+        correlationId: expect.any(String),
+        details: expect.any(Object),
+      })
       expect(mockRestClient.getCrimeMatchingResults).toHaveBeenCalledWith(expectedAuthOptions, [
         'bccfe61c-adb0-4e50-b6e6-ce7a68866773',
         '93fa3424-d014-49ac-ae11-e5bcc2c53c9d',
@@ -564,12 +594,17 @@ describe('PoliceDataDashboardController', () => {
       const next = jest.fn()
       const policeDataService = new PoliceDataService(mockRestClient)
       const crimeMatchingResultService = new CrimeMatchingResultsService(mockRestClient)
-      const controller = new PoliceDataDashboardController(policeDataService, crimeMatchingResultService)
+      const controller = new PoliceDataDashboardController(auditService, policeDataService, crimeMatchingResultService)
 
       // When
       await controller.export(req, res, next)
 
       // Then
+      expect(auditService.logExport).toHaveBeenCalledWith(Page.POLICE_DATA_INGESTION_ATTEMPTS, {
+        who: 'fakeUserName',
+        correlationId: expect.any(String),
+        details: expect.any(Object),
+      })
       expect(mockRestClient.getCrimeMatchingResults).not.toHaveBeenCalled()
       expect(res.setHeader).not.toHaveBeenCalled()
       expect(res.send).not.toHaveBeenCalled()
@@ -583,7 +618,7 @@ describe('PoliceDataDashboardController', () => {
       const next = jest.fn()
       const policeDataService = new PoliceDataService(mockRestClient)
       const crimeMatchingResultService = new CrimeMatchingResultsService(mockRestClient)
-      const controller = new PoliceDataDashboardController(policeDataService, crimeMatchingResultService)
+      const controller = new PoliceDataDashboardController(auditService, policeDataService, crimeMatchingResultService)
 
       mockRestClient.getCrimeMatchingResults.mockResolvedValue({
         data: [],
@@ -593,6 +628,11 @@ describe('PoliceDataDashboardController', () => {
       await controller.export(req, res, next)
 
       // Then
+      expect(auditService.logExport).toHaveBeenCalledWith(Page.POLICE_DATA_INGESTION_ATTEMPTS, {
+        who: 'fakeUserName',
+        correlationId: expect.any(String),
+        details: expect.any(Object),
+      })
       expect(mockRestClient.getCrimeMatchingResults).toHaveBeenCalledWith(expectedAuthOptions, [
         'bccfe61c-adb0-4e50-b6e6-ce7a68866773',
       ])

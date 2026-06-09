@@ -16,7 +16,7 @@ const pageViewEventMap: Record<string, Page> = {
 
 export default function auditMiddleware({ auditService }: Services) {
   const auditPageView = (route: string) =>
-    // Creates middleware per route, is this a good idea?
+    // Creates middleware per route
     asyncMiddleware(async (req: Request, res: Response, next: NextFunction) => {
 
       // Assign page based on route
@@ -35,25 +35,22 @@ export default function auditMiddleware({ auditService }: Services) {
         },
       }
 
-      // Log an attempted page view regardless
-      auditService.logPageViewAttempt(page, auditDetails)
+      let succeeded = false
 
-      // let finished = false
-
-      //Log an actual view if successful
+      // Log a view if successful
       res.prependOnceListener('finish', () => {
-        // finished = true
         if (res.statusCode === 200) {
+          succeeded = true
           auditService.logPageView(page, auditDetails)
         }
       })
 
       // Only logs attempts on failure
-      // res.on('close', () => {
-      //   if (!finished) {
-      //     auditService.logPageViewAttempt(page, auditDetails)
-      //   }
-      // })
+      res.on('close', () => {
+        if (!succeeded) {
+          auditService.logPageViewAttempt(page, auditDetails)
+        }
+      })
 
 
       return next()

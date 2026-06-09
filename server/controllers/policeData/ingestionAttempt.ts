@@ -29,6 +29,7 @@ export default class PoliceDataIngestionAttemptController {
         query: req.query,
       }
     })
+    
     const { username } = res.locals.user
     const { ingestionAttemptId } = req.params
     const ingestionAttempt = await this.policeDataService.getIngestionAttempt(username, ingestionAttemptId)

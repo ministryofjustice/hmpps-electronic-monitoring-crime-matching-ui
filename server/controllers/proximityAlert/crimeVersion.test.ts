@@ -8,6 +8,8 @@ import logger from '../../../logger'
 import createMockRequest from '../../testutils/createMockRequest'
 import createMockResponse from '../../testutils/createMockResponse'
 import CrimeService from '../../services/crimeService'
+import AuditService, { Page } from '../../services/auditService'
+import HmppsAuditClient from '../../data/hmppsAuditClient'
 import ProximityAlertReportExportService from '../../services/proximityAlert/proximityAlertReportExportService'
 import HubManagersService from '../../services/hubManagerService'
 import expectedAuthOptions from '../../testutils/expectedAuthOptions'
@@ -16,6 +18,7 @@ dayjs.extend(utc)
 dayjs.extend(timezone)
 dayjs.extend(customParseFormat)
 
+jest.mock('../../services/auditService')
 jest.mock('../../data/crimeMatchingClient')
 jest.mock('../../../logger')
 
@@ -29,6 +32,13 @@ const hubManagers = [
 ]
 
 describe('CrimeVersionController', () => {
+  const hmppsAuditClient = new HmppsAuditClient({
+    queueUrl: '',
+    enabled: true,
+    region: 'eu-west-2',
+    serviceName: '',
+  }) as jest.Mocked<HmppsAuditClient>
+  const auditService = new AuditService(hmppsAuditClient) as jest.Mocked<AuditService>
   let mockRestClient: jest.Mocked<CrimeMatchingClient>
   let mockProximityAlertReportExportService: jest.Mocked<ProximityAlertReportExportService>
 
@@ -54,6 +64,7 @@ describe('CrimeVersionController', () => {
       const crimeService = new CrimeService(mockRestClient)
       const hubManagerService = new HubManagersService(mockRestClient)
       const controller = new CrimeVersionController(
+        auditService,
         crimeService,
         mockProximityAlertReportExportService,
         hubManagerService,
@@ -206,6 +217,7 @@ describe('CrimeVersionController', () => {
       const crimeService = new CrimeService(mockRestClient)
       const hubManagerService = new HubManagersService(mockRestClient)
       const controller = new CrimeVersionController(
+        auditService,
         crimeService,
         mockProximityAlertReportExportService,
         hubManagerService,
@@ -286,6 +298,7 @@ describe('CrimeVersionController', () => {
       const crimeService = new CrimeService(mockRestClient)
       const hubManagerService = new HubManagersService(mockRestClient)
       const controller = new CrimeVersionController(
+        auditService,
         crimeService,
         mockProximityAlertReportExportService,
         hubManagerService,
@@ -383,6 +396,7 @@ describe('CrimeVersionController', () => {
       const crimeService = new CrimeService(mockRestClient)
       const hubManagerService = new HubManagersService(mockRestClient)
       const controller = new CrimeVersionController(
+        auditService,
         crimeService,
         mockProximityAlertReportExportService,
         hubManagerService,
@@ -491,6 +505,7 @@ describe('CrimeVersionController', () => {
       const crimeService = new CrimeService(mockRestClient)
       const hubManagerService = new HubManagersService(mockRestClient)
       const controller = new CrimeVersionController(
+        auditService,
         crimeService,
         mockProximityAlertReportExportService,
         hubManagerService,
@@ -531,6 +546,11 @@ describe('CrimeVersionController', () => {
       await controller.exportProximityAlert(req, res, next)
 
       // Then
+      expect(auditService.logExport).toHaveBeenCalledWith(Page.PROXIMITY_ALERT_CRIME_VERSION, {
+        who: 'fakeUserName',
+        correlationId: expect.any(String),
+        details: expect.any(Object),
+      })
       expect(req.session.exportProximityAlertState).toEqual({
         error: 'Invalid export request.',
         authorisingManager: 'a6e61168-f7ca-4056-8a2d-7db0fd77fb62',
@@ -580,6 +600,7 @@ describe('CrimeVersionController', () => {
       const crimeService = new CrimeService(mockRestClient)
       const hubManagerService = new HubManagersService(mockRestClient)
       const controller = new CrimeVersionController(
+        auditService,
         crimeService,
         mockProximityAlertReportExportService,
         hubManagerService,
@@ -646,6 +667,11 @@ describe('CrimeVersionController', () => {
       await controller.exportProximityAlert(req, res, next)
 
       // Then
+      expect(auditService.logExport).toHaveBeenCalledWith(Page.PROXIMITY_ALERT_CRIME_VERSION, {
+        who: 'fakeUserName',
+        correlationId: expect.any(String),
+        details: expect.any(Object),
+      })
       expect(mockRestClient.getHubManager).toHaveBeenCalledWith(
         expectedAuthOptions,
         'a6e61168-f7ca-4056-8a2d-7db0fd77fb62',
@@ -712,6 +738,7 @@ describe('CrimeVersionController', () => {
       const crimeService = new CrimeService(mockRestClient)
       const hubManagerService = new HubManagersService(mockRestClient)
       const controller = new CrimeVersionController(
+        auditService,
         crimeService,
         mockProximityAlertReportExportService,
         hubManagerService,
@@ -752,6 +779,11 @@ describe('CrimeVersionController', () => {
       await controller.exportProximityAlert(req, res, next)
 
       // Then
+      expect(auditService.logExport).toHaveBeenCalledWith(Page.PROXIMITY_ALERT_CRIME_VERSION, {
+        who: 'fakeUserName',
+        correlationId: expect.any(String),
+        details: expect.any(Object),
+      })
       expect(req.session.exportProximityAlertState).toEqual({
         error: 'Select at least one device wearer to export the Proximity Alert report.',
         authorisingManager: 'a6e61168-f7ca-4056-8a2d-7db0fd77fb62',
@@ -806,6 +838,7 @@ describe('CrimeVersionController', () => {
       const crimeService = new CrimeService(mockRestClient)
       const hubManagerService = new HubManagersService(mockRestClient)
       const controller = new CrimeVersionController(
+        auditService,
         crimeService,
         mockProximityAlertReportExportService,
         hubManagerService,
@@ -846,6 +879,11 @@ describe('CrimeVersionController', () => {
       await controller.exportProximityAlert(req, res, next)
 
       // Then
+      expect(auditService.logExport).toHaveBeenCalledWith(Page.PROXIMITY_ALERT_CRIME_VERSION, {
+        who: 'fakeUserName',
+        correlationId: expect.any(String),
+        details: expect.any(Object),
+      })
       expect(req.session.exportProximityAlertState).toEqual({
         error: 'Invalid export request.',
         selectedDeviceIds: ['1', '2'],

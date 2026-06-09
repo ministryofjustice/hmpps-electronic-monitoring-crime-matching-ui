@@ -1,10 +1,13 @@
+import AuditService, { Page } from '../../services/auditService'
 import CrimeMatchingClient from '../../data/crimeMatchingClient'
 import CrimeService from '../../services/crimeService'
 import createMockRequest from '../../testutils/createMockRequest'
 import createMockResponse from '../../testutils/createMockResponse'
+import HmppsAuditClient from '../../data/hmppsAuditClient'
 import CrimeSearchController from './crimeSearch'
 import logger from '../../../logger'
 
+jest.mock('../../services/auditService')
 jest.mock('../../data/crimeMatchingClient')
 jest.mock('../../../logger')
 
@@ -16,6 +19,13 @@ const expectedAuthOptions = {
 }
 
 describe('CrimeSearchController', () => {
+  const hmppsAuditClient = new HmppsAuditClient({
+        queueUrl: '',
+        enabled: true,
+        region: 'eu-west-2',
+        serviceName: '',
+      }) as jest.Mocked<HmppsAuditClient>
+  const auditService = new AuditService(hmppsAuditClient) as jest.Mocked<AuditService>
   let mockRestClient: jest.Mocked<CrimeMatchingClient>
 
   beforeEach(() => {
@@ -37,12 +47,17 @@ describe('CrimeSearchController', () => {
       const res = createMockResponse()
       const next = jest.fn()
       const service = new CrimeService(mockRestClient)
-      const controller = new CrimeSearchController(service)
+      const controller = new CrimeSearchController(auditService, service)
 
       // When
       await controller.search(req, res, next)
 
       // Then
+      expect(auditService.logSearch).toHaveBeenCalledWith(Page.PROXIMITY_ALERT_CRIME_VERSIONS, {
+        who: 'fakeUserName',
+        correlationId: expect.any(String),
+        details: expect.any(Object),
+      })
       expect(res.redirect).toHaveBeenCalledWith(303, expected)
       expect(next).not.toHaveBeenCalled()
     })
@@ -53,12 +68,17 @@ describe('CrimeSearchController', () => {
       const res = createMockResponse()
       const next = jest.fn()
       const service = new CrimeService(mockRestClient)
-      const controller = new CrimeSearchController(service)
+      const controller = new CrimeSearchController(auditService, service)
 
       // When
       await controller.search(req, res, next)
 
       // Then
+      expect(auditService.logSearch).toHaveBeenCalledWith(Page.PROXIMITY_ALERT_CRIME_VERSIONS, {
+        who: 'fakeUserName',
+        correlationId: expect.any(String),
+        details: expect.any(Object),
+      })
       expect(res.redirect).toHaveBeenCalledWith(303, '/proximity-alert')
       expect(next).not.toHaveBeenCalled()
     })
@@ -69,12 +89,17 @@ describe('CrimeSearchController', () => {
       const res = createMockResponse()
       const next = jest.fn()
       const service = new CrimeService(mockRestClient)
-      const controller = new CrimeSearchController(service)
+      const controller = new CrimeSearchController(auditService, service)
 
       // When
       await controller.search(req, res, next)
 
       // Then
+      expect(auditService.logSearch).toHaveBeenCalledWith(Page.PROXIMITY_ALERT_CRIME_VERSIONS, {
+        who: 'fakeUserName',
+        correlationId: expect.any(String),
+        details: expect.any(Object),
+      })
       expect(res.redirect).toHaveBeenCalledWith(303, '/proximity-alert?crimeReference=A%26B%3DC')
       expect(next).not.toHaveBeenCalled()
     })
@@ -89,7 +114,7 @@ describe('CrimeSearchController', () => {
         const res = createMockResponse()
         const next = jest.fn()
         const service = new CrimeService(mockRestClient)
-        const controller = new CrimeSearchController(service)
+        const controller = new CrimeSearchController(auditService, service)
 
         // When
         await controller.view(req, res, next)
@@ -113,7 +138,7 @@ describe('CrimeSearchController', () => {
       const res = createMockResponse()
       const next = jest.fn()
       const service = new CrimeService(mockRestClient)
-      const controller = new CrimeSearchController(service)
+      const controller = new CrimeSearchController(auditService, service)
 
       // When
       await controller.view(req, res, next)
@@ -137,7 +162,7 @@ describe('CrimeSearchController', () => {
       const res = createMockResponse()
       const next = jest.fn()
       const service = new CrimeService(mockRestClient)
-      const controller = new CrimeSearchController(service)
+      const controller = new CrimeSearchController(auditService, service)
 
       mockRestClient.getCrimeVersions.mockResolvedValue({
         data: [
@@ -223,7 +248,7 @@ describe('CrimeSearchController', () => {
       const res = createMockResponse()
       const next = jest.fn()
       const service = new CrimeService(mockRestClient)
-      const controller = new CrimeSearchController(service)
+      const controller = new CrimeSearchController(auditService, service)
 
       mockRestClient.getCrimeVersions.mockResolvedValue({
         data: [],

@@ -3,16 +3,26 @@ import logger from '../../../logger'
 import createMockPerson from '../../testutils/createMockPerson'
 import createMockRequest from '../../testutils/createMockRequest'
 import createMockResponse from '../../testutils/createMockResponse'
+import AuditService, { Page } from '../../services/auditService'
+import HmppsAuditClient from '../../data/hmppsAuditClient'
 import PersonsService from '../../services/personsService'
 import PersonsController from './persons'
 import CrimeMatchingClient from '../../data/crimeMatchingClient'
 
+jest.mock('../../services/auditService')
 jest.mock('../../data/crimeMatchingClient')
 jest.mock('../../../logger')
 
 const mockPerson = createMockPerson()
 
 describe('PersonsController', () => {
+  const hmppsAuditClient = new HmppsAuditClient({
+    queueUrl: '',
+    enabled: true,
+    region: 'eu-west-2',
+    serviceName: '',
+  }) as jest.Mocked<HmppsAuditClient>
+  const auditService = new AuditService(hmppsAuditClient) as jest.Mocked<AuditService>
   let mockRestClient: jest.Mocked<CrimeMatchingClient>
 
   beforeEach(() => {
@@ -35,7 +45,7 @@ describe('PersonsController', () => {
       const res = createMockResponse()
       const next = jest.fn()
       const service = new PersonsService(mockRestClient)
-      const controller = new PersonsController(service)
+      const controller = new PersonsController(auditService, service)
 
       mockRestClient.getPersonsBySearchTerm.mockResolvedValue({
         data: [mockPerson],
@@ -80,7 +90,7 @@ describe('PersonsController', () => {
       const res = createMockResponse()
       const next = jest.fn()
       const service = new PersonsService(mockRestClient)
-      const controller = new PersonsController(service)
+      const controller = new PersonsController(auditService, service)
 
       mockRestClient.getPersonsBySearchTerm.mockResolvedValue({
         data: [mockPerson],
@@ -125,7 +135,7 @@ describe('PersonsController', () => {
       const res = createMockResponse()
       const next = jest.fn()
       const service = new PersonsService(mockRestClient)
-      const controller = new PersonsController(service)
+      const controller = new PersonsController(auditService, service)
 
       mockRestClient.getPersonsBySearchTerm.mockResolvedValue({
         data: [mockPerson],
@@ -165,7 +175,7 @@ describe('PersonsController', () => {
       const res = createMockResponse()
       const next = jest.fn()
       const service = new PersonsService(mockRestClient)
-      const controller = new PersonsController(service)
+      const controller = new PersonsController(auditService, service)
 
       // When
       await controller.view(req, res, next)
@@ -192,7 +202,7 @@ describe('PersonsController', () => {
       const res = createMockResponse()
       const next = jest.fn()
       const service = new PersonsService(mockRestClient)
-      const controller = new PersonsController(service)
+      const controller = new PersonsController(auditService, service)
 
       mockRestClient.getPersonsBySearchTerm.mockResolvedValue({
         data: [],
@@ -238,7 +248,7 @@ describe('PersonsController', () => {
       const res = createMockResponse()
       const next = jest.fn()
       const service = new PersonsService(mockRestClient)
-      const controller = new PersonsController(service)
+      const controller = new PersonsController(auditService, service)
 
       mockRestClient.getPersonsBySearchTerm.mockResolvedValue({
         data: [mockPerson],
@@ -283,7 +293,7 @@ describe('PersonsController', () => {
       const res = createMockResponse()
       const next = jest.fn()
       const service = new PersonsService(mockRestClient)
-      const controller = new PersonsController(service)
+      const controller = new PersonsController(auditService, service)
 
       // When / Then
       expect(controller.view(req, res, next)).rejects.toBeInstanceOf(ZodError)
@@ -301,7 +311,7 @@ describe('PersonsController', () => {
       const res = createMockResponse()
       const next = jest.fn()
       const service = new PersonsService(mockRestClient)
-      const controller = new PersonsController(service)
+      const controller = new PersonsController(auditService, service)
 
       // When
       try {
@@ -320,11 +330,17 @@ describe('PersonsController', () => {
       const res = createMockResponse()
       const next = jest.fn()
       const service = new PersonsService(mockRestClient)
-      const controller = new PersonsController(service)
+      const controller = new PersonsController(auditService, service)
 
       // When
       await controller.search(req, res, next)
 
+      // Then
+      expect(auditService.logSearch).toHaveBeenCalledWith(Page.LOCATION_DATA_DEVICE_ACTIVATIONS, {
+        who: 'fakeUserName',
+        correlationId: expect.any(String),
+        details: expect.any(Object),
+      })
       expect(res.redirect).toHaveBeenCalledWith('/location-data/persons?searchField=name&searchTerm=foo')
     })
 
@@ -334,11 +350,17 @@ describe('PersonsController', () => {
       const res = createMockResponse()
       const next = jest.fn()
       const service = new PersonsService(mockRestClient)
-      const controller = new PersonsController(service)
+      const controller = new PersonsController(auditService, service)
 
       // When
       await controller.search(req, res, next)
-
+      
+      // Then
+      expect(auditService.logSearch).toHaveBeenCalledWith(Page.LOCATION_DATA_DEVICE_ACTIVATIONS, {
+        who: 'fakeUserName',
+        correlationId: expect.any(String),
+        details: expect.any(Object),
+      })
       expect(res.redirect).toHaveBeenCalledWith('/location-data/persons?searchField=nomisId&searchTerm=foo')
     })
 
@@ -348,11 +370,17 @@ describe('PersonsController', () => {
       const res = createMockResponse()
       const next = jest.fn()
       const service = new PersonsService(mockRestClient)
-      const controller = new PersonsController(service)
+      const controller = new PersonsController(auditService, service)
 
       // When
       await controller.search(req, res, next)
 
+      // Then
+      expect(auditService.logSearch).toHaveBeenCalledWith(Page.LOCATION_DATA_DEVICE_ACTIVATIONS, {
+        who: 'fakeUserName',
+        correlationId: expect.any(String),
+        details: expect.any(Object),
+      })
       expect(res.redirect).toHaveBeenCalledWith('/location-data/persons?searchField=deviceId&searchTerm=foo')
     })
 
@@ -362,12 +390,17 @@ describe('PersonsController', () => {
       const res = createMockResponse()
       const next = jest.fn()
       const service = new PersonsService(mockRestClient)
-      const controller = new PersonsController(service)
+      const controller = new PersonsController(auditService, service)
 
       // When
       await controller.search(req, res, next)
 
       // Then
+      expect(auditService.logSearch).toHaveBeenCalledWith(Page.LOCATION_DATA_DEVICE_ACTIVATIONS, {
+        who: 'fakeUserName',
+        correlationId: expect.any(String),
+        details: expect.any(Object),
+      })
       expect(res.redirect).toHaveBeenCalledWith('/location-data/persons')
       expect(req.session.validationErrors).toEqual([
         {

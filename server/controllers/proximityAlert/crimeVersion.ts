@@ -56,15 +56,6 @@ export default class CrimeVersionController {
   }
 
   view: RequestHandler = async (req, res, next) => {
-    await this.auditService.logPageView(Page.PROXIMITY_ALERT_CRIME_VERSION, { 
-      who: res.locals.user.username,
-      correlationId: req.id,
-      details: {
-        params: req.params,
-        query: req.query, // Includes returnto
-      }
-    })
-    
     const { username } = res.locals.user
     const { crimeVersionId } = req.params
     const result = await this.getViewData(username, crimeVersionId)

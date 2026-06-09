@@ -4,7 +4,10 @@ import { appWithAllRoutes, hubCaseworker, hubManager } from './testutils/appSetu
 import logger from '../../logger'
 import CrimeMatchingClient from '../data/crimeMatchingClient'
 import HubManagersService from '../services/hubManagerService'
+import HmppsAuditClient from '../data/hmppsAuditClient'
+import AuditService, { Page } from '../services/auditService'
 
+jest.mock('../services/auditService')
 jest.mock('../data/crimeMatchingClient')
 jest.mock('../../logger')
 
@@ -17,6 +20,13 @@ const authorisingManager = {
 
 describe('/hub-managers', () => {
   let restClient: jest.Mocked<CrimeMatchingClient>
+  const hmppsAuditClient = new HmppsAuditClient({
+    queueUrl: '',
+    enabled: true,
+    region: '',
+    serviceName: '',
+  }) as jest.Mocked<HmppsAuditClient>
+  const auditService = new AuditService(hmppsAuditClient) as jest.Mocked<AuditService>
 
   beforeEach(() => {
     restClient = new CrimeMatchingClient(logger) as jest.Mocked<CrimeMatchingClient>
@@ -30,6 +40,9 @@ describe('/hub-managers', () => {
     it('should return a 403 if the user is a caseworker', () => {
       const app = appWithAllRoutes({
         userSupplier: () => hubCaseworker,
+        services: {
+          auditService,
+        },
       })
 
       return request(app)
@@ -38,6 +51,15 @@ describe('/hub-managers', () => {
         .expect(res => {
           expect(res.status).toEqual(403)
           expect(res.text).toContain('You do not have permission to complete this action')
+          expect(auditService.logPageView).not.toHaveBeenCalled()
+          expect(auditService.logPageViewAttempt).toHaveBeenCalledWith(Page.HUB_MANAGERS, {
+              who: 'user1',
+              correlationId: expect.any(String),
+              details: {
+                params: {},
+                query: {},
+              },
+          })
         })
     })
 
@@ -46,6 +68,7 @@ describe('/hub-managers', () => {
       const app = appWithAllRoutes({
         services: {
           hubManagersService,
+          auditService,
         },
         userSupplier: () => hubManager,
       })
@@ -60,6 +83,15 @@ describe('/hub-managers', () => {
         .expect(res => {
           expect(res.status).toEqual(200)
           expect(res.text).toContain('Hub managers')
+          expect(auditService.logPageViewAttempt).not.toHaveBeenCalled()
+          expect(auditService.logPageView).toHaveBeenCalledWith(Page.HUB_MANAGERS, {
+              who: 'user1',
+              correlationId: expect.any(String),
+              details: {
+                params: {},
+                query: {},
+              },
+          })
         })
     })
   })
