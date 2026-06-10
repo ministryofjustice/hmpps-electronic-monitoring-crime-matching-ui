@@ -12,6 +12,7 @@ context('Police Data Ingestion Attempt', () => {
       cy.task('reset')
       cy.task('resetDownloads', downloadsFolder)
       cy.task('stubSignIn', hubCaseworker)
+      cy.task('stubAuditSqs')
       cy.signIn()
       cy.stubGetIngestionAttempt({
         ingestionAttemptId: '64d41bd9-5450-4bbb-89d4-42ba75659f49',

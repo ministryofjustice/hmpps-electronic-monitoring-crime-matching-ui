@@ -13,6 +13,7 @@ context('Police Data Dashboard', () => {
       cy.task('reset')
       cy.task('resetDownloads', downloadsFolder)
       cy.task('stubSignIn', hubCaseworker)
+      cy.task('stubAuditSqs')
       cy.signIn()
       cy.stubGetIngestionAttempts({
         status: 200,

@@ -140,9 +140,12 @@ const stubAuditSqs = () =>
     },
     response: {
       status: 200,
-      jsonBody: {
-        MessageId: 'mock-id',
+      headers: {
+        'Content-Type': 'application/x-amz-json-1.0',
       },
+      body: JSON.stringify({
+        MessageId: 'mock-message-id-12345',
+      }),
     },
   })
 
