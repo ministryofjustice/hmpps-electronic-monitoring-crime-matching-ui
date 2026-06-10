@@ -73,7 +73,7 @@ export default class HmppsAuditClient {
       return messageResponse
     } catch (error) {
       logger.error('Error sending HMPPS Audit SQS message, ', error)
-      if (throwOnError) throw error
+      // if (throwOnError) throw error
     }
     return null
   }
