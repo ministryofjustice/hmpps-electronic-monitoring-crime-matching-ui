@@ -2,6 +2,8 @@
 # Per environment values which override defaults in hmpps-electronic-monitoring-crime-matching-ui/values.yaml
 
 generic-service:
+  replicaCount: 4 # This is the default for production, but just to be explicit here.
+
   ingress:
     host: electronic-monitoring-crime-matching-ui.hmpps.service.justice.gov.uk
 
@@ -10,8 +12,9 @@ generic-service:
     HMPPS_AUTH_URL: "https://sign-in.hmpps.service.justice.gov.uk/auth"
     TOKEN_VERIFICATION_API_URL: "https://token-verification-api.prison.service.justice.gov.uk"
     COMPONENT_API_URL: "https://probation-frontend-components.hmpps.service.justice.gov.uk"
+    ENVIRONMENT_NAME: PRODUCTION
     AUDIT_ENABLED: "false"
-    EM_CRIME_MATCHING_API_URL: ""
+    EM_CRIME_MATCHING_API_URL: "https://electronic-monitoring-crime-matching-api.hmpps.service.justice.gov.uk"
 
     # OS Maps cache configuration (applies to vector tiles and assets)
     OS_MAPS_TILE_CACHE_EXPIRY: "604800" # 7 days
