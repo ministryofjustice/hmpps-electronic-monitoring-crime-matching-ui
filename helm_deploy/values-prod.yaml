@@ -5,10 +5,10 @@ generic-service:
   replicaCount: 4 # This is the default for production, but just to be explicit here.
 
   ingress:
-    host: electronic-monitoring-crime-matching-ui.hmpps.service.justice.gov.uk
+    host: electronic-monitoring-crime-matching.hmpps.service.justice.gov.uk
 
   env:
-    INGRESS_URL: "https://electronic-monitoring-crime-matching-ui.hmpps.service.justice.gov.uk"
+    INGRESS_URL: "https://electronic-monitoring-crime-matching.hmpps.service.justice.gov.uk"
     HMPPS_AUTH_URL: "https://sign-in.hmpps.service.justice.gov.uk/auth"
     TOKEN_VERIFICATION_API_URL: "https://token-verification-api.prison.service.justice.gov.uk"
     COMPONENT_API_URL: "https://probation-frontend-components.hmpps.service.justice.gov.uk"
