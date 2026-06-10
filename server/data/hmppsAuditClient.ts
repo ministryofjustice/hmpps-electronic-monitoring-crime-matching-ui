@@ -53,7 +53,7 @@ export default class HmppsAuditClient {
     })
   }
 
-  async sendMessage(event: AuditEvent, throwOnError: boolean = true) {
+  async sendMessage(event: AuditEvent) {
     if (!this.enabled) return null
 
     const sqsMessage: SqsMessage = {
