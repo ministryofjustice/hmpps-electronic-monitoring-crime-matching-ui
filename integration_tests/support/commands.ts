@@ -1,3 +1,5 @@
+import { getSentAuditEvents } from '../mockApis/wiremock'
+
 Cypress.Commands.add('signIn', (options = { failOnStatusCode: true }) => {
   cy.request('/')
   return cy.task('getSignInUrl').then((url: string) => cy.visit(url, options))
@@ -61,6 +63,12 @@ Cypress.Commands.add('stubGetPerson', options => {
 
 Cypress.Commands.add('stubUpdateHubManagerSignature', options => {
   cy.task('stubUpdateHubManagerSignature', options)
+})
+
+Cypress.Commands.add('expectAuditEvents', (events: object[]) => {
+  return cy.wrap(getSentAuditEvents()).should(actualEvents => {
+    expect(actualEvents).to.deep.include.members(events)
+  })
 })
 
 Cypress.Commands.add('stubMapMiddleware', () => {

@@ -2,7 +2,7 @@
 export declare global {
   namespace NodeJS {
     interface ProcessEnv {
-      NODE_ENV: 'development' | 'test' | 'production'
+      NODE_ENV: 'development' | 'test' | 'production' | 'e2e-test'
       PORT?: string
       REDIS_PORT: string
     }

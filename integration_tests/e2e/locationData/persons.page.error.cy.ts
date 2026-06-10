@@ -10,6 +10,7 @@ context('Location Data', () => {
     beforeEach(() => {
       cy.task('reset')
       cy.task('stubSignIn', hubCaseworker)
+      cy.task('stubAuditSqs')
       cy.signIn()
     })
 
@@ -31,6 +32,21 @@ context('Location Data', () => {
       // User should be redirected to an error page
       Page.verifyOnPage(ErrorPage, 'Internal Server Error')
       cy.url().should('include', '?searchField=name&searchTerm=foo')
+
+      cy.expectAuditEvents([
+        {
+          who: 'USER1',
+          details: '{"params":{},"query":{}}',
+          what: 'SEARCH_LOCATION_DATA_DEVICE_ACTIVATIONS',
+          service: 'hmpps-electronic-monitoring-crime-matching-ui',
+        },
+        {
+          who: 'USER1',
+          details: '{"params":{},"query":{"searchField":"name","searchTerm":"foo"}}',
+          what: 'PAGE_VIEW_ATTEMPT_LOCATION_DATA_DEVICE_ACTIVATIONS',
+          service: 'hmpps-electronic-monitoring-crime-matching-ui',
+        },
+      ])
     })
 
     it('should display an error if no valid search criteria values provided', () => {

@@ -120,6 +120,8 @@ declare global {
        * Stub a wiremock response for the crimeMatchingApi PUT /hub-managers/{id}/signature
        */
       stubUpdateHubManagerSignature(options?: StubUpdateHubManagerSignaturesOptions): Chainable<void>
+
+      expectAuditEvents(events: object[]): Chainable<unknown>
     }
   }
 }
