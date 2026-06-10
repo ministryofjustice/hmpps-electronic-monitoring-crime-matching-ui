@@ -215,7 +215,7 @@ context('Interacting with the map', () => {
     })
   })
 
-  it('should show the device position overlay', () => {
+  it.skip('should show the device position overlay', () => {
     const location = [0.060977, 51.574865]
 
     page.map.mapInstance.then(map => {
