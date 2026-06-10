@@ -53,7 +53,7 @@ export default class HmppsAuditClient {
     })
   }
 
-  async sendMessage(event: AuditEvent) {
+  async sendMessage(event: AuditEvent, throwOnError: boolean = true) {
     if (!this.enabled) return null
 
     const sqsMessage: SqsMessage = {
@@ -64,6 +64,9 @@ export default class HmppsAuditClient {
     }
 
     try {
+      logger.info(`SQS URL: (${this.queueUrl})`)
+      logger.info(`SQS ServiceName: (${this.serviceName})`)
+      logger.info(`SQS isTest: (${isTestEnvironment})`)
       const messageResponse = await this.sqsClient.send(
         new SendMessageCommand({ MessageBody: JSON.stringify(sqsMessage), QueueUrl: this.queueUrl }),
       )
@@ -73,7 +76,7 @@ export default class HmppsAuditClient {
       return messageResponse
     } catch (error) {
       logger.error('Error sending HMPPS Audit SQS message, ', error)
-      // if (throwOnError) throw error
+      if (throwOnError) throw error
     }
     return null
   }
