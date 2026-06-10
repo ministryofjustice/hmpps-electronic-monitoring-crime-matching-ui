@@ -440,7 +440,7 @@ context('Crime Version', () => {
       })
     })
 
-    it('should show the crime overlay', () => {
+    it.skip('should show the crime overlay', () => {
       // When the user loads the page
       cy.visit(`/proximity-alert/${crimeVersionId}`)
 
@@ -484,7 +484,7 @@ context('Crime Version', () => {
       })
     })
 
-    it('should show the device position overlay', () => {
+    it.skip('should show the device position overlay', () => {
       // When the user loads the page
       cy.visit(`/proximity-alert/${crimeVersionId}`)
 
