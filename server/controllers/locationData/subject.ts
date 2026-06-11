@@ -53,8 +53,8 @@ export default class SubjectController {
       correlationId: req.id,
       details: {
         deviceActivationId: deviceActivation?.deviceActivationId,
-        fromDate: formData.data?.fromDate,
-        toDate: formData.data?.toDate,
+        fromDate: req.body.fromDate,
+        toDate: req.body.toDate,
       },
     })
 

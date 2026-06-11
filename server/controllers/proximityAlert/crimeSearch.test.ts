@@ -53,11 +53,6 @@ describe('CrimeSearchController', () => {
       await controller.search(req, res, next)
 
       // Then
-      expect(auditService.logSearch).toHaveBeenCalledWith(Page.PROXIMITY_ALERT_CRIME_VERSIONS, {
-        who: 'fakeUserName',
-        correlationId: expect.any(String),
-        details: expect.any(Object),
-      })
       expect(res.redirect).toHaveBeenCalledWith(303, expected)
       expect(next).not.toHaveBeenCalled()
     })
@@ -77,7 +72,9 @@ describe('CrimeSearchController', () => {
       expect(auditService.logSearch).toHaveBeenCalledWith(Page.PROXIMITY_ALERT_CRIME_VERSIONS, {
         who: 'fakeUserName',
         correlationId: expect.any(String),
-        details: expect.any(Object),
+        details: {
+          crimeReference: null,
+        },
       })
       expect(res.redirect).toHaveBeenCalledWith(303, '/proximity-alert')
       expect(next).not.toHaveBeenCalled()
@@ -98,7 +95,9 @@ describe('CrimeSearchController', () => {
       expect(auditService.logSearch).toHaveBeenCalledWith(Page.PROXIMITY_ALERT_CRIME_VERSIONS, {
         who: 'fakeUserName',
         correlationId: expect.any(String),
-        details: expect.any(Object),
+        details: {
+          crimeReference: 'A&B=C',
+        },
       })
       expect(res.redirect).toHaveBeenCalledWith(303, '/proximity-alert?crimeReference=A%26B%3DC')
       expect(next).not.toHaveBeenCalled()

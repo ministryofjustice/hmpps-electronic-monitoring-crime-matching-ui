@@ -339,7 +339,12 @@ describe('PersonsController', () => {
       expect(auditService.logSearch).toHaveBeenCalledWith(Page.LOCATION_DATA_DEVICE_ACTIVATIONS, {
         who: 'fakeUserName',
         correlationId: expect.any(String),
-        details: expect.any(Object),
+        details: {
+          deviceId: '',
+          name: 'foo',
+          nomisId: '',
+          searchField: 'name',
+        },
       })
       expect(res.redirect).toHaveBeenCalledWith('/location-data/persons?searchField=name&searchTerm=foo')
     })
@@ -359,7 +364,12 @@ describe('PersonsController', () => {
       expect(auditService.logSearch).toHaveBeenCalledWith(Page.LOCATION_DATA_DEVICE_ACTIVATIONS, {
         who: 'fakeUserName',
         correlationId: expect.any(String),
-        details: expect.any(Object),
+        details: {
+          deviceId: '',
+          name: '',
+          nomisId: 'foo',
+          searchField: 'nomisId',
+        },
       })
       expect(res.redirect).toHaveBeenCalledWith('/location-data/persons?searchField=nomisId&searchTerm=foo')
     })
@@ -379,7 +389,12 @@ describe('PersonsController', () => {
       expect(auditService.logSearch).toHaveBeenCalledWith(Page.LOCATION_DATA_DEVICE_ACTIVATIONS, {
         who: 'fakeUserName',
         correlationId: expect.any(String),
-        details: expect.any(Object),
+        details: {
+          deviceId: 'foo',
+          name: '',
+          nomisId: '',
+          searchField: 'deviceId',
+        },
       })
       expect(res.redirect).toHaveBeenCalledWith('/location-data/persons?searchField=deviceId&searchTerm=foo')
     })
@@ -399,7 +414,12 @@ describe('PersonsController', () => {
       expect(auditService.logSearch).toHaveBeenCalledWith(Page.LOCATION_DATA_DEVICE_ACTIVATIONS, {
         who: 'fakeUserName',
         correlationId: expect.any(String),
-        details: expect.any(Object),
+        details: {
+          deviceId: '',
+          name: '',
+          nomisId: '',
+          searchField: 'nomisId',
+        },
       })
       expect(res.redirect).toHaveBeenCalledWith('/location-data/persons')
       expect(req.session.validationErrors).toEqual([

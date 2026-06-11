@@ -99,11 +99,6 @@ describe('PoliceDataDashboardController', () => {
       await controller.search(req, res, next)
 
       // Then
-      expect(auditService.logSearch).toHaveBeenCalledWith(Page.POLICE_DATA_INGESTION_ATTEMPTS, {
-        who: 'fakeUserName',
-        correlationId: expect.any(String),
-        details: expect.any(Object),
-      })
       expect(res.redirect).toHaveBeenCalledWith(303, expected)
       expect(next).not.toHaveBeenCalled()
     })
@@ -124,7 +119,12 @@ describe('PoliceDataDashboardController', () => {
       expect(auditService.logSearch).toHaveBeenCalledWith(Page.POLICE_DATA_INGESTION_ATTEMPTS, {
         who: 'fakeUserName',
         correlationId: expect.any(String),
-        details: expect.any(Object),
+        details: {
+          batchId: '',
+          fromDate: '',
+          policeForceArea: '',
+          toDate: '',
+        },
       })
       expect(res.redirect).toHaveBeenCalledWith(303, '/police-data/dashboard')
       expect(next).not.toHaveBeenCalled()
@@ -146,7 +146,12 @@ describe('PoliceDataDashboardController', () => {
       expect(auditService.logSearch).toHaveBeenCalledWith(Page.POLICE_DATA_INGESTION_ATTEMPTS, {
         who: 'fakeUserName',
         correlationId: expect.any(String),
-        details: expect.any(Object),
+        details: {
+          batchId: 'A&B=C',
+          fromDate: '',
+          policeForceArea: '',
+          toDate: '',
+        },
       })
       expect(res.redirect).toHaveBeenCalledWith(303, '/police-data/dashboard?batchId=A%26B%3DC')
       expect(next).not.toHaveBeenCalled()
@@ -577,7 +582,11 @@ describe('PoliceDataDashboardController', () => {
       expect(auditService.logExport).toHaveBeenCalledWith(Page.POLICE_DATA_INGESTION_ATTEMPTS, {
         who: 'fakeUserName',
         correlationId: expect.any(String),
-        details: expect.any(Object),
+        details: {
+          query: {
+            batchIds: ['bccfe61c-adb0-4e50-b6e6-ce7a68866773', '93fa3424-d014-49ac-ae11-e5bcc2c53c9d'],
+          },
+        },
       })
       expect(mockRestClient.getCrimeMatchingResults).toHaveBeenCalledWith(expectedAuthOptions, [
         'bccfe61c-adb0-4e50-b6e6-ce7a68866773',
@@ -611,7 +620,9 @@ describe('PoliceDataDashboardController', () => {
       expect(auditService.logExport).toHaveBeenCalledWith(Page.POLICE_DATA_INGESTION_ATTEMPTS, {
         who: 'fakeUserName',
         correlationId: expect.any(String),
-        details: expect.any(Object),
+        details: {
+          query: {},
+        },
       })
       expect(mockRestClient.getCrimeMatchingResults).not.toHaveBeenCalled()
       expect(res.setHeader).not.toHaveBeenCalled()
@@ -639,7 +650,11 @@ describe('PoliceDataDashboardController', () => {
       expect(auditService.logExport).toHaveBeenCalledWith(Page.POLICE_DATA_INGESTION_ATTEMPTS, {
         who: 'fakeUserName',
         correlationId: expect.any(String),
-        details: expect.any(Object),
+        details: {
+          query: {
+            batchIds: ['bccfe61c-adb0-4e50-b6e6-ce7a68866773'],
+          },
+        },
       })
       expect(mockRestClient.getCrimeMatchingResults).toHaveBeenCalledWith(expectedAuthOptions, [
         'bccfe61c-adb0-4e50-b6e6-ce7a68866773',

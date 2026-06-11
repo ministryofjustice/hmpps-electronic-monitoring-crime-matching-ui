@@ -51,10 +51,7 @@ export default class PersonsController {
     await this.auditService.logSearch(Page.LOCATION_DATA_DEVICE_ACTIVATIONS, {
       who: res.locals.user.username,
       correlationId: req.id,
-      details: {
-        searchField: formData.data?.searchField,
-        searchTerm: formData.data?.searchTerm,
-      },
+      details: req.body,
     })
 
     if (formData.success) {

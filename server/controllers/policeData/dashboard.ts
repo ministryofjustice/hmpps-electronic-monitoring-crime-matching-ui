@@ -93,7 +93,6 @@ export default class PoliceDataDashboardController {
       who: res.locals.user.username,
       correlationId: req.id,
       details: {
-        params: req.params,
         query: req.query,
       },
     })
