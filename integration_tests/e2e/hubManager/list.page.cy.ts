@@ -13,7 +13,7 @@ context('Create Hub Manager', () => {
     })
 
     it('DEBUG WIREMOCK', () => {
-      cy.request('http://localhost:8080/__admin/requests').then(res => {
+      cy.request('http://localhost:9091/__admin/requests').then(res => {
         cy.log(JSON.stringify(res.body))
       })
     })
