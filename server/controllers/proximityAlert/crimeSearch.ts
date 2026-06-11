@@ -20,17 +20,16 @@ export default class CrimeSearchController {
   }
 
   search: RequestHandler = async (req, res) => {
+    const { crimeReference } = crimeSearchQuerySchema.parse(req.body)
+    const query = this.getQueryString(crimeReference)
+
     await this.auditService.logSearch(Page.PROXIMITY_ALERT_CRIME_VERSIONS, {
       who: res.locals.user.username,
       correlationId: req.id,
       details: {
-        params: req.params,
-        query: req.query,
+        crimeReference,
       },
     })
-
-    const { crimeReference } = crimeSearchQuerySchema.parse(req.body)
-    const query = this.getQueryString(crimeReference)
 
     return res.redirect(303, `${URLS.PROXIMITY_ALERT.CRIME_VERSIONS.VIEW}${query ? `?${query}` : ''}`)
   }

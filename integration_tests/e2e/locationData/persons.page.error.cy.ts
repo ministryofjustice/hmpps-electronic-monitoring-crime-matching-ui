@@ -36,7 +36,7 @@ context('Location Data', () => {
       cy.expectAuditEvents([
         {
           who: 'USER1',
-          details: '{"params":{},"query":{}}',
+          details: '{"searchField":"name","searchTerm":"foo"}',
           what: 'SEARCH_LOCATION_DATA_DEVICE_ACTIVATIONS',
           service: 'hmpps-electronic-monitoring-crime-matching-ui',
         },

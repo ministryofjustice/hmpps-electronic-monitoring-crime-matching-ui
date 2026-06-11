@@ -43,19 +43,19 @@ export default class PersonsController {
   }
 
   search: RequestHandler = async (req, res) => {
-    await this.auditService.logSearch(Page.LOCATION_DATA_DEVICE_ACTIVATIONS, {
-      who: res.locals.user.username,
-      correlationId: req.id,
-      details: {
-        params: req.params,
-        query: req.query,
-      },
-    })
-
     const formData = personsFormDataSchema.safeParse(req.body)
     req.session.formData = {
       ...req.body,
     }
+
+    await this.auditService.logSearch(Page.LOCATION_DATA_DEVICE_ACTIVATIONS, {
+      who: res.locals.user.username,
+      correlationId: req.id,
+      details: {
+        searchField: formData.data?.searchField,
+        searchTerm: formData.data?.searchTerm,
+      },
+    })
 
     if (formData.success) {
       const params = `searchField=${formData.data.searchField}&searchTerm=${formData.data.searchTerm}`

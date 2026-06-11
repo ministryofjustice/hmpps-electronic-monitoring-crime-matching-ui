@@ -45,17 +45,18 @@ export default class SubjectController {
   }
 
   search: RequestHandler = async (req, res) => {
+    const deviceActivation = req.deviceActivation!
+    const formData = searchLocationsFormDataSchema.safeParse(req.body)
+
     await this.auditService.logSearch(Page.LOCATION_DATA_DEVICE_ACTIVATION, {
       who: res.locals.user.username,
       correlationId: req.id,
       details: {
-        params: req.params,
-        query: req.query,
+        deviceActivationId: deviceActivation?.deviceActivationId,
+        fromDate: formData.data?.fromDate,
+        toDate: formData.data?.toDate,
       },
     })
-
-    const deviceActivation = req.deviceActivation!
-    const formData = searchLocationsFormDataSchema.safeParse(req.body)
 
     if (formData.success) {
       const fromDate = parseDateTimeFromISOString(formData.data.fromDate)
