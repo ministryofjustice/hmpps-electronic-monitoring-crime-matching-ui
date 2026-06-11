@@ -12,6 +12,12 @@ context('Create Hub Manager', () => {
       cy.signIn()
     })
 
+    it('DEBUG WIREMOCK', () => {
+      cy.request('http://localhost:8080/__admin/requests').then(res => {
+        cy.log(JSON.stringify(res.body))
+      })
+    })
+
     it('should navigate to the create hub managers page', () => {
       // Given a successful api response
       cy.stubGetHubManagers()
