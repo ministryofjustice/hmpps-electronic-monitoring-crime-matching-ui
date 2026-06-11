@@ -9,13 +9,10 @@ context('Create Hub Manager', () => {
       cy.task('reset')
       cy.task('stubSignIn', hubManager)
       cy.task('stubAuditSqs')
-      cy.signIn()
-    })
-
-    it('DEBUG WIREMOCK', () => {
       cy.request('http://localhost:9091/__admin/requests').then(res => {
         cy.log(JSON.stringify(res.body))
       })
+      cy.signIn()
     })
 
     it('should navigate to the create hub managers page', () => {
