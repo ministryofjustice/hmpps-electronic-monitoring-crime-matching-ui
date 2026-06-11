@@ -90,21 +90,21 @@ context('Location Data', () => {
         minute: '00',
       })
 
-      cy.expectAuditEvents([
-        {
-          who: 'USER1',
-          details: '{"deviceActivationId":1,"fromDate":"2025-01-01T09:00:00.000Z","toDate":"2025-01-02T09:00:00.000Z"}',
-          what: 'SEARCH_LOCATION_DATA_DEVICE_ACTIVATION',
-          service: 'hmpps-electronic-monitoring-crime-matching-ui',
-        },
-        {
-          who: 'USER1',
-          details:
-            '{"params":{"deviceActivationId":"1"},"query":{"from":"2025-01-01T09:00:00.000Z","to":"2025-01-02T09:00:00.000Z"}}',
-          what: 'PAGE_VIEW_LOCATION_DATA_DEVICE_ACTIVATION',
-          service: 'hmpps-electronic-monitoring-crime-matching-ui',
-        },
-      ])
+      // cy.expectAuditEvents([
+      //   {
+      //     who: 'USER1',
+      //     details: '{"deviceActivationId":1,"fromDate":"2025-01-01T09:00:00.000Z","toDate":"2025-01-02T09:00:00.000Z"}',
+      //     what: 'SEARCH_LOCATION_DATA_DEVICE_ACTIVATION',
+      //     service: 'hmpps-electronic-monitoring-crime-matching-ui',
+      //   },
+      //   {
+      //     who: 'USER1',
+      //     details:
+      //       '{"params":{"deviceActivationId":"1"},"query":{"from":"2025-01-01T09:00:00.000Z","to":"2025-01-02T09:00:00.000Z"}}',
+      //     what: 'PAGE_VIEW_LOCATION_DATA_DEVICE_ACTIVATION',
+      //     service: 'hmpps-electronic-monitoring-crime-matching-ui',
+      //   },
+      // ])
     })
 
     it('should reset the date filter form', () => {

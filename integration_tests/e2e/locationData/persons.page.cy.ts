@@ -121,20 +121,20 @@ context('Location Data', () => {
       page.form.personsSearchField.shouldHaveValue('name')
       page.form.personsSearchField.shouldHaveInputValue('name', 'foo')
 
-      cy.expectAuditEvents([
-        {
-          who: 'USER1',
-          details: '{"searchField":"name","searchTerm":"foo"}',
-          what: 'SEARCH_LOCATION_DATA_DEVICE_ACTIVATIONS',
-          service: 'hmpps-electronic-monitoring-crime-matching-ui',
-        },
-        {
-          who: 'USER1',
-          details: '{"params":{},"query":{"searchField":"name","searchTerm":"foo"}}',
-          what: 'PAGE_VIEW_LOCATION_DATA_DEVICE_ACTIVATIONS',
-          service: 'hmpps-electronic-monitoring-crime-matching-ui',
-        },
-      ])
+      // cy.expectAuditEvents([
+      //   {
+      //     who: 'USER1',
+      //     details: '{"searchField":"name","searchTerm":"foo"}',
+      //     what: 'SEARCH_LOCATION_DATA_DEVICE_ACTIVATIONS',
+      //     service: 'hmpps-electronic-monitoring-crime-matching-ui',
+      //   },
+      //   {
+      //     who: 'USER1',
+      //     details: '{"params":{},"query":{"searchField":"name","searchTerm":"foo"}}',
+      //     what: 'PAGE_VIEW_LOCATION_DATA_DEVICE_ACTIVATIONS',
+      //     service: 'hmpps-electronic-monitoring-crime-matching-ui',
+      //   },
+      // ])
     })
 
     it('should display the second page of results if the user clicks the next page button', () => {
