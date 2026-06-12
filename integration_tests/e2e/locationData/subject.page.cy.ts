@@ -1,4 +1,3 @@
-/* eslint-disable cypress/no-unnecessary-waiting */
 import { fromLonLat } from 'ol/proj'
 import { hubCaseworker } from '../../fixtures/auth'
 import SubjectPage from '../../pages/locationData/subject'
@@ -219,41 +218,24 @@ context('Interacting with the map', () => {
     const location = [0.060977, 51.574865]
 
     page.map.mapInstance.then(map => {
-      cy.wait(600).then(() => {
-        const canvas = map.getViewport().querySelector('canvas')!
+      page.map.waitForMapToStopAnimating(map).then(() => {
+        const coordinate = fromLonLat(location)
+        const pixel = map.getPixelFromCoordinate(coordinate)
 
-        cy.window().then(window => {
-          const coordinate = fromLonLat(location)
-          const rect = canvas.getBoundingClientRect()
-          const pixel = map.getPixelFromCoordinate(coordinate)
-          const clientX = rect.left + pixel[0]
-          const clientY = rect.top + pixel[1]
-          const events = ['pointerdown', 'pointerup', 'click']
+        // And clicks the position marker
+        page.map.mapComponent.shadow().find('canvas').filter(':visible').last().click(pixel[0], pixel[1])
 
-          // And clicks the position marker
-          events.forEach(type => {
-            const event = new window.PointerEvent(type, {
-              clientX,
-              clientY,
-              bubbles: true,
-              cancelable: true,
-              view: window,
-            })
-            canvas.dispatchEvent(event)
-          })
-
-          // Then the position overlay should be shown
-          page.map.overlay.shouldBeVisible()
-          page.map.overlay.shouldHaveTitle(
-            '\n      Name (NOMIS ID): Jane Doe (Nomis 1")\n      Device ID: 123456789\n      Date of birth: 01/12/2000\n      Main address: 123 Street\n      Tag start date: 01/01/2025\n      Tag end date: \n    ',
-          )
-          page.map.overlay.shouldHaveNthRow(0, 'Confidence (m)', '100')
-          page.map.overlay.shouldHaveNthRow(1, 'Speed (km/h)', '1')
-          page.map.overlay.shouldHaveNthRow(2, 'Direction (degrees)', '237')
-          page.map.overlay.shouldHaveNthRow(3, 'Geolocation mechanism', 'GPS')
-          page.map.overlay.shouldHaveNthRow(4, 'Recorded date/time', '01/01/2025, 00:00:00')
-          page.map.overlay.shouldHaveNthRow(5, 'Location (latitude, longitude)', '51.574865, 0.060977')
-        })
+        // Then the position overlay should be shown
+        page.map.overlay.shouldBeVisible()
+        page.map.overlay.shouldHaveTitle(
+          '\n      Name (NOMIS ID): Jane Doe (Nomis 1")\n      Device ID: 123456789\n      Date of birth: 01/12/2000\n      Main address: 123 Street\n      Tag start date: 01/01/2025\n      Tag end date: \n    ',
+        )
+        page.map.overlay.shouldHaveNthRow(0, 'Confidence (m)', '100')
+        page.map.overlay.shouldHaveNthRow(1, 'Speed (km/h)', '1')
+        page.map.overlay.shouldHaveNthRow(2, 'Direction (degrees)', '237')
+        page.map.overlay.shouldHaveNthRow(3, 'Geolocation mechanism', 'GPS')
+        page.map.overlay.shouldHaveNthRow(4, 'Recorded date/time', '01/01/2025, 00:00:00')
+        page.map.overlay.shouldHaveNthRow(5, 'Location (latitude, longitude)', '51.574865, 0.060977')
       })
     })
   })

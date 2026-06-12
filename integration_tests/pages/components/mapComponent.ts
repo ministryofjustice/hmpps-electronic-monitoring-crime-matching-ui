@@ -73,4 +73,58 @@ export default class MapComponent {
   shouldNotHaveAlerts() {
     return this.element.find('.moj-alert').should('have.length', 0)
   }
+
+  waitForMapToStopAnimating(map: Map): Cypress.Chainable<void> {
+    return cy.wrap(
+      new Cypress.Promise<void>(resolve => {
+        const wait = () => {
+          if (!map.getView().getAnimating() && !map.getView().getInteracting()) {
+            resolve()
+            return
+          }
+
+          map.once('postrender', wait)
+          map.render()
+        }
+
+        wait()
+      }),
+      { log: false },
+    )
+  }
+
+  waitForOverlayFeatureToBeHittable(map: Map, coordinate: number[]): Cypress.Chainable<number[]> {
+    return cy.wrap(
+      new Cypress.Promise<number[]>((resolve, reject) => {
+        let attempts = 0
+
+        const wait = () => {
+          const pixel = map.getPixelFromCoordinate(coordinate)
+          const overlayFeature = pixel
+            ? map
+                .getFeaturesAtPixel(pixel, { hitTolerance: 10 })
+                .find(feature => typeof feature.get('overlayBodyTemplateId') === 'string')
+            : undefined
+
+          if (pixel && overlayFeature) {
+            resolve(pixel)
+            return
+          }
+
+          attempts += 1
+
+          if (attempts >= 10) {
+            reject(new Error(`Overlay feature was not hittable at coordinate ${JSON.stringify(coordinate)}`))
+            return
+          }
+
+          map.once('postrender', wait)
+          map.render()
+        }
+
+        wait()
+      }),
+      { log: false },
+    )
+  }
 }
