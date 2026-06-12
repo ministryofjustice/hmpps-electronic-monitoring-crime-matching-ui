@@ -30,10 +30,10 @@ declare global {
        * Custom command to get a form fieldset by legend text. Options are passed to the command to get the actual fieldset element
        * @example cy.getByLegend('Important fields')
        */
-      getByLegend: (
+      getByLegend(
         legend: string | RegExp,
-        options?: Partial<Cypress.Loggable & Cypress.Timeoutable & Cypress.Withinable & Cypress.Shadow>,
-      ) => Chainable<JQuery>
+        options?: Partial<Loggable & Timeoutable & Withinable & Shadow>,
+      ): Chainable<JQuery<HTMLFieldSetElement>>
 
       /**
        * Custom command to list downloads

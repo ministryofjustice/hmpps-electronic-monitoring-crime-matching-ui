@@ -41,8 +41,9 @@ export default class MapComponent {
           } else {
             el.addEventListener(
               'map:render:complete',
-              (e: CustomEvent<{ mapInstance: Map }>) => {
-                resolve(e.detail.mapInstance)
+              e => {
+                const customEvent = e as CustomEvent<{ mapInstance: Map }>
+                resolve(customEvent.detail.mapInstance)
               },
               { once: true },
             )
