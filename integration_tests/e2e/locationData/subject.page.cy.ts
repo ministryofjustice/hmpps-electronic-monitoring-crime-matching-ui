@@ -1,4 +1,3 @@
-/* eslint-disable cypress/no-unnecessary-waiting */
 import { fromLonLat } from 'ol/proj'
 import { hubCaseworker } from '../../fixtures/auth'
 import SubjectPage from '../../pages/locationData/subject'
@@ -219,28 +218,17 @@ context('Interacting with the map', () => {
     const location = [0.060977, 51.574865]
 
     page.map.mapInstance.then(map => {
-      cy.wait(600).then(() => {
-        const canvas = map.getViewport().querySelector('canvas')!
+      page.map.waitForMapToStopAnimating(map).then(() => {
+        const coordinate = fromLonLat(location)
 
-        cy.window().then(window => {
-          const coordinate = fromLonLat(location)
-          const rect = canvas.getBoundingClientRect()
-          const pixel = map.getPixelFromCoordinate(coordinate)
-          const clientX = rect.left + pixel[0]
-          const clientY = rect.top + pixel[1]
-          const events = ['pointerdown', 'pointerup', 'click']
-
+        page.map.waitForOverlayFeatureToBeHittable(map, coordinate).then(pixel => {
           // And clicks the position marker
-          events.forEach(type => {
-            const event = new window.PointerEvent(type, {
-              clientX,
-              clientY,
-              bubbles: true,
-              cancelable: true,
-              view: window,
-            })
-            canvas.dispatchEvent(event)
-          })
+          page.map.mapComponent
+            .shadow()
+            .find('canvas')
+            .filter(':visible')
+            .last()
+            .click(pixel[0], pixel[1], { force: true })
 
           // Then the position overlay should be shown
           page.map.overlay.shouldBeVisible()

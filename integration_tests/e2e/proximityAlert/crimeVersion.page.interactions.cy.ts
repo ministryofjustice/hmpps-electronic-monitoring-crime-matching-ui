@@ -448,28 +448,17 @@ context('Crime Version', () => {
 
       // And the map is ready
       page.map.mapInstance.then(map => {
-        cy.wait(100).then(() => {
-          const canvas = map.getViewport().querySelector('canvas')!
+        page.map.waitForMapToStopAnimating(map).then(() => {
+          const coordinate = fromLonLat(crimeLocation)
 
-          cy.window().then(window => {
-            const coordinate = fromLonLat(crimeLocation)
-            const rect = canvas.getBoundingClientRect()
-            const pixel = map.getPixelFromCoordinate(coordinate)
-            const clientX = rect.left + pixel[0]
-            const clientY = rect.top + pixel[1]
-            const events = ['pointerdown', 'pointerup', 'click']
-
-            // And clicks the crime marker
-            events.forEach(type => {
-              const event = new window.PointerEvent(type, {
-                clientX,
-                clientY,
-                bubbles: true,
-                cancelable: true,
-                view: window,
-              })
-              canvas.dispatchEvent(event)
-            })
+          // And clicks the crime marker
+          page.map.waitForOverlayFeatureToBeHittable(map, coordinate).then(pixel => {
+            page.map.mapComponent
+              .shadow()
+              .find('canvas')
+              .filter(':visible')
+              .last()
+              .click(pixel[0], pixel[1], { force: true })
 
             // Then the crime overlay should be shown
             page.map.overlay.shouldBeVisible()
@@ -492,28 +481,17 @@ context('Crime Version', () => {
 
       // And the map is ready
       page.map.mapInstance.then(map => {
-        cy.wait(200).then(() => {
-          const canvas = map.getViewport().querySelector('canvas')!
+        page.map.waitForMapToStopAnimating(map).then(() => {
+          const coordinate = fromLonLat(deviceLocation)
 
-          cy.window().then(window => {
-            const coordinate = fromLonLat(deviceLocation)
-            const rect = canvas.getBoundingClientRect()
-            const pixel = map.getPixelFromCoordinate(coordinate)
-            const clientX = rect.left + pixel[0]
-            const clientY = rect.top + pixel[1]
-            const events = ['pointerdown', 'pointerup', 'click']
-
-            // And clicks the crime marker
-            events.forEach(type => {
-              const event = new window.PointerEvent(type, {
-                clientX,
-                clientY,
-                bubbles: true,
-                cancelable: true,
-                view: window,
-              })
-              canvas.dispatchEvent(event)
-            })
+          // And clicks the crime marker
+          page.map.waitForOverlayFeatureToBeHittable(map, coordinate).then(pixel => {
+            page.map.mapComponent
+              .shadow()
+              .find('canvas')
+              .filter(':visible')
+              .last()
+              .click(pixel[0], pixel[1], { force: true })
 
             // Then the crime overlay should be shown
             page.map.overlay.shouldBeVisible()

@@ -1,6 +1,6 @@
 Cypress.Commands.add('signIn', (options = { failOnStatusCode: true }) => {
   cy.request('/')
-  return cy.task('getSignInUrl').then((url: string) => cy.visit(url, options))
+  return cy.task<string>('getSignInUrl').then(url => cy.visit(url, options))
 })
 
 Cypress.Commands.add('getDownloads', path => {
