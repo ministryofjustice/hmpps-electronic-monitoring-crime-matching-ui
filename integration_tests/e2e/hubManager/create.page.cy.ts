@@ -8,7 +8,6 @@ context('Create Hub Manager', () => {
     beforeEach(() => {
       cy.task('reset')
       cy.task('stubSignIn', hubManager)
-      cy.task('stubAuditSqs')
       cy.signIn()
       cy.stubGetHubManagers()
       cy.stubCreateHubManager({

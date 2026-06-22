@@ -8,7 +8,6 @@ context('Create Hub Manager', () => {
     beforeEach(() => {
       cy.task('reset')
       cy.task('stubSignIn', hubManager)
-      cy.task('stubAuditSqs')
       cy.request('http://localhost:9091/__admin/requests').then(res => {
         cy.log(JSON.stringify(res.body))
       })

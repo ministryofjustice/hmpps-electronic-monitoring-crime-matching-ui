@@ -7,7 +7,6 @@ context('Police Data Dashboard', () => {
     beforeEach(() => {
       cy.task('reset')
       cy.task('stubSignIn', hubCaseworker)
-      cy.task('stubAuditSqs')
       cy.signIn()
 
       // Given an API response with no results for no query params

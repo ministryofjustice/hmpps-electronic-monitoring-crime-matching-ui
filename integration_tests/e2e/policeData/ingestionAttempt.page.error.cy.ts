@@ -7,7 +7,6 @@ context('Police Data Ingestion Attempt', () => {
     beforeEach(() => {
       cy.task('reset')
       cy.task('stubSignIn', hubCaseworker)
-      cy.task('stubAuditSqs')
       cy.signIn()
     })
 

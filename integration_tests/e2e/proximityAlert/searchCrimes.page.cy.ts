@@ -7,7 +7,6 @@ context('Search Crimes', () => {
     beforeEach(() => {
       cy.task('reset')
       cy.task('stubSignIn', hubCaseworker)
-      cy.task('stubAuditSqs')
       cy.signIn()
     })
 
