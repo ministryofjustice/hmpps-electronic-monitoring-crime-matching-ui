@@ -27,7 +27,7 @@ Cypress.Commands.add(
     subject,
     legend: string | RegExp,
     options: Partial<Cypress.Loggable & Cypress.Timeoutable & Cypress.Withinable & Cypress.Shadow> = {},
-  ): Cypress.Chainable<JQuery> => {
+  ): Cypress.Chainable<JQuery<HTMLFieldSetElement>> => {
     const log = false
 
     return cy
