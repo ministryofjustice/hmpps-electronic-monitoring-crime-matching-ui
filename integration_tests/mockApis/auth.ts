@@ -132,17 +132,16 @@ const stubAuditSqs = () =>
     request: {
       method: 'POST',
       urlPath: '/',
-      // headers: {
-      //   'x-amz-target': {
-      //     equalTo: 'AmazonSQS.SendMessage',
-      //   },
-      // },
+      headers: {
+        'x-amz-target': {
+          equalTo: 'AmazonSQS.SendMessage',
+        },
+      },
     },
     response: {
       status: 200,
       headers: {
-        'Content-Type': 'text/xml',
-        // 'Content-Type': 'application/x-amz-json-1.0',
+        'Content-Type': 'application/x-amz-json-1.0',
       },
       body: JSON.stringify({
         MessageId: 'mock-message-id-12345',
