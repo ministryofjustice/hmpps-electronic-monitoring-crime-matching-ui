@@ -104,6 +104,28 @@ const manageDetails = () =>
     },
   })
 
+const stubAuditSqs = () =>
+  stubFor({
+    request: {
+      method: 'POST',
+      urlPath: '/',
+      headers: {
+        'x-amz-target': {
+          equalTo: 'AmazonSQS.SendMessage',
+        },
+      },
+    },
+    response: {
+      status: 200,
+      headers: {
+        'Content-Type': 'application/x-amz-json-1.0',
+      },
+      body: JSON.stringify({
+        MessageId: 'mock-message-id-12345',
+      }),
+    },
+  })
+
 const token = (userToken: UserToken) =>
   stubFor({
     request: {
@@ -131,6 +153,13 @@ export default {
   getSignInUrl,
   stubAuthPing: ping,
   stubAuthManageDetails: manageDetails,
-  stubSignIn: (userToken: UserToken = {}): Promise<[Response, Response, Response, Response, Response]> =>
-    Promise.all([favicon(), redirect(), signOut(), token(userToken), tokenVerification.stubVerifyToken()]),
+  stubSignIn: (userToken: UserToken = {}): Promise<[Response, Response, Response, Response, Response, Response]> =>
+    Promise.all([
+      favicon(),
+      redirect(),
+      signOut(),
+      token(userToken),
+      tokenVerification.stubVerifyToken(),
+      stubAuditSqs(),
+    ]),
 }

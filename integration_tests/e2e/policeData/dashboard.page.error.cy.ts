@@ -47,6 +47,16 @@ context('Police Data Dashboard', () => {
 
       // Then they should be shown an error page
       Page.verifyOnPage(ErrorPage, 'Internal Server Error')
+
+      // And the expected audit message was sent
+      cy.expectAuditEvents([
+        {
+          who: 'USER1',
+          details: '{"params":{},"query":{}}',
+          what: 'PAGE_VIEW_ATTEMPT_POLICE_DATA_INGESTION_ATTEMPTS',
+          service: 'hmpps-electronic-monitoring-crime-matching-ui',
+        },
+      ])
     })
   })
 })

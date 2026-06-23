@@ -52,6 +52,16 @@ context('Search Crimes', () => {
 
       // Then they should be shown an error page
       Page.verifyOnPage(ErrorPage, 'Internal Server Error')
+
+      // And the expected audit message was sent
+      cy.expectAuditEvents([
+        {
+          who: 'USER1',
+          details: '{"params":{},"query":{"crimeReference":"abc"}}',
+          what: 'PAGE_VIEW_ATTEMPT_PROXIMITY_ALERT_CRIME_VERSIONS',
+          service: 'hmpps-electronic-monitoring-crime-matching-ui',
+        },
+      ])
     })
   })
 })

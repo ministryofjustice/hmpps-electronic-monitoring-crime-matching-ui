@@ -59,4 +59,21 @@ describe('Audit service', () => {
       })
     })
   })
+
+  describe('logPageViewAttempt', () => {
+    it('sends page view attempt event audit message using audit client', async () => {
+      await auditService.logPageViewAttempt(Page.HOMEPAGE, {
+        who: 'user1',
+        correlationId: 'request123',
+        details: { extraDetails: 'example' },
+      })
+
+      expect(hmppsAuditClient.sendMessage).toHaveBeenCalledWith({
+        what: 'PAGE_VIEW_ATTEMPT_HOMEPAGE',
+        who: 'user1',
+        correlationId: 'request123',
+        details: { extraDetails: 'example' },
+      })
+    })
+  })
 })

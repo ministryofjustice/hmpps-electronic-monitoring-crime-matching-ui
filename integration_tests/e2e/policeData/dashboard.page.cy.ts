@@ -251,6 +251,16 @@ context('Police Data Dashboard', () => {
       page.dataTable.cell(5, 4).should('not.have.class', 'table-cell--red table-cell--bold')
       page.dataTable.cell(6, 4).should('have.class', 'table-cell--red table-cell--bold')
       page.dataTable.cell(7, 4).should('have.class', 'table-cell--red table-cell--bold')
+
+      // And the expected audit message was sent
+      cy.expectAuditEvents([
+        {
+          who: 'USER1',
+          details: '{"params":{},"query":{}}',
+          what: 'PAGE_VIEW_POLICE_DATA_INGESTION_ATTEMPTS',
+          service: 'hmpps-electronic-monitoring-crime-matching-ui',
+        },
+      ])
     })
 
     it('should populate the form with query parameters', () => {

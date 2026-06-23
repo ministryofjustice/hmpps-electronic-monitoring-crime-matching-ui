@@ -17,6 +17,7 @@ import { HmppsUser } from '../../interfaces/hmppsUser'
 import setUpWebSession from '../../middleware/setUpWebSession'
 import HmppsAuditClient from '../../data/hmppsAuditClient'
 import { ROLES } from '../../constants/roles'
+import auditMiddleware from '../../middleware/auditMiddleware'
 
 jest.mock('../../services/auditService')
 jest.mock('../../data/hmppsAuditClient')
@@ -73,6 +74,7 @@ function appSetup(services: Services, production: boolean, userSupplier: () => H
   app.use(express.json())
   app.use(express.urlencoded({ extended: true }))
   app.use(multer().single('file'))
+  app.use(auditMiddleware(services))
   app.use(routes(services))
   app.use((req, res, next) => next(new NotFound()))
   app.use(errorHandler(production))

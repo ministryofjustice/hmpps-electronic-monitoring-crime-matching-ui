@@ -163,6 +163,16 @@ context('Search Crimes', () => {
           'href',
           '/proximity-alert/fe1592c0-dc78-46c3-88cd-144f1f1ec022?returnTo=%2Fproximity-alert%3FcrimeReference%3Dabc',
         )
+
+      // And the expected audit message was sent
+      cy.expectAuditEvents([
+        {
+          who: 'USER1',
+          details: '{"params":{},"query":{"crimeReference":"abc"}}',
+          what: 'PAGE_VIEW_PROXIMITY_ALERT_CRIME_VERSIONS',
+          service: 'hmpps-electronic-monitoring-crime-matching-ui',
+        },
+      ])
     })
 
     it('should show allow the user to navigate to other pages in the result set', () => {

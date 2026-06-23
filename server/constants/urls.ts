@@ -4,6 +4,14 @@ const URLS = {
     CREATE: '/hub-managers/create' as const,
     DELETE: '/hub-managers/:id/delete' as const,
   },
+  LOCATION_DATA: {
+    DEVICE_ACTIVATION: {
+      VIEW: '/location-data/device-activations/:deviceActivationId' as const,
+    },
+    DEVICE_ACTIVATIONS: {
+      VIEW: '/location-data/persons' as const,
+    },
+  },
   POLICE_DATA: {
     INGESTION_ATTEMPT: {
       VIEW: '/police-data/ingestion-attempts/:ingestionAttemptId' as const,

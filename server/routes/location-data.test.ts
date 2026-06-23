@@ -5,12 +5,22 @@ import DeviceActivationsService from '../services/deviceActivationsService'
 import ValidationService from '../services/locationData/validationService'
 import PersonsService from '../services/personsService'
 import CrimeMatchingClient from '../data/crimeMatchingClient'
+import HmppsAuditClient from '../data/hmppsAuditClient'
+import AuditService, { Page } from '../services/auditService'
 
+jest.mock('../services/auditService')
 jest.mock('../data/crimeMatchingClient')
 jest.mock('../../logger')
 
 describe('/location-data', () => {
   let restClient: jest.Mocked<CrimeMatchingClient>
+  const hmppsAuditClient = new HmppsAuditClient({
+    queueUrl: '',
+    enabled: true,
+    region: '',
+    serviceName: '',
+  }) as jest.Mocked<HmppsAuditClient>
+  const auditService = new AuditService(hmppsAuditClient) as jest.Mocked<AuditService>
 
   beforeEach(() => {
     restClient = new CrimeMatchingClient(logger) as jest.Mocked<CrimeMatchingClient>
@@ -30,6 +40,7 @@ describe('/location-data', () => {
           deviceActivationsService,
           personsService,
           validationService,
+          auditService,
         },
       })
 
@@ -52,6 +63,7 @@ describe('/location-data', () => {
           deviceActivationsService,
           personsService,
           validationService,
+          auditService,
         },
       })
 
@@ -69,6 +81,17 @@ describe('/location-data', () => {
           expect(res.status).toEqual(404)
           expect(res.text).toContain('<title>HMPPS Electronic Monitoring Crime Matching - Error</title>')
           expect(res.text).toContain('<h1>Not Found</h1>')
+          expect(auditService.logPageView).not.toHaveBeenCalled()
+          expect(auditService.logPageViewAttempt).toHaveBeenCalledWith(Page.LOCATION_DATA_DEVICE_ACTIVATION, {
+            who: 'user1',
+            correlationId: expect.any(String),
+            details: {
+              params: {
+                deviceActivationId: '123456789',
+              },
+              query: {},
+            },
+          })
         })
     })
 
@@ -81,6 +104,7 @@ describe('/location-data', () => {
           deviceActivationsService,
           personsService,
           validationService,
+          auditService,
         },
       })
 
@@ -103,6 +127,17 @@ describe('/location-data', () => {
         .expect(res => {
           expect(res.status).toEqual(200)
           expect(res.text).toContain('<title>HMPPS Electronic Monitoring Crime Matching - Home</title>')
+          expect(auditService.logPageViewAttempt).not.toHaveBeenCalled()
+          expect(auditService.logPageView).toHaveBeenCalledWith(Page.LOCATION_DATA_DEVICE_ACTIVATION, {
+            who: 'user1',
+            correlationId: expect.any(String),
+            details: {
+              params: {
+                deviceActivationId: '123456789',
+              },
+              query: {},
+            },
+          })
         })
     })
   })

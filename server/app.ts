@@ -28,6 +28,7 @@ import routes from './routes'
 import type { Services } from './services'
 import populateConstants from './middleware/populateConstants'
 import { CRIME_MATCHING_ROLES } from './constants/roles'
+import auditMiddleware from './middleware/auditMiddleware'
 
 // Loads Probation Design System components into the request
 async function loadPdsComponents(req: express.Request, res: express.Response): Promise<void> {
@@ -87,6 +88,7 @@ export default function createApp(services: Services): express.Application {
     }),
   )
 
+  app.use(auditMiddleware(services))
   app.use(routes(services))
 
   // Handle 404s with header/footer

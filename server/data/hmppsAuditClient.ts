@@ -1,6 +1,8 @@
 import { SendMessageCommand, SQSClient } from '@aws-sdk/client-sqs'
 import logger from '../../logger'
 
+const isTestEnvironment = process.env.NODE_ENV === 'test'
+
 export interface AuditEvent {
   what: string
   who: string
@@ -41,7 +43,14 @@ export default class HmppsAuditClient {
     this.enabled = config.enabled
     this.queueUrl = config.queueUrl
     this.serviceName = config.serviceName
-    this.sqsClient = new SQSClient({ region: config.region })
+    this.sqsClient = new SQSClient({
+      region: config.region,
+      ...(isTestEnvironment
+        ? {
+            md5: false,
+          }
+        : {}),
+    })
   }
 
   async sendMessage(event: AuditEvent, throwOnError: boolean = true) {
