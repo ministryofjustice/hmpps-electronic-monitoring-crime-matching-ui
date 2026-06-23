@@ -119,6 +119,16 @@ context('Location Data', () => {
       page.dataTable.shouldNotHavePagination()
       page.form.personsSearchField.shouldHaveValue('name')
       page.form.personsSearchField.shouldHaveInputValue('name', 'foo')
+
+      // And the expected audit message was sent
+      cy.expectAuditEvents([
+        {
+          who: 'USER1',
+          details: '{"params":{},"query":{"searchField":"name","searchTerm":"foo"}}',
+          what: 'PAGE_VIEW_LOCATION_DATA_DEVICE_ACTIVATIONS',
+          service: 'hmpps-electronic-monitoring-crime-matching-ui',
+        },
+      ])
     })
 
     it('should display the second page of results if the user clicks the next page button', () => {

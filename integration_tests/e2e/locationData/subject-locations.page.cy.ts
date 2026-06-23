@@ -88,6 +88,17 @@ context('Location Data', () => {
         hour: '09',
         minute: '00',
       })
+
+      // And the expected audit message was sent
+      cy.expectAuditEvents([
+        {
+          who: 'USER1',
+          details:
+            '{"params":{"deviceActivationId":"1"},"query":{"from":"2025-01-01T09:00:00.000Z","to":"2025-01-02T09:00:00.000Z"}}',
+          what: 'PAGE_VIEW_LOCATION_DATA_DEVICE_ACTIVATION',
+          service: 'hmpps-electronic-monitoring-crime-matching-ui',
+        },
+      ])
     })
 
     it('should reset the date filter form', () => {

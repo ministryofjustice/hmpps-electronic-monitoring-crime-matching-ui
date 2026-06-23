@@ -51,6 +51,16 @@ context('Create Hub Manager', () => {
       page.dataTable.shouldHaveColumns(['Name', 'Has signature?', 'Actions'])
       page.dataTable.shouldHaveRows([['Test manager 1', 'true', 'Delete']])
 
+      // And the expected audit message was sent
+      cy.expectAuditEvents([
+        {
+          who: 'USER1',
+          details: '{"params":{},"query":{}}',
+          what: 'PAGE_VIEW_HUB_MANAGERS',
+          service: 'hmpps-electronic-monitoring-crime-matching-ui',
+        },
+      ])
+
       // And the actions column should have a form to delete the hub manager
       page.dataTable
         .cell(0, 2)

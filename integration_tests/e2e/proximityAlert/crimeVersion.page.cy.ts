@@ -68,6 +68,16 @@ context('Crime Version', () => {
 
       // And the backlink should have the default value
       page.backLink.should('have.attr', 'href', '/proximity-alert')
+
+      // And the expected audit message was sent
+      cy.expectAuditEvents([
+        {
+          who: 'USER1',
+          details: '{"params":{"crimeVersionId":"64d41bd9-5450-4bbb-89d4-42ba75659f49"},"query":{}}',
+          what: 'PAGE_VIEW_PROXIMITY_ALERT_CRIME_VERSION',
+          service: 'hmpps-electronic-monitoring-crime-matching-ui',
+        },
+      ])
     })
 
     it('should display a map showing crime version data when no devices were matched to the crime', () => {

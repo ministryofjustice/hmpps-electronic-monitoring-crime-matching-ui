@@ -123,6 +123,17 @@ context('Police Data Dashboard', () => {
         'contain',
         '?batchId=MPS20251110&policeForceArea=METROPOLITAN&fromDate=1%2F10%2F2025&toDate=2%2F10%2F2025',
       )
+
+      // And the expected audit message was sent
+      cy.expectAuditEvents([
+        {
+          who: 'USER1',
+          details:
+            '{"params":{},"query":{"batchId":"MPS20251110","policeForceArea":"METROPOLITAN","fromDate":"1/10/2025","toDate":"2/10/2025"}}',
+          what: 'PAGE_VIEW_POLICE_DATA_INGESTION_ATTEMPTS',
+          service: 'hmpps-electronic-monitoring-crime-matching-ui',
+        },
+      ])
     })
   })
 })

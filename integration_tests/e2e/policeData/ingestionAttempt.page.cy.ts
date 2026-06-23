@@ -80,6 +80,16 @@ context('Police Data Ingestion Attempt', () => {
 
       // And the backlink should have the default value
       page.backLink.should('have.attr', 'href', '/police-data/dashboard')
+
+      // And the expected audit message was sent
+      cy.expectAuditEvents([
+        {
+          who: 'USER1',
+          details: '{"params":{"ingestionAttemptId":"64d41bd9-5450-4bbb-89d4-42ba75659f49"},"query":{}}',
+          what: 'PAGE_VIEW_POLICE_DATA_INGESTION_ATTEMPT',
+          service: 'hmpps-electronic-monitoring-crime-matching-ui',
+        },
+      ])
     })
 
     it('should display a successful ingestion with matches', () => {

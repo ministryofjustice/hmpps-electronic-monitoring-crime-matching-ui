@@ -18,6 +18,11 @@ declare global {
   namespace Cypress {
     interface Chainable {
       /**
+       * Verify a list of audit events against actual sent events
+       */
+      expectAuditEvents(events: object[]): Chainable<unknown>
+
+      /**
        * Custom command to get a form field by label text. Options are passed to the command to get the actual field element
        * @example cy.getByLabel('My text field')
        */

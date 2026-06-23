@@ -23,6 +23,16 @@ context('Police Data Ingestion Attempt', () => {
 
       // Then they should be shown an error page
       Page.verifyOnPage(ErrorPage, 'Not Found')
+
+      // And the expected audit message was sent
+      cy.expectAuditEvents([
+        {
+          who: 'USER1',
+          details: '{"params":{"ingestionAttemptId":"64d41bd9-5450-4bbb-89d4-42ba75659f49"},"query":{}}',
+          what: 'PAGE_VIEW_ATTEMPT_POLICE_DATA_INGESTION_ATTEMPT',
+          service: 'hmpps-electronic-monitoring-crime-matching-ui',
+        },
+      ])
     })
 
     it('should display an error if the api returns 500 when fetching an ingestion attempt', () => {
@@ -38,6 +48,16 @@ context('Police Data Ingestion Attempt', () => {
 
       // Then they should be shown an error page
       Page.verifyOnPage(ErrorPage, 'Internal Server Error')
+
+      // And the expected audit message was sent
+      cy.expectAuditEvents([
+        {
+          who: 'USER1',
+          details: '{"params":{"ingestionAttemptId":"64d41bd9-5450-4bbb-89d4-42ba75659f49"},"query":{}}',
+          what: 'PAGE_VIEW_ATTEMPT_POLICE_DATA_INGESTION_ATTEMPT',
+          service: 'hmpps-electronic-monitoring-crime-matching-ui',
+        },
+      ])
     })
   })
 })
