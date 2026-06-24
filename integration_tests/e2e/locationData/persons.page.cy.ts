@@ -35,6 +35,16 @@ context('Location Data', () => {
       page.dataTable.shouldNotHavePagination()
       page.form.personsSearchField.shouldHaveValue('nomisId')
       page.form.personsSearchField.shouldHaveInputValue('nomisId', 'foo')
+
+      // And the expected audit message was sent
+      cy.expectAuditEvents([
+        {
+          who: 'USER1',
+          details: '{"query":{"name":"","nomisId":"foo","deviceId":"","searchField":"nomisId"}}',
+          what: 'SEARCH_LOCATION_DATA_DEVICE_ACTIVATIONS',
+          service: 'hmpps-electronic-monitoring-crime-matching-ui',
+        },
+      ])
     })
 
     it('should display the query results if the query returned results', () => {
@@ -122,6 +132,12 @@ context('Location Data', () => {
 
       // And the expected audit message was sent
       cy.expectAuditEvents([
+        {
+          who: 'USER1',
+          details: '{"query":{"name":"foo","nomisId":"","deviceId":"","searchField":"name"}}',
+          what: 'SEARCH_LOCATION_DATA_DEVICE_ACTIVATIONS',
+          service: 'hmpps-electronic-monitoring-crime-matching-ui',
+        },
         {
           who: 'USER1',
           details: '{"params":{},"query":{"searchField":"name","searchTerm":"foo"}}',
@@ -246,6 +262,16 @@ context('Location Data', () => {
       page.dataTable.pagination.shouldHavePrevButton()
       page.form.personsSearchField.shouldHaveValue('name')
       page.form.personsSearchField.shouldHaveInputValue('name', 'foo')
+
+      // And the expected audit message was sent
+      cy.expectAuditEvents([
+        {
+          who: 'USER1',
+          details: '{"params":{},"query":{"searchField":"name","searchTerm":"foo","page":"2"}}',
+          what: 'PAGE_VIEW_LOCATION_DATA_DEVICE_ACTIVATIONS',
+          service: 'hmpps-electronic-monitoring-crime-matching-ui',
+        },
+      ])
     })
 
     it('should display query results when searching by deviceId', () => {

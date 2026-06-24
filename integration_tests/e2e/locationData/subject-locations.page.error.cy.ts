@@ -69,6 +69,17 @@ context('Location Data', () => {
       page.dataTable.shouldHaveSelectedRow('1')
       page.locationsForm.fromDateField.shouldHaveValidationMessage('You must enter a valid value for date')
       page.locationsForm.toDateField.shouldHaveValidationMessage('You must enter a valid value for date')
+
+      // And the expected audit message was sent
+      cy.expectAuditEvents([
+        {
+          who: 'USER1',
+          details:
+            '{"params":{"deviceActivationId":1},"query":{"fromDate":{"date":"01/08/2024","hour":" ","minute":" "},"toDate":{"date":"","hour":"","minute":""}}}',
+          what: 'SEARCH_LOCATION_DATA_DEVICE_ACTIVATION',
+          service: 'hmpps-electronic-monitoring-crime-matching-ui',
+        },
+      ])
     })
 
     it('should display an error message if date range is from date is before device activation', () => {
@@ -401,6 +412,13 @@ context('Location Data', () => {
 
       // And the expected audit message was sent
       cy.expectAuditEvents([
+        {
+          who: 'USER1',
+          details:
+            '{"params":{"deviceActivationId":1},"query":{"fromDate":{"date":"01/01/2025","hour":"09","minute":"00"},"toDate":{"date":"02/01/2025","hour":"09","minute":"00"}}}',
+          what: 'SEARCH_LOCATION_DATA_DEVICE_ACTIVATION',
+          service: 'hmpps-electronic-monitoring-crime-matching-ui',
+        },
         {
           who: 'USER1',
           details:

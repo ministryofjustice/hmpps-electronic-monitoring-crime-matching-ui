@@ -36,6 +36,12 @@ context('Location Data', () => {
       cy.expectAuditEvents([
         {
           who: 'USER1',
+          details: '{"query":{"name":"foo","nomisId":"","deviceId":"","searchField":"name"}}',
+          what: 'SEARCH_LOCATION_DATA_DEVICE_ACTIVATIONS',
+          service: 'hmpps-electronic-monitoring-crime-matching-ui',
+        },
+        {
+          who: 'USER1',
           details: '{"params":{},"query":{"searchField":"name","searchTerm":"foo"}}',
           what: 'PAGE_VIEW_ATTEMPT_LOCATION_DATA_DEVICE_ACTIVATIONS',
           service: 'hmpps-electronic-monitoring-crime-matching-ui',
@@ -55,6 +61,16 @@ context('Location Data', () => {
       // User should be redirected to an error page
       page = Page.verifyOnPage(PersonsPage)
       page.form.personsSearchField.shouldHaveValidationMessage('You must enter a value for Name, NOMIS ID or Device ID')
+
+      // And the expected audit message was sent
+      cy.expectAuditEvents([
+        {
+          who: 'USER1',
+          details: '{"query":{"name":" ","nomisId":"","deviceId":"","searchField":"name"}}',
+          what: 'SEARCH_LOCATION_DATA_DEVICE_ACTIVATIONS',
+          service: 'hmpps-electronic-monitoring-crime-matching-ui',
+        },
+      ])
     })
   })
 })

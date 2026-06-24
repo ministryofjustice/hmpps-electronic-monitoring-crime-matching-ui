@@ -88,6 +88,19 @@ describe('SubjectController', () => {
       await controller.search(req, res, next)
 
       // Then
+      expect(auditService.logSearch).toHaveBeenCalledWith(Page.LOCATION_DATA_DEVICE_ACTIVATION, {
+        who: 'fakeUserName',
+        correlationId: req.id,
+        details: {
+          params: {
+            deviceActivationId: 1,
+          },
+          query: {
+            fromDate: fromDateInput,
+            toDate: toDateInput,
+          },
+        },
+      })
       expect(res.redirect).toHaveBeenCalledWith(
         '/location-data/device-activations/1?from=2025-02-01T01:01:01.000Z&to=2025-02-02T01:01:01.000Z',
       )
@@ -125,6 +138,19 @@ describe('SubjectController', () => {
       await controller.search(req, res, next)
 
       // Then
+      expect(auditService.logSearch).toHaveBeenCalledWith(Page.LOCATION_DATA_DEVICE_ACTIVATION, {
+        who: 'fakeUserName',
+        correlationId: req.id,
+        details: {
+          params: {
+            deviceActivationId: undefined,
+          },
+          query: {
+            fromDate: emptyDateInput,
+            toDate: emptyDateInput,
+          },
+        },
+      })
       expect(res.redirect).toHaveBeenCalledWith('/location-data/persons?name=foo&nomisId=')
       expect(req.session.validationErrors).toEqual([
         {
@@ -177,6 +203,19 @@ describe('SubjectController', () => {
       await controller.search(req, res, next)
 
       // Then
+      expect(auditService.logSearch).toHaveBeenCalledWith(Page.LOCATION_DATA_DEVICE_ACTIVATION, {
+        who: 'fakeUserName',
+        correlationId: req.id,
+        details: {
+          params: {
+            deviceActivationId: undefined,
+          },
+          query: {
+            fromDate: fromDateInput,
+            toDate: toDateInput,
+          },
+        },
+      })
       expect(res.redirect).toHaveBeenCalledWith('/location-data/device-activations/1')
       expect(req.session.validationErrors).toEqual([
         {
@@ -224,6 +263,19 @@ describe('SubjectController', () => {
       await controller.search(req, res, next)
 
       // Then
+      expect(auditService.logSearch).toHaveBeenCalledWith(Page.LOCATION_DATA_DEVICE_ACTIVATION, {
+        who: 'fakeUserName',
+        correlationId: req.id,
+        details: {
+          params: {
+            deviceActivationId: undefined,
+          },
+          query: {
+            fromDate: fromDateInput,
+            toDate: toDateInput,
+          },
+        },
+      })
       expect(res.redirect).toHaveBeenCalledWith('/location-data/device-activations/1')
       expect(req.session.validationErrors).toEqual([
         {
@@ -282,6 +334,19 @@ describe('SubjectController', () => {
       await controller.search(req, res, next)
 
       // Then
+      expect(auditService.logSearch).toHaveBeenCalledWith(Page.LOCATION_DATA_DEVICE_ACTIVATION, {
+        who: 'fakeUserName',
+        correlationId: req.id,
+        details: {
+          params: {
+            deviceActivationId: 1,
+          },
+          query: {
+            fromDate: fromDateInput,
+            toDate: toDateInput,
+          },
+        },
+      })
       expect(res.redirect).toHaveBeenCalledWith('/location-data/device-activations/1')
       expect(req.session.validationErrors).toEqual([
         {
@@ -340,6 +405,19 @@ describe('SubjectController', () => {
       await controller.search(req, res, next)
 
       // Then
+      expect(auditService.logSearch).toHaveBeenCalledWith(Page.LOCATION_DATA_DEVICE_ACTIVATION, {
+        who: 'fakeUserName',
+        correlationId: req.id,
+        details: {
+          params: {
+            deviceActivationId: 1,
+          },
+          query: {
+            fromDate: fromDateInput,
+            toDate: toDateInput,
+          },
+        },
+      })
       expect(res.redirect).toHaveBeenCalledWith('/location-data/device-activations/1')
       expect(req.session.validationErrors).toEqual([
         {

@@ -3,9 +3,13 @@ import { crimeSearchQuerySchema } from '../../schemas/proximityAlert/crimeSearch
 import CrimeService from '../../services/crimeService'
 import presentCrimeVersionSummaries from '../../presenters/crimeVersionSummary'
 import URLS from '../../constants/urls'
+import AuditService, { Page } from '../../services/auditService'
 
 export default class CrimeSearchController {
-  constructor(private readonly crimeService: CrimeService) {}
+  constructor(
+    private readonly auditService: AuditService,
+    private readonly crimeService: CrimeService,
+  ) {}
 
   private getQueryString = (crimeReference: string | null): string => {
     const searchParams = new URLSearchParams({
@@ -18,6 +22,16 @@ export default class CrimeSearchController {
   search: RequestHandler = async (req, res) => {
     const { crimeReference } = crimeSearchQuerySchema.parse(req.body)
     const query = this.getQueryString(crimeReference)
+
+    await this.auditService.logSearch(Page.PROXIMITY_ALERT_CRIME_VERSIONS, {
+      who: res.locals.user.username,
+      correlationId: req.id,
+      details: {
+        query: {
+          crimeReference,
+        },
+      },
+    })
 
     return res.redirect(303, `${URLS.PROXIMITY_ALERT.CRIME_VERSIONS.VIEW}${query ? `?${query}` : ''}`)
   }

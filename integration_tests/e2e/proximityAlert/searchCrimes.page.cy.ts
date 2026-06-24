@@ -235,6 +235,16 @@ context('Search Crimes', () => {
       page.dataTable.pagination.shouldHaveCurrentPage('2')
       page.dataTable.pagination.shouldNotHaveNextButton()
       page.dataTable.pagination.shouldHavePrevButton()
+
+      // And the expected audit message was sent
+      cy.expectAuditEvents([
+        {
+          who: 'USER1',
+          details: '{"params":{},"query":{"crimeReference":"abc","page":"2"}}',
+          what: 'PAGE_VIEW_PROXIMITY_ALERT_CRIME_VERSIONS',
+          service: 'hmpps-electronic-monitoring-crime-matching-ui',
+        },
+      ])
     })
   })
 })

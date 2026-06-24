@@ -129,6 +129,13 @@ context('Police Data Dashboard', () => {
         {
           who: 'USER1',
           details:
+            '{"query":{"batchId":"MPS20251110","fromDate":"1/10/2025","policeForceArea":"METROPOLITAN","toDate":"2/10/2025"}}',
+          what: 'SEARCH_POLICE_DATA_INGESTION_ATTEMPTS',
+          service: 'hmpps-electronic-monitoring-crime-matching-ui',
+        },
+        {
+          who: 'USER1',
+          details:
             '{"params":{},"query":{"batchId":"MPS20251110","policeForceArea":"METROPOLITAN","fromDate":"1/10/2025","toDate":"2/10/2025"}}',
           what: 'PAGE_VIEW_POLICE_DATA_INGESTION_ATTEMPTS',
           service: 'hmpps-electronic-monitoring-crime-matching-ui',

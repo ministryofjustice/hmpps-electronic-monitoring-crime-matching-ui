@@ -20,7 +20,7 @@ export default function routes(services: Services): Router {
   const homepageController = new HomepageController(auditService, featuresService)
   const helpController = new HelpController()
   const legalController = new LegalController()
-  const personsController = new PersonsController(personsService)
+  const personsController = new PersonsController(auditService, personsService)
 
   router.use(populateSessionData)
 

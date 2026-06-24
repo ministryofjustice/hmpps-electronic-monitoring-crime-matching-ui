@@ -93,4 +93,21 @@ describe('Audit service', () => {
       })
     })
   })
+
+  describe('logSearch', () => {
+    it('sends a search event audit message using audit client', async () => {
+      await auditService.logSearch(Page.POLICE_DATA_INGESTION_ATTEMPTS, {
+        who: 'user1',
+        correlationId: 'request123',
+        details: { extraDetails: 'example' },
+      })
+
+      expect(hmppsAuditClient.sendMessage).toHaveBeenCalledWith({
+        what: 'SEARCH_POLICE_DATA_INGESTION_ATTEMPTS',
+        who: 'user1',
+        correlationId: 'request123',
+        details: { extraDetails: 'example' },
+      })
+    })
+  })
 })
