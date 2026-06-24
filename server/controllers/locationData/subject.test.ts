@@ -12,6 +12,8 @@ import DeviceActivationsService from '../../services/deviceActivationsService'
 import ValidationService from '../../services/locationData/validationService'
 import PersonsService from '../../services/personsService'
 import CrimeMatchingClient from '../../data/crimeMatchingClient'
+import HmppsAuditClient from '../../data/hmppsAuditClient'
+import AuditService from '../../services/auditService'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
@@ -19,10 +21,18 @@ dayjs.extend(customParseFormat)
 dayjs.extend(isSameOrAfter)
 dayjs.extend(isSameOrBefore)
 
+jest.mock('../../services/auditService')
 jest.mock('../../data/crimeMatchingClient')
 jest.mock('../../../logger')
 
 describe('SubjectController', () => {
+  const hmppsAuditClient = new HmppsAuditClient({
+    queueUrl: '',
+    enabled: true,
+    region: 'eu-west-2',
+    serviceName: '',
+  }) as jest.Mocked<HmppsAuditClient>
+  const auditService = new AuditService(hmppsAuditClient) as jest.Mocked<AuditService>
   let mockRestClient: jest.Mocked<CrimeMatchingClient>
 
   beforeEach(() => {
@@ -67,7 +77,12 @@ describe('SubjectController', () => {
       const deviceActivationsService = new DeviceActivationsService(mockRestClient)
       const personsService = new PersonsService(mockRestClient)
       const validationService = new ValidationService(deviceActivationsService)
-      const controller = new SubjectController(deviceActivationsService, personsService, validationService)
+      const controller = new SubjectController(
+        auditService,
+        deviceActivationsService,
+        personsService,
+        validationService,
+      )
 
       // When
       await controller.search(req, res, next)
@@ -99,7 +114,12 @@ describe('SubjectController', () => {
       const deviceActivationsService = new DeviceActivationsService(mockRestClient)
       const personsService = new PersonsService(mockRestClient)
       const validationService = new ValidationService(deviceActivationsService)
-      const controller = new SubjectController(deviceActivationsService, personsService, validationService)
+      const controller = new SubjectController(
+        auditService,
+        deviceActivationsService,
+        personsService,
+        validationService,
+      )
 
       // When
       await controller.search(req, res, next)
@@ -146,7 +166,12 @@ describe('SubjectController', () => {
       const deviceActivationsService = new DeviceActivationsService(mockRestClient)
       const personsService = new PersonsService(mockRestClient)
       const validationService = new ValidationService(deviceActivationsService)
-      const controller = new SubjectController(deviceActivationsService, personsService, validationService)
+      const controller = new SubjectController(
+        auditService,
+        deviceActivationsService,
+        personsService,
+        validationService,
+      )
 
       // When
       await controller.search(req, res, next)
@@ -189,8 +214,12 @@ describe('SubjectController', () => {
       const deviceActivationsService = new DeviceActivationsService(mockRestClient)
       const personsService = new PersonsService(mockRestClient)
       const validationService = new ValidationService(deviceActivationsService)
-      const controller = new SubjectController(deviceActivationsService, personsService, validationService)
-
+      const controller = new SubjectController(
+        auditService,
+        deviceActivationsService,
+        personsService,
+        validationService,
+      )
       // When
       await controller.search(req, res, next)
 
@@ -242,7 +271,12 @@ describe('SubjectController', () => {
       const deviceActivationsService = new DeviceActivationsService(mockRestClient)
       const personsService = new PersonsService(mockRestClient)
       const validationService = new ValidationService(deviceActivationsService)
-      const controller = new SubjectController(deviceActivationsService, personsService, validationService)
+      const controller = new SubjectController(
+        auditService,
+        deviceActivationsService,
+        personsService,
+        validationService,
+      )
 
       // When
       await controller.search(req, res, next)
@@ -295,7 +329,12 @@ describe('SubjectController', () => {
       const deviceActivationsService = new DeviceActivationsService(mockRestClient)
       const personsService = new PersonsService(mockRestClient)
       const validationService = new ValidationService(deviceActivationsService)
-      const controller = new SubjectController(deviceActivationsService, personsService, validationService)
+      const controller = new SubjectController(
+        auditService,
+        deviceActivationsService,
+        personsService,
+        validationService,
+      )
 
       // When
       await controller.search(req, res, next)
@@ -341,7 +380,12 @@ describe('SubjectController', () => {
       const deviceActivationsService = new DeviceActivationsService(mockRestClient)
       const personsService = new PersonsService(mockRestClient)
       const validationService = new ValidationService(deviceActivationsService)
-      const controller = new SubjectController(deviceActivationsService, personsService, validationService)
+      const controller = new SubjectController(
+        auditService,
+        deviceActivationsService,
+        personsService,
+        validationService,
+      )
 
       // GET /device-activations/1/positions
       mockRestClient.getDeviceActivationPositions.mockResolvedValue({
@@ -451,7 +495,12 @@ describe('SubjectController', () => {
       const deviceActivationsService = new DeviceActivationsService(mockRestClient)
       const personsService = new PersonsService(mockRestClient)
       const validationService = new ValidationService(deviceActivationsService)
-      const controller = new SubjectController(deviceActivationsService, personsService, validationService)
+      const controller = new SubjectController(
+        auditService,
+        deviceActivationsService,
+        personsService,
+        validationService,
+      )
 
       // GET /device-activations/1/positions
       mockRestClient.getDeviceActivationPositions.mockResolvedValue({

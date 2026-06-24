@@ -17,9 +17,11 @@ import DeviceActivation from '../../types/entities/deviceActivation'
 import Position from '../../types/entities/position'
 import Person from '../../types/entities/person'
 import presentPositionsWithDeviceInfo from '../../presenters/subject'
+import AuditService, { Page } from '../../services/auditService'
 
 export default class SubjectController {
   constructor(
+    private readonly auditService: AuditService,
     private readonly deviceActivationsService: DeviceActivationsService,
     private readonly personsService: PersonsService,
     private readonly validationService: ValidationService,
@@ -142,6 +144,15 @@ export default class SubjectController {
   }
 
   download: RequestHandler = async (req, res, next) => {
+    await this.auditService.logExport(Page.LOCATION_DATA_DEVICE_ACTIVATION, {
+      who: res.locals.user.username,
+      correlationId: req.id,
+      details: {
+        params: req.params,
+        query: req.query,
+      },
+    })
+
     const { username } = res.locals.user
     const { query, deviceActivation } = req
     const { from, to, reportType } = downloadLocationsQueryParameterSchema.parse(query)

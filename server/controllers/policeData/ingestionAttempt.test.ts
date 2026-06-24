@@ -10,6 +10,8 @@ import PoliceDataService from '../../services/policeDataService'
 import createMockRequest from '../../testutils/createMockRequest'
 import createMockResponse from '../../testutils/createMockResponse'
 import PoliceDataIngestionAttemptController from './ingestionAttempt'
+import HmppsAuditClient from '../../data/hmppsAuditClient'
+import AuditService, { Page } from '../../services/auditService'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
@@ -17,6 +19,7 @@ dayjs.extend(customParseFormat)
 dayjs.extend(isSameOrAfter)
 dayjs.extend(isSameOrBefore)
 
+jest.mock('../../services/auditService')
 jest.mock('../../data/crimeMatchingClient')
 jest.mock('../../../logger')
 
@@ -28,6 +31,13 @@ const expectedAuthOptions = {
 }
 
 describe('PoliceDataIngestionAttemptController', () => {
+  const hmppsAuditClient = new HmppsAuditClient({
+    queueUrl: '',
+    enabled: true,
+    region: 'eu-west-2',
+    serviceName: '',
+  }) as jest.Mocked<HmppsAuditClient>
+  const auditService = new AuditService(hmppsAuditClient) as jest.Mocked<AuditService>
   let mockRestClient: jest.Mocked<CrimeMatchingClient>
 
   beforeEach(() => {
@@ -48,7 +58,7 @@ describe('PoliceDataIngestionAttemptController', () => {
       const res = createMockResponse()
       const next = jest.fn()
       const policeDataService = new PoliceDataService(mockRestClient)
-      const controller = new PoliceDataIngestionAttemptController(policeDataService)
+      const controller = new PoliceDataIngestionAttemptController(auditService, policeDataService)
 
       mockRestClient.getIngestionAttempt.mockResolvedValue({
         data: {
@@ -145,7 +155,7 @@ describe('PoliceDataIngestionAttemptController', () => {
       const res = createMockResponse()
       const next = jest.fn()
       const policeDataService = new PoliceDataService(mockRestClient)
-      const controller = new PoliceDataIngestionAttemptController(policeDataService)
+      const controller = new PoliceDataIngestionAttemptController(auditService, policeDataService)
 
       mockRestClient.getIngestionAttempt.mockResolvedValue({
         data: {
@@ -242,7 +252,7 @@ describe('PoliceDataIngestionAttemptController', () => {
       const res = createMockResponse()
       const next = jest.fn()
       const policeDataService = new PoliceDataService(mockRestClient)
-      const controller = new PoliceDataIngestionAttemptController(policeDataService)
+      const controller = new PoliceDataIngestionAttemptController(auditService, policeDataService)
 
       mockRestClient.getIngestionAttempt.mockResolvedValue({
         data: {
@@ -366,7 +376,7 @@ describe('PoliceDataIngestionAttemptController', () => {
       const res = createMockResponse()
       const next = jest.fn()
       const policeDataService = new PoliceDataService(mockRestClient)
-      const controller = new PoliceDataIngestionAttemptController(policeDataService)
+      const controller = new PoliceDataIngestionAttemptController(auditService, policeDataService)
 
       mockRestClient.getIngestionAttempt.mockResolvedValue({
         data: {
@@ -462,7 +472,7 @@ describe('PoliceDataIngestionAttemptController', () => {
       const res = createMockResponse()
       const next = jest.fn()
       const policeDataService = new PoliceDataService(mockRestClient)
-      const controller = new PoliceDataIngestionAttemptController(policeDataService)
+      const controller = new PoliceDataIngestionAttemptController(auditService, policeDataService)
 
       mockRestClient.getIngestionAttempt.mockResolvedValue({
         data: {
@@ -573,7 +583,7 @@ describe('PoliceDataIngestionAttemptController', () => {
       const res = createMockResponse()
       const next = jest.fn()
       const policeDataService = new PoliceDataService(mockRestClient)
-      const controller = new PoliceDataIngestionAttemptController(policeDataService)
+      const controller = new PoliceDataIngestionAttemptController(auditService, policeDataService)
 
       mockRestClient.getIngestionAttempt.mockResolvedValue({
         data: {
@@ -603,6 +613,15 @@ describe('PoliceDataIngestionAttemptController', () => {
       await controller.export(req, res, next)
 
       // Then
+      expect(auditService.logExport).toHaveBeenCalledWith(Page.POLICE_DATA_INGESTION_ATTEMPT, {
+        who: 'fakeUserName',
+        correlationId: req.id,
+        details: {
+          params: {
+            ingestionAttemptId,
+          },
+        },
+      })
       expect(mockRestClient.getIngestionAttempt).toHaveBeenCalledWith(expectedAuthOptions, ingestionAttemptId)
       expect(res.setHeader).toHaveBeenNthCalledWith(1, 'Content-Type', 'text/csv')
       expect(res.setHeader).toHaveBeenNthCalledWith(
