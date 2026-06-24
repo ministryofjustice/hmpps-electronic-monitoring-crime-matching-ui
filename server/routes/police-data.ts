@@ -6,13 +6,14 @@ import PoliceDataIngestionAttemptController from '../controllers/policeData/inge
 import populateBackLink from '../middleware/populateBackLink'
 import URLS from '../constants/urls'
 
-const policeDataRoutes = ({ crimeMatchingResultsService, policeDataService }: Services): Router => {
+const policeDataRoutes = ({ auditService, crimeMatchingResultsService, policeDataService }: Services): Router => {
   const router = Router()
   const policeDataDashboardController = new PoliceDataDashboardController(
+    auditService,
     policeDataService,
     crimeMatchingResultsService,
   )
-  const policeDataIngestionAttemptController = new PoliceDataIngestionAttemptController(policeDataService)
+  const policeDataIngestionAttemptController = new PoliceDataIngestionAttemptController(auditService, policeDataService)
 
   // Dashboard
   router.get(URLS.POLICE_DATA.INGESTION_ATTEMPTS.VIEW, asyncMiddleware(policeDataDashboardController.view))

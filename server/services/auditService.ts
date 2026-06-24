@@ -26,6 +26,14 @@ export default class AuditService {
     await this.hmppsAuditClient.sendMessage(event)
   }
 
+  async logExport(page: Page, eventDetails: PageViewEventDetails) {
+    const event: AuditEvent = {
+      ...eventDetails,
+      what: `EXPORT_${page}`,
+    }
+    await this.hmppsAuditClient.sendMessage(event)
+  }
+
   async logPageViewAttempt(page: Page, eventDetails: PageViewEventDetails) {
     const event: AuditEvent = {
       ...eventDetails,

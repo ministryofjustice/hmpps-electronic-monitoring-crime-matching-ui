@@ -9,9 +9,11 @@ import PoliceDataService from '../../services/policeDataService'
 import presentIngestionAttemptSummaries from '../../presenters/ingestionAttemptSummaries'
 import generateCrimeMatchingResultExport from '../../presenters/reports/crimeMatchingResults'
 import URLS from '../../constants/urls'
+import AuditService, { Page } from '../../services/auditService'
 
 export default class PoliceDataDashboardController {
   constructor(
+    private readonly auditService: AuditService,
     private readonly policeDataService: PoliceDataService,
     private readonly crimeMatchingResultsService: CrimeMatchingResultsService,
   ) {}
@@ -76,6 +78,14 @@ export default class PoliceDataDashboardController {
   }
 
   export: RequestHandler = async (req, res, next) => {
+    await this.auditService.logExport(Page.POLICE_DATA_INGESTION_ATTEMPTS, {
+      who: res.locals.user.username,
+      correlationId: req.id,
+      details: {
+        query: req.query,
+      },
+    })
+
     const { username } = res.locals.user
     const { batchIds } = policeDataDashboardExportQuerySchema.parse(req.query)
     const result = await this.crimeMatchingResultsService.getCrimeMatchingResultsForBatches(username, batchIds)

@@ -59,6 +59,16 @@ context('Police Data Ingestion Attempt', () => {
             '"Crime reference","Error type","Required action"\n"CR123456","Field must be a valid ENUM value","Amend crime type to a registered crime type"',
           )
         })
+
+      // And the expected audit message was sent
+      cy.expectAuditEvents([
+        {
+          who: 'USER1',
+          details: '{"params":{"ingestionAttemptId":"64d41bd9-5450-4bbb-89d4-42ba75659f49"}}',
+          what: 'EXPORT_POLICE_DATA_INGESTION_ATTEMPT',
+          service: 'hmpps-electronic-monitoring-crime-matching-ui',
+        },
+      ])
     })
 
     it('should show an error if the api returns an error', () => {
@@ -79,6 +89,16 @@ context('Police Data Ingestion Attempt', () => {
 
       // Then the user should be shown an error
       Page.verifyOnPage(ErrorPage, 'Internal Server Error')
+
+      // And the expected audit message was sent
+      cy.expectAuditEvents([
+        {
+          who: 'USER1',
+          details: '{"params":{"ingestionAttemptId":"64d41bd9-5450-4bbb-89d4-42ba75659f49"}}',
+          what: 'EXPORT_POLICE_DATA_INGESTION_ATTEMPT',
+          service: 'hmpps-electronic-monitoring-crime-matching-ui',
+        },
+      ])
     })
   })
 })

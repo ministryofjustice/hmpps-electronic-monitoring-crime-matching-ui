@@ -39,6 +39,23 @@ describe('Audit service', () => {
     })
   })
 
+  describe('logExport', () => {
+    it('sends an export event audit message using audit client', async () => {
+      await auditService.logExport(Page.POLICE_DATA_INGESTION_ATTEMPT, {
+        who: 'user1',
+        correlationId: 'request123',
+        details: { extraDetails: 'example' },
+      })
+
+      expect(hmppsAuditClient.sendMessage).toHaveBeenCalledWith({
+        what: 'EXPORT_POLICE_DATA_INGESTION_ATTEMPT',
+        who: 'user1',
+        correlationId: 'request123',
+        details: { extraDetails: 'example' },
+      })
+    })
+  })
+
   describe('logPageView', () => {
     it('sends page view event audit message using audit client', async () => {
       await auditService.logPageView(Page.HOMEPAGE, {

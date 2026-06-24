@@ -9,7 +9,12 @@ import ProximityAlertReportExportService from '../services/proximityAlert/proxim
 import populateBackLink from '../middleware/populateBackLink'
 import URLS from '../constants/urls'
 
-const proximityAlertRoutes = ({ crimeService, hubManagersService, playwrightBrowserService }: Services): Router => {
+const proximityAlertRoutes = ({
+  auditService,
+  crimeService,
+  hubManagersService,
+  playwrightBrowserService,
+}: Services): Router => {
   const router = Router()
   const crimeSearchController = new CrimeSearchController(crimeService)
   const mapImageRendererService = new MapImageRendererService()
@@ -21,6 +26,7 @@ const proximityAlertRoutes = ({ crimeService, hubManagersService, playwrightBrow
   )
 
   const crimeVersionController = new CrimeVersionController(
+    auditService,
     crimeService,
     proximityAlertReportExportService,
     hubManagersService,
