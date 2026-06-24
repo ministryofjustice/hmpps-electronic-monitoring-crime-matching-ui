@@ -95,6 +95,16 @@ context('Police Data Dashboard', () => {
         .then(file => {
           cy.readFile(path.join(downloadsFolder, file)).should('eq', expectedCrimeMatchingResultsCSV)
         })
+
+      // And the expected audit message was sent
+      cy.expectAuditEvents([
+        {
+          who: 'USER1',
+          details: '{"query":{"batchIds":"3acc50a6-ecc4-4c40-8296-3fc8409c1765"}}',
+          what: 'EXPORT_POLICE_DATA_INGESTION_ATTEMPTS',
+          service: 'hmpps-electronic-monitoring-crime-matching-ui',
+        },
+      ])
     })
 
     it('should show an error if the user doesnt select a row', () => {
@@ -133,6 +143,16 @@ context('Police Data Dashboard', () => {
 
       // Then the user should be shown an error
       Page.verifyOnPage(ErrorPage, 'No results')
+
+      // And the expected audit message was sent
+      cy.expectAuditEvents([
+        {
+          who: 'USER1',
+          details: '{"query":{"batchIds":"3acc50a6-ecc4-4c40-8296-3fc8409c1765"}}',
+          what: 'EXPORT_POLICE_DATA_INGESTION_ATTEMPTS',
+          service: 'hmpps-electronic-monitoring-crime-matching-ui',
+        },
+      ])
     })
 
     it('should show an error if the api returns an error', () => {
@@ -156,6 +176,16 @@ context('Police Data Dashboard', () => {
 
       // Then the user should be shown an error
       Page.verifyOnPage(ErrorPage, 'Internal Server Error')
+
+      // And the expected audit message was sent
+      cy.expectAuditEvents([
+        {
+          who: 'USER1',
+          details: '{"query":{"batchIds":"3acc50a6-ecc4-4c40-8296-3fc8409c1765"}}',
+          what: 'EXPORT_POLICE_DATA_INGESTION_ATTEMPTS',
+          service: 'hmpps-electronic-monitoring-crime-matching-ui',
+        },
+      ])
     })
   })
 })

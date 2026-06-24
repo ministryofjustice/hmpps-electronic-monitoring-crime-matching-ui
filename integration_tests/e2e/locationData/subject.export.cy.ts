@@ -52,6 +52,17 @@ context('Location Data', () => {
 
       // Verify the report was downloaded
       cy.readFile(path.join(downloadsFolder, expectedFileName)).should('exist').should('eq', condensedReport)
+
+      // And the expected audit message was sent
+      cy.expectAuditEvents([
+        {
+          who: 'USER1',
+          details:
+            '{"params":{"deviceActivationId":"1"},"query":{"from":"2025-01-01T01:20:03.000Z","to":"2025-01-02T02:04:50.000Z","reportType":"condensed"}}',
+          what: 'EXPORT_LOCATION_DATA_DEVICE_ACTIVATION',
+          service: 'hmpps-electronic-monitoring-crime-matching-ui',
+        },
+      ])
     })
 
     it('should allow the user to export a full report', () => {

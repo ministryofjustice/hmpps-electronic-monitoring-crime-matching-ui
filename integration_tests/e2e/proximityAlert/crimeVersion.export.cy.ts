@@ -47,5 +47,29 @@ context('Crime Version', () => {
         'Select an authorising manager',
       )
     })
+
+    it('should emit the expected audit message when exporting a proximity alert', () => {
+      // When the user loads the page
+      cy.visit(`/proximity-alert/${crimeVersionId}`)
+
+      const page = Page.verifyOnPage(CrimeVersionPage)
+
+      // And clicks export
+      page.exportProximityAlertButton.click()
+      page.map.sidebar.exportProximityAlertForm.fillInWith({
+        authorisingManager: 'a6e61168-f7ca-4056-8a2d-7db0fd77fb62',
+      })
+      page.map.sidebar.exportProximityAlertForm.exportButton.click()
+
+      // Then the expected audit message was sent
+      cy.expectAuditEvents([
+        {
+          who: 'USER1',
+          details: '{"params":{"crimeVersionId":"64d41bd9-5450-4bbb-89d4-42ba75659f49"}}',
+          what: 'EXPORT_PROXIMITY_ALERT_CRIME_VERSION',
+          service: 'hmpps-electronic-monitoring-crime-matching-ui',
+        },
+      ])
+    })
   })
 })

@@ -2,8 +2,9 @@ import { PageElement } from '../../page'
 import FormComponent from '../formComponent'
 import FormRadiosComponent from '../formRadiosComponent'
 
-// eslint-disable-next-line @typescript-eslint/no-empty-object-type
-type ExportProximityAlertFormDate = {}
+type ExportProximityAlertFormData = {
+  authorisingManager: string
+}
 
 class ExportProximityAlertFormComponent extends FormComponent {
   constructor() {
@@ -22,8 +23,11 @@ class ExportProximityAlertFormComponent extends FormComponent {
 
   // HELPERS
 
-  // eslint-disable-next-line no-empty-function, @typescript-eslint/no-unused-vars
-  fillInWith(data: ExportProximityAlertFormDate) {}
+  fillInWith(data: ExportProximityAlertFormData) {
+    if (data.authorisingManager) {
+      this.authorisingManagerField.set(data.authorisingManager)
+    }
+  }
 }
 
 export default ExportProximityAlertFormComponent
