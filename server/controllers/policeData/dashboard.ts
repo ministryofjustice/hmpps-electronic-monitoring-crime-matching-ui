@@ -33,6 +33,19 @@ export default class PoliceDataDashboardController {
     const { batchId, policeForceArea, fromDate, toDate } = policeDataDashboardQuerySchema.parse(req.body)
     const query = this.getQueryString(batchId, policeForceArea, fromDate, toDate)
 
+    await this.auditService.logSearch(Page.POLICE_DATA_INGESTION_ATTEMPTS, {
+      who: res.locals.user.username,
+      correlationId: req.id,
+      details: {
+        query: {
+          batchId,
+          fromDate,
+          policeForceArea,
+          toDate,
+        },
+      },
+    })
+
     return res.redirect(303, `${URLS.POLICE_DATA.INGESTION_ATTEMPTS.VIEW}${query ? `?${query}` : ''}`)
   }
 

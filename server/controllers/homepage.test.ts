@@ -64,7 +64,7 @@ describe('HomepageController', () => {
 
       expect(auditService.logPageView).toHaveBeenCalledWith(Page.HOMEPAGE, {
         who: 'fakeUserName',
-        correlationId: expect.any(String),
+        correlationId: req.id,
       })
       expect(res.render).toHaveBeenCalledWith('pages/index', {
         features: {
@@ -86,7 +86,7 @@ describe('HomepageController', () => {
 
       expect(auditService.logPageView).toHaveBeenCalledWith(Page.HOMEPAGE, {
         who: 'fakeUserName',
-        correlationId: expect.any(String),
+        correlationId: req.id,
       })
       expect(res.render).toHaveBeenCalledWith('pages/index', {
         features: {

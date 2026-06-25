@@ -2,9 +2,13 @@ import { RequestHandler } from 'express'
 import { personsFormDataSchema, personsQueryParametersSchema } from '../../schemas/locationData/persons'
 import PersonsService from '../../services/personsService'
 import { convertZodErrorToValidationError } from '../../utils/errors'
+import AuditService, { Page } from '../../services/auditService'
 
 export default class PersonsController {
-  constructor(private readonly service: PersonsService) {}
+  constructor(
+    private readonly auditService: AuditService,
+    private readonly service: PersonsService,
+  ) {}
 
   view: RequestHandler = async (req, res) => {
     const { query } = req
@@ -43,6 +47,19 @@ export default class PersonsController {
     req.session.formData = {
       ...req.body,
     }
+
+    await this.auditService.logSearch(Page.LOCATION_DATA_DEVICE_ACTIVATIONS, {
+      who: res.locals.user.username,
+      correlationId: req.id,
+      details: {
+        query: {
+          name: req.body.name,
+          nomisId: req.body.nomisId,
+          deviceId: req.body.deviceId,
+          searchField: req.body.searchField,
+        },
+      },
+    })
 
     if (formData.success) {
       const params = `searchField=${formData.data.searchField}&searchTerm=${formData.data.searchTerm}`

@@ -94,6 +94,13 @@ context('Location Data', () => {
         {
           who: 'USER1',
           details:
+            '{"params":{"deviceActivationId":1},"query":{"fromDate":{"date":"01/01/2025","hour":"09","minute":"00"},"toDate":{"date":"02/01/2025","hour":"09","minute":"00"}}}',
+          what: 'SEARCH_LOCATION_DATA_DEVICE_ACTIVATION',
+          service: 'hmpps-electronic-monitoring-crime-matching-ui',
+        },
+        {
+          who: 'USER1',
+          details:
             '{"params":{"deviceActivationId":"1"},"query":{"from":"2025-01-01T09:00:00.000Z","to":"2025-01-02T09:00:00.000Z"}}',
           what: 'PAGE_VIEW_LOCATION_DATA_DEVICE_ACTIVATION',
           service: 'hmpps-electronic-monitoring-crime-matching-ui',

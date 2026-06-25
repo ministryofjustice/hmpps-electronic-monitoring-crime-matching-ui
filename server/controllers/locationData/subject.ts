@@ -48,6 +48,20 @@ export default class SubjectController {
     const deviceActivation = req.deviceActivation!
     const formData = searchLocationsFormDataSchema.safeParse(req.body)
 
+    await this.auditService.logSearch(Page.LOCATION_DATA_DEVICE_ACTIVATION, {
+      who: res.locals.user.username,
+      correlationId: req.id,
+      details: {
+        params: {
+          deviceActivationId: deviceActivation?.deviceActivationId,
+        },
+        query: {
+          fromDate: req.body.fromDate,
+          toDate: req.body.toDate,
+        },
+      },
+    })
+
     if (formData.success) {
       const fromDate = parseDateTimeFromISOString(formData.data.fromDate)
       const toDate = parseDateTimeFromISOString(formData.data.toDate)

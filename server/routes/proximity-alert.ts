@@ -16,7 +16,7 @@ const proximityAlertRoutes = ({
   playwrightBrowserService,
 }: Services): Router => {
   const router = Router()
-  const crimeSearchController = new CrimeSearchController(crimeService)
+  const crimeSearchController = new CrimeSearchController(auditService, crimeService)
   const mapImageRendererService = new MapImageRendererService()
   const proximityAlertReportDocxService = new ProximityAlertReportDocxService()
   const proximityAlertReportExportService = new ProximityAlertReportExportService(

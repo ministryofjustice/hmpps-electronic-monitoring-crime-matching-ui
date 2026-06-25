@@ -28,6 +28,22 @@ context('Search Crimes', () => {
       // Then the page should be reloaded with a new query
       page = Page.verifyOnPage(CrimeSearchPage)
       cy.url().should('contain', '?crimeReference=abc')
+
+      // And the expected audit message was sent
+      cy.expectAuditEvents([
+        {
+          who: 'USER1',
+          details: '{"query":{"crimeReference":"abc"}}',
+          what: 'SEARCH_PROXIMITY_ALERT_CRIME_VERSIONS',
+          service: 'hmpps-electronic-monitoring-crime-matching-ui',
+        },
+        {
+          who: 'USER1',
+          details: '{"params":{},"query":{"crimeReference":"abc"}}',
+          what: 'PAGE_VIEW_PROXIMITY_ALERT_CRIME_VERSIONS',
+          service: 'hmpps-electronic-monitoring-crime-matching-ui',
+        },
+      ])
     })
   })
 })

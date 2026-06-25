@@ -116,6 +116,18 @@ describe('PoliceDataDashboardController', () => {
       await controller.search(req, res, next)
 
       // Then
+      expect(auditService.logSearch).toHaveBeenCalledWith(Page.POLICE_DATA_INGESTION_ATTEMPTS, {
+        who: 'fakeUserName',
+        correlationId: req.id,
+        details: {
+          query: {
+            batchId: '',
+            fromDate: '',
+            policeForceArea: '',
+            toDate: '',
+          },
+        },
+      })
       expect(res.redirect).toHaveBeenCalledWith(303, '/police-data/dashboard')
       expect(next).not.toHaveBeenCalled()
     })
@@ -133,6 +145,18 @@ describe('PoliceDataDashboardController', () => {
       await controller.search(req, res, next)
 
       // Then
+      expect(auditService.logSearch).toHaveBeenCalledWith(Page.POLICE_DATA_INGESTION_ATTEMPTS, {
+        who: 'fakeUserName',
+        correlationId: req.id,
+        details: {
+          query: {
+            batchId: 'A&B=C',
+            fromDate: '',
+            policeForceArea: '',
+            toDate: '',
+          },
+        },
+      })
       expect(res.redirect).toHaveBeenCalledWith(303, '/police-data/dashboard?batchId=A%26B%3DC')
       expect(next).not.toHaveBeenCalled()
     })

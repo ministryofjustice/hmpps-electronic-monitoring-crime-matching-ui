@@ -49,4 +49,12 @@ export default class AuditService {
     }
     await this.hmppsAuditClient.sendMessage(event)
   }
+
+  async logSearch(page: Page, eventDetails: PageViewEventDetails) {
+    const event: AuditEvent = {
+      ...eventDetails,
+      what: `SEARCH_${page}`,
+    }
+    await this.hmppsAuditClient.sendMessage(event)
+  }
 }
