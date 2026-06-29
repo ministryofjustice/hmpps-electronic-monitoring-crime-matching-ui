@@ -7,26 +7,57 @@ import {
 import LayerGroup from 'ol/layer/Group'
 import { Position } from '@ministryofjustice/hmpps-electronic-monitoring-components/map'
 
+type PositionWithSequenceLabel = Position & {
+  sequenceLabel?: string
+}
+
+// Extracts the sequence key from a sequence label, e.g. "A1" -> "A", "B2" -> "B", "unknown" if no match.
+const sequenceKeyFromLabel = (sequenceLabel?: string): string => sequenceLabel?.match(/^[A-Za-z]+/)?.[0] ?? 'unknown'
+
+// Tracks should be drawn independently for each matching sequence, e.g. A1/A2/A3 and B1/B2/B3.
+const groupPositionsBySequence = (
+  positions: Array<PositionWithSequenceLabel>,
+): Array<Array<PositionWithSequenceLabel>> => {
+  const groups = new Map<string, Array<PositionWithSequenceLabel>>()
+
+  positions.forEach(position => {
+    const sequenceKey = sequenceKeyFromLabel(position.sequenceLabel)
+    const existingGroup = groups.get(sequenceKey)
+
+    if (existingGroup) {
+      // Add to the existing group for this sequence key
+      existingGroup.push(position)
+    } else {
+      // Create a new group for this sequence key
+      groups.set(sequenceKey, [position])
+    }
+  })
+
+  return Array.from(groups.values())
+}
+
 class DeviceWearerLayer extends LayerGroup {
-  constructor(deviceId: number, crime: Position, positions: Array<Position>, colour: string) {
+  constructor(deviceId: number, crime: Position, positions: Array<PositionWithSequenceLabel>, colour: string) {
     super({
       properties: {
         title: `device-wearer-${deviceId}`,
       },
       layers: [
         // Tracks
-        ...new TracksLayer({
-          title: `device-wearer-tracks-${deviceId}`,
-          positions,
-          entryExit: {
-            enabled: true,
-            extensionDistanceMeters: 50,
-            centre: [crime.longitude, crime.latitude],
-            radiusMeters: crime.precision,
-          },
-          zIndex: 2,
-          visible: false,
-        }).getLayers(),
+        ...groupPositionsBySequence(positions).flatMap(sequencePositions =>
+          new TracksLayer({
+            title: `device-wearer-tracks-${deviceId}`,
+            positions: sequencePositions,
+            entryExit: {
+              enabled: true,
+              extensionDistanceMeters: 50,
+              centre: [crime.longitude, crime.latitude],
+              radiusMeters: crime.precision,
+            },
+            zIndex: 2,
+            visible: false,
+          }).getLayers(),
+        ),
 
         // Labels
         ...new TextLayer({
