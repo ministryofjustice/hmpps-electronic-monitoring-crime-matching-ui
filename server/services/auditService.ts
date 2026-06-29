@@ -2,6 +2,7 @@ import HmppsAuditClient, { AuditEvent } from '../data/hmppsAuditClient'
 
 export enum Page {
   HOMEPAGE = 'HOMEPAGE',
+  HUB_MANAGER = 'HUB_MANAGER',
   HUB_MANAGERS = 'HUB_MANAGERS',
   LOCATION_DATA_DEVICE_ACTIVATION = 'LOCATION_DATA_DEVICE_ACTIVATION',
   LOCATION_DATA_DEVICE_ACTIVATIONS = 'LOCATION_DATA_DEVICE_ACTIVATIONS',
@@ -23,6 +24,19 @@ export default class AuditService {
   constructor(private readonly hmppsAuditClient: HmppsAuditClient) {}
 
   async logAuditEvent(event: AuditEvent) {
+    await this.hmppsAuditClient.sendMessage(event)
+  }
+
+  async logApiModificationCall(
+    auditType: 'ATTEMPT' | 'SUCCESS',
+    action: 'CREATE' | 'DELETE',
+    page: Page,
+    eventDetails: PageViewEventDetails,
+  ) {
+    const event: AuditEvent = {
+      ...eventDetails,
+      what: `${action}_${auditType}_${page}`,
+    }
     await this.hmppsAuditClient.sendMessage(event)
   }
 

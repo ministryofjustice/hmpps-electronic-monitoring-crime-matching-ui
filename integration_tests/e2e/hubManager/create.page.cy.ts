@@ -81,6 +81,20 @@ context('Create Hub Manager', () => {
 
       // Then the page should redirect to the list
       Page.verifyOnPage(ListHubManagersPage)
+
+      // And the expected audit messages are sent
+      cy.expectAuditEvents([
+        {
+          who: 'USER1',
+          what: 'CREATE_ATTEMPT_HUB_MANAGER',
+          service: 'hmpps-electronic-monitoring-crime-matching-ui',
+        },
+        {
+          who: 'USER1',
+          what: 'CREATE_SUCCESS_HUB_MANAGER',
+          service: 'hmpps-electronic-monitoring-crime-matching-ui',
+        },
+      ])
     })
   })
 })

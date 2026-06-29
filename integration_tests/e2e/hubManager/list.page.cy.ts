@@ -97,6 +97,22 @@ context('Create Hub Manager', () => {
 
       // Then the user should be shown an updated list of hub managers
       Page.verifyOnPage(ListHubManagersPage)
+
+      // And the expected audit messages are sent
+      cy.expectAuditEvents([
+        {
+          who: 'USER1',
+          details: '{"params":{"id":"205250b7-c150-410e-8dca-70c170dcec85"}}',
+          what: 'DELETE_ATTEMPT_HUB_MANAGER',
+          service: 'hmpps-electronic-monitoring-crime-matching-ui',
+        },
+        {
+          who: 'USER1',
+          details: '{"params":{"id":"205250b7-c150-410e-8dca-70c170dcec85"}}',
+          what: 'DELETE_SUCCESS_HUB_MANAGER',
+          service: 'hmpps-electronic-monitoring-crime-matching-ui',
+        },
+      ])
     })
   })
 })

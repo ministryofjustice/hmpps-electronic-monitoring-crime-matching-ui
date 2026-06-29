@@ -1,6 +1,8 @@
 import logger from '../../../logger'
 import URLS from '../../constants/urls'
 import CrimeMatchingClient from '../../data/crimeMatchingClient'
+import HmppsAuditClient from '../../data/hmppsAuditClient'
+import AuditService, { Page } from '../../services/auditService'
 import HubManagersService from '../../services/hubManagerService'
 import createMockFile from '../../testutils/createMockFile'
 import createMockRequest from '../../testutils/createMockRequest'
@@ -8,10 +10,18 @@ import createMockResponse from '../../testutils/createMockResponse'
 import expectedAuthOptions from '../../testutils/expectedAuthOptions'
 import CreateHubManagersController from './create'
 
+jest.mock('../../services/auditService')
 jest.mock('../../data/crimeMatchingClient')
 jest.mock('../../../logger')
 
 describe('CreateHubManagerController', () => {
+  const hmppsAuditClient = new HmppsAuditClient({
+    queueUrl: '',
+    enabled: true,
+    region: 'eu-west-2',
+    serviceName: '',
+  }) as jest.Mocked<HmppsAuditClient>
+  const auditService = new AuditService(hmppsAuditClient) as jest.Mocked<AuditService>
   let mockRestClient: jest.Mocked<CrimeMatchingClient>
 
   beforeEach(() => {
@@ -29,7 +39,7 @@ describe('CreateHubManagerController', () => {
       const res = createMockResponse()
       const next = jest.fn()
       const service = new HubManagersService(mockRestClient)
-      const controller = new CreateHubManagersController(service)
+      const controller = new CreateHubManagersController(auditService, service)
 
       // When
       await controller.view(req, res, next)
@@ -48,7 +58,7 @@ describe('CreateHubManagerController', () => {
         const res = createMockResponse()
         const next = jest.fn()
         const service = new HubManagersService(mockRestClient)
-        const controller = new CreateHubManagersController(service)
+        const controller = new CreateHubManagersController(auditService, service)
 
         // When
         await controller.submit(req, res, next)
@@ -62,6 +72,10 @@ describe('CreateHubManagerController', () => {
             file: 'Upload a file',
             name: 'Enter a name',
           },
+        })
+        expect(auditService.logApiModificationCall).toHaveBeenCalledWith('ATTEMPT', 'CREATE', Page.HUB_MANAGER, {
+          who: 'fakeUserName',
+          correlationId: req.id,
         })
       },
     )
@@ -77,7 +91,7 @@ describe('CreateHubManagerController', () => {
       const res = createMockResponse()
       const next = jest.fn()
       const service = new HubManagersService(mockRestClient)
-      const controller = new CreateHubManagersController(service)
+      const controller = new CreateHubManagersController(auditService, service)
 
       mockRestClient.createHubManager.mockResolvedValue({
         data: {
@@ -108,6 +122,14 @@ describe('CreateHubManagerController', () => {
         }),
       )
       expect(res.redirect).toHaveBeenCalledWith(303, URLS.HUB_MANAGERS.VIEW)
+      expect(auditService.logApiModificationCall).toHaveBeenCalledWith('ATTEMPT', 'CREATE', Page.HUB_MANAGER, {
+        who: 'fakeUserName',
+        correlationId: req.id,
+      })
+      expect(auditService.logApiModificationCall).toHaveBeenCalledWith('SUCCESS', 'CREATE', Page.HUB_MANAGER, {
+        who: 'fakeUserName',
+        correlationId: req.id,
+      })
     })
   })
 })
