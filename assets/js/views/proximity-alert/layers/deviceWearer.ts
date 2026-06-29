@@ -15,9 +15,7 @@ type PositionWithSequenceLabel = Position & {
 const sequenceKeyFromLabel = (sequenceLabel?: string): string => sequenceLabel?.match(/^[A-Za-z]+/)?.[0] ?? 'unknown'
 
 // Tracks should be drawn independently for each matching sequence, e.g. A1/A2/A3 and B1/B2/B3.
-const groupPositionsBySequence = (
-  positions: Array<PositionWithSequenceLabel>,
-): Array<Array<PositionWithSequenceLabel>> => {
+const groupPositionsBySequence = (positions: Array<PositionWithSequenceLabel>) => {
   const groups = new Map<string, Array<PositionWithSequenceLabel>>()
 
   positions.forEach(position => {
@@ -33,7 +31,7 @@ const groupPositionsBySequence = (
     }
   })
 
-  return Array.from(groups.values())
+  return Array.from(groups.entries())
 }
 
 class DeviceWearerLayer extends LayerGroup {
@@ -44,9 +42,9 @@ class DeviceWearerLayer extends LayerGroup {
       },
       layers: [
         // Tracks
-        ...groupPositionsBySequence(positions).flatMap(sequencePositions =>
+        ...groupPositionsBySequence(positions).flatMap(([sequenceKey, sequencePositions]) =>
           new TracksLayer({
-            title: `device-wearer-tracks-${deviceId}`,
+            title: `device-wearer-tracks-${deviceId}-${sequenceKey}`,
             positions: sequencePositions,
             entryExit: {
               enabled: true,
