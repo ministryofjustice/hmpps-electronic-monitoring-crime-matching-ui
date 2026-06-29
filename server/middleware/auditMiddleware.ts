@@ -34,20 +34,12 @@ export default function auditMiddleware({ auditService }: Services) {
         },
       }
 
-      let succeeded = false
+      auditService.logPageViewAttempt(page, auditDetails)
 
       // Log a view if successful
       res.prependOnceListener('finish', () => {
         if (res.statusCode === 200) {
-          succeeded = true
           auditService.logPageView(page, auditDetails)
-        }
-      })
-
-      // Only logs attempts on failure
-      res.on('close', () => {
-        if (!succeeded) {
-          auditService.logPageViewAttempt(page, auditDetails)
         }
       })
 

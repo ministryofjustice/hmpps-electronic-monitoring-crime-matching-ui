@@ -1,16 +1,26 @@
 import logger from '../../../logger'
 import URLS from '../../constants/urls'
 import CrimeMatchingClient from '../../data/crimeMatchingClient'
+import HmppsAuditClient from '../../data/hmppsAuditClient'
+import AuditService, { Page } from '../../services/auditService'
 import HubManagersService from '../../services/hubManagerService'
 import createMockRequest from '../../testutils/createMockRequest'
 import createMockResponse from '../../testutils/createMockResponse'
 import expectedAuthOptions from '../../testutils/expectedAuthOptions'
 import ListHubManagersController from './list'
 
+jest.mock('../../services/auditService')
 jest.mock('../../data/crimeMatchingClient')
 jest.mock('../../../logger')
 
 describe('ListHubManagersController', () => {
+  const hmppsAuditClient = new HmppsAuditClient({
+    queueUrl: '',
+    enabled: true,
+    region: 'eu-west-2',
+    serviceName: '',
+  }) as jest.Mocked<HmppsAuditClient>
+  const auditService = new AuditService(hmppsAuditClient) as jest.Mocked<AuditService>
   let mockRestClient: jest.Mocked<CrimeMatchingClient>
 
   beforeEach(() => {
@@ -28,7 +38,7 @@ describe('ListHubManagersController', () => {
       const res = createMockResponse()
       const next = jest.fn()
       const service = new HubManagersService(mockRestClient)
-      const controller = new ListHubManagersController(service)
+      const controller = new ListHubManagersController(auditService, service)
 
       mockRestClient.getHubManagers.mockResolvedValue({
         data: [
@@ -66,7 +76,7 @@ describe('ListHubManagersController', () => {
       const res = createMockResponse()
       const next = jest.fn()
       const service = new HubManagersService(mockRestClient)
-      const controller = new ListHubManagersController(service)
+      const controller = new ListHubManagersController(auditService, service)
 
       // When
       await controller.delete(req, res, next)
@@ -77,6 +87,24 @@ describe('ListHubManagersController', () => {
         'b90f4016-6d0d-4a70-a1ac-a48e43dc48eb',
       )
       expect(res.redirect).toHaveBeenCalledWith(303, URLS.HUB_MANAGERS.VIEW)
+      expect(auditService.logApiModificationCall).toHaveBeenCalledWith('ATTEMPT', 'DELETE', Page.HUB_MANAGER, {
+        who: 'fakeUserName',
+        correlationId: req.id,
+        details: {
+          params: {
+            id: 'b90f4016-6d0d-4a70-a1ac-a48e43dc48eb',
+          },
+        },
+      })
+      expect(auditService.logApiModificationCall).toHaveBeenCalledWith('SUCCESS', 'DELETE', Page.HUB_MANAGER, {
+        who: 'fakeUserName',
+        correlationId: req.id,
+        details: {
+          params: {
+            id: 'b90f4016-6d0d-4a70-a1ac-a48e43dc48eb',
+          },
+        },
+      })
     })
   })
 })

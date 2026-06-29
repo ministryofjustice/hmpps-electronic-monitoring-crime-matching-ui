@@ -127,7 +127,16 @@ describe('/location-data', () => {
         .expect(res => {
           expect(res.status).toEqual(200)
           expect(res.text).toContain('<title>HMPPS Electronic Monitoring Crime Matching - Home</title>')
-          expect(auditService.logPageViewAttempt).not.toHaveBeenCalled()
+          expect(auditService.logPageViewAttempt).toHaveBeenCalledWith(Page.LOCATION_DATA_DEVICE_ACTIVATION, {
+            who: 'user1',
+            correlationId: expect.any(String),
+            details: {
+              params: {
+                deviceActivationId: '123456789',
+              },
+              query: {},
+            },
+          })
           expect(auditService.logPageView).toHaveBeenCalledWith(Page.LOCATION_DATA_DEVICE_ACTIVATION, {
             who: 'user1',
             correlationId: expect.any(String),

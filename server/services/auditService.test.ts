@@ -39,6 +39,23 @@ describe('Audit service', () => {
     })
   })
 
+  describe('logApiModificationCall', () => {
+    it('sends an API modification event audit message using audit client', async () => {
+      await auditService.logApiModificationCall('SUCCESS', 'CREATE', Page.HUB_MANAGER, {
+        who: 'user1',
+        correlationId: 'request123',
+        details: { extraDetails: 'example' },
+      })
+
+      expect(hmppsAuditClient.sendMessage).toHaveBeenCalledWith({
+        what: 'CREATE_SUCCESS_HUB_MANAGER',
+        who: 'user1',
+        correlationId: 'request123',
+        details: { extraDetails: 'example' },
+      })
+    })
+  })
+
   describe('logExport', () => {
     it('sends an export event audit message using audit client', async () => {
       await auditService.logExport(Page.POLICE_DATA_INGESTION_ATTEMPT, {

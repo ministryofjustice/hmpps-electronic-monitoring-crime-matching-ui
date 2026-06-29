@@ -7,10 +7,10 @@ import URLS from '../constants/urls'
 import { ROLES } from '../constants/roles'
 import hasRole from '../middleware/hasRole'
 
-const hubManagersRoutes = ({ hubManagersService }: Services): Router => {
+const hubManagersRoutes = ({ auditService, hubManagersService }: Services): Router => {
   const router = Router()
-  const listController = new ListHubManagersController(hubManagersService)
-  const createController = new CreateHubManagersController(hubManagersService)
+  const listController = new ListHubManagersController(auditService, hubManagersService)
+  const createController = new CreateHubManagersController(auditService, hubManagersService)
 
   router.use(URLS.HUB_MANAGERS.VIEW, hasRole(ROLES.CRIME_MATCHING_HUB_MANAGER))
 

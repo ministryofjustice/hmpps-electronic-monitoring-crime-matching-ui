@@ -83,7 +83,14 @@ describe('/hub-managers', () => {
         .expect(res => {
           expect(res.status).toEqual(200)
           expect(res.text).toContain('Hub managers')
-          expect(auditService.logPageViewAttempt).not.toHaveBeenCalled()
+          expect(auditService.logPageViewAttempt).toHaveBeenCalledWith(Page.HUB_MANAGERS, {
+            who: 'user1',
+            correlationId: expect.any(String),
+            details: {
+              params: {},
+              query: {},
+            },
+          })
           expect(auditService.logPageView).toHaveBeenCalledWith(Page.HUB_MANAGERS, {
             who: 'user1',
             correlationId: expect.any(String),
@@ -145,6 +152,7 @@ describe('/hub-managers', () => {
       const hubManagersService = new HubManagersService(restClient)
       const app = appWithAllRoutes({
         services: {
+          auditService,
           hubManagersService,
         },
         userSupplier: () => hubManager,
@@ -184,6 +192,7 @@ describe('/hub-managers', () => {
       const hubManagersService = new HubManagersService(restClient)
       const app = appWithAllRoutes({
         services: {
+          auditService,
           hubManagersService,
         },
         userSupplier: () => hubManager,
