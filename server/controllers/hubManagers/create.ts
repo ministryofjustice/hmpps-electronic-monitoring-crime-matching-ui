@@ -17,17 +17,25 @@ export default class CreateHubManagersController {
     const { username } = res.locals.user
     const { name } = req.body
     const { file } = req
-    const result = await this.hubManagersService.createHubManager(username, name, file)
 
+    // TODO include filename as well?
     await this.auditService.logApiModificationCall('ATTEMPT', 'CREATE', Page.HUB_MANAGER, {
       who: res.locals.user.username,
       correlationId: req.id,
+      details: {
+        name,
+      },
     })
+
+    const result = await this.hubManagersService.createHubManager(username, name, file)
 
     if (result.ok) {
       await this.auditService.logApiModificationCall('SUCCESS', 'CREATE', Page.HUB_MANAGER, {
         who: res.locals.user.username,
         correlationId: req.id,
+        details: {
+          name,
+        },
       })
       res.redirect(303, URLS.HUB_MANAGERS.VIEW)
     } else {

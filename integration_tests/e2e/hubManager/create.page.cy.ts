@@ -88,11 +88,17 @@ context('Create Hub Manager', () => {
           who: 'USER1',
           what: 'CREATE_ATTEMPT_HUB_MANAGER',
           service: 'hmpps-electronic-monitoring-crime-matching-ui',
+          details: {
+            name: 'Test manager',
+          },
         },
         {
           who: 'USER1',
           what: 'CREATE_SUCCESS_HUB_MANAGER',
           service: 'hmpps-electronic-monitoring-crime-matching-ui',
+          details: {
+            name: 'Test manager',
+          },
         },
       ])
     })
