@@ -117,14 +117,14 @@ const crimeVersionWithMultipleSequences = {
           },
           {
             ...matchedDeviceWearer1.positions[0],
-            latitude: deviceLocation[1] + 0.002,
-            longitude: deviceLocation[0] + 0.002,
+            latitude: deviceLocation[1],
+            longitude: deviceLocation[0] - 0.001,
             sequenceLabel: 'B1',
           },
           {
             ...matchedDeviceWearer1.positions[0],
-            latitude: deviceLocation[1] + 0.003,
-            longitude: deviceLocation[0] + 0.003,
+            latitude: deviceLocation[1] - 0.001,
+            longitude: deviceLocation[0] + 0.001,
             sequenceLabel: 'B2',
           },
         ],
