@@ -18,12 +18,12 @@ export default class CreateHubManagersController {
     const { name } = req.body
     const { file } = req
 
-    // TODO include filename as well?
     await this.auditService.logApiModificationCall('ATTEMPT', 'CREATE', Page.HUB_MANAGER, {
       who: res.locals.user.username,
       correlationId: req.id,
       details: {
         name,
+        filename: file?.originalname,
       },
     })
 
@@ -35,6 +35,7 @@ export default class CreateHubManagersController {
         correlationId: req.id,
         details: {
           name,
+          filename: file?.originalname,
         },
       })
       res.redirect(303, URLS.HUB_MANAGERS.VIEW)
