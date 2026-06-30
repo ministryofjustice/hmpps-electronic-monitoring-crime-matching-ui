@@ -6,7 +6,14 @@ import VectorLayer from 'ol/layer/Vector'
 import { Style } from 'ol/style'
 import Page from '../../pages/page'
 import CrimeVersionPage from '../../pages/proximityAlert/crimeVersion'
-import { crimeLocation, crimeVersionId, crimeVersionWithManyMatches, deviceLocation, hubManager } from './fixtures'
+import {
+  crimeLocation,
+  crimeVersionId,
+  crimeVersionWithManyMatches,
+  crimeVersionWithMultipleSequences,
+  deviceLocation,
+  hubManager,
+} from './fixtures'
 import { hubCaseworker } from '../../fixtures/auth'
 
 const getTitle = (layer: BaseLayer): string => {
@@ -79,14 +86,39 @@ context('Crime Version', () => {
       page.map.mapInstance.then(map => {
         // Then the numbers, circles, positions layers should be shown
         expect(getLayers(map)).to.deep.eq([
-          { title: 'device-wearer-tracks-1', visible: false },
+          { title: 'device-wearer-tracks-1-A', visible: false },
           { title: 'device-wearer-labels-1', visible: true },
           { title: 'device-wearer-circles-1', visible: true },
           { title: 'device-wearer-positions-1', visible: true },
-          { title: 'device-wearer-tracks-2', visible: false },
+          { title: 'device-wearer-tracks-2-A', visible: false },
           { title: 'device-wearer-labels-2', visible: true },
           { title: 'device-wearer-circles-2', visible: true },
           { title: 'device-wearer-positions-2', visible: true },
+        ])
+      })
+    })
+
+    it('should display matching sequences as independent track layers', () => {
+      // Given an API response containing a crime version with multiple sequences
+      cy.stubGetCrimeVersion({
+        status: 200,
+        crimeVersionId,
+        response: {
+          data: crimeVersionWithMultipleSequences,
+        },
+      })
+
+      // When the user loads the page
+      cy.visit(`/proximity-alert/${crimeVersionId}`)
+
+      const page = Page.verifyOnPage(CrimeVersionPage)
+
+      // And the map is ready
+      page.map.mapInstance.then(map => {
+        // Then each matching sequence should be represented by its own tracks layer
+        expect(getLayers(map, /^device-wearer-tracks-1-[A-Z]+$/)).to.deep.eq([
+          { title: 'device-wearer-tracks-1-A', visible: false },
+          { title: 'device-wearer-tracks-1-B', visible: false },
         ])
       })
     })
@@ -122,11 +154,11 @@ context('Crime Version', () => {
         // Then the circles layers should be hidden
         cy.wait(100).then(() => {
           expect(getLayers(map)).to.deep.eq([
-            { title: 'device-wearer-tracks-1', visible: false },
+            { title: 'device-wearer-tracks-1-A', visible: false },
             { title: 'device-wearer-labels-1', visible: true },
             { title: 'device-wearer-circles-1', visible: false },
             { title: 'device-wearer-positions-1', visible: true },
-            { title: 'device-wearer-tracks-2', visible: false },
+            { title: 'device-wearer-tracks-2-A', visible: false },
             { title: 'device-wearer-labels-2', visible: true },
             { title: 'device-wearer-circles-2', visible: false },
             { title: 'device-wearer-positions-2', visible: true },
@@ -150,11 +182,11 @@ context('Crime Version', () => {
         // Then the numbering layers should be hidden
         cy.wait(100).then(() => {
           expect(getLayers(map)).to.deep.eq([
-            { title: 'device-wearer-tracks-1', visible: false },
+            { title: 'device-wearer-tracks-1-A', visible: false },
             { title: 'device-wearer-labels-1', visible: false },
             { title: 'device-wearer-circles-1', visible: true },
             { title: 'device-wearer-positions-1', visible: true },
-            { title: 'device-wearer-tracks-2', visible: false },
+            { title: 'device-wearer-tracks-2-A', visible: false },
             { title: 'device-wearer-labels-2', visible: false },
             { title: 'device-wearer-circles-2', visible: true },
             { title: 'device-wearer-positions-2', visible: true },
@@ -177,11 +209,11 @@ context('Crime Version', () => {
         // Then the device wearer 1 layers should be hidden
         cy.wait(100).then(() => {
           expect(getLayers(map)).to.deep.eq([
-            { title: 'device-wearer-tracks-1', visible: false },
+            { title: 'device-wearer-tracks-1-A', visible: false },
             { title: 'device-wearer-labels-1', visible: false },
             { title: 'device-wearer-circles-1', visible: false },
             { title: 'device-wearer-positions-1', visible: false },
-            { title: 'device-wearer-tracks-2', visible: false },
+            { title: 'device-wearer-tracks-2-A', visible: false },
             { title: 'device-wearer-labels-2', visible: true },
             { title: 'device-wearer-circles-2', visible: true },
             { title: 'device-wearer-positions-2', visible: true },
@@ -204,11 +236,11 @@ context('Crime Version', () => {
         // Then the device wearer 2 layers should be hidden
         cy.wait(100).then(() => {
           expect(getLayers(map)).to.deep.eq([
-            { title: 'device-wearer-tracks-1', visible: false },
+            { title: 'device-wearer-tracks-1-A', visible: false },
             { title: 'device-wearer-labels-1', visible: true },
             { title: 'device-wearer-circles-1', visible: true },
             { title: 'device-wearer-positions-1', visible: true },
-            { title: 'device-wearer-tracks-2', visible: false },
+            { title: 'device-wearer-tracks-2-A', visible: false },
             { title: 'device-wearer-labels-2', visible: false },
             { title: 'device-wearer-circles-2', visible: false },
             { title: 'device-wearer-positions-2', visible: false },
@@ -231,11 +263,11 @@ context('Crime Version', () => {
         // Then the device wearer 1 tracks should be shown
         cy.wait(100).then(() => {
           expect(getLayers(map)).to.deep.eq([
-            { title: 'device-wearer-tracks-1', visible: true },
+            { title: 'device-wearer-tracks-1-A', visible: true },
             { title: 'device-wearer-labels-1', visible: true },
             { title: 'device-wearer-circles-1', visible: true },
             { title: 'device-wearer-positions-1', visible: true },
-            { title: 'device-wearer-tracks-2', visible: false },
+            { title: 'device-wearer-tracks-2-A', visible: false },
             { title: 'device-wearer-labels-2', visible: true },
             { title: 'device-wearer-circles-2', visible: true },
             { title: 'device-wearer-positions-2', visible: true },
@@ -258,11 +290,11 @@ context('Crime Version', () => {
         // Then the device wearer 1 tracks should be shown
         cy.wait(100).then(() => {
           expect(getLayers(map)).to.deep.eq([
-            { title: 'device-wearer-tracks-1', visible: false },
+            { title: 'device-wearer-tracks-1-A', visible: false },
             { title: 'device-wearer-labels-1', visible: true },
             { title: 'device-wearer-circles-1', visible: true },
             { title: 'device-wearer-positions-1', visible: true },
-            { title: 'device-wearer-tracks-2', visible: true },
+            { title: 'device-wearer-tracks-2-A', visible: true },
             { title: 'device-wearer-labels-2', visible: true },
             { title: 'device-wearer-circles-2', visible: true },
             { title: 'device-wearer-positions-2', visible: true },
@@ -294,11 +326,11 @@ context('Crime Version', () => {
         // Then the device wearer 2 circle layer should remain hidden
         cy.wait(100).then(() => {
           expect(getLayers(map)).to.deep.eq([
-            { title: 'device-wearer-tracks-1', visible: false },
+            { title: 'device-wearer-tracks-1-A', visible: false },
             { title: 'device-wearer-labels-1', visible: true },
             { title: 'device-wearer-circles-1', visible: true },
             { title: 'device-wearer-positions-1', visible: true },
-            { title: 'device-wearer-tracks-2', visible: false },
+            { title: 'device-wearer-tracks-2-A', visible: false },
             { title: 'device-wearer-labels-2', visible: false },
             { title: 'device-wearer-circles-2', visible: false },
             { title: 'device-wearer-positions-2', visible: false },
@@ -330,11 +362,11 @@ context('Crime Version', () => {
         // Then the device wearer 2 circle layer should remain hidden
         cy.wait(100).then(() => {
           expect(getLayers(map)).to.deep.eq([
-            { title: 'device-wearer-tracks-1', visible: false },
+            { title: 'device-wearer-tracks-1-A', visible: false },
             { title: 'device-wearer-labels-1', visible: true },
             { title: 'device-wearer-circles-1', visible: true },
             { title: 'device-wearer-positions-1', visible: true },
-            { title: 'device-wearer-tracks-2', visible: false },
+            { title: 'device-wearer-tracks-2-A', visible: false },
             { title: 'device-wearer-labels-2', visible: false },
             { title: 'device-wearer-circles-2', visible: false },
             { title: 'device-wearer-positions-2', visible: false },
@@ -361,11 +393,11 @@ context('Crime Version', () => {
         // And the device wearer layers should be hidden
         cy.wait(100).then(() => {
           expect(getLayers(map)).to.deep.eq([
-            { title: 'device-wearer-tracks-1', visible: false },
+            { title: 'device-wearer-tracks-1-A', visible: false },
             { title: 'device-wearer-labels-1', visible: false },
             { title: 'device-wearer-circles-1', visible: false },
             { title: 'device-wearer-positions-1', visible: false },
-            { title: 'device-wearer-tracks-2', visible: false },
+            { title: 'device-wearer-tracks-2-A', visible: false },
             { title: 'device-wearer-labels-2', visible: false },
             { title: 'device-wearer-circles-2', visible: false },
             { title: 'device-wearer-positions-2', visible: false },
@@ -382,11 +414,11 @@ context('Crime Version', () => {
         // And the device wearer layers should be shown
         cy.wait(100).then(() => {
           expect(getLayers(map)).to.deep.eq([
-            { title: 'device-wearer-tracks-1', visible: false },
+            { title: 'device-wearer-tracks-1-A', visible: false },
             { title: 'device-wearer-labels-1', visible: true },
             { title: 'device-wearer-circles-1', visible: true },
             { title: 'device-wearer-positions-1', visible: true },
-            { title: 'device-wearer-tracks-2', visible: false },
+            { title: 'device-wearer-tracks-2-A', visible: false },
             { title: 'device-wearer-labels-2', visible: true },
             { title: 'device-wearer-circles-2', visible: true },
             { title: 'device-wearer-positions-2', visible: true },
@@ -440,7 +472,7 @@ context('Crime Version', () => {
       })
     })
 
-    it.skip('should show the crime overlay', () => {
+    it('should show the crime overlay', () => {
       // When the user loads the page
       cy.visit(`/proximity-alert/${crimeVersionId}`)
 
@@ -473,7 +505,7 @@ context('Crime Version', () => {
       })
     })
 
-    it.skip('should show the device position overlay', () => {
+    it('should show the device position overlay', () => {
       // When the user loads the page
       cy.visit(`/proximity-alert/${crimeVersionId}`)
 
