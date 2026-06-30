@@ -76,6 +76,10 @@ describe('CreateHubManagerController', () => {
         expect(auditService.logApiModificationCall).toHaveBeenCalledWith('ATTEMPT', 'CREATE', Page.HUB_MANAGER, {
           who: 'fakeUserName',
           correlationId: req.id,
+          details: {
+            name,
+            filename: undefined,
+          },
         })
       },
     )
@@ -125,10 +129,18 @@ describe('CreateHubManagerController', () => {
       expect(auditService.logApiModificationCall).toHaveBeenCalledWith('ATTEMPT', 'CREATE', Page.HUB_MANAGER, {
         who: 'fakeUserName',
         correlationId: req.id,
+        details: {
+          name: 'Test manager',
+          filename: 'signature.png',
+        },
       })
       expect(auditService.logApiModificationCall).toHaveBeenCalledWith('SUCCESS', 'CREATE', Page.HUB_MANAGER, {
         who: 'fakeUserName',
         correlationId: req.id,
+        details: {
+          name: 'Test manager',
+          filename: 'signature.png',
+        },
       })
     })
   })
