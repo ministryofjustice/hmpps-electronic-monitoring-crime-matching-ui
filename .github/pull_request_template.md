@@ -1,5 +1,5 @@
 ## Description
-<!-- Clearly describe what this PR does -->
+<!-- Clearly describe what this PR does and why -->
 
 ## Related JIRA tickets
 <!-- Link relevant issues -->
