@@ -98,6 +98,41 @@ const crimeVersionWithLatestCrimeVersionId = {
   matching: null,
 }
 
+const crimeVersionWithMultipleSequences = {
+  ...crimeVersion,
+  matching: {
+    deviceWearers: [
+      {
+        ...matchedDeviceWearer1,
+        positions: [
+          {
+            ...matchedDeviceWearer1.positions[0],
+            sequenceLabel: 'A1',
+          },
+          {
+            ...matchedDeviceWearer1.positions[0],
+            latitude: deviceLocation[1] + 0.001,
+            longitude: deviceLocation[0] + 0.001,
+            sequenceLabel: 'A2',
+          },
+          {
+            ...matchedDeviceWearer1.positions[0],
+            latitude: deviceLocation[1],
+            longitude: deviceLocation[0] - 0.001,
+            sequenceLabel: 'B1',
+          },
+          {
+            ...matchedDeviceWearer1.positions[0],
+            latitude: deviceLocation[1] - 0.001,
+            longitude: deviceLocation[0] + 0.001,
+            sequenceLabel: 'B2',
+          },
+        ],
+      },
+    ],
+  },
+}
+
 export {
   crimeLocation,
   crimeVersionAwaitingMatching,
@@ -108,4 +143,5 @@ export {
   crimeVersionId,
   deviceLocation,
   hubManager,
+  crimeVersionWithMultipleSequences,
 }
