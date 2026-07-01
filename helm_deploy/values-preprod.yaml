@@ -4,6 +4,8 @@
 generic-service:
   replicaCount: 2
 
+  serviceAccountName: "hmpps-em-crime-matching-preprod"
+
   ingress:
     host: electronic-monitoring-crime-matching-ui-preprod.hmpps.service.justice.gov.uk
 
@@ -13,7 +15,7 @@ generic-service:
     TOKEN_VERIFICATION_API_URL: "https://token-verification-api-preprod.prison.service.justice.gov.uk"
     COMPONENT_API_URL: "https://probation-frontend-components-preprod.hmpps.service.justice.gov.uk"
     ENVIRONMENT_NAME: PRE-PRODUCTION
-    AUDIT_ENABLED: "false"
+    AUDIT_ENABLED: "true"
     EM_CRIME_MATCHING_API_URL: "https://electronic-monitoring-crime-matching-api-preprod.hmpps.service.justice.gov.uk"
 
     # OS Maps cache configuration (applies to vector tiles and assets)
