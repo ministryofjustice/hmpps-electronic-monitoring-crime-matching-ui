@@ -5,6 +5,7 @@ import {
 } from '@ministryofjustice/hmpps-electronic-monitoring-components/map/layers'
 import LayerGroup from 'ol/layer/Group'
 import { Position } from '@ministryofjustice/hmpps-electronic-monitoring-components/map'
+import { proximityAlertMarkers } from '../mapMarkers'
 
 class CrimeLayer extends LayerGroup {
   constructor(crime: Position) {
@@ -42,18 +43,18 @@ class CrimeLayer extends LayerGroup {
           },
         }).getLayers(),
 
-        // Marker
+        // Crime marker
         ...new LocationsLayer({
           title: 'crime-marker',
-          positions: [
-            {
-              ...crime,
-              marker: {
-                type: 'pin',
-                pin: { color: '#d4351c' },
-              },
+          positions: [crime],
+          marker: {
+            type: 'image',
+            image: {
+              svg: proximityAlertMarkers.crime,
+              scale: 1,
+              anchor: [0.5, 0.5],
             },
-          ],
+          },
           zIndex: 10,
         }).getLayers(),
       ],
