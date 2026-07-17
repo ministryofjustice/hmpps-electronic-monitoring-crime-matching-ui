@@ -5,7 +5,7 @@ import {
 } from '@ministryofjustice/hmpps-electronic-monitoring-components/map/layers'
 import LayerGroup from 'ol/layer/Group'
 import { Position } from '@ministryofjustice/hmpps-electronic-monitoring-components/map'
-import { proximityAlertMarkers } from '../mapMarkers'
+import proximityAlertMarkers from '../mapMarkers'
 
 class CrimeLayer extends LayerGroup {
   constructor(crime: Position) {
