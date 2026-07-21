@@ -836,8 +836,86 @@ describe('SubjectController', () => {
         'attachment; filename="location-data-123456789-2025-01-01T00:00:00.000Z-2025-01-02T00:00:00.000Z-full.csv"',
       )
       expect(res.send).toHaveBeenCalledWith(
-        `DEVICE ID,DEVICE NAME,SUBJECT IDENTIFIER,PoP NAME,NOMIS ID,PNC REF,PoP ADDRESS,PoP DATE OF BIRTH,PROBATION PRACTITIONER,ORDER START,ORDER END,DATE/TIME,LATITUDE,LONGITUDE,CONFIDENCE CIRCLE,SPEED,DIRECTION,SEQUENCE NO.\n123456789,123456789,1,Jane Doe,Nomis 1,YY/NNNNNNND,123 Street,01/12/2000,John Smith,01/12/2024 00:00,31/12/2024 00:00,01/01/2025 00:00,123.123,123.123,10,5,179.99984796050427,1\n123456789,123456789,1,Jane Doe,Nomis 1,YY/NNNNNNND,123 Street,01/12/2000,John Smith,01/12/2024 00:00,31/12/2024 00:00,01/01/2025 00:01,456.123,456.123,20,7,209.9999181135542,2`,
+        `DEVICE ID,DEVICE NAME,SUBJECT IDENTIFIER,PoP NAME,NOMIS ID,PNC REF,PoP ADDRESS,PoP DATE OF BIRTH,PROBATION PRACTITIONER,ORDER START,ORDER END,DATE/TIME,LATITUDE,LONGITUDE,CONFIDENCE CIRCLE,SPEED,DIRECTION,SEQUENCE NO.\n123456789,123456789,1,Jane Doe,Nomis 1,YY/NNNNNNND,123 Street,01/12/2000,John Smith,01/12/2024 00:00,31/12/2024 00:00,01/01/2025 00:00,123.123,123.123,10,5,179.99984796050427,1\n123456789,123456789,1,Jane Doe,Nomis 1,YY/NNNNNNND,123 Street,01/12/2000,John Smith,01/12/2024 00:00,31/12/2024 00:00,01/01/2025 00:01,456.123,456.123,20,7,209.9999181135542,2\n`,
       )
+    })
+
+    it('should export successfully when address contains commas', async () => {
+      // Given
+      const deviceActivationId = '1'
+      const from = '2025-01-01T00:00:00.000Z'
+      const to = '2025-01-02T00:00:00.000Z'
+      const reportType = 'full'
+      const req = createMockRequest({
+        params: {
+          deviceActivationId,
+        },
+        query: {
+          from,
+          to,
+          reportType,
+        },
+        deviceActivation: {
+          deviceActivationId: 1,
+          deviceId: 123456789,
+          deviceName: '123456789',
+          personId: '123456789',
+          deviceActivationDate: '2025-01-01T00:00:00.000Z',
+          deviceDeactivationDate: null,
+          orderStart: '2024-12-01T00:00:00.000Z',
+          orderEnd: '2024-12-31T00:00:00.000Z',
+        },
+      })
+      const res = createMockResponse()
+      const next = jest.fn()
+      const deviceActivationsService = new DeviceActivationsService(mockRestClient)
+      const personsService = new PersonsService(mockRestClient)
+      const validationService = new ValidationService(deviceActivationsService)
+      const controller = new SubjectController(
+        auditService,
+        deviceActivationsService,
+        personsService,
+        validationService,
+      )
+
+      // GET /device-activations/1/positions
+      mockRestClient.getDeviceActivationPositions.mockResolvedValue({
+        data: [
+          {
+            positionId: 1,
+            latitude: 123.123,
+            longitude: 123.123,
+            precision: 10,
+            speed: 5,
+            direction: 3.14159,
+            timestamp: '2025-01-01T00:00:00Z',
+            geolocationMechanism: 'GPS',
+            sequenceNumber: 1,
+          },
+        ],
+      })
+
+      // GET /persons/1 - address with commas
+      mockRestClient.getPerson.mockResolvedValue({
+        data: {
+          personId: '1',
+          name: 'Jane Doe',
+          nomisId: 'Nomis 1',
+          pncRef: 'YY/NNNNNNND',
+          address: '123 Main Street, Apartment 4B, London, SW1A 1AA',
+          dateOfBirth: '2000-12-01T00:00:00.000Z',
+          probationPractitioner: 'John Smith',
+          deviceActivations: [],
+        },
+      })
+
+      // When
+      await controller.download(req, res, next)
+
+      // Then
+      const csvOutput = (res.send as jest.Mock).mock.calls[0][0]
+      // Address field should be quoted in proper CSV when it contains commas
+      expect(csvOutput).toContain('"123 Main Street, Apartment 4B, London, SW1A 1AA"')
     })
   })
 })
