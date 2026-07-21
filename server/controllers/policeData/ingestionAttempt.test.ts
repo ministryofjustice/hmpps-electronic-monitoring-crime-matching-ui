@@ -630,7 +630,7 @@ describe('PoliceDataIngestionAttemptController', () => {
         'attachment; filename="validation-errors-CMB20250710.csv"',
       )
       expect(res.send).toHaveBeenCalledWith(
-        '"Crime reference","Error type","Required action"\n"CR123456","Field must be a valid ENUM value","Amend crime type to a registered crime type"',
+        'Crime reference,Error type,Required action\nCR123456,Field must be a valid ENUM value,Amend crime type to a registered crime type\n',
       )
       expect(next).not.toHaveBeenCalled()
     })

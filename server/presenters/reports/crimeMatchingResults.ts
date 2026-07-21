@@ -1,6 +1,6 @@
+import { stringify } from 'csv-stringify/sync'
 import CrimeMatchingResult from '../../types/crimeMatchingResult'
 import { formatDateTime } from '../../utils/date'
-import generateCsv from '../helpers/csv'
 
 const headers = [
   'POLICE FORCE',
@@ -51,7 +51,7 @@ const getRows = (crimeMatchingResults: Array<CrimeMatchingResult>): Array<Array<
 }
 
 const generateCrimeMatchingResultExport = (crimeMatchingResults: Array<CrimeMatchingResult>): string => {
-  return generateCsv([headers, ...getRows(crimeMatchingResults)])
+  return stringify([headers, ...getRows(crimeMatchingResults)])
 }
 
 export default generateCrimeMatchingResultExport

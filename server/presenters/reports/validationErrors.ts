@@ -1,5 +1,5 @@
+import { stringify } from 'csv-stringify/sync'
 import ValidationError from '../../types/validationError'
-import generateCsv from '../helpers/csv'
 
 const headers = ['Crime reference', 'Error type', 'Required action']
 
@@ -12,7 +12,7 @@ const getRows = (validationErrors: Array<ValidationError>): Array<Array<string>>
 }
 
 const generateValidationErrorsExport = (validationErrors: Array<ValidationError>): string => {
-  return generateCsv([headers, ...getRows(validationErrors)])
+  return stringify([headers, ...getRows(validationErrors)])
 }
 
 export default generateValidationErrorsExport
