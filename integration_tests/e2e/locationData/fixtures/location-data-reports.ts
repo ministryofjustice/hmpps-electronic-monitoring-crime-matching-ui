@@ -1,4 +1,6 @@
-const condensedReport = [
+import { stringify } from 'csv-stringify/sync'
+
+const condensedReport = stringify([
   ['DATE/TIME', 'LATITUDE', 'LONGITUDE', 'CONFIDENCE CIRCLE', 'SPEED', 'DIRECTION', 'SEQUENCE NO.'],
   ['01/01/2025 00:00', '51.574865', '0.060977', '100', '1', '-123.4724048506924', '1'],
   ['01/01/2025 00:01', '51.574153', '0.058536', '400', '10', '-99.35088167568475', '2'],
@@ -6,11 +8,9 @@ const condensedReport = [
   ['01/01/2025 00:03', '51.574622', '0.048643', '200', '2', '4.583662361046586', '4'],
   ['01/01/2025 00:04', '51.57610341773559', '0.048391168020475', '120', '5', '-80.21409131831524', '5'],
   ['01/01/2025 00:05', '51.576400900843375', '0.045439341454295505', '50', '6', '-44.919891138256546', '6'],
-]
-  .map(row => row.join(','))
-  .join('\n')
+])
 
-const fullReport = [
+const fullReport = stringify([
   [
     'DEVICE ID',
     'DEVICE NAME',
@@ -151,8 +151,6 @@ const fullReport = [
     '-44.919891138256546',
     '6',
   ],
-]
-  .map(row => row.join(','))
-  .join('\n')
+])
 
 export { condensedReport, fullReport }

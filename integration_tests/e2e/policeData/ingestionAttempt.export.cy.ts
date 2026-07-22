@@ -56,7 +56,7 @@ context('Police Data Ingestion Attempt', () => {
         .then(file => {
           cy.readFile(path.join(downloadsFolder, file)).should(
             'eq',
-            '"Crime reference","Error type","Required action"\n"CR123456","Field must be a valid ENUM value","Amend crime type to a registered crime type"',
+            'Crime reference,Error type,Required action\nCR123456,Field must be a valid ENUM value,Amend crime type to a registered crime type\n',
           )
         })
 

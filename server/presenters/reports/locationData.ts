@@ -1,3 +1,4 @@
+import { stringify } from 'csv-stringify/sync'
 import DeviceActivation from '../../types/entities/deviceActivation'
 import Person from '../../types/entities/person'
 import Position from '../../types/entities/position'
@@ -91,7 +92,7 @@ const generateLocationDataReport = (
 ): string => {
   const data = [getHeaders(condensed), ...getRows(deviceWearer, deviceActivation, positions, condensed)]
 
-  return data.map(row => row.join(',')).join('\n')
+  return stringify(data)
 }
 
 export default generateLocationDataReport
