@@ -2,6 +2,7 @@ import { EmMap, Position } from '@ministryofjustice/hmpps-electronic-monitoring-
 import { fromLonLat } from 'ol/proj'
 import type { Coordinate } from 'ol/coordinate'
 import { queryElement } from '../../utils/utils'
+import setMapAttribution from '../../utils/mapAttribution'
 import CrimeLayer from './layers/crime'
 import DeviceWearerLayer from './layers/deviceWearer'
 import initialiseProximityAlertExportView from './mapExport'
@@ -145,6 +146,8 @@ const initialiseProximityAlertView = async () => {
   await new Promise<void>(resolve => {
     emMap.addEventListener('map:ready', () => resolve(), { once: true })
   })
+
+  setMapAttribution(emMap)
 
   const { centre } = addCrimeLayers(emMap, data.crimePosition)
 

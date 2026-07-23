@@ -6,6 +6,7 @@ import {
   TextLayer,
 } from '@ministryofjustice/hmpps-electronic-monitoring-components/map/layers'
 import { queryElement } from '../../utils/utils'
+import setMapAttribution from '../../utils/mapAttribution'
 import initialiseDateFilterForm from '../../forms/date-filter-form'
 
 const initialiseLocationDataView = async () => {
@@ -14,6 +15,8 @@ const initialiseLocationDataView = async () => {
   await new Promise<void>(resolve => {
     emMap.addEventListener('map:ready', () => resolve(), { once: true })
   })
+
+  setMapAttribution(emMap)
 
   const { positions } = emMap
 

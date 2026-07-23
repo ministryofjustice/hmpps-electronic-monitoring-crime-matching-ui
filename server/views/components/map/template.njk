@@ -6,22 +6,33 @@
       <div class="app-map__sidebar">{{ params.sidebarHtml | safe | trim | indent(2) }}</div>
     </div>
     <div class="govuk-grid-column-three-quarters-from-desktop">
-      {{
-        emMap({
-          alerts: params.alerts,
-          cspNonce: params.cspNonce,
-          positions: params.positions,
-          usesInternalOverlays: params.usesInternalOverlays,
-          controls: {
-            scaleControl: 'bar',
-            locationDisplay: 'dms',
-            rotateControl: 'true',
-            olRotationMode: 'right-drag',
-            zoomControl: params.controls.zoomControl if params.controls.zoomControl is defined else true,
-            zoomSlider: params.controls.zoomSlider if params.controls.zoomSlider is defined else true
-          }
-        })
-      }}
+      <div class="app-map__viewport">
+        {{
+          emMap({
+            alerts: params.alerts,
+            cspNonce: params.cspNonce,
+            positions: params.positions,
+            usesInternalOverlays: params.usesInternalOverlays,
+            controls: {
+              scaleControl: 'bar',
+              locationDisplay: 'dms',
+              rotateControl: 'true',
+              olRotationMode: 'right-drag',
+              zoomControl: params.controls.zoomControl if params.controls.zoomControl is defined else true,
+              zoomSlider: params.controls.zoomSlider if params.controls.zoomSlider is defined else true
+            }
+          })
+        }}
+
+        <div class="os-api-branding logo" aria-hidden="true"></div>
+        <div class="os-api-branding copyright">
+          Contains OS data &copy; Crown copyright and database rights {{ currentYear() }}
+          <span>|</span>
+          <a href="https://www.ordnancesurvey.co.uk/legal" target="_blank" rel="noopener noreferrer">Terms &amp; conditions</a>
+          <span>|</span>
+          <a href="https://www.ordnancesurvey.co.uk/contact-us" target="_blank" rel="noopener noreferrer">Report an issue</a>
+        </div>
+      </div>
     </div>
   </div>
 </div>
