@@ -12,7 +12,6 @@ import nunjucksSetup from './utils/nunjucksSetup'
 import errorHandler from './errorHandler'
 import { createRedisClient } from './data/redisClient'
 import logger from '../logger'
-import { appInsightsMiddleware } from './utils/azureAppInsights'
 import authorisationMiddleware from './middleware/authorisationMiddleware'
 
 import setUpAuthentication from './middleware/setUpAuthentication'
@@ -66,7 +65,6 @@ export default function createApp(services: Services): express.Application {
     }),
   )
 
-  app.use(appInsightsMiddleware())
   app.use(setUpHealthChecks(services.applicationInfo, services.playwrightBrowserService))
   app.use(setUpWebSecurity())
   app.use(setUpWebSession())

@@ -1,11 +1,10 @@
-// Require app insights before anything else to allow for instrumentation of bunyan and express
-import 'applicationinsights'
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
 import timezone from 'dayjs/plugin/timezone'
 import customParseFormat from 'dayjs/plugin/customParseFormat'
 import isSameOrAfter from 'dayjs/plugin/isSameOrAfter'
 import isSameOrBefore from 'dayjs/plugin/isSameOrBefore'
+import shutdownTelemetry from './server/utils/azureAppInsights'
 
 import { app, services } from './server/index'
 import logger from './logger'
@@ -36,6 +35,13 @@ async function start(): Promise<void> {
         logger.info('[playwright] browser closed')
       } catch (error) {
         logger.warn(error, '[playwright] error closing browser')
+      }
+
+      try {
+        await shutdownTelemetry()
+        logger.info('Telemetry flushed')
+      } catch (error) {
+        logger.warn(error, 'Failed to flush telemetry')
       }
 
       process.exit(0)
