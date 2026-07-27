@@ -7,7 +7,10 @@ import {
 } from '@ministryofjustice/hmpps-electronic-monitoring-components/map/layers'
 import { queryElement } from '../../utils/utils'
 import initialiseDateFilterForm from '../../forms/date-filter-form'
-import setMapAttribution from '../../utils/mapAttribution'
+// Attribution is now set server-side via the `attribution`/`attributionAllowHtml` em-map
+// template params (see server/views/components/map/template.njk), using the new HTML
+// attribute support in the components package. Kept here, commented out, as a JS fallback.
+// import setMapAttribution from '../../utils/mapAttribution'
 
 const initialiseLocationDataView = async () => {
   const emMap = queryElement(document, 'em-map') as EmMap
@@ -16,7 +19,7 @@ const initialiseLocationDataView = async () => {
     emMap.addEventListener('map:ready', () => resolve(), { once: true })
   })
 
-  setMapAttribution(emMap)
+  // setMapAttribution(emMap)
 
   const { positions } = emMap
 

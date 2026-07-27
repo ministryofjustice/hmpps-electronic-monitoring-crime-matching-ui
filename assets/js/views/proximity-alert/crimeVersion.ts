@@ -6,7 +6,10 @@ import CrimeLayer from './layers/crime'
 import DeviceWearerLayer from './layers/deviceWearer'
 import initialiseProximityAlertExportView from './mapExport'
 import initialiseProximityAlertUserView from './mapUserView'
-import setMapAttribution from '../../utils/mapAttribution'
+// Attribution is now set server-side via the `attribution`/`attributionAllowHtml` em-map
+// template params (see server/views/components/map/template.njk), using the new HTML
+// attribute support in the components package. Kept here, commented out, as a JS fallback.
+// import setMapAttribution from '../../utils/mapAttribution'
 
 export type CapturedMapState = {
   mapWidthPx: number
@@ -147,7 +150,7 @@ const initialiseProximityAlertView = async () => {
     emMap.addEventListener('map:ready', () => resolve(), { once: true })
   })
 
-  setMapAttribution(emMap)
+  // setMapAttribution(emMap)
 
   const { centre } = addCrimeLayers(emMap, data.crimePosition)
 
