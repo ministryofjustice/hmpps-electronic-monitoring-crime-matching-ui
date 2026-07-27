@@ -6,6 +6,7 @@ import CrimeLayer from './layers/crime'
 import DeviceWearerLayer from './layers/deviceWearer'
 import initialiseProximityAlertExportView from './mapExport'
 import initialiseProximityAlertUserView from './mapUserView'
+import setMapAttribution from '../../utils/mapAttribution'
 
 export type CapturedMapState = {
   mapWidthPx: number
@@ -145,6 +146,8 @@ const initialiseProximityAlertView = async () => {
   await new Promise<void>(resolve => {
     emMap.addEventListener('map:ready', () => resolve(), { once: true })
   })
+
+  setMapAttribution(emMap)
 
   const { centre } = addCrimeLayers(emMap, data.crimePosition)
 
