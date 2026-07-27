@@ -1,4 +1,4 @@
-// Official Ordnance Survey API branding: logo + copyright statement, links.
+// Official Ordnance Survey API branding: copyright statement, links.
 // Adapted from https://github.com/OrdnanceSurvey/os-api-branding (v0.4.0),
 // positioned within the map viewport per OS branding guidelines.
 .app-map__viewport {
@@ -14,17 +14,6 @@
   display: block;
   z-index: 1000;
   pointer-events: none;
-}
-
-.os-api-branding.logo {
-  left: 0;
-  padding: 8px;
-  width: 90px;
-  height: 24px;
-  background-image: url("/assets/images/os-logo-maps.svg");
-  background-position: center;
-  background-repeat: no-repeat;
-  box-sizing: content-box;
 }
 
 .os-api-branding.copyright {

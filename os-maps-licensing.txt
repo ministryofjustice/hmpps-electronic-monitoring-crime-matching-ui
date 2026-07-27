@@ -1,0 +1,449 @@
+OS MAPS LICENSING & ATTRIBUTION REQUIREMENTS
+==============================================
+Prepared for: hmpps-electronic-monitoring-crime-matching-ui
+Sources:
+  - PSGA Member Licence v3.0, May 2024
+    https://www.ordnancesurvey.co.uk/documents/licensing/psga-member-licence.pdf
+  - OS Vector Tile API documentation
+    https://docs.os.uk/os-apis/accessing-os-apis/os-vector-tile-api
+  - OS Public Sector Licensing overview
+    https://www.ordnancesurvey.co.uk/customers/public-sector/public-sector-licensing
+  - OS "Copyright acknowledgments" page (Public Sector licensing guide) -
+    almost certainly the "Public Sector Licensing Guidance" document
+    referenced by Clauses 2.3.1, 2.4.4, 2.5.2 and 6.1 of the PSGA Member
+    Licence (its own page title is "Copyright acknowledgments | Public
+    Sector licensing guide | OS"). Gives OS's official acknowledgement text
+    templates for each publishing format (paper, PDF, web mapping, downloads
+    etc.):
+    https://www.ordnancesurvey.co.uk/customers/public-sector/public-sector-licensing/copyright-acknowledgments
+
+This document maps the two application use cases below to the specific PSGA
+Member Licence clauses that govern them, states plainly what must be
+displayed/applied in each case, and explains the practical consequence of the
+OS Vector Tile API not returning per-feature attribution data.
+
+--------------------------------------------------------------------------------
+WHEN TO INCLUDE "AND DATABASE RIGHTS" IN THE COPYRIGHT ACKNOWLEDGEMENT
+--------------------------------------------------------------------------------
+
+Two separate UK IP rights can subsist in OS mapping data:
+  - Crown COPYRIGHT protects the creative/artistic content of a map (e.g.
+    its cartographic design).
+  - Database RIGHT (Copyright and Rights in Database Regulations 1997)
+    separately protects a structured collection of data where there has been
+    substantial investment in obtaining, verifying or presenting its
+    contents - which is exactly what OS's digital mapping products
+    (including OS MasterMap and the data behind the OS Vector Tile API) are.
+
+The OS "Copyright acknowledgments" guide gives the acknowledgement templates
+in two forms:
+  - For general licensed OS data (i.e. any OS product that is NOT OS
+    OpenData), the guide states the requirement WITHOUT brackets: "(c) Crown
+    copyright and database rights [year] OS [licence number]" - i.e.
+    "and database rights" is NOT optional for standard/licensed OS data.
+  - For the specific per-format templates (paper documents, PDFs, web
+    mapping, downloads, etc.) the guide writes "[and database rights]" in
+    square brackets, meaning "include this phrase where the database right
+    applies to the data being acknowledged" - it is bracketed because a
+    small number of OS products/outputs may only carry copyright and not
+    database right (e.g. a purely photographic/artistic asset with no
+    underlying structured dataset), so the phrase is not universally forced
+    into every template.
+  - For OS OpenData specifically, the template is "Contains OS data (c)
+    Crown copyright [and database right] [year]" - also bracketed, for the
+    same reason.
+
+Rule for this application: the OS Vector Tile API serves structured vector
+map data derived from OS's underlying topographic database (OS MasterMap
+Topography Layer, etc.), which is a database right work as well as a
+copyright work. "AND DATABASE RIGHTS" SHOULD THEREFORE ALWAYS BE INCLUDED in
+every acknowledgement produced by this application (both the interactive map
+attribution bar and any PDF export), i.e. use:
+  "Contains OS data (c) Crown copyright and database rights [year]"
+(as already implemented), rather than "(c) Crown copyright" alone. Only omit
+it if a future feature displays OS content that is confirmed to carry no
+database right (unlikely for anything sourced from the Vector Tile API).
+
+
+--------------------------------------------------------------------------------
+USE CASE 1: Interactive map (OS Maps Vector Tile API, viewed/interacted with
+            by end users in the browser via the <em-map> component)
+
+            CONFIRMED: these users are MoJ staff (i.e. the same organisation
+            as the Licensee, assuming the Licensee/PSGA Member is MoJ/HMPPS).
+--------------------------------------------------------------------------------
+
+Governing clauses:
+
+* Clause 4.1 (Public Sector Use): "Public Sector Use is the use of Licensed
+  Data to support delivery of or to deliver the Licensee's Core Business."
+  Because these users are MoJ's own staff using the map to deliver MoJ's
+  Core Business, this is straightforward Public Sector Use. It does NOT
+  trigger the "public viewing" provisions in Clause 4.2.7, the Public Sector
+  Data Sharing provisions in Clause 5, or the End User Licensing provisions
+  in Clause 6 - none of those apply to a Licensee's own internal use of the
+  data. Consequently the watermarking/terms-and-conditions/licence-number
+  obligations in Appendix 1, paragraph 11.1.2 and paragraph 6.4 do NOT apply
+  to this use case.
+
+* Clause 6.1 (Trade Marks and rights acknowledgement): "The Licensee shall
+  ensure that acknowledgements of copyright and database right ownership are
+  included in copies of Licensed Data in the manner described in the Public
+  Sector Licensing Guidance." This applies regardless of who the end users
+  are - it is a general obligation, not limited to public-facing display.
+
+* Appendix 1, Clause 11.1.1: "...for the avoidance of doubt, copyright,
+  database right and trade mark acknowledgements (in accordance with Clause 6
+  of the Licence) are included on the Licensed Data and on any copies the
+  Licensee or any Public Sector End User or INSPIRE End User produces." This
+  is also a blanket obligation, independent of 4.2.7.
+
+* Clause 6.2 (Trade Marks): "The Licensee shall not use any Trade Marks
+  except where it wishes to acknowledge OS..." - i.e. displaying the OS logo
+  is OPTIONAL, not mandatory. If used, Clauses 6.4/6.5 require it to follow
+  the OS Style Guide and carry the (R) or (TM) symbol.
+
+* IF the map is shown to members of the public/third parties (Clause 4.2.7
+  applies), Appendix 1, Clause 11.1.2(c) applies specifically because this
+  application consumes an OS-provided API (the Vector Tile API), not a
+  third-party redistribution of raw vector/raster data:
+  "where the Licensee makes Licensed Data available via OS's own APIs, the
+  Licensee must ensure that the OS API keys and urls which could be used by
+  a third party as an alternative means of direct access to the service are
+  obscured from the client view, so as not to enable such unauthorised
+  access." No watermark, logo, or licence number is required under this
+  sub-clause - Clause 11.1.2(b) (which does mandate watermarking for
+  third-party API resupply of certain named products) explicitly does not
+  apply to "using OS's own APIs, which is covered by c) below."
+
+What must be applied in this application (already implemented):
+  1. A visible copyright acknowledgement, e.g. "Contains OS data (c) Crown
+     copyright and database rights [current year]" (Clause 6.1 / 11.1.1).
+     Implemented in server/views/components/map/template.njk via the
+     `currentYear()` Nunjucks global and the OS branding bar.
+  2. The OS API key/URL must not be exposed to the browser/client
+     (Clause 11.1.2(c)) - verify the proxy/back-end request pattern used to
+     call the Vector Tile API keeps the key server-side.
+  3. The OS logo is OPTIONAL (Clause 6.2). We have chosen not to include it.
+     Links to OS Terms & Conditions and the OS "report an issue" page are
+     still shown alongside the copyright acknowledgement, which is good
+     practice but not a strict licence requirement.
+  4. A licence number is NOT required for this use case - Clause 6.4 (End
+     User Licensing, Appendix 1) and Clause 7.4.2 (INSPIRE End User
+     Licensing) only require a licence number when the Licensee is
+     re-supplying/sub-licensing Licensed Data onward to Public Sector or
+     INSPIRE End Users, which does not apply to simply rendering a map for
+     viewing.
+
+  NOTE - if this changes: the OS Public Sector licensing guide's official
+  "Web mapping services (non-INSPIRE)" acknowledgement template is:
+    "(c) Crown copyright [and database rights] [year of supply] OS [licence
+    number]. Use of this data is subject to terms and conditions."
+  with 'terms and conditions' hyperlinked to the three conditions already
+  quoted under Clause 11.1.2(a) above. This template DOES include a licence
+  number - it is the template to switch to if the interactive map is ever
+  opened up to users outside MoJ (i.e. if Clause 4.2.7 public viewing, or
+  Clause 6 End User Licensing, becomes engaged for this use case).
+
+--------------------------------------------------------------------------------
+USE CASE 2: Screenshots of the interactive map exported to PDF and downloaded
+            by a separate set of users
+
+            CONFIRMED: these users are members of the Police - i.e. a
+            different Public Sector organisation from the Licensee (MoJ),
+            not the general public. This rules out the "public viewing"
+            route (Clause 4.2.7) and its paragraph 11.1.2 obligations, and
+            instead brings this within one of two internal Public Sector
+            supply mechanisms: Clause 5 (Public Sector Data Sharing) or
+            Clause 6 (End User Licensing). Which one applies depends on the
+            purpose of the supply - see below.
+--------------------------------------------------------------------------------
+
+Why Clause 4.2.7 ("public viewing") does NOT apply here:
+  Clause 4.2.7 covers making data available "for public viewing" - i.e. to
+  the general public, not to a named, known Public Sector recipient such as
+  a police force. Supplying PDF exports specifically to Police users is
+  better characterised as an inter-organisation Public Sector supply under
+  Clause 5 or Clause 6 (below). This also means the raster/vector "terms and
+  conditions" phrase requirement in Appendix 1, Clause 11.1.2(a) - which is
+  scoped to the 4.2.7 route - does NOT apply to this use case.
+
+Which clause applies - Clause 5 (Data Sharing) vs Clause 6 (End User
+Licensing) - depends on WHY the Police are receiving the exported data:
+
+* Clause 5 (Public Sector Data Sharing) applies if the Police are receiving
+  copies of Licensed Data (the PDF exports) to use for their OWN Core
+  Business purposes, as a separately-licensed Public Body in their own
+  right. Definition (Clause 5.1): "Public Sector Data Sharing is the supply
+  to any third party (including but not limited to Infrastructure Bodies and
+  Public Bodies)... of copies of any Licensed Data. (...Public Body means an
+  organisation which is licensed for Public Sector Use.)" Conditions
+  (Clause 5.2) include:
+    - 5.2.2: both MoJ and the Police must be licensed for Public Sector Use
+      for the same area of coverage of the same Licensed Data.
+    - 5.2.3: written confirmation of the Police's licensed status is
+      required UNLESS the Police are themselves a PSGA Member. CONFIRMED:
+      all Police Forces receiving this data ARE PSGA Members, so this
+      written-confirmation step is NOT required.
+    - 5.2.5: the supply must be "to support delivery of or to deliver the
+      Licensee's [MoJ's] Core Business."
+    - 5.2.6: a written record of what was supplied/received and when must
+      be kept, UNLESS both MoJ and the Police are licensed under a PSGA
+      Member Licence for the relevant data. CONFIRMED: since the Police are
+      PSGA Members, this record-keeping duty is NOT required either
+      (assuming MoJ's own licence is also a PSGA Member Licence, which it
+      is).
+  Given the Police-are-PSGA-Members confirmation, Clause 5 - if it is the
+  correct basis - is very low-friction for this application: no watermark,
+  no terms-and-conditions phrase, no licence number, no written confirmation
+  and no record-keeping obligation beyond the general copyright
+  acknowledgement (Clause 6.1/11.1.1).
+
+* Clause 6 (End User Licensing) applies instead if the Police are receiving
+  the PDF exports specifically to interact with or respond to MoJ's Core
+  Business (e.g. reviewing/acting on crime-matching results MoJ/HMPPS has
+  produced), rather than for an independent purpose of their own. Definition
+  (Clause 6.1): "The Licensee may supply copies of Licensed Data to Public
+  Sector End Users solely to enable such Public Sector End Users to use the
+  data to respond to, or interact with the Licensee to deliver or support
+  the delivery of the Licensee's Core Business." Given this application's
+  purpose (electronic monitoring crime-matching results being reviewed by
+  Police), this is the more likely fit. Clause 6 carries EXTRA obligations
+  beyond Clause 5 REGARDLESS of the Police being PSGA Members (PSGA
+  membership only affects Clause 5.2.3/5.2.6, not Clause 6):
+    - 6.3: "The Public Sector End User Licence shall be entered into by a
+      Public Sector End User prior to accessing the Licensed Data" - i.e. a
+      formal Public Sector End User Licence agreement must be in place with
+      the Police (or the relevant officers/units) BEFORE they receive any
+      exported PDF. This is a contractual/administrative step, not a
+      technical one, and should be confirmed with legal/data-sharing leads.
+    - 6.4: "In making Licensed Data available under this paragraph 6, the
+      Licensee shall comply with the watermarking obligation in paragraph
+      11.1.2 b) and shall ensure the Licensed Data includes the Licensee's
+      licence number pre-fixed or suffixed with the letters 'EUL'." This
+      IS a licence-number requirement for this use case (contrast with use
+      case 1, where no licence number is needed) - MoJ's PSGA/EUL licence
+      number must appear on each exported PDF.
+    - Note Clause 6.4 imports only the WATERMARKING obligation from
+      paragraph 11.1.2(b) (not the whole of 11.1.2, and not 11.1.2(a)'s
+      terms-and-conditions phrase). Paragraph 11.1.2(b) itself contains the
+      exemption: "no watermarking is required where the Licensee makes
+      Licensed Data available via electronic documents (e.g. a pdf), static
+      internet image... or hard copy" - so a PDF export STILL does not
+      require a watermark, even under Clause 6.
+    - 6.6.1: Clause 6 should only be used "where there is a specific
+      requirement to do so, and where that requirement cannot be reasonably
+      met by an alternative, such as public data viewing under paragraph
+      4.2.7" - reinforcing that 4.2.7 is not the right route for a targeted,
+      known recipient such as the Police.
+
+Note: being a PSGA Member does NOT, by itself, remove the need for a
+Public Sector End User Licence or an EUL licence number if Clause 6 turns
+out to be the correct basis - PSGA membership only simplifies Clause 5. The
+determining factor is still the PURPOSE test (see questions below), not the
+Police's licensing status.
+
+QUESTIONS TO DETERMINE WHICH OF CLAUSE 5 OR CLAUSE 6 APPLIES:
+
+  1. Purpose: Is the Police receiving the exported PDF solely to respond to
+     or act on specific electronic monitoring crime-matching output that
+     MoJ/HMPPS has produced (points to Clause 6), or to use for the Police's
+     own, independent Core Business purposes unconnected to interacting
+     with MoJ (points to Clause 5)?
+  2. Existing agreements: Is there already a Public Sector End User Licence,
+     Data Sharing Agreement, or MOU in place between MoJ/HMPPS and the
+     receiving Police Force(s) for this data flow? If a Public Sector End
+     User Licence does not yet exist, that needs to be put in place before
+     any export under Clause 6 (Clause 6.3).
+  3. Relationship structure: Is MoJ acting as licensor granting the Police
+     a licence to view/use this specific output (Clause 6, "Public Sector
+     End User"), or are MoJ and the Police peers trading/sharing copies of
+     Licensed Data with each other (Clause 5, "Sharing Party")?
+  4. Frequency/nature of supply: Is this a one-off or case-specific export
+     tied to a particular alert/match (more like Clause 6), or an ongoing/
+     bulk supply of the underlying Licensed Data for general reuse (more
+     like Clause 5)?
+  5. Necessity: Could the same requirement reasonably be met by an
+     alternative to End User Licensing, such as public viewing under Clause
+     4.2.7 or supplying alternative/open data instead (Clause 6.6.1 says
+     Clause 6 should only be used where it cannot)? If so, Clause 6 may not
+     even be the appropriate route and an alternative should be considered.
+
+  NOTE (confirmed): All Police Forces receiving this data are PSGA Members,
+  which resolves Clause 5's own internal conditions (5.2.2/5.2.3/5.2.6) if
+  Clause 5 turns out to be the applicable basis, but does NOT itself answer
+  the purpose test above, which is what actually decides Clause 5 vs 6.
+
+
+What must be applied for the PDF/screenshot export sent to Police users
+(recommend confirming with legal/data-sharing leads whether Clause 5 or
+Clause 6 is the operative basis, then apply accordingly):
+  1. Copyright acknowledgement (Clause 6.1 main body / Appendix 1 11.1.1) -
+     e.g. "Contains OS data (c) Crown copyright and database rights [year]"
+     - must appear on the exported PDF/image itself, not only in the live
+     web page chrome (the OS branding bar in template.njk will NOT be
+     captured if the export only screenshots the map canvas - confirm the
+     export routine includes the branding bar/attribution element, or
+     reproduce the acknowledgement text directly in the PDF layout). This
+     applies under either Clause 5 or Clause 6.
+  2. IF Clause 6 (End User Licensing) applies: a Public Sector End User
+     Licence must be entered into with the Police before they can access
+     the exports (Clause 6.3), and each exported PDF must carry MoJ's
+     licence number suffixed/prefixed 'EUL' (Clause 6.4) - NOT YET
+     IMPLEMENTED, needs a visible licence-number element added to the PDF
+     export layout, plus confirmation the contractual EUL agreement exists.
+     The OS Public Sector licensing guide's official "Downloads" template
+     confirms the EUL suffix requirement and gives the exact wording to use:
+       "(c) Crown copyright [and database rights] [year of supply] OS
+       [licence number EUL]. You are permitted to use this data solely to
+       enable you to respond to, or interact with, the organisation that
+       provided you with the data. You are not permitted to copy,
+       sub-license, distribute or sell any of this data to third parties in
+       any form."
+     Its official "PDFs" template is very similar and is the one to use for
+     this export format specifically:
+       "(c) Crown copyright [and database rights] [year of supply] OS
+       [licence number]. You are granted a non-exclusive, royalty free,
+       revocable licence solely to view the Licensed Data for non-commercial
+       purposes for the period during which [Licensee] makes it available.
+       You are not permitted to copy, sub-license, distribute, sell or
+       otherwise make available the Licensed Data to third parties in any
+       form. Third party rights to enforce the terms of this licence shall
+       be reserved to OS."
+     (or the shorter form ending "...Use of this data is subject to terms
+     and conditions" with the phrase hyperlinked to the same conditions -
+     only practical in a PDF if the reader will have an internet connection
+     when they open it; the full inline text above is safer for an offline
+     document.) Note both official templates bracket "[and database
+     rights]" - per the rule above, this SHOULD be included for Vector Tile
+     API-derived content.
+
+     WHICH FORM IS NEEDED - SHORT (hyperlinked) OR LONG (full inline text)?
+     Whether the long-form text is strictly required, or the short
+     hyperlinked form is acceptable, depends on:
+       a) Is the Appendix 1, Clause 11.1.2(a) "terms and conditions" phrase
+          obligation even engaged at all? As already noted, 11.1.2(a) is
+          textually scoped to the Clause 4.2.7 "public viewing" route, and
+          Clause 6.4 (End User Licensing) only imports the WATERMARKING
+          obligation from 11.1.2(b), not 11.1.2(a)'s phrase requirement.
+          So, strictly on the wording of the PSGA Licence itself, if Clause
+          6 (or Clause 5) is the operative basis rather than 4.2.7, this
+          specific phrase is arguably NOT a hard contractual requirement.
+       b) However, the OS "Public Sector licensing guide" presents the
+          T&Cs-inclusive wording as its general "PDFs" template without
+          qualifying it to the 4.2.7 route, and Clause 6.1 requires
+          acknowledgements to be "in the manner described in the Public
+          Sector Licensing Guidance" generally. Best practice - and the
+          safer compliance position - is therefore to include SOME form of
+          this text on every PDF export regardless of which clause applies.
+       c) Will the exported PDF reliably be opened with an active internet
+          connection (e.g. always opened from within the web application,
+          or downloaded to a machine with no guaranteed connectivity, or
+          potentially printed to hard copy)? If connectivity/onward
+          forwarding cannot be guaranteed, use the LONG inline form (a
+          hyperlink is useless once printed or if opened offline).
+       d) Is there a risk of the PDF being forwarded beyond the immediate
+          Police recipient (e.g. attached to further internal
+          correspondence, printed for a case file)? If so, the long
+          self-contained form is safer, since it doesn't rely on the
+          original hyperlink target remaining reachable/relevant to
+          whoever the document eventually reaches.
+     Recommendation: use the LONG inline form for this use case, since the
+     stated distribution model (exported/downloaded PDFs given to a
+     separate organisation) does not guarantee the recipient will view the
+     document online, be connected to the internet, or view it only within
+     the original web context.
+  3. IF Clause 5 (Data Sharing) applies instead: CONFIRMED - all Police
+     Forces receiving this data are PSGA Members, so the written-
+     confirmation (5.2.3) and record-keeping (5.2.6) duties do NOT apply.
+     Only the general copyright acknowledgement and the "supports MoJ's Core
+     Business" condition (5.2.5) need to be satisfied.
+  4. No watermark is required either way (Clause 11.1.2(b) exemption for
+     PDFs/static raster images/hard copy applies whether reached via Clause
+     5, Clause 6, or Clause 4.2.7).
+  5. OS logo remains optional (Clause 6.2, main body), as in use case 1.
+
+--------------------------------------------------------------------------------
+IMPLICATION OF THE OS VECTOR TILE API NOT RETURNING DETAILED ATTRIBUTION DATA
+--------------------------------------------------------------------------------
+
+OS's own documentation states plainly, under "Things to remember for OS
+Vector Tile API":
+  "You can't: Retrieve all the detailed attribution from OS data."
+  (https://docs.os.uk/os-apis/accessing-os-apis/os-vector-tile-api#things-to-remember-for-os-vector-tile-api)
+
+Practical consequences for this codebase:
+
+* The Vector Tile API's style JSON does not embed per-source/per-layer
+  attribution text (unlike some other basemap providers), so OpenLayers'
+  built-in Attribution control has nothing to render and auto-hides itself
+  (element.style.display = 'none') when no layer source reports
+  attribution - this was the root cause of the "no attribution visible"
+  bug investigated earlier in this project.
+* Because attribution cannot be derived dynamically at runtime from the API
+  response, the application MUST hard-code the correct, static OS copyright
+  statement rather than relying on `source.getAttributions()` /
+  `source.setAttributions()`. The canonical wording, maintained by OS itself,
+  is: "Contains OS data (c) Crown copyright and database rights [year]"
+  (from OrdnanceSurvey/os-api-branding on GitHub -
+  https://github.com/OrdnanceSurvey/os-api-branding). This is what has been
+  implemented in the OS branding bar in
+  server/views/components/map/template.njk, with OpenLayers' own
+  (non-functional, always-empty) Attribution control removed via
+  assets/js/utils/mapAttribution.ts.
+* One further consequence: Clause 2.4 ("Free to Use Data") separately
+  requires "Feature Attribution" to be preserved/reproduced for certain
+  free-to-use features (Clause 2.4.3/2.4.4). Since the Vector Tile API does
+  not expose feature-level attribution metadata, it is not possible to
+  determine at runtime whether any given rendered feature is "Free to Use
+  Data" requiring this separate acknowledgement. In practice this means we
+  rely on the general Licensed Data copyright acknowledgement (Clause 6.1)
+  applying uniformly to the whole map, rather than attempting (and being
+  unable) to apply feature-specific Free to Use Data attribution.
+
+--------------------------------------------------------------------------------
+OPEN ITEMS / RECOMMENDATIONS
+--------------------------------------------------------------------------------
+
+1. CONFIRMED: use case 1's users are MoJ staff (Clause 4.1, no complications)
+   and use case 2's users are Police (a separate Public Body, and all
+   receiving Forces are confirmed PSGA Members) - use case 2 is therefore
+   governed by Clause 5 (Data Sharing) or Clause 6 (End User Licensing), not
+   Clause 4.2.7 (public viewing). PSGA membership resolves Clause 5's own
+   internal conditions (5.2.3/5.2.6) if that clause applies, but does NOT by
+   itself determine whether Clause 5 or Clause 6 is the correct basis - that
+   is a PURPOSE test. Confirm with legal/data-sharing leads by answering the
+   "QUESTIONS TO DETERMINE WHICH OF CLAUSE 5 OR CLAUSE 6 APPLIES" list under
+   Use Case 2 above - this determines whether a Public Sector End User
+   Licence and an 'EUL' licence number are required (Clause 6) or whether
+   the lighter Clause 5 data-sharing conditions apply instead.
+2. If Clause 6 applies: implement a visible MoJ licence number (suffixed/
+   prefixed 'EUL') on each exported PDF (Clause 6.4), and confirm a Public
+   Sector End User Licence has been/will be entered into with the Police
+   before they receive any exports (Clause 6.3).
+3. Decide short (hyperlinked) vs long (full inline) terms-and-conditions
+   text on PDF exports - see "WHICH FORM IS NEEDED" under Use Case 2 above.
+   Recommended default: long inline form, since PDF exports may be viewed
+   offline or forwarded beyond the original recipient. Confirm this
+   decision with legal/data-sharing leads alongside the Clause 5/6 question.
+4. Ensure the OS API key/URL is never exposed to the browser (Clause
+   11.1.2(c)) - verify via the network tab that requests to the Vector Tile
+   API are proxied server-side.
+5. UPDATE: the "Public Sector Licensing Guidance" document referenced in
+   Clauses 2.3.1, 2.4.4, 2.5.2 and 6.1 of the PSGA Member Licence has very
+   likely now been located:
+     https://www.ordnancesurvey.co.uk/customers/public-sector/public-sector-licensing/copyright-acknowledgments
+   (page title: "Copyright acknowledgments | Public Sector licensing guide |
+   OS") - it gives the exact official acknowledgement-text templates for
+   each publishing format, which have been incorporated above (see "Web
+   mapping services (non-INSPIRE)", "PDFs" and "Downloads" templates). Two
+   earlier candidate pages were checked and were NOT it (thin marketing/
+   overview pages):
+     - https://www.ordnancesurvey.co.uk/customers/public-sector/public-sector-licensing
+     - https://www.ordnancesurvey.co.uk/licensing/licence-guide (aimed at
+       commercial resellers, not PSGA Members)
+   Recommend a final confirmation with OS or the organisation's PSGA
+   Principal/Nominated Contact that this is indeed the definitive guidance
+   document, and checking the guide's other FAQ entries not reproduced here
+   (e.g. AddressBase and Code-Point specific statements) in case any of
+   those datasets are also used elsewhere in the wider service.

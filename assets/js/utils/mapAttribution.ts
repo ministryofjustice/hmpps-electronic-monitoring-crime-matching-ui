@@ -2,7 +2,7 @@ import { EmMap } from '@ministryofjustice/hmpps-electronic-monitoring-components
 import { Control } from 'ol/control'
 
 // Removes OpenLayers' built-in Attribution control. The official OS API branding bar
-// (logo + copyright statement + terms/error-reporting links) is rendered server-side
+// (copyright statement + terms/error-reporting links) is rendered server-side
 // as part of the map template instead - see server/views/components/map/template.njk
 // and https://docs.os.uk/os-apis/core-concepts/os-api-branding. Keeping OL's own
 // Attribution control around would duplicate/clash with that branding bar.
