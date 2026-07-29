@@ -22,4 +22,4 @@ generic-service:
     OS_MAPS_TILE_CACHE_EXPIRY: "604800" # 7 days
 
 generic-prometheus-alerts:
-  alertSeverity: na
+  alertSeverity: hmpps-em-crime-matching-alerts-prod
