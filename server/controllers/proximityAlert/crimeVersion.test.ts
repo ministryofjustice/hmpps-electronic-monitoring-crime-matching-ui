@@ -93,6 +93,7 @@ describe('CrimeVersionController', () => {
                 dateOfBirth: '1985-10-05',
                 pncRef: 'PNC123',
                 deviceId: 1,
+                deviceSerialNumber: 123456789,
                 nomisId: 'nomisId',
                 positions: [
                   {
@@ -146,6 +147,7 @@ describe('CrimeVersionController', () => {
                 dateOfBirth: '1985-10-05',
                 pncRef: 'PNC123',
                 deviceId: 1,
+                deviceSerialNumber: 123456789,
                 nomisId: 'nomisId',
                 positions: [
                   {
@@ -154,7 +156,7 @@ describe('CrimeVersionController', () => {
                     sequenceLabel: 'A1',
                     precision: 10,
                     capturedDateTime: '01/01/2025, 00:00:00',
-                    deviceId: 1,
+                    deviceId: 123456789,
                     direction: 10,
                     name: 'name',
                     nomisId: 'nomisId',
@@ -168,7 +170,7 @@ describe('CrimeVersionController', () => {
                     sequenceLabel: 'A2',
                     precision: 10,
                     capturedDateTime: '01/01/2025, 02:00:00',
-                    deviceId: 1,
+                    deviceId: 123456789,
                     direction: 10,
                     name: 'name',
                     nomisId: 'nomisId',
@@ -534,6 +536,7 @@ describe('CrimeVersionController', () => {
                 dateOfBirth: '1985-10-05',
                 pncRef: 'PNC123',
                 deviceId: 1,
+                deviceSerialNumber: 123456789,
                 nomisId: 'nomisId',
                 positions: [],
               },
@@ -636,6 +639,7 @@ describe('CrimeVersionController', () => {
                 dateOfBirth: '1985-10-05',
                 pncRef: 'PNC123',
                 deviceId: 1,
+                deviceSerialNumber: 123456789,
                 nomisId: 'nomisId1',
                 positions: [
                   {
@@ -655,6 +659,7 @@ describe('CrimeVersionController', () => {
                 dateOfBirth: '1985-10-05',
                 pncRef: 'PNC456',
                 deviceId: 2,
+                deviceSerialNumber: 123456789,
                 nomisId: 'nomisId2',
                 positions: [],
               },
@@ -775,6 +780,7 @@ describe('CrimeVersionController', () => {
                 dateOfBirth: '1985-10-05',
                 pncRef: 'PNC123',
                 deviceId: 1,
+                deviceSerialNumber: 123456789,
                 nomisId: 'nomisId1',
                 positions: [],
               },
@@ -879,6 +885,7 @@ describe('CrimeVersionController', () => {
                 dateOfBirth: '1985-10-05',
                 pncRef: 'PNC123',
                 deviceId: 1,
+                deviceSerialNumber: 123456789,
                 nomisId: 'nomisId1',
                 positions: [],
               },

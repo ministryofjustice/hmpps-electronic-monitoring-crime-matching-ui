@@ -31,6 +31,7 @@ const matchedDeviceWearer1 = {
   dateOfBirth: '1985-10-05',
   pncRef: 'PNC123',
   deviceId: 1,
+  deviceSerialNumber: 123456789,
   nomisId: 'nomisId',
   positions: [
     {
@@ -50,6 +51,7 @@ const matchedDeviceWearer2 = {
   address: '2 Test Street',
   dateOfBirth: '1985-10-05',
   deviceId: 2,
+  deviceSerialNumber: 123456789,
   nomisId: 'nomisId2',
   pncRef: 'PNC456',
   positions: [
