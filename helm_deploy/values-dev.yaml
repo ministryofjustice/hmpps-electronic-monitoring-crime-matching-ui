@@ -20,6 +20,6 @@ generic-service:
     OS_MAPS_TILE_CACHE_EXPIRY: "0"
 
 generic-prometheus-alerts:
-  alertSeverity: na
+  alertSeverity: hmpps-em-crime-matching-alerts-dev
 
 deploy_stubs: false
