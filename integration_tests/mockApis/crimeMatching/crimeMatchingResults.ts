@@ -18,6 +18,7 @@ type StubGetCrimeMatchingResults200Options = {
       crimeLongitude: number
       crimeText: string
       deviceId: number
+      deviceSerialNumber: number
       deviceName: string
       subjectId: string
       subjectName: string

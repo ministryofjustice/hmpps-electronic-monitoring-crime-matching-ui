@@ -64,7 +64,7 @@ context('Crime Version', () => {
       page.map.sidebar.crimeVersionSummaryList.shouldHaveItem('Desc:', 'crimeText')
 
       // And the device wearer details
-      page.map.sidebar.shouldHaveDeviceWearer('wearer-1', 'nomisId', '1', '1')
+      page.map.sidebar.shouldHaveDeviceWearer('wearer-1', 'nomisId', '123456789', '1')
 
       // And the backlink should have the default value
       page.backLink.should('have.attr', 'href', '/proximity-alert')
@@ -252,8 +252,8 @@ context('Crime Version', () => {
       page.map.sidebar.crimeVersionSummaryList.shouldHaveItem('Desc:', 'crimeText')
 
       // And the device wearer details
-      page.map.sidebar.shouldHaveDeviceWearer('wearer-1', 'nomisId', '1', '1')
-      page.map.sidebar.shouldHaveDeviceWearer('wearer-2', 'nomisId2', '2', '1')
+      page.map.sidebar.shouldHaveDeviceWearer('wearer-1', 'nomisId', '123456789', '1')
+      page.map.sidebar.shouldHaveDeviceWearer('wearer-2', 'nomisId2', '123456789', '1')
     })
   })
 })

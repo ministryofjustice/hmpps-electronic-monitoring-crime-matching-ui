@@ -34,7 +34,7 @@ const presentCrimePosition = ({
 }
 
 const presentDevicePositions = ({
-  deviceId,
+  deviceSerialNumber,
   name,
   nomisId,
   positions,
@@ -45,7 +45,7 @@ const presentDevicePositions = ({
       longitude,
       precision,
       capturedDateTime: formatDateTime(capturedDateTime, 'DD/MM/YYYY, HH:mm:ss'),
-      deviceId,
+      deviceId: deviceSerialNumber,
       direction,
       name,
       nomisId,
