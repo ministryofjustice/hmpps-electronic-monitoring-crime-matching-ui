@@ -33,7 +33,7 @@ export default class SearchIngestionAttemptsFormComponent extends FormComponent 
     return new FormDateComponent(this.form, 'Date to')
   }
 
-  get searchButton(): PageElement {
+  get searchButton(): PageElement<HTMLButtonElement> {
     return this.form.contains('button', 'Search')
   }
 

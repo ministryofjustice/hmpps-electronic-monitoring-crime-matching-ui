@@ -8,7 +8,7 @@ class ExportCrimeMatchingResultsFormComponent extends FormComponent {
 
   // FIELDS
 
-  get exportButton(): PageElement {
+  get exportButton(): PageElement<HTMLButtonElement> {
     return this.form.contains('button', 'Export')
   }
 

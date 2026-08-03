@@ -52,7 +52,10 @@ context('Police Data Ingestion Attempt', () => {
 
       // Then a file should be downloaded
       cy.getDownloads(downloadsFolder)
-        .then(files => files.at(0))
+        .then(files => {
+          const [file] = files
+          return file
+        })
         .then(file => {
           cy.readFile(path.join(downloadsFolder, file)).should(
             'eq',

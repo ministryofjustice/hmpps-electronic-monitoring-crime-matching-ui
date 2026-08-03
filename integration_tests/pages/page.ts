@@ -18,21 +18,26 @@ export default abstract class Page {
 
   signOut = (): PageElement => cy.get('[data-qa=signOut]')
 
-  manageDetails = (): PageElement => {
-    return cy.get('body').then($body => {
+  manageDetails = (): Cypress.Chainable<JQuery<HTMLElement> | null> => {
+    return cy.get('body').then(($body): Cypress.Chainable<JQuery<HTMLElement> | null> => {
       // HMPPS MOJ header pattern
-      if ($body.find('[data-qa=manageDetails]').length) {
-        return cy.get('[data-qa=manageDetails]')
+      const mojLink = $body.find('[data-qa=manageDetails]').first()
+      if (mojLink.length) {
+        return cy.wrap<JQuery<HTMLElement> | null>(mojLink, { log: false })
       }
 
       // Probation Components header pattern
-      if ($body.find('a.probation-common-header__submenu-link').length) {
-        return cy.contains('a.probation-common-header__submenu-link', /account/i)
+      const probationLink = $body
+        .find('a.probation-common-header__submenu-link')
+        .filter((_, el) => /account/i.test(el.textContent ?? ''))
+        .first()
+      if (probationLink.length) {
+        return cy.wrap<JQuery<HTMLElement> | null>(probationLink, { log: false })
       }
 
       // Fallback header (no manage link)
       cy.log('No manage details link found in current header variant')
-      return cy.wrap(null, { log: false })
+      return cy.wrap<JQuery<HTMLElement> | null>(null, { log: false })
     })
   }
 }

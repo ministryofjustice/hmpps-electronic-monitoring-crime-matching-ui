@@ -14,7 +14,7 @@ export default class SearchPersonsFormComponent extends FormComponent {
   }
   // FIELDS
 
-  get searchButton(): PageElement {
+  get searchButton(): PageElement<HTMLButtonElement> {
     return this.form.contains('button', 'Search')
   }
 
