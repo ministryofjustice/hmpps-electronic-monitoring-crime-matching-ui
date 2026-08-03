@@ -6,7 +6,6 @@ import type { ExportProximityAlertState } from '../form-pages/proximityAlert/exp
 export declare module 'express-session' {
   interface SessionData {
     returnTo: string
-    nowInMinutes: number
     formData: unknown
     validationErrors: ValidationResult
     exportProximityAlertState?: ExportProximityAlertState
