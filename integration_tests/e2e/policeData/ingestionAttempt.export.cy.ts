@@ -53,11 +53,12 @@ context('Police Data Ingestion Attempt', () => {
       // Then a file should be downloaded
       cy.getDownloads(downloadsFolder)
         .then(files => {
-          const [file] = files
-          return file
+          expect(files, 'downloaded files').to.have.length.greaterThan(0)
+          const [firstFile] = files
+          return firstFile
         })
-        .then(file => {
-          cy.readFile(path.join(downloadsFolder, file)).should(
+        .then(firstFile => {
+          cy.readFile(path.join(downloadsFolder, firstFile)).should(
             'eq',
             'Crime reference,Error type,Required action\nCR123456,Field must be a valid ENUM value,Amend crime type to a registered crime type\n',
           )
