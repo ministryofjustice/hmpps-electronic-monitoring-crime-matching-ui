@@ -17,7 +17,7 @@ class ExportLocationDataFormComponent extends FormComponent {
     return new FormRadiosComponent(this.form, 'Export trail data')
   }
 
-  get exportButton(): PageElement {
+  get exportButton(): PageElement<HTMLButtonElement> {
     return this.form.contains('button', 'Export')
   }
 

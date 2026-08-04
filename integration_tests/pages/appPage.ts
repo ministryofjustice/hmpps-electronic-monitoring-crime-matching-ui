@@ -4,7 +4,7 @@ import PageHeaderComponent from './components/pageHeaderComponent'
 import NavigationComponent from './components/navigationComponent'
 
 export default class AppPage extends Page {
-  constructor(title: string) {
+  constructor(title: string | null) {
     super(title)
   }
 

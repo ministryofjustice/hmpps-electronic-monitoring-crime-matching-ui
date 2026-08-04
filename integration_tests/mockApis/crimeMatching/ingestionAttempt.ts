@@ -5,7 +5,7 @@ const baseUrl = '/crime-matching'
 
 type StubGetIngestionAttempt200Options = {
   status: 200
-  ingestionAttemptId
+  ingestionAttemptId: string
   response: {
     data: {
       ingestionAttemptId: string
@@ -35,7 +35,7 @@ type StubGetIngestionAttempt200Options = {
 
 type StubGetIngestionAttemptErrorOptions = {
   status: 404 | 500
-  ingestionAttemptId
+  ingestionAttemptId: string
   response: string
 }
 

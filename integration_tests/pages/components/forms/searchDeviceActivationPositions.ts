@@ -22,11 +22,11 @@ export default class SearchDeviceActivationPositionsFormComponent extends FormCo
     return new FormDateTimeComponent(this.form, '#to-date', 'toDate', 'Date to')
   }
 
-  get continueButton(): PageElement {
+  get continueButton(): PageElement<HTMLButtonElement> {
     return this.form.contains('button', 'Apply')
   }
 
-  get resetButton(): PageElement {
+  get resetButton(): PageElement<HTMLButtonElement> {
     return this.form.contains('button', 'Reset')
   }
 

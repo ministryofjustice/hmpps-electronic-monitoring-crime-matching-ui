@@ -92,9 +92,13 @@ context('Police Data Dashboard', () => {
 
       // Then a file should be downloaded
       cy.getDownloads(downloadsFolder)
-        .then(files => files.at(0))
-        .then(file => {
-          cy.readFile(path.join(downloadsFolder, file)).should('eq', expectedCrimeMatchingResultsCSV)
+        .then(files => {
+          expect(files, 'downloaded files').to.have.length.greaterThan(0)
+          const [firstFile] = files
+          return firstFile
+        })
+        .then(firstFile => {
+          cy.readFile(path.join(downloadsFolder, firstFile)).should('eq', expectedCrimeMatchingResultsCSV)
         })
 
       // And the expected audit message was sent

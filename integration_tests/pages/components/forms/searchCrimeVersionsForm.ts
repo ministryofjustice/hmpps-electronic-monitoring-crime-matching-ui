@@ -16,7 +16,7 @@ export default class SearchCrimeVersionsFormComponent extends FormComponent {
     return new FormInputComponent(this.form, 'Crime reference')
   }
 
-  get searchButton(): PageElement {
+  get searchButton(): PageElement<HTMLButtonElement> {
     return this.form.contains('button', 'Search')
   }
 

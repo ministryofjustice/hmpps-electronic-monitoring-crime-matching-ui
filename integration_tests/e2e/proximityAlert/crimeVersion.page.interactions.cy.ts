@@ -135,7 +135,7 @@ context('Crime Version', () => {
 
         // Then the crime type should be displayed
         expect(textStyles).to.have.length(1)
-        expect(textStyles.at(0)?.at(0)?.getText()?.getText()).to.eq('AB')
+        expect(textStyles[0]?.[0]?.getText()?.getText()).to.eq('AB')
       })
     })
 
