@@ -66,14 +66,14 @@
     "passport": "^0.7.0",
     "passport-oauth2": "^1.8.0",
     "playwright": "1.60.0",
-    "redis": "6.0.0",
+    "redis": "6.1.0",
     "superagent": "^10.3.0",
     "zod": "^4.3.6"
   },
   "devDependencies": {
     "@jgoz/esbuild-plugin-typecheck": "^4.0.4",
     "@ministryofjustice/eslint-config-hmpps": "1.0.3",
-    "@ministryofjustice/hmpps-npm-script-allowlist": "0.0.3",
+    "@ministryofjustice/hmpps-npm-script-allowlist": "0.0.6",
     "@ministryofjustice/hmpps-precommit-hooks": "3.0.1",
     "@tsconfig/node24": "^24.0.4",
     "@types/bunyan": "^1.8.11",
