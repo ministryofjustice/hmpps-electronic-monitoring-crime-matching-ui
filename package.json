@@ -121,7 +121,7 @@
   },
   "overrides": {
     "@opentelemetry/core": "2.9.0",
-    "diff": "8.0.4",
+    "diff": "9.0.0",
     "serialize-javascript": "7.0.7",
     "minimatch@3.1.5": {
       "brace-expansion": "1.1.18"
