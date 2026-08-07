@@ -45,4 +45,5 @@ export default function nunjucksSetup(app: express.Express): void {
   njkEnv.addFilter('assetMap', (url: string) => assetManifest[url] || url)
   njkEnv.addFilter('formatDateTime', formatDateTime)
   njkEnv.addGlobal('pagination', pagination)
+  njkEnv.addGlobal('currentYear', () => new Date().getFullYear())
 }
