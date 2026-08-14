@@ -126,8 +126,7 @@ type StubUpdateHubManagerSignatureErrorOptions = {
 }
 
 type StubUpdateHubManagerSignaturesOptions =
-  | StubUpdateHubManagerSignature200Options
-  | StubUpdateHubManagerSignatureErrorOptions
+  StubUpdateHubManagerSignature200Options | StubUpdateHubManagerSignatureErrorOptions
 
 const stubUpdateHubManagerSignature = (options: StubUpdateHubManagerSignaturesOptions) => {
   return stubFor({

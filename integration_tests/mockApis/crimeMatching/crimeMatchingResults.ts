@@ -38,8 +38,7 @@ type StubGetCrimeMatchingResultsErrorOptions = {
 }
 
 type StubGetCrimeMatchingResultsOptions =
-  | StubGetCrimeMatchingResults200Options
-  | StubGetCrimeMatchingResultsErrorOptions
+  StubGetCrimeMatchingResults200Options | StubGetCrimeMatchingResultsErrorOptions
 
 const defaultGetCrimeMatchingResultsOptions: StubGetCrimeMatchingResultsOptions = {
   status: 200,

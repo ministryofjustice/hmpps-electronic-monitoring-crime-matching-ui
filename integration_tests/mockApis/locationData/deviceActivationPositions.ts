@@ -30,8 +30,7 @@ type StubGetDeviceActivationPositions404Options = {
 }
 
 type StubGetDeviceActivationPositionsOptions =
-  | StubGetDeviceActivationPositions200Options
-  | StubGetDeviceActivationPositions404Options
+  StubGetDeviceActivationPositions200Options | StubGetDeviceActivationPositions404Options
 
 const defaultGetDeviceActivationPositionsOptions: StubGetDeviceActivationPositionsOptions = {
   status: 200,
