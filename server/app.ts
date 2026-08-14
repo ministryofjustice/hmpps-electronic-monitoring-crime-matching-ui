@@ -2,7 +2,7 @@ import express from 'express'
 import multer from 'multer'
 import type { HTTPError } from 'superagent'
 import createError from 'http-errors'
-import pdsComponents from '@ministryofjustice/hmpps-probation-frontend-components'
+import pdsComponents from '@ministryofjustice/hmpps-probation-frontend-components/dist/src'
 import {
   CacheClient,
   emOrdnanceSurveyAuth,
