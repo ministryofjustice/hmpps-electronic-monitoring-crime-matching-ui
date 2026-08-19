@@ -13,7 +13,7 @@ export default class CrimeSearchController {
 
   private getQueryString = (crimeReference: string | null): string => {
     const searchParams = new URLSearchParams({
-      ...(crimeReference != null && { crimeReference }),
+      ...(crimeReference != null && { crimeReference: crimeReference.trim() }),
     })
 
     return searchParams.toString()
