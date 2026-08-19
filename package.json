@@ -30,13 +30,13 @@
     "npm": "^11"
   },
   "dependencies": {
-    "@aws-sdk/client-sqs": "^3.1105.0",
+    "@aws-sdk/client-sqs": "^3.1108.0",
     "@ministryofjustice/frontend": "^10.0.1",
     "@ministryofjustice/hmpps-auth-clients": "3.0.0",
     "@ministryofjustice/hmpps-azure-telemetry": "1.0.2",
     "@ministryofjustice/hmpps-electronic-monitoring-components": "0.4.1",
     "@ministryofjustice/hmpps-monitoring": "2.1.0",
-    "@ministryofjustice/hmpps-probation-frontend-components": "^1.0.2",
+    "@ministryofjustice/hmpps-probation-frontend-components": "1.0.2",
     "@ministryofjustice/hmpps-rest-client": "2.2.0",
     "@types/archiver": "8.0.0",
     "@types/qs": "^6.15.1",
@@ -66,7 +66,7 @@
     "passport": "^0.7.0",
     "passport-oauth2": "^1.8.0",
     "playwright": "1.62.1",
-    "redis": "6.2.0",
+    "redis": "6.2.1",
     "superagent": "^10.3.0",
     "zod": "^4.4.3"
   },
@@ -95,10 +95,10 @@
     "audit-ci": "^7.1.0",
     "aws-sdk-client-mock": "^4.1.0",
     "concurrently": "^10.0.4",
-    "cypress": "^15.20.0",
+    "cypress": "^15.20.1",
     "cypress-multi-reporters": "^2.0.5",
     "del": "8.0.1",
-    "esbuild": "0.28.1",
+    "esbuild": "0.28.2",
     "esbuild-plugin-clean": "^1.0.1",
     "esbuild-plugin-copy": "^2.1.1",
     "esbuild-plugin-manifest": "^1.0.5",
@@ -122,7 +122,7 @@
   "overrides": {
     "@opentelemetry/core": "2.10.0",
     "diff": "9.0.0",
-    "serialize-javascript": "7.0.7",
+    "serialize-javascript": "7.1.0",
     "minimatch@3.1.5": {
       "brace-expansion": "5.0.9"
     },
