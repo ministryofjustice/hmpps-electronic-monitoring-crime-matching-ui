@@ -104,6 +104,29 @@ describe('CrimeSearchController', () => {
       expect(res.redirect).toHaveBeenCalledWith(303, '/proximity-alert?crimeReference=A%26B%3DC')
       expect(next).not.toHaveBeenCalled()
     })
+
+    it('should remove whitespace from the search term', async () => {
+      // Given
+      const req = createMockRequest({ body: { crimeReference: ' abc ' } })
+      const res = createMockResponse()
+      const next = jest.fn()
+      const service = new CrimeService(mockRestClient)
+      const controller = new CrimeSearchController(auditService, service)
+
+      // When
+      await controller.search(req, res, next)
+
+      // Then
+      expect(auditService.logSearch).toHaveBeenCalledWith(Page.PROXIMITY_ALERT_CRIME_VERSIONS, {
+        who: 'fakeUserName',
+        correlationId: req.id,
+        details: {
+          query: { crimeReference: ' abc ' },
+        },
+      })
+      expect(res.redirect).toHaveBeenCalledWith(303, '/proximity-alert?crimeReference=abc')
+      expect(next).not.toHaveBeenCalled()
+    })
   })
 
   describe('view', () => {
@@ -150,6 +173,32 @@ describe('CrimeSearchController', () => {
         crimeReference: null,
         crimes: [],
         paginationHrefPrefix: '',
+        pageCount: 1,
+        pageNumber: 1,
+        validationErrors: {},
+      })
+      expect(next).not.toHaveBeenCalled()
+    })
+
+    it('should remove whitespace before querying the api', async () => {
+      // Given
+      const req = createMockRequest({ query: { crimeReference: ' abc ' } })
+      const res = createMockResponse()
+      const next = jest.fn()
+      const service = new CrimeService(mockRestClient)
+      const controller = new CrimeSearchController(auditService, service)
+
+      mockRestClient.getCrimeVersions.mockResolvedValue({ data: [], pageCount: 1, pageNumber: 0, pageSize: 0 })
+
+      // When
+      await controller.view(req, res, next)
+
+      // Then
+      expect(mockRestClient.getCrimeVersions).toHaveBeenCalledWith(expectedAuthOptions, 'abc', undefined)
+      expect(res.render).toHaveBeenCalledWith('pages/proximityAlert/crimeSearch', {
+        crimeReference: ' abc ',
+        crimes: [],
+        paginationHrefPrefix: 'crimeReference=abc',
         pageCount: 1,
         pageNumber: 1,
         validationErrors: {},

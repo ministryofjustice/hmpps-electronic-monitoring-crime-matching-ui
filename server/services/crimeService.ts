@@ -57,7 +57,7 @@ class CrimeService {
 
     const response = await this.crimeMatchingApiClient.getCrimeVersions(
       asSystem(username),
-      crimeReference,
+      crimeReference.trim(),
       parsedPageNumber,
     )
 
