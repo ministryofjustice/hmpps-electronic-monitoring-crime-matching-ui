@@ -109,10 +109,6 @@ export const noBottomBorder = () => ({
 
 export const sectionHeaderShading = () => ({ type: ShadingType.CLEAR, color: 'auto', fill: 'E6E6E6' }) as const
 
-export const sectionHeaderShadingGreen = () => {
-  return { type: ShadingType.CLEAR, color: 'auto', fill: '9ae098' } as const
-}
-
 export const defaultCellProps = () =>
   ({
     margins: CELL_PADDING_WORD_UNITS,
@@ -141,17 +137,14 @@ export const rowNoSplitAcrossPages = (
     children,
   })
 
-export const sectionHeaderRow = (
-  text: string,
-  opts?: { columnSpan?: number; center?: boolean; useGreen?: boolean },
-): TableRow => {
+export const sectionHeaderRow = (text: string, opts?: { columnSpan?: number; center?: boolean }): TableRow => {
   const borders = strongBlackBorders()
 
   return rowNoSplitAcrossPages([
     new TableCell({
       ...defaultCellProps(),
       borders,
-      shading: opts?.useGreen ? sectionHeaderShadingGreen() : sectionHeaderShading(),
+      shading: sectionHeaderShading(),
       columnSpan: opts?.columnSpan ?? 2,
       children: [cellParagraph(text, { bold: true, alignment: opts?.center ? AlignmentType.CENTER : undefined })],
     }),

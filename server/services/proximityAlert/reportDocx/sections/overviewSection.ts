@@ -92,7 +92,7 @@ export const personOnlyTable = (args: { personTitle: string; personRows: Array<[
     layout: TableLayoutType.FIXED,
     borders,
     rows: [
-      sectionHeaderRow(personTitle, { useGreen: true }),
+      sectionHeaderRow(personTitle),
       ...personRows.map(([key, value], rowIndex) =>
         labelValueRow(key, value, {
           keyWidthPct: personKeyWidthPct,
@@ -133,7 +133,7 @@ export const resultSummaryTable = (matchedCount: number): Table => {
     layout: TableLayoutType.FIXED,
     borders,
     rows: [
-      sectionHeaderRow(resultSummary.heading, { useGreen: true }),
+      sectionHeaderRow(resultSummary.heading),
       labelValueRow(resultSummary.matchedCountLabel, String(matchedCount), {
         keyWidthPct: 50,
         valueWidthPct: 50,
@@ -167,7 +167,7 @@ export const requestSummaryTable = (report: ProximityAlertReportData): Table => 
     layout: TableLayoutType.FIXED,
     borders,
     rows: [
-      sectionHeaderRow(requestSummary.heading, { useGreen: true }),
+      sectionHeaderRow(requestSummary.heading),
       ...rows.map(([key, value]) =>
         labelValueRow(key, value, { keyWidthPct: 50, valueWidthPct: 50, valueAlign: AlignmentType.CENTER }),
       ),
