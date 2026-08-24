@@ -5,6 +5,8 @@ import {
   defaultCellProps,
   cellParagraph,
   defaultHeaderCellProps,
+  fullWidthDxa,
+  pctToDxa,
   rowNoSplitAcrossPages,
   sectionHeaderShading,
   strongBlackBorders,
@@ -63,7 +65,7 @@ const exhibitPositionsSection = (wearer: ProximityAlertReportDeviceWearer): Tabl
       ...defaultHeaderCellProps(),
       borders,
       shading: { type: ShadingType.CLEAR, color: 'auto', fill: '4472C4' },
-      width: { size: widthPct, type: WidthType.PERCENTAGE },
+      width: { size: pctToDxa(widthPct), type: WidthType.DXA },
       children: [
         cellParagraph(text, {
           bold: true,
@@ -84,14 +86,16 @@ const exhibitPositionsSection = (wearer: ProximityAlertReportDeviceWearer): Tabl
       children: [cellParagraph(text, { alignment: AlignmentType.CENTER, size: 18 })],
     })
 
+  const columnWidthPercentages = [13, 15, 13, 14, 18, 13, 14]
+
   const headerRow = rowNoSplitAcrossPages([
-    headerCell(exhibitPositions.columns[0], 13),
-    headerCell(exhibitPositions.columns[1], 15),
-    headerCell(exhibitPositions.columns[2], 13),
-    headerCell(exhibitPositions.columns[3], 14),
-    headerCell(exhibitPositions.columns[4], 18),
-    headerCell(exhibitPositions.columns[5], 13),
-    headerCell(exhibitPositions.columns[6], 14),
+    headerCell(exhibitPositions.columns[0], columnWidthPercentages[0]),
+    headerCell(exhibitPositions.columns[1], columnWidthPercentages[1]),
+    headerCell(exhibitPositions.columns[2], columnWidthPercentages[2]),
+    headerCell(exhibitPositions.columns[3], columnWidthPercentages[3]),
+    headerCell(exhibitPositions.columns[4], columnWidthPercentages[4]),
+    headerCell(exhibitPositions.columns[5], columnWidthPercentages[5]),
+    headerCell(exhibitPositions.columns[6], columnWidthPercentages[6]),
   ])
 
   const dataRows = wearer.positions.map((position, index) => {
@@ -109,7 +113,8 @@ const exhibitPositionsSection = (wearer: ProximityAlertReportDeviceWearer): Tabl
   })
 
   return new Table({
-    width: { size: 100, type: WidthType.PERCENTAGE },
+    width: fullWidthDxa(),
+    columnWidths: columnWidthPercentages.map(pct => pctToDxa(pct)),
     layout: TableLayoutType.FIXED,
     borders,
     rows: [headingRow, descriptionRow, headerRow, ...dataRows],

@@ -5,11 +5,11 @@ import {
   defaultCellProps,
   cellParagraph,
   labelValueRow,
+  pctToDxa,
   rowNoSplitAcrossPages,
   sectionHeaderRow,
   sectionHeaderShading,
   spacer,
-  noBorder,
   strongBlackBorders,
 } from '../docxComponents'
 import PROXIMITY_ALERT_REPORT_CONTENT from '../../../../constants/proximityAlert/reportContent'
@@ -36,6 +36,7 @@ export const topSummaryTable = (report: ProximityAlertReportData): Table => {
 
   return new Table({
     width: { size: USABLE_PAGE_WIDTH_WORD_UNITS, type: WidthType.DXA },
+    columnWidths: [USABLE_PAGE_WIDTH_WORD_UNITS],
     layout: TableLayoutType.FIXED,
     borders,
     rows: [
@@ -81,8 +82,13 @@ export const personOnlyTable = (args: { personTitle: string; personRows: Array<[
   const personKeyWidthPct = 33
   const personValueWidthPct = 67
 
-  const innerTable = new Table({
+  // Returned as a single, flat table (not nested inside a wrapping outer table) so its layout
+  // matches the other overview tables (topSummaryTable, resultSummaryTable, requestSummaryTable).
+  // Some stricter DOCX readers (e.g. Google Docs) apply a slight positioning offset to nested
+  // tables, which made this table appear misaligned relative to its unwrapped neighbours.
+  return new Table({
     width: { size: USABLE_PAGE_WIDTH_WORD_UNITS, type: WidthType.DXA },
+    columnWidths: [pctToDxa(personKeyWidthPct), pctToDxa(personValueWidthPct)],
     layout: TableLayoutType.FIXED,
     borders,
     rows: [
@@ -94,31 +100,6 @@ export const personOnlyTable = (args: { personTitle: string; personRows: Array<[
           valueBold: rowIndex === 0,
         }),
       ),
-    ],
-  })
-
-  return new Table({
-    width: { size: USABLE_PAGE_WIDTH_WORD_UNITS, type: WidthType.DXA },
-    layout: TableLayoutType.FIXED,
-    borders,
-    rows: [
-      rowNoSplitAcrossPages([
-        new TableCell({
-          margins: {
-            top: 0,
-            bottom: 0,
-            left: 0,
-            right: 0,
-          },
-          borders: {
-            top: noBorder(),
-            bottom: noBorder(),
-            left: noBorder(),
-            right: noBorder(),
-          },
-          children: [innerTable],
-        }),
-      ]),
     ],
   })
 }
@@ -148,6 +129,7 @@ export const resultSummaryTable = (matchedCount: number): Table => {
 
   return new Table({
     width: { size: USABLE_PAGE_WIDTH_WORD_UNITS, type: WidthType.DXA },
+    columnWidths: [pctToDxa(50), pctToDxa(50)],
     layout: TableLayoutType.FIXED,
     borders,
     rows: [
@@ -181,6 +163,7 @@ export const requestSummaryTable = (report: ProximityAlertReportData): Table => 
 
   return new Table({
     width: { size: USABLE_PAGE_WIDTH_WORD_UNITS, type: WidthType.DXA },
+    columnWidths: [pctToDxa(50), pctToDxa(50)],
     layout: TableLayoutType.FIXED,
     borders,
     rows: [

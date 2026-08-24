@@ -47,6 +47,7 @@ export default class ProximityAlertReportDocxService {
     children.push(...personSummarySections(report))
 
     children.push(resultSummaryTable(report.matchedDeviceWearers.length))
+    children.push(...spacer(1))
     children.push(requestSummaryTable(report))
 
     children.push(new Paragraph({ children: [new PageBreak()] }))

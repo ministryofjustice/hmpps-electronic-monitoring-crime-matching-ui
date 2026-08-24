@@ -9,7 +9,9 @@ import {
   bulletParagraph,
   defaultCellProps,
   cellParagraph,
+  fullWidthDxa,
   paragraph,
+  pctToDxa,
   rowNoSplitAcrossPages,
   sectionHeaderShading,
   spacer,
@@ -82,7 +84,7 @@ const witnessStatementTable = async (args: {
     new TableCell({
       ...defaultCellProps(),
       borders,
-      width: { size: 50, type: WidthType.PERCENTAGE },
+      width: { size: pctToDxa(50), type: WidthType.DXA },
       children: [
         new Paragraph({
           children: [new TextRun({ text: `${witnessStatement.statementOfLabel}: ${statementOf}`, bold: true })],
@@ -93,7 +95,7 @@ const witnessStatementTable = async (args: {
     new TableCell({
       ...defaultCellProps(),
       borders,
-      width: { size: 50, type: WidthType.PERCENTAGE },
+      width: { size: pctToDxa(50), type: WidthType.DXA },
       children: [
         new Paragraph({
           children: [new TextRun({ text: `${witnessStatement.occupationLabel}: ${occupation}`, bold: true })],
@@ -191,7 +193,8 @@ const witnessStatementTable = async (args: {
   ])
 
   const witnessMiniTable = new Table({
-    width: { size: 100, type: WidthType.PERCENTAGE },
+    width: fullWidthDxa(),
+    columnWidths: [pctToDxa(33), pctToDxa(34), pctToDxa(33)],
     layout: TableLayoutType.FIXED,
     borders,
     rows: [
@@ -200,7 +203,7 @@ const witnessStatementTable = async (args: {
           ...defaultCellProps(),
           borders,
           shading: sectionHeaderShading(),
-          width: { size: 33, type: WidthType.PERCENTAGE },
+          width: { size: pctToDxa(33), type: WidthType.DXA },
           children: [
             cellParagraph(witnessStatement.miniTableHeaders.personName, {
               bold: true,
@@ -212,7 +215,7 @@ const witnessStatementTable = async (args: {
           ...defaultCellProps(),
           borders,
           shading: sectionHeaderShading(),
-          width: { size: 34, type: WidthType.PERCENTAGE },
+          width: { size: pctToDxa(34), type: WidthType.DXA },
           children: [
             cellParagraph(witnessStatement.miniTableHeaders.firstLocationDateTime, {
               bold: true,
@@ -224,7 +227,7 @@ const witnessStatementTable = async (args: {
           ...defaultCellProps(),
           borders,
           shading: sectionHeaderShading(),
-          width: { size: 33, type: WidthType.PERCENTAGE },
+          width: { size: pctToDxa(33), type: WidthType.DXA },
           children: [
             cellParagraph(witnessStatement.miniTableHeaders.lastLocationDateTime, {
               bold: true,
@@ -317,7 +320,8 @@ const witnessStatementTable = async (args: {
   ])
 
   return new Table({
-    width: { size: 100, type: WidthType.PERCENTAGE },
+    width: fullWidthDxa(),
+    columnWidths: [pctToDxa(50), pctToDxa(50)],
     layout: TableLayoutType.FIXED,
     borders,
     rows: [

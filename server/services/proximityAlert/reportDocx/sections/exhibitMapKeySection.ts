@@ -1,14 +1,16 @@
 import { readFileSync } from 'fs'
 import path from 'path'
-import { Paragraph, Table, TableCell, TableLayoutType, TextRun, WidthType } from 'docx'
+import { Paragraph, Table, TableCell, TableLayoutType, TextRun } from 'docx'
 import {
   defaultCellProps,
   cellParagraph,
+  fullWidthDxa,
   noBottomBorder,
   rowNoSplitAcrossPages,
   sectionHeaderShading,
   strongBlackBorders,
 } from '../docxComponents'
+import { USABLE_PAGE_WIDTH_WORD_UNITS } from '../constants'
 import PROXIMITY_ALERT_REPORT_CONTENT from '../../../../constants/proximityAlert/reportContent'
 import { imageParagraph } from '../imageHelpers'
 
@@ -24,7 +26,8 @@ const exhibitMapKeySection = (): Table => {
   const { exhibitMapKey } = PROXIMITY_ALERT_REPORT_CONTENT
 
   return new Table({
-    width: { size: 100, type: WidthType.PERCENTAGE },
+    width: fullWidthDxa(),
+    columnWidths: Array(7).fill(Math.round(USABLE_PAGE_WIDTH_WORD_UNITS / 7)),
     layout: TableLayoutType.FIXED,
     borders,
     rows: [
