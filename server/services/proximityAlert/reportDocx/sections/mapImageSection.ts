@@ -11,11 +11,13 @@ import {
 } from 'docx'
 import type { ProximityAlertReportData } from '../../../../presenters/proximityAlertReportData'
 import { formatDateTime } from '../../../../utils/date'
-import { USABLE_PAGE_HEIGHT_WORD_UNITS } from '../constants'
+import { USABLE_PAGE_HEIGHT_WORD_UNITS, USABLE_PAGE_WIDTH_WORD_UNITS } from '../constants'
 import {
   defaultCellProps,
   cellParagraph,
+  fullWidthDxa,
   noBorder,
+  pctToDxa,
   rowNoSplitAcrossPages,
   sectionHeaderShading,
   strongBlackBorders,
@@ -41,9 +43,11 @@ const detailsOfAllegationTable = (report: ProximityAlertReportData): Table => {
   ]
 
   const additionalInfoRowSpan = detailRows.length
+  const columnWidthPercentages = [22, 33, 45]
 
   return new Table({
-    width: { size: 100, type: WidthType.PERCENTAGE },
+    width: fullWidthDxa(),
+    columnWidths: columnWidthPercentages.map(pct => pctToDxa(pct)),
     layout: TableLayoutType.FIXED,
     borders,
     rows: [
@@ -66,19 +70,19 @@ const detailsOfAllegationTable = (report: ProximityAlertReportData): Table => {
         new TableCell({
           ...defaultCellProps(),
           borders,
-          width: { size: 22, type: WidthType.PERCENTAGE },
+          width: { size: pctToDxa(22), type: WidthType.DXA },
           children: [cellParagraph(detailRows[0][0])],
         }),
         new TableCell({
           ...defaultCellProps(),
           borders,
-          width: { size: 33, type: WidthType.PERCENTAGE },
+          width: { size: pctToDxa(33), type: WidthType.DXA },
           children: [cellParagraph(detailRows[0][1], { alignment: AlignmentType.CENTER })],
         }),
         new TableCell({
           ...defaultCellProps(),
           borders: { ...borders, bottom: borders.bottom },
-          width: { size: 45, type: WidthType.PERCENTAGE },
+          width: { size: pctToDxa(45), type: WidthType.DXA },
           rowSpan: additionalInfoRowSpan,
           children: [
             cellParagraph(detailsOfAllegationContent.additionalInformation, {
@@ -97,13 +101,13 @@ const detailsOfAllegationTable = (report: ProximityAlertReportData): Table => {
           new TableCell({
             ...defaultCellProps(),
             borders,
-            width: { size: 22, type: WidthType.PERCENTAGE },
+            width: { size: pctToDxa(22), type: WidthType.DXA },
             children: [cellParagraph(label)],
           }),
           new TableCell({
             ...defaultCellProps(),
             borders,
-            width: { size: 33, type: WidthType.PERCENTAGE },
+            width: { size: pctToDxa(33), type: WidthType.DXA },
             children: String(value)
               .split('\n')
               .map(line => cellParagraph(line, { alignment: AlignmentType.CENTER })),
@@ -181,7 +185,8 @@ export const mapImagePageTable = (args: {
   )
 
   return new Table({
-    width: { size: 100, type: WidthType.PERCENTAGE },
+    width: fullWidthDxa(),
+    columnWidths: [USABLE_PAGE_WIDTH_WORD_UNITS],
     layout: TableLayoutType.FIXED,
     borders,
     rows,

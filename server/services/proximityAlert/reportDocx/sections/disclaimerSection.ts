@@ -1,8 +1,10 @@
-import { Paragraph, Table, TableCell, TableLayoutType, TextRun, WidthType } from 'docx'
+import { Paragraph, Table, TableCell, TableLayoutType, TextRun } from 'docx'
 import {
   bulletParagraph,
   defaultCellProps,
   cellParagraph,
+  fullWidthColumnWidths,
+  fullWidthDxa,
   rowNoSplitAcrossPages,
   sectionHeaderShading,
   strongBlackBorders,
@@ -14,7 +16,8 @@ const disclaimerTable = (): Table => {
   const { disclaimer } = PROXIMITY_ALERT_REPORT_CONTENT
 
   return new Table({
-    width: { size: 100, type: WidthType.PERCENTAGE },
+    width: fullWidthDxa(),
+    columnWidths: [...fullWidthColumnWidths()],
     layout: TableLayoutType.FIXED,
     borders,
     rows: [
