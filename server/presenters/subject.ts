@@ -23,7 +23,7 @@ export default function presentPositionsWithDeviceInfo(
     // Subject information
     subjectName: deviceWearer.name,
     subjectNomisId: deviceWearer.nomisId,
-    subjectDeviceId: deviceActivation.deviceId,
+    subjectDeviceId: deviceActivation.deviceSerialNumber,
     subjectDateOfBirth: formatDateTime(deviceWearer.dateOfBirth, 'DD/MM/YYYY'),
     subjectAddress: deviceWearer.address,
     subjectTagStartDate: formatDateTime(deviceActivation.deviceActivationDate, 'DD/MM/YYYY'),

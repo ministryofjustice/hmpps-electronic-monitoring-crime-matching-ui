@@ -66,6 +66,7 @@ context('Location Data', () => {
                   deviceActivationId: 123456,
                   deviceId: 123456,
                   deviceName: '123456',
+                  deviceSerialNumber: 987654321,
                   personId: '1',
                   deviceActivationDate: '2024-12-01T00:00:00.000Z',
                   deviceDeactivationDate: null,
@@ -87,6 +88,7 @@ context('Location Data', () => {
                   deviceActivationId: 123456,
                   deviceId: 654321,
                   deviceName: '654321',
+                  deviceSerialNumber: 123456789,
                   personId: '2',
                   deviceActivationDate: '2024-12-01T00:00:00.000Z',
                   deviceDeactivationDate: '2024-12-01T00:00:00.000Z',
@@ -123,8 +125,8 @@ context('Location Data', () => {
       ])
 
       page.dataTable.shouldHaveRows([
-        ['', 'Nomis 1', 'John', '01/12/2000', '123 Street', '123456', '01/12/2024 00:00', ''],
-        ['', 'Nomis 2', 'Lee', '01/12/2000', '456 Avenue', '654321', '01/12/2024 00:00', '01/12/2024 00:00'],
+        ['', 'Nomis 1', 'John', '01/12/2000', '123 Street', '987654321', '01/12/2024 00:00', ''],
+        ['', 'Nomis 2', 'Lee', '01/12/2000', '456 Avenue', '123456789', '01/12/2024 00:00', '01/12/2024 00:00'],
       ])
       page.dataTable.shouldNotHavePagination()
       page.form.personsSearchField.shouldHaveValue('name')
@@ -167,6 +169,7 @@ context('Location Data', () => {
                   deviceActivationId: 123456,
                   deviceId: 123456,
                   deviceName: '123456',
+                  deviceSerialNumber: 987654321,
                   personId: '1',
                   deviceActivationDate: '2024-12-01T00:00:00.000Z',
                   deviceDeactivationDate: null,
@@ -200,6 +203,7 @@ context('Location Data', () => {
                   deviceActivationId: 123456,
                   deviceId: 654321,
                   deviceName: '654321',
+                  deviceSerialNumber: 123456789,
                   personId: '2',
                   deviceActivationDate: '2024-12-01T00:00:00.000Z',
                   deviceDeactivationDate: '2024-12-01T00:00:00.000Z',
@@ -237,7 +241,7 @@ context('Location Data', () => {
         'Tag Period End',
       ])
       page.dataTable.shouldHaveRows([
-        ['', 'Nomis 1', 'John', '01/12/2000', '123 Street', '123456', '01/12/2024 00:00', ''],
+        ['', 'Nomis 1', 'John', '01/12/2000', '123 Street', '987654321', '01/12/2024 00:00', ''],
       ])
       page.dataTable.shouldHavePagination()
       page.dataTable.pagination.shouldHaveCurrentPage('1')
@@ -254,7 +258,7 @@ context('Location Data', () => {
       page = Page.verifyOnPage(PersonsPage)
       page.dataTable.shouldHaveResults()
       page.dataTable.shouldHaveRows([
-        ['', 'Nomis 2', 'Lee', '01/12/2000', '456 Avenue', '654321', '01/12/2024 00:00', '01/12/2024 00:00'],
+        ['', 'Nomis 2', 'Lee', '01/12/2000', '456 Avenue', '123456789', '01/12/2024 00:00', '01/12/2024 00:00'],
       ])
       page.dataTable.shouldHavePagination()
       page.dataTable.pagination.shouldHaveCurrentPage('2')
@@ -293,6 +297,7 @@ context('Location Data', () => {
                   deviceActivationId: 123456,
                   deviceId: 123456,
                   deviceName: '123456',
+                  deviceSerialNumber: 987654321,
                   personId: '1',
                   deviceActivationDate: '2024-12-01T00:00:00.000Z',
                   deviceDeactivationDate: null,
@@ -314,6 +319,7 @@ context('Location Data', () => {
                   deviceActivationId: 123456,
                   deviceId: 654321,
                   deviceName: '654321',
+                  deviceSerialNumber: 987654321,
                   personId: '2',
                   deviceActivationDate: '2024-12-01T00:00:00.000Z',
                   deviceDeactivationDate: '2024-12-01T00:00:00.000Z',
@@ -350,8 +356,8 @@ context('Location Data', () => {
       ])
 
       page.dataTable.shouldHaveRows([
-        ['', 'Nomis 1', 'John', '01/12/2000', '123 Street', '123456', '01/12/2024 00:00', ''],
-        ['', 'Nomis 2', 'Lee', '01/12/2000', '456 Avenue', '654321', '01/12/2024 00:00', '01/12/2024 00:00'],
+        ['', 'Nomis 1', 'John', '01/12/2000', '123 Street', '987654321', '01/12/2024 00:00', ''],
+        ['', 'Nomis 2', 'Lee', '01/12/2000', '456 Avenue', '987654321', '01/12/2024 00:00', '01/12/2024 00:00'],
       ])
       page.dataTable.shouldNotHavePagination()
       page.form.personsSearchField.shouldHaveValue('deviceId')

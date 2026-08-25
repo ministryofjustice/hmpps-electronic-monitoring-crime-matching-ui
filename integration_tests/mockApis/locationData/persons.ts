@@ -18,6 +18,7 @@ type StubGetPersons200Options = {
         deviceActivationId: number
         deviceId: number
         deviceName: string
+        deviceSerialNumber: number
         personId: string
         deviceActivationDate: string
         deviceDeactivationDate: string | null
