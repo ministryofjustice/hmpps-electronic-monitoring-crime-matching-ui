@@ -5,7 +5,6 @@ import {
   defaultCellProps,
   cellParagraph,
   fullWidthDxa,
-  noBottomBorder,
   rowNoSplitAcrossPages,
   sectionHeaderShading,
   strongBlackBorders,
@@ -48,7 +47,7 @@ const exhibitMapKeySection = (): Table => {
       rowNoSplitAcrossPages([
         new TableCell({
           ...defaultCellProps(),
-          borders: noBottomBorder(),
+          borders,
           columnSpan: 7,
           children: [
             new Paragraph({

@@ -118,6 +118,7 @@ export default class ProximityAlertReportDocxService {
         sections.push(new Paragraph({ children: [new PageBreak()] }))
         sections.push(exhibitMapKeySection())
 
+        sections.push(new Paragraph({ children: [new PageBreak()] }))
         sections.push(exhibitPositionsSection(wearer))
 
         return sections
