@@ -4,7 +4,7 @@ const deviceActivationSchema = z.object({
   deviceActivationId: z.number(),
   deviceId: z.number(),
   deviceName: z.string(),
-  deviceSerialNumber: z.number(),
+  deviceSerialNumber: z.string(),
   personId: z.string(),
   deviceActivationDate: z.string(),
   deviceDeactivationDate: z.string().nullable(),

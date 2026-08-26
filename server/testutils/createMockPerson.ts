@@ -14,7 +14,7 @@ const createMockPerson = (): Person => ({
       deviceActivationId: 123456,
       deviceId: 123456,
       deviceName: '123456',
-      deviceSerialNumber: 987654321,
+      deviceSerialNumber: '987654321',
       personId: '654321',
       deviceActivationDate: '2024-12-01T00:00:00.000Z',
       deviceDeactivationDate: null,
