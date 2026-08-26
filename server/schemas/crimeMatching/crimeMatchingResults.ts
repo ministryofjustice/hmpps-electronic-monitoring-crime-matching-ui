@@ -13,7 +13,7 @@ const getCrimeMatchingResultsDtoSchema = z.object({
       crimeLongitude: z.number(),
       crimeText: z.string(),
       deviceId: z.number(),
-      deviceSerialNumber: z.number(),
+      deviceSerialNumber: z.string(),
       deviceName: z.string(),
       subjectId: z.string(),
       subjectName: z.string(),

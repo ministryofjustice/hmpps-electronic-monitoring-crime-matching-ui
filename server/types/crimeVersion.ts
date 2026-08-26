@@ -29,7 +29,7 @@ type DeviceWearer = {
   address: string
   dateOfBirth: string
   deviceId: number
-  deviceSerialNumber: number
+  deviceSerialNumber: string
   name: string
   nomisId: string
   pncRef: string

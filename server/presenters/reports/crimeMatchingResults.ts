@@ -34,7 +34,7 @@ const getRow = (crimeMatchingResult: CrimeMatchingResult): Array<string> => {
     crimeMatchingResult.crimeLatitude.toString(),
     crimeMatchingResult.crimeLongitude.toString(),
     crimeMatchingResult.crimeText,
-    crimeMatchingResult.deviceSerialNumber.toString(),
+    crimeMatchingResult.deviceSerialNumber,
     crimeMatchingResult.deviceName,
     crimeMatchingResult.subjectId,
     crimeMatchingResult.subjectName,

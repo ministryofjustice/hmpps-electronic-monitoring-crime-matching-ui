@@ -567,7 +567,7 @@ describe('PoliceDataDashboardController', () => {
             crimeLongitude: 0.0,
             crimeText: 'Description',
             deviceId: 1,
-            deviceSerialNumber: 123456789,
+            deviceSerialNumber: '123456789',
             deviceName: 'deviceName',
             subjectId: '123',
             subjectName: 'John Smith',
