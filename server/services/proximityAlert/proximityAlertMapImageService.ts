@@ -4,23 +4,17 @@ import {
   type CapturedMapStateValue,
 } from '../../schemas/proximityAlert/exportProximityAlert'
 
-type ExportMapFitMode = 'none' | 'selected-device-wearers' | 'focused-device-wearer'
-
 type ExportMapRenderConfig = {
   selectedDeviceIds?: number[]
   selectedTrackDeviceIds?: number[]
-  focusedDeviceId?: number
   showConfidenceCircles: boolean
   showLocationNumbering: boolean
-  fitMode: ExportMapFitMode
-  capturedMapState?: CapturedMapStateValue
+  capturedMapState: CapturedMapStateValue
 }
 
 export type ProximityAlertReportImages = {
-  overviewUserViewJpg: Buffer
-  overviewFittedToDeviceWearersJpg: Buffer
-  deviceWearerWithTracksJpgByDeviceId: Record<string, Buffer>
-  deviceWearerFittedWithoutTracksJpgByDeviceId: Record<string, Buffer>
+  overviewJpg: Buffer
+  deviceWearerJpgByDeviceId: Record<string, Buffer>
 }
 
 export type RenderProximityAlertImagesArgs = {
@@ -100,8 +94,8 @@ const pageUrlForHeadless = ({
   return url.toString()
 }
 
-// Replays the user's submitted browser view using captured map state.
-const overviewUserViewConfig = ({
+// Replays the user's submitted browser view (viewport and track state) showing all selected device wearers.
+const overviewConfig = ({
   selectedDeviceIds,
   selectedTrackDeviceIds,
   capturedMapState,
@@ -118,37 +112,29 @@ const overviewUserViewConfig = ({
   selectedTrackDeviceIds,
   showConfidenceCircles,
   showLocationNumbering,
-  fitMode: 'none',
   capturedMapState,
 })
 
-// Shows all selected device wearers without tracks, fitted to the cluster.
-const overviewFittedToDeviceWearersConfig = (selectedDeviceIds: number[]): ExportMapRenderConfig => ({
-  selectedDeviceIds,
-  selectedTrackDeviceIds: [],
-  showConfidenceCircles: true,
-  showLocationNumbering: true,
-  fitMode: 'selected-device-wearers',
-})
-
-// Shows a single device wearer with tracks visible.
-const deviceWearerWithTracksConfig = (deviceId: number): ExportMapRenderConfig => ({
+// Shows a single device wearer, using the same captured viewport as the overview. Tracks are only
+// shown for this device wearer if they were part of the overview's track state.
+const deviceWearerConfig = ({
+  deviceId,
+  selectedTrackDeviceIds,
+  capturedMapState,
+  showConfidenceCircles,
+  showLocationNumbering,
+}: {
+  deviceId: number
+  selectedTrackDeviceIds: number[]
+  capturedMapState: CapturedMapStateValue
+  showConfidenceCircles: boolean
+  showLocationNumbering: boolean
+}): ExportMapRenderConfig => ({
   selectedDeviceIds: [deviceId],
-  selectedTrackDeviceIds: [deviceId],
-  focusedDeviceId: deviceId,
-  showConfidenceCircles: true,
-  showLocationNumbering: true,
-  fitMode: 'none',
-})
-
-// Shows a single device wearer without tracks, fitted to the device.
-const deviceWearerFittedWithoutTracksConfig = (deviceId: number): ExportMapRenderConfig => ({
-  selectedDeviceIds: [deviceId],
-  selectedTrackDeviceIds: [],
-  focusedDeviceId: deviceId,
-  showConfidenceCircles: true,
-  showLocationNumbering: true,
-  fitMode: 'focused-device-wearer',
+  selectedTrackDeviceIds: selectedTrackDeviceIds.includes(deviceId) ? [deviceId] : [],
+  showConfidenceCircles,
+  showLocationNumbering,
+  capturedMapState,
 })
 
 // Wait until the client-side map code has added all custom layers.
@@ -283,7 +269,7 @@ export default class MapImageRendererService {
 
       await applyRenderConfig(
         page,
-        overviewUserViewConfig({
+        overviewConfig({
           selectedDeviceIds: selectedDeviceIdsAsNumbers,
           selectedTrackDeviceIds: selectedTrackDeviceIdsAsNumbers,
           capturedMapState: parsedCapturedMapState,
@@ -292,39 +278,30 @@ export default class MapImageRendererService {
         }),
       )
       await waitForOlRenderComplete(page)
-      const overviewUserViewJpg = await screenshotMapElement(page)
+      const overviewJpg = await screenshotMapElement(page)
 
-      const deviceWearerWithTracksJpgByDeviceId: Record<string, Buffer> = {}
-
-      // Capture similar map states together to avoid repeatedly switching between overview and detail views.
-      // Large view changes can trigger extra tile loading/rendering, so grouping screenshots reduces export time.
-      /* eslint-disable no-await-in-loop -- Intentional: keep map state changes and screenshots sequential */
-      for (const deviceId of selectedDeviceIdsAsNumbers) {
-        await applyRenderConfig(page, deviceWearerWithTracksConfig(deviceId))
-        await waitForOlRenderComplete(page)
-        deviceWearerWithTracksJpgByDeviceId[String(deviceId)] = await screenshotMapElement(page)
-      }
-      /* eslint-enable no-await-in-loop */
-
-      await applyRenderConfig(page, overviewFittedToDeviceWearersConfig(selectedDeviceIdsAsNumbers))
-      await waitForOlRenderComplete(page)
-      const overviewFittedToDeviceWearersJpg = await screenshotMapElement(page)
-
-      const deviceWearerFittedWithoutTracksJpgByDeviceId: Record<string, Buffer> = {}
+      const deviceWearerJpgByDeviceId: Record<string, Buffer> = {}
 
       /* eslint-disable no-await-in-loop -- Intentional: keep map state changes and screenshots sequential */
       for (const deviceId of selectedDeviceIdsAsNumbers) {
-        await applyRenderConfig(page, deviceWearerFittedWithoutTracksConfig(deviceId))
+        await applyRenderConfig(
+          page,
+          deviceWearerConfig({
+            deviceId,
+            selectedTrackDeviceIds: selectedTrackDeviceIdsAsNumbers,
+            capturedMapState: parsedCapturedMapState,
+            showConfidenceCircles,
+            showLocationNumbering,
+          }),
+        )
         await waitForOlRenderComplete(page)
-        deviceWearerFittedWithoutTracksJpgByDeviceId[String(deviceId)] = await screenshotMapElement(page)
+        deviceWearerJpgByDeviceId[String(deviceId)] = await screenshotMapElement(page)
       }
       /* eslint-enable no-await-in-loop */
 
       return {
-        overviewUserViewJpg,
-        overviewFittedToDeviceWearersJpg,
-        deviceWearerWithTracksJpgByDeviceId,
-        deviceWearerFittedWithoutTracksJpgByDeviceId,
+        overviewJpg,
+        deviceWearerJpgByDeviceId,
       }
     } finally {
       await context.close()

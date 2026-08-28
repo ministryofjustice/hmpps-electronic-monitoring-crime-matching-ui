@@ -58,12 +58,8 @@ describe('ProximityAlertReportDocxService', () => {
       }
 
       const images: ProximityAlertReportImages = {
-        overviewUserViewJpg: tinyJpeg,
-        overviewFittedToDeviceWearersJpg: tinyJpeg,
-        deviceWearerWithTracksJpgByDeviceId: {
-          '1': tinyJpeg,
-        },
-        deviceWearerFittedWithoutTracksJpgByDeviceId: {
+        overviewJpg: tinyJpeg,
+        deviceWearerJpgByDeviceId: {
           '1': tinyJpeg,
         },
       }

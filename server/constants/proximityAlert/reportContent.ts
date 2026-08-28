@@ -15,14 +15,14 @@ const PROXIMITY_ALERT_REPORT_CONTENT = {
   },
 
   exhibitMapKey: {
-    heading: 'Exhibit EMAC/03 Key for interpreting symbols on the map',
+    heading: 'Exhibit EMAC/02 Key for interpreting symbols on the map',
     intro: 'The key below explains how to interpret the visual elements that appear in proximity alert images. ',
     note: 'Note: Not all visual elements demonstrated will be displayed in the proximity alert images; this will be determined as necessary.',
   },
 
   exhibitPositions: {
     heading: {
-      prefix: 'Exhibit EMAC/04 - Table of ',
+      prefix: 'Exhibit EMAC/03 - Table of ',
       suffix: 'locations within the vicinity',
     },
     description:
@@ -128,12 +128,9 @@ const PROXIMITY_ALERT_REPORT_CONTENT = {
         prefix: 'Exhibit EMAC/01 - Image of the tracks for',
         suffix: 'on the data.',
       },
-      emac02: {
-        prefix: 'Exhibit EMAC/02 - Detailed image of map and locations for',
-      },
-      emac03: 'Exhibit EMAC/03 - Key for interpreting symbols on crime map',
-      emac04: {
-        prefix: 'Exhibit EMAC/04 - Table of',
+      emac02: 'Exhibit EMAC/02 - Key for interpreting symbols on crime map',
+      emac03: {
+        prefix: 'Exhibit EMAC/03 - Table of',
         suffix: 'locations within the vicinity.',
       },
     },
@@ -146,7 +143,6 @@ const PROXIMITY_ALERT_REPORT_CONTENT = {
     },
     exhibitsIntro:
       "I further produce the attached screen shot which documents the subject's movements within proximity of this allegation of crime:",
-    exhibitMapKey: 'Exhibit EMAC/03 - Key for interpreting symbols on crime map',
   },
 } as const
 

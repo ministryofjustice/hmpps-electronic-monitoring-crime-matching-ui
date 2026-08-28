@@ -1,16 +1,15 @@
-import { EmMap, Position } from '@ministryofjustice/hmpps-electronic-monitoring-components/map'
-import type { CapturedMapState, MapData } from './crimeVersion'
+import { EmMap } from '@ministryofjustice/hmpps-electronic-monitoring-components/map'
+import type { CapturedMapState } from './crimeVersion'
 
-type ExportMapFitMode = 'none' | 'selected-device-wearers' | 'focused-device-wearer'
-
+// All export screenshots (overview and per-device-wearer) are captured from the same
+// viewport (capturedMapState), so the only thing that varies between them is which
+// device wearers'/tracks' layers are visible.
 export type ExportMapRenderConfig = {
   selectedDeviceIds: number[]
   selectedTrackDeviceIds: number[]
-  focusedDeviceId?: number
   showConfidenceCircles: boolean
   showLocationNumbering: boolean
-  fitMode: ExportMapFitMode
-  capturedMapState?: CapturedMapState
+  capturedMapState: CapturedMapState
 }
 
 type MapImagesApi = {
@@ -19,9 +18,7 @@ type MapImagesApi = {
 
 type InitialiseProximityAlertExportViewArgs = {
   emMap: EmMap
-  data: MapData
   mapDeviceIds: number[]
-  setCrimeDefaultView: () => void
   applyCapturedMapState: (state: CapturedMapState) => void
 }
 
@@ -64,22 +61,6 @@ const applyHeadlessMapMode = (emMap: EmMap) => {
     mapElement.style.height = `${headlessMapSize.heightPx}px`
     map.updateSize()
   }
-
-  map.renderSync()
-}
-
-// Fits the map view to the crime marker and supplied device wearer positions.
-const fitToDevicePositions = (emMap: EmMap, crimePosition: Position, devicePositions: Array<Position>) => {
-  emMap.fitToPoints([crimePosition, ...devicePositions], {
-    padding: 100,
-    maxZoom: 20,
-    animate: false,
-  })
-
-  const map = emMap.olMapInstance
-  const mapView = map?.getView()
-
-  if (!map || !mapView) return
 
   map.renderSync()
 }
@@ -193,77 +174,44 @@ const setDeviceWearerLayersVisible = ({
 }
 
 // Applies a screenshot-specific render config to layer visibility and map view.
+// All export screenshots use the same captured viewport; only layer visibility (which
+// device wearers/tracks are shown) differs between images.
 const applyRenderConfig = async ({
   emMap,
-  data,
   mapDeviceIds,
   config,
-  setCrimeDefaultView,
   applyCapturedMapState,
 }: {
   emMap: EmMap
-  data: MapData
   mapDeviceIds: number[]
   config: ExportMapRenderConfig
-  setCrimeDefaultView: () => void
   applyCapturedMapState: (state: CapturedMapState) => void
 }): Promise<void> => {
   const selectedDeviceIds = new Set(config.selectedDeviceIds ?? mapDeviceIds)
   const selectedTrackDeviceIds = new Set(config.selectedTrackDeviceIds ?? selectedDeviceIds)
 
-  const applyLayerVisibility = () => {
-    setDeviceWearerLayersVisible({
-      emMap,
-      mapDeviceIds,
-      selectedDeviceIds,
-      selectedTrackDeviceIds,
-      showConfidenceCircles: config.showConfidenceCircles,
-      showLocationNumbering: config.showLocationNumbering,
-    })
-  }
+  applyCapturedMapState(config.capturedMapState)
 
-  if (config.capturedMapState) {
-    applyCapturedMapState(config.capturedMapState)
+  await new Promise<void>(resolve => {
+    window.requestAnimationFrame(() => resolve())
+  })
 
-    await new Promise<void>(resolve => {
-      window.requestAnimationFrame(() => resolve())
-    })
+  setDeviceWearerLayersVisible({
+    emMap,
+    mapDeviceIds,
+    selectedDeviceIds,
+    selectedTrackDeviceIds,
+    showConfidenceCircles: config.showConfidenceCircles,
+    showLocationNumbering: config.showLocationNumbering,
+  })
 
-    applyLayerVisibility()
-    emMap.olMapInstance?.renderSync()
-    return
-  }
-
-  applyLayerVisibility()
-
-  if (config.fitMode === 'selected-device-wearers') {
-    const positions =
-      data.matching?.deviceWearers
-        .filter(deviceWearer => selectedDeviceIds.has(deviceWearer.deviceId))
-        .flatMap(deviceWearer => deviceWearer.positions) ?? []
-
-    fitToDevicePositions(emMap, data.crimePosition, positions)
-    return
-  }
-
-  if (config.fitMode === 'focused-device-wearer' && typeof config.focusedDeviceId === 'number') {
-    const focusedDeviceWearer = data.matching?.deviceWearers.find(
-      deviceWearer => deviceWearer.deviceId === config.focusedDeviceId,
-    )
-
-    fitToDevicePositions(emMap, data.crimePosition, focusedDeviceWearer?.positions ?? [])
-    return
-  }
-
-  setCrimeDefaultView()
+  emMap.olMapInstance?.renderSync()
 }
 
 // Initialises the headless export API used in the Service by Playwright to configure screenshots.
 const initialiseProximityAlertExportView = ({
   emMap,
-  data,
   mapDeviceIds,
-  setCrimeDefaultView,
   applyCapturedMapState,
 }: InitialiseProximityAlertExportViewArgs) => {
   applyHeadlessMapMode(emMap)
@@ -273,10 +221,8 @@ const initialiseProximityAlertExportView = ({
     applyRenderConfig: async (config: ExportMapRenderConfig) => {
       await applyRenderConfig({
         emMap,
-        data,
         mapDeviceIds,
         config,
-        setCrimeDefaultView,
         applyCapturedMapState,
       })
     },
