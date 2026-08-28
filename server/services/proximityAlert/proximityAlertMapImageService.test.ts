@@ -14,14 +14,7 @@ describe('MapImageRendererService', () => {
 
   const createMockPage = () => {
     // Fake screenshot buffers to be returned by the mocked map element's screenshot method
-    const screenshotBuffers = [
-      Buffer.from('overview-user-view'),
-      Buffer.from('device-wearer-with-tracks-1'),
-      Buffer.from('device-wearer-with-tracks-2'),
-      Buffer.from('overview-fitted-to-device-wearers'),
-      Buffer.from('device-wearer-fitted-without-tracks-1'),
-      Buffer.from('device-wearer-fitted-without-tracks-2'),
-    ]
+    const screenshotBuffers = [Buffer.from('overview'), Buffer.from('device-wearer-1'), Buffer.from('device-wearer-2')]
 
     // Mock the map element with a screenshot method that returns predefined buffers
     const mapElement = {
@@ -106,7 +99,6 @@ describe('MapImageRendererService', () => {
           selectedTrackDeviceIds: [1],
           showConfidenceCircles: false,
           showLocationNumbering: true,
-          fitMode: 'none',
           capturedMapState: {
             mapWidthPx: 1200,
             mapHeightPx: 800,
@@ -127,45 +119,8 @@ describe('MapImageRendererService', () => {
         renderConfig: expect.objectContaining({
           selectedDeviceIds: [1],
           selectedTrackDeviceIds: [1],
-          focusedDeviceId: 1,
-          fitMode: 'none',
-        }),
-      }),
-    )
-
-    expect(page.evaluate).toHaveBeenCalledWith(
-      expect.any(Function),
-      expect.objectContaining({
-        renderConfig: expect.objectContaining({
-          selectedDeviceIds: [2],
-          selectedTrackDeviceIds: [2],
-          focusedDeviceId: 2,
-          fitMode: 'none',
-        }),
-      }),
-    )
-
-    expect(page.evaluate).toHaveBeenCalledWith(
-      expect.any(Function),
-      expect.objectContaining({
-        renderConfig: expect.objectContaining({
-          selectedDeviceIds: [1, 2],
-          selectedTrackDeviceIds: [],
-          showConfidenceCircles: true,
+          showConfidenceCircles: false,
           showLocationNumbering: true,
-          fitMode: 'selected-device-wearers',
-        }),
-      }),
-    )
-
-    expect(page.evaluate).toHaveBeenCalledWith(
-      expect.any(Function),
-      expect.objectContaining({
-        renderConfig: expect.objectContaining({
-          selectedDeviceIds: [1],
-          selectedTrackDeviceIds: [],
-          focusedDeviceId: 1,
-          fitMode: 'focused-device-wearer',
         }),
       }),
     )
@@ -176,24 +131,19 @@ describe('MapImageRendererService', () => {
         renderConfig: expect.objectContaining({
           selectedDeviceIds: [2],
           selectedTrackDeviceIds: [],
-          focusedDeviceId: 2,
-          fitMode: 'focused-device-wearer',
+          showConfidenceCircles: false,
+          showLocationNumbering: true,
         }),
       }),
     )
 
-    expect(mapElement.screenshot).toHaveBeenCalledTimes(6)
+    expect(mapElement.screenshot).toHaveBeenCalledTimes(3)
 
     expect(result).toEqual({
-      overviewUserViewJpg: Buffer.from('overview-user-view'),
-      overviewFittedToDeviceWearersJpg: Buffer.from('overview-fitted-to-device-wearers'),
-      deviceWearerWithTracksJpgByDeviceId: {
-        '1': Buffer.from('device-wearer-with-tracks-1'),
-        '2': Buffer.from('device-wearer-with-tracks-2'),
-      },
-      deviceWearerFittedWithoutTracksJpgByDeviceId: {
-        '1': Buffer.from('device-wearer-fitted-without-tracks-1'),
-        '2': Buffer.from('device-wearer-fitted-without-tracks-2'),
+      overviewJpg: Buffer.from('overview'),
+      deviceWearerJpgByDeviceId: {
+        '1': Buffer.from('device-wearer-1'),
+        '2': Buffer.from('device-wearer-2'),
       },
     })
 

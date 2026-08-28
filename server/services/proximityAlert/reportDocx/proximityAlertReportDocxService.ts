@@ -55,19 +55,9 @@ export default class ProximityAlertReportDocxService {
       mapImagePageTable({
         title: "Images of the crime map with all person's proximity tracks",
         showTitleRow: true,
-        jpg: images.overviewUserViewJpg,
+        jpg: images.overviewJpg,
         report,
-        fillerHeightWordUnits: fillerHeightForMapPage(images.overviewUserViewJpg, true),
-      }),
-    )
-
-    children.push(new Paragraph({ children: [new PageBreak()] }))
-    children.push(
-      mapImagePageTable({
-        showTitleRow: false,
-        jpg: images.overviewFittedToDeviceWearersJpg,
-        report,
-        fillerHeightWordUnits: fillerHeightForMapPage(images.overviewFittedToDeviceWearersJpg, false),
+        fillerHeightWordUnits: fillerHeightForMapPage(images.overviewJpg, true),
       }),
     )
 
@@ -81,43 +71,23 @@ export default class ProximityAlertReportDocxService {
         sections.push(new Paragraph({ children: [new PageBreak()] }))
         sections.push(await witnessStatementTable({ report, wearer }))
 
-        const withTracks = requiredImage(
-          images.deviceWearerWithTracksJpgByDeviceId,
-          wearer.deviceWearerId,
-          'Device wearer with tracks',
-        )
+        const deviceWearerJpg = requiredImage(images.deviceWearerJpgByDeviceId, wearer.deviceWearerId, 'Device wearer')
 
         sections.push(new Paragraph({ children: [new PageBreak()] }))
         sections.push(
           mapImagePageTable({
             title: `Exhibit EMAC/01 - Image of maps and tracks for ${wearer.name}`,
             showTitleRow: true,
-            jpg: withTracks,
+            jpg: deviceWearerJpg,
             report,
-            fillerHeightWordUnits: fillerHeightForMapPage(withTracks, true),
-          }),
-        )
-
-        const fittedWithoutTracks = requiredImage(
-          images.deviceWearerFittedWithoutTracksJpgByDeviceId,
-          wearer.deviceWearerId,
-          'Device wearer fitted without tracks',
-        )
-
-        sections.push(new Paragraph({ children: [new PageBreak()] }))
-        sections.push(
-          mapImagePageTable({
-            title: `Exhibit EMAC/02 - Detailed view of map and locations for ${wearer.name}`,
-            showTitleRow: true,
-            jpg: fittedWithoutTracks,
-            report,
-            fillerHeightWordUnits: fillerHeightForMapPage(fittedWithoutTracks, true),
+            fillerHeightWordUnits: fillerHeightForMapPage(deviceWearerJpg, true),
           }),
         )
 
         sections.push(new Paragraph({ children: [new PageBreak()] }))
         sections.push(exhibitMapKeySection())
 
+        sections.push(new Paragraph({ children: [new PageBreak()] }))
         sections.push(exhibitPositionsSection(wearer))
 
         return sections

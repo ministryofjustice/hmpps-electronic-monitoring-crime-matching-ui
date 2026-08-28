@@ -175,9 +175,7 @@ const initialiseProximityAlertView = async () => {
   if (isHeadless) {
     initialiseProximityAlertExportView({
       emMap,
-      data,
       mapDeviceIds: allDeviceIds,
-      setCrimeDefaultView: () => setCrimeDefaultView(emMap, centre),
       applyCapturedMapState: state => applyCapturedMapState(emMap, state),
     })
   }

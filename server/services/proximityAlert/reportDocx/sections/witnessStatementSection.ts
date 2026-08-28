@@ -273,14 +273,11 @@ const witnessStatementTable = async (args: {
             spacingAfter: 60,
           },
         ),
-        bulletParagraph(`${witnessStatement.exhibits.emac02.prefix} ${wearer.name}`, {
-          spacingAfter: 60,
-        }),
-        bulletParagraph(witnessStatement.exhibits.emac03, {
+        bulletParagraph(witnessStatement.exhibits.emac02, {
           spacingAfter: 60,
         }),
         bulletParagraph(
-          `${witnessStatement.exhibits.emac04.prefix} ${wearer.name}'s ${witnessStatement.exhibits.emac04.suffix}`,
+          `${witnessStatement.exhibits.emac03.prefix} ${wearer.name}'s ${witnessStatement.exhibits.emac03.suffix}`,
           {
             spacingAfter: 200,
           },
