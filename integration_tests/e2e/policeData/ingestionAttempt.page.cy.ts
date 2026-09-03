@@ -64,6 +64,7 @@ context('Police Data Ingestion Attempt', () => {
       page.crimeBreakdownTable.shouldHaveRows([
         ['Total', '2', '2', '0'],
         ['Missing', '0', '0', '0'],
+        ['AB - Aggravated burglary', '0', '0', '0'],
         ['BIAD - Burglary in a dwelling', '2', '2', '0'],
         ['BOTD - Burglary in a building other than a dwelling', '0', '0', '0'],
         ['RB - Robbery', '0', '0', '0'],
@@ -148,6 +149,7 @@ context('Police Data Ingestion Attempt', () => {
       page.crimeBreakdownTable.shouldHaveRows([
         ['Total', '2', '2', '0'],
         ['Missing', '0', '0', '0'],
+        ['AB - Aggravated burglary', '0', '0', '0'],
         ['BIAD - Burglary in a dwelling', '0', '0', '0'],
         ['BOTD - Burglary in a building other than a dwelling', '0', '0', '0'],
         ['RB - Robbery', '2', '2', '0'],
@@ -243,6 +245,7 @@ context('Police Data Ingestion Attempt', () => {
       page.crimeBreakdownTable.shouldHaveRows([
         ['Total', '101', '100', '1'],
         ['Missing', '1', '0', '1'],
+        ['AB - Aggravated burglary', '13', '13', '0'],
         ['BIAD - Burglary in a dwelling', '13', '13', '0'],
         ['BOTD - Burglary in a building other than a dwelling', '13', '13', '0'],
         ['RB - Robbery', '17', '17', '0'],
@@ -388,6 +391,7 @@ context('Police Data Ingestion Attempt', () => {
       page.crimeBreakdownTable.shouldHaveRows([
         ['Total', '1', '0', '1'],
         ['Missing', '0', '0', '0'],
+        ['AB - Aggravated burglary', '0', '0', '0'],
         ['BIAD - Burglary in a dwelling', '0', '0', '0'],
         ['BOTD - Burglary in a building other than a dwelling', '0', '0', '0'],
         ['RB - Robbery', '1', '0', '1'],
