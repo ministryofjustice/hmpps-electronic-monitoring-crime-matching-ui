@@ -267,6 +267,8 @@ describe('CrimeSearchController', () => {
             versionLabel: 'Latest version',
             versionColour: 'green',
             updates: 'Crime type</br>Crime date</br>Crime time</br>Crime location',
+            isGroupHead: true,
+            groupSize: 1,
           },
           {
             crimeVersionId: 'fe1592c0-dc78-46c3-88cd-144f1f1ec022',
@@ -281,6 +283,8 @@ describe('CrimeSearchController', () => {
             versionLabel: 'Version 2',
             versionColour: 'grey',
             updates: 'NA',
+            isGroupHead: true,
+            groupSize: 1,
           },
         ],
         paginationHrefPrefix: 'crimeReference=abc',
