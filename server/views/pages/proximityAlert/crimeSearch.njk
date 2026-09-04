@@ -15,10 +15,10 @@
 {% for crime in crimes %}
   {% set path = URLS.PROXIMITY_ALERT.CRIME_VERSION.VIEW | replace(':crimeVersionId', crime.crimeVersionId) %}
   {% set href = path + "?returnTo=" + returnTo %}
-  {% set link %}
-    <a href="{{ href }}"> {{ crime.crimeReference }} </a>
-  {% endset %}
 
+  {% set crimeReferenceCell %}
+    <a href="{{ href }}"> {{ crime.crimeReference }} </a></br>{{ crime.policeForceArea }}
+  {% endset %}
 
   {% set versionTag %}
     {{
@@ -29,36 +29,35 @@
     }}
   {% endset %}
 
-  {%
-    set rows = (rows.push(
-      [
-        {
-          text: crime.matchedText
-        },
-        {
-          html: link
-        },
-        {
-          html: crime.policeForceArea + ",</br>" + crime.batchId
-        },
-        {
-          text: crime.crimeType
-        },
-        {
-          text: crime.crimeDate | formatDateTime("DD/MM/YYYY")
-        },
-        {
-          html: crime.ingestionDateTime | formatDateTime("DD/MM/YYYY") + "</br>" + crime.ingestionDateTime | formatDateTime("HH:mm:ss")
-        },
-        {
-          html: crime.updates
-        },
-        {
-          html: versionTag
-        }
-      ]
-    ), rows)
-  %}
+  {% set cells = [
+    {
+      text: crime.matchedText
+    },
+    {
+      text: crime.crimeType
+    },
+    {
+      text: crime.crimeDate | formatDateTime("DD/MM/YYYY")
+    },
+    {
+      html: crime.ingestionDateTime | formatDateTime("DD/MM/YYYY") + "</br>" + crime.ingestionDateTime | formatDateTime("HH:mm:ss")
+    },
+    {
+      text: crime.batchId
+    },
+    {
+      html: crime.updates
+    },
+    {
+      html: versionTag
+    }
+  ] %}
+
+  {% if crime.isGroupHead %}
+    {% set noop = cells.unshift({ html: crimeReferenceCell, rowspan: crime.groupSize }) %}
+  {% endif %}
+
+  {% set rows = (rows.push(cells), rows) %}
 {% endfor %}
 
 {% if rows.length == 0 %}
@@ -119,13 +118,11 @@
       classes: "crime-versions-table",
       columns: [
         {
-          text: "Matched"
+          html: "Crime reference,</br>police force area"
         },
         {
-          text: "Crime reference"
-        },
-        {
-          html: "Police force area,</br>Batch ID"
+          text: "Matched device wearers",
+          classes: "govuk-!-width-one-eighth"
         },
         {
           text: "Crime type"
@@ -134,13 +131,16 @@
           text: "Crime date"
         },
         {
-          html: "Ingestion date,</br>time"
+          text: "Data ingested"
+        },
+        {
+          text: "Batch ID"
         },
         {
           text: "Updates"
         },
         {
-          text: "Versions",
+          text: "Source data version",
           classes: "govuk-!-width-one-eighth"
         }
       ],

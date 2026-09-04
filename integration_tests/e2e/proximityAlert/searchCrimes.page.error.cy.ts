@@ -26,14 +26,14 @@ context('Search Crimes', () => {
 
       // And the table should have 1 row
       page.dataTable.shouldHaveColumns([
-        'Matched',
-        'Crime reference',
-        'Police force area,\nBatch ID',
+        'Crime reference,\npolice force area',
+        'Matched device wearers',
         'Crime type',
         'Crime date',
-        'Ingestion date,\ntime',
+        'Data ingested',
+        'Batch ID',
         'Updates',
-        'Versions',
+        'Source data version',
       ])
       page.dataTable.shouldHaveRows([['Enter a crime reference and click search.']])
       page.dataTable.shouldNotHavePagination()
