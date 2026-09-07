@@ -266,7 +266,7 @@ describe('CrimeSearchController', () => {
             matchedText: 'Yes',
             versionLabel: 'Latest version',
             versionColour: 'green',
-            updates: 'Crime type</br>Crime date</br>Crime time</br>Crime location',
+            updates: 'Crime type<br />Crime date<br />Crime time<br />Crime location',
             isGroupHead: true,
             groupSize: 1,
           },

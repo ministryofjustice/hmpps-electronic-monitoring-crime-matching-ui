@@ -16,9 +16,11 @@
   {% set path = URLS.PROXIMITY_ALERT.CRIME_VERSION.VIEW | replace(':crimeVersionId', crime.crimeVersionId) %}
   {% set href = path + "?returnTo=" + returnTo %}
 
+
   {% set crimeReferenceCell %}
-    <a href="{{ href }}"> {{ crime.crimeReference }} </a></br>{{ crime.policeForceArea }}
+    <a href="{{ href }}"> {{ crime.crimeReference }} </a><br />{{ crime.policeForceArea }}
   {% endset %}
+
 
   {% set versionTag %}
     {{
@@ -29,29 +31,31 @@
     }}
   {% endset %}
 
-  {% set cells = [
-    {
-      text: crime.matchedText
-    },
-    {
-      text: crime.crimeType
-    },
-    {
-      text: crime.crimeDate | formatDateTime("DD/MM/YYYY")
-    },
-    {
-      html: crime.ingestionDateTime | formatDateTime("DD/MM/YYYY") + "</br>" + crime.ingestionDateTime | formatDateTime("HH:mm:ss")
-    },
-    {
-      text: crime.batchId
-    },
-    {
-      html: crime.updates
-    },
-    {
-      html: versionTag
-    }
-  ] %}
+  {%
+    set cells = [
+      {
+        text: crime.matchedText
+      },
+      {
+        text: crime.crimeType
+      },
+      {
+        text: crime.crimeDate | formatDateTime("DD/MM/YYYY")
+      },
+      {
+        html: crime.ingestionDateTime | formatDateTime("DD/MM/YYYY") + "<br />" + crime.ingestionDateTime | formatDateTime("HH:mm:ss")
+      },
+      {
+        text: crime.batchId
+      },
+      {
+        html: crime.updates
+      },
+      {
+        html: versionTag
+      }
+    ]
+  %}
 
   {% if crime.isGroupHead %}
     {% set noop = cells.unshift({ html: crimeReferenceCell, rowspan: crime.groupSize }) %}
@@ -118,7 +122,7 @@
       classes: "crime-versions-table",
       columns: [
         {
-          html: "Crime reference,</br>police force area"
+          html: "Crime reference,<br />police force area"
         },
         {
           text: "Matched device wearers",
