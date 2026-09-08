@@ -27,9 +27,9 @@ const policeForceAreaOptions = [
     value: '',
     text: '',
   },
-  ...policeForceAreas.keys().map(key => ({
-    value: key,
-    text: policeForceAreas.get(key) || '',
+  ...policeForceAreas.entries().map(([value, text]) => ({
+    value,
+    text,
   })),
 ]
 
