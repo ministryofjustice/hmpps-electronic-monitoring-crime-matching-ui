@@ -1,6 +1,6 @@
 import { asSystem } from '@ministryofjustice/hmpps-rest-client'
 import CrimeMatchingClient from '../data/crimeMatchingClient'
-import policeForceAreas from '../data/policeForceAreas'
+import { policeForceAreas } from '../data/policeForceAreas'
 import IngestionAttemptSummary from '../types/ingestionAttemptSummary'
 import { PaginatedServiceResult } from '../types/service'
 import { parseDateTimeFromComponents } from '../utils/date'

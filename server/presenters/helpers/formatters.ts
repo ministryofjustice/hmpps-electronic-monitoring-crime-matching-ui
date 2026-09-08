@@ -31,7 +31,7 @@ export function convertRadiansToDegrees(radians: number | null | undefined): num
   return Math.round((degrees + 360) % 360)
 }
 
-export const withFallback = (value: string | null, fallback: string = 'N/A'): string => {
+export const withFallback = (value: string | null | undefined, fallback: string = 'N/A'): string => {
   if (value) {
     return value
   }

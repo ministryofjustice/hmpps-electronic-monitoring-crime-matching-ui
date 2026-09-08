@@ -8,6 +8,7 @@ import { formatDateTime } from './date'
 import config from '../config'
 import logger from '../../logger'
 import pagination from './pagination'
+import { policeForceAreaOptions } from '../data/policeForceAreas'
 
 export default function nunjucksSetup(app: express.Express): void {
   app.set('view engine', 'njk')
@@ -45,4 +46,5 @@ export default function nunjucksSetup(app: express.Express): void {
   njkEnv.addFilter('assetMap', (url: string) => assetManifest[url] || url)
   njkEnv.addFilter('formatDateTime', formatDateTime)
   njkEnv.addGlobal('pagination', pagination)
+  njkEnv.addGlobal('policeForceAreaOptions', policeForceAreaOptions)
 }
