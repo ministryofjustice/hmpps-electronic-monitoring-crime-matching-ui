@@ -22,7 +22,27 @@ export default class SearchIngestionAttemptsFormComponent extends FormComponent 
   }
 
   get policeForceAreaField(): FormSelectComponent {
-    return new FormSelectComponent(this.form, 'Police force area', [])
+    return new FormSelectComponent(this.form, 'Police force area', [
+      'Avon and Somerset',
+      'Bedfordshire',
+      'Cheshire',
+      'City of London',
+      'Cumbria',
+      'Derbyshire',
+      'Durham',
+      'Essex',
+      'Gloucestershire',
+      'Gwent',
+      'Hampshire',
+      'Hertfordshire',
+      'Humberside',
+      'Kent',
+      'Metropolitan',
+      'North Wales',
+      'Nottinghamshire',
+      'Sussex',
+      'West Midlands',
+    ])
   }
 
   get fromDateField(): FormDateComponent {
