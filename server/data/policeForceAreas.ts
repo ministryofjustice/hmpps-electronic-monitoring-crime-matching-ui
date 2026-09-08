@@ -20,13 +20,14 @@ const policeForceAreas: Map<string, string> = new Map([
   ['WEST_MIDLANDS', 'West Midlands'],
 ])
 
-// Police force areas formatted as govuk select items - https://github.com/alphagov/govuk-frontend/blob/main/packages/govuk-frontend/src/govuk/components/select/select.yaml#L10
+// Police force areas formatted as govuk select items
+// https://github.com/alphagov/govuk-frontend/blob/main/packages/govuk-frontend/src/govuk/components/select/select.yaml#L10
 const policeForceAreaOptions = [
   {
     value: '',
     text: '',
   },
-  Object.keys(policeForceAreas).map(key => ({
+  ...policeForceAreas.keys().map(key => ({
     value: key,
     text: policeForceAreas.get(key) || '',
   })),
