@@ -93,11 +93,11 @@ export const personOnlyTable = (args: { personTitle: string; personRows: Array<[
     borders,
     rows: [
       sectionHeaderRow(personTitle),
-      ...personRows.map(([key, value], rowIndex) =>
+      ...personRows.map(([key, value]) =>
         labelValueRow(key, value, {
           keyWidthPct: personKeyWidthPct,
           valueWidthPct: personValueWidthPct,
-          valueBold: rowIndex === 0,
+          valueBold: false,
         }),
       ),
     ],
