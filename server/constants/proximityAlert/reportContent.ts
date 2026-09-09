@@ -73,7 +73,7 @@ const PROXIMITY_ALERT_REPORT_CONTENT = {
   personSummary: {
     titlePrefix: 'Person',
     rows: {
-      fullName: 'Full name',
+      fullName: 'Full name:',
       dateOfBirth: 'DOB:',
       pncNumber: 'PNC number:',
       address: 'Specified Address:',
