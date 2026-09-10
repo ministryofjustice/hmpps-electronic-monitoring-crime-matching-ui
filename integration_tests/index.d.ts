@@ -131,7 +131,7 @@ declare global {
       /**
        * Stub the /os-map/vector/style endpoint to simulate the Ordnance Survey middleware.
        */
-      stubMapMiddleware(): Chainable<void>
+      stubOrdnanceSurvey(): Chainable<void>
 
       /**
        * Stub a wiremock response for the crimeMatchingApi PUT /hub-managers/{id}/signature

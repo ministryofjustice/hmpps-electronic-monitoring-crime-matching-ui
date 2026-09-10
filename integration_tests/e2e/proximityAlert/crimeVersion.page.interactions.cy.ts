@@ -60,7 +60,7 @@ context('Crime Version', () => {
       cy.task('reset')
       cy.task('stubSignIn', hubCaseworker)
       cy.signIn()
-      cy.stubMapMiddleware()
+      cy.stubOrdnanceSurvey()
       cy.stubGetHubManagers({
         status: 200,
         response: {

@@ -15,7 +15,7 @@ context('Location Data', () => {
       cy.task('stubSignIn', hubCaseworker)
       cy.signIn()
 
-      cy.stubMapMiddleware()
+      cy.stubOrdnanceSurvey()
     })
 
     it('should display a map showing the subjects locations', () => {
@@ -189,7 +189,7 @@ context('Interacting with the map', () => {
     cy.task('reset')
     cy.task('stubSignIn', hubCaseworker)
     cy.signIn()
-    cy.stubMapMiddleware()
+    cy.stubOrdnanceSurvey()
     cy.stubGetDeviceActivation()
     cy.stubGetDeviceActivationPositions({
       status: 200,

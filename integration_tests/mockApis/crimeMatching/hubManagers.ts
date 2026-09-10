@@ -183,7 +183,7 @@ const stubGetHubManager = (options: StubGetHubManagerOptions) => {
 type StubGetHubManagerSignature200Options = {
   id: string
   status: 200
-  response: Buffer
+  response: string
 }
 
 type StubGetHubManagerSignatureErrorOptions = {
@@ -205,7 +205,7 @@ const stubGetHubManagerSignature = (options: StubGetHubManagerSignatureOptions) 
       headers: {
         'Content-Type': 'application/json;charset=UTF-8',
       },
-      jsonBody: options.response,
+      base64Body: options.response,
     },
   })
 }

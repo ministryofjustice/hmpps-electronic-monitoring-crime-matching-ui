@@ -79,7 +79,7 @@ Cypress.Commands.add('stubUpdateHubManagerSignature', options => {
   cy.task('stubUpdateHubManagerSignature', options)
 })
 
-Cypress.Commands.add('stubMapMiddleware', () => {
+Cypress.Commands.add('stubOrdnanceSurvey', () => {
   cy.task('stubOSGetToken')
   cy.task('stubOSGetVectorStyle')
   cy.task('stubOSGetVectorSource')

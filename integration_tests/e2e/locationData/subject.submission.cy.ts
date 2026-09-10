@@ -13,7 +13,7 @@ context('Location Data', () => {
       cy.task('reset')
       cy.task('stubSignIn', hubCaseworker)
       cy.signIn()
-      cy.stubMapMiddleware()
+      cy.stubOrdnanceSurvey()
     })
 
     it('should redirect to the same view with new query parameters when submitting valid data', () => {
