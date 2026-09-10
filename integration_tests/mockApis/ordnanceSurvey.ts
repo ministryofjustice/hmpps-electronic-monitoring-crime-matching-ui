@@ -38,7 +38,7 @@ const stubOSGetVectorStyle = () => {
 }
 
 const stubOSGetVectorSource = () => {
-    return stubFor({
+  return stubFor({
     request: {
       method: 'GET',
       urlPath: `${baseUrl}/original-source`,
@@ -46,17 +46,29 @@ const stubOSGetVectorSource = () => {
     response: {
       status: 200,
       jsonBody: {
-      type: 'vector',
-      tiles: ['/os-map/vector/tiles/{z}/{x}/{y}.pbf'],
-    },
+        type: 'vector',
+        tiles: ['/os-map/vector/tiles/{z}/{x}/{y}.pbf'],
+      },
     },
   })
 }
 
-const stubOSGetTile = () => {}
+const stubOSGetTile = () => {
+  return stubFor({
+    request: {
+      method: 'GET',
+      urlPathPattern: `${baseUrl}/vts/tile/[0-9]+/[0-9]+/[0-9]+\\.pbf`,
+    },
+    response: {
+      status: 200,
+      base64Body: Buffer.from('').toString('base64'),
+    },
+  })
+}
 
 export default {
+  stubOSGetTile,
   stubOSGetToken,
   stubOSGetVectorStyle,
-  stubOSGetVectorSource
+  stubOSGetVectorSource,
 }

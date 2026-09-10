@@ -13,7 +13,6 @@ context('Crime Version', () => {
       cy.task('stubSignIn', hubCaseworker)
       cy.signIn()
 
-      cy.stubOSGetToken()
       cy.stubMapMiddleware()
       cy.stubGetHubManagers({
         status: 200,
@@ -88,7 +87,7 @@ context('Crime Version', () => {
       ])
     })
 
-    it.only('should export a proximity alert', () => {
+    it('should export a proximity alert', () => {
       // When the user loads the page
       cy.visit(`/proximity-alert/${crimeVersionId}`)
 

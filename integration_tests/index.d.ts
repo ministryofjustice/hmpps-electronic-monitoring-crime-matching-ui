@@ -129,11 +129,6 @@ declare global {
       stubGetPerson(options?: StubGetPersonOptions): Chainable<void>
 
       /**
-       * Stub the /oauth2/token/v1 endpoint to simulate the Ordnance Survey auth.
-       */
-      stubOSGetToken(): Chainable<void>
-
-      /**
        * Stub the /os-map/vector/style endpoint to simulate the Ordnance Survey middleware.
        */
       stubMapMiddleware(): Chainable<void>
