@@ -25,7 +25,7 @@ const requiredImage = (
   deviceId: string,
   imageDescription: string,
 ): Buffer => {
-  const image = imagesByDeviceId[String(deviceId)]
+  const image = imagesByDeviceId[deviceId]
 
   if (!image) {
     throw new Error(`${imageDescription} image is required for device ${deviceId}`)
