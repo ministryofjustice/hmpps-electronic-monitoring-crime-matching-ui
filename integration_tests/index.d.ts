@@ -10,6 +10,8 @@ import { StubGetCrimeVersionOptions } from './mockApis/crimeMatching/crimeVersio
 import {
   StubCreateHubManagerOptions,
   StubDeleteHubManagerOptions,
+  StubGetHubManagerOptions,
+  StubGetHubManagerSignatureOptions,
   StubGetHubManagersOptions,
   StubUpdateHubManagerSignaturesOptions,
 } from './mockApis/crimeMatching/hubManagers'
@@ -92,6 +94,16 @@ declare global {
       stubGetDeviceActivationPositions(options?: StubGetDeviceActivationPositionsOptions): Chainable<void>
 
       /**
+       * Stub a wiremock response for the crimeMatchingApi GET /hub-managers/{id}
+       */
+      stubGetHubManager(options?: StubGetHubManagerOptions): Chainable<void>
+
+      /**
+       * Stub a wiremock response for the crimeMatchingApi GET /hub-managers/{id}/signature
+       */
+      stubGetHubManagerSignature(options?: StubGetHubManagerSignatureOptions): Chainable<void>
+
+      /**
        * Stub a wiremock response for the crimeMatchingApi GET /hub-managers
        */
       stubGetHubManagers(options?: StubGetHubManagersOptions): Chainable<void>
@@ -115,6 +127,11 @@ declare global {
        * Stub a wiremock response for the crimeMatchingApi GET /persons/{personId}
        */
       stubGetPerson(options?: StubGetPersonOptions): Chainable<void>
+
+      /**
+       * Stub the /oauth2/token/v1 endpoint to simulate the Ordnance Survey auth.
+       */
+      stubOSGetToken(): Chainable<void>
 
       /**
        * Stub the /os-map/vector/style endpoint to simulate the Ordnance Survey middleware.

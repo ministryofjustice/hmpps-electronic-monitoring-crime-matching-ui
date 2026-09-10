@@ -11,6 +11,8 @@ import { stubGetCrimeVersion } from './crimeVersion'
 import {
   stubCreateHubManager,
   stubDeleteHubManager,
+  stubGetHubManager,
+  stubGetHubManagerSignature,
   stubGetHubManagers,
   stubUpdateHubManagerSignature,
 } from './hubManagers'
@@ -24,6 +26,8 @@ export default {
   stubGetCrimeVersions,
   stubGetDeviceActivation,
   stubGetDeviceActivationPositions,
+  stubGetHubManager,
+  stubGetHubManagerSignature,
   stubGetHubManagers,
   stubGetIngestionAttempt,
   stubGetIngestionAttempts,

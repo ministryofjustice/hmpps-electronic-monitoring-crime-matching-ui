@@ -3,19 +3,35 @@ import Page from '../../pages/page'
 import CrimeVersionPage from '../../pages/proximityAlert/crimeVersion'
 import { crimeVersionId, hubManager, crimeVersionWithManyMatches } from './fixtures'
 
+const downloadsFolder = Cypress.config('downloadsFolder')
+
 context('Crime Version', () => {
   context('Exporting a proximity alert', () => {
     beforeEach(() => {
       cy.task('reset')
+      cy.task('resetDownloads', downloadsFolder)
       cy.task('stubSignIn', hubCaseworker)
       cy.signIn()
 
+      cy.stubOSGetToken()
       cy.stubMapMiddleware()
       cy.stubGetHubManagers({
         status: 200,
         response: {
           data: [hubManager],
         },
+      })
+      cy.stubGetHubManager({
+        id: hubManager.id,
+        status: 200,
+        response: {
+          data: hubManager,
+        },
+      })
+      cy.stubGetHubManagerSignature({
+        id: hubManager.id,
+        status: 200,
+        response: Buffer.from(''),
       })
       cy.stubGetCrimeVersion({
         status: 200,
@@ -57,7 +73,7 @@ context('Crime Version', () => {
       // And clicks export
       page.exportProximityAlertButton.click()
       page.map.sidebar.exportProximityAlertForm.fillInWith({
-        authorisingManager: 'a6e61168-f7ca-4056-8a2d-7db0fd77fb62',
+        authorisingManager: hubManager.id,
       })
       page.map.sidebar.exportProximityAlertForm.exportButton.click()
 
@@ -70,6 +86,31 @@ context('Crime Version', () => {
           service: 'hmpps-electronic-monitoring-crime-matching-ui',
         },
       ])
+    })
+
+    it.only('should export a proximity alert', () => {
+      // When the user loads the page
+      cy.visit(`/proximity-alert/${crimeVersionId}`)
+
+      // And clicks export
+      const page = Page.verifyOnPage(CrimeVersionPage)
+
+      // And clicks export
+      page.exportProximityAlertButton.click()
+      page.map.sidebar.exportProximityAlertForm.fillInWith({
+        authorisingManager: hubManager.id,
+      })
+      page.map.sidebar.exportProximityAlertForm.exportButton.click()
+
+      cy.getDownloads(downloadsFolder)
+        .then(files => {
+          expect(files, 'downloaded files').to.have.length.greaterThan(0)
+          const [first] = files
+          return first
+        })
+        .then(file => {
+          expect(file).to.equal(`proximity-alert-${crimeVersionId}.docx`)
+        })
     })
   })
 })

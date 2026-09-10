@@ -47,6 +47,14 @@ Cypress.Commands.add('stubGetDeviceActivationPositions', options => {
   cy.task('stubGetDeviceActivationPositions', options)
 })
 
+Cypress.Commands.add('stubGetHubManager', options => {
+  cy.task('stubGetHubManager', options)
+})
+
+Cypress.Commands.add('stubGetHubManagerSignature', options => {
+  cy.task('stubGetHubManagerSignature', options)
+})
+
 Cypress.Commands.add('stubGetHubManagers', options => {
   cy.task('stubGetHubManagers', options)
 })
@@ -69,6 +77,12 @@ Cypress.Commands.add('stubGetPerson', options => {
 
 Cypress.Commands.add('stubUpdateHubManagerSignature', options => {
   cy.task('stubUpdateHubManagerSignature', options)
+})
+
+Cypress.Commands.add('stubOSGetToken', () => {
+  cy.task('stubOSGetToken')
+  cy.task('stubOSGetVectorStyle')
+  cy.task('stubOSGetVectorSource')
 })
 
 Cypress.Commands.add('stubMapMiddleware', () => {
