@@ -129,7 +129,7 @@ declare global {
       stubGetPerson(options?: StubGetPersonOptions): Chainable<void>
 
       /**
-       * Stub the /os-map/vector/style endpoint to simulate the Ordnance Survey middleware.
+       * Stub Ordnance Survey APIs used by the map middleware.
        */
       stubOrdnanceSurvey(): Chainable<void>
 
