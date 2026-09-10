@@ -23,6 +23,7 @@ const getCrimeVersionDtoSchema = z.object({
             dateOfBirth: z.string(),
             deviceId: z.number(),
             deviceSerialNumber: z.string(),
+            identifier: z.string(),
             name: z.string(),
             nomisId: z.string(),
             pncRef: z.string(),

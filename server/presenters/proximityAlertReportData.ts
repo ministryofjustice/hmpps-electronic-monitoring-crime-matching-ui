@@ -71,7 +71,7 @@ const presentProximityAlertReportData = (
         return selectedDeviceIdSet ? selectedDeviceIdSet.has(deviceId) : true
       })
       .map(deviceWearer => ({
-        deviceWearerId: String(deviceWearer.deviceId),
+        deviceWearerId: String(deviceWearer.identifier),
         deviceId: Number(deviceWearer.deviceId),
         name: deviceWearer.name,
         nomisId: deviceWearer.nomisId,

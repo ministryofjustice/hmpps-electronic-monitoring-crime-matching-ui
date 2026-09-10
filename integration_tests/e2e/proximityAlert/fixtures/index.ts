@@ -32,6 +32,7 @@ const matchedDeviceWearer1 = {
   pncRef: 'PNC123',
   deviceId: 1,
   deviceSerialNumber: '123456789',
+  identifier: 'DEVWR0000001',
   nomisId: 'nomisId',
   positions: [
     {
@@ -52,6 +53,7 @@ const matchedDeviceWearer2 = {
   dateOfBirth: '1985-10-05',
   deviceId: 2,
   deviceSerialNumber: '123456789',
+  identifier: 'DEVWR0000002',
   nomisId: 'nomisId2',
   pncRef: 'PNC456',
   positions: [
