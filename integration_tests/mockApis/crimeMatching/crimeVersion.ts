@@ -28,6 +28,7 @@ type StubGetCrimeVersion200Options = {
           dateOfBirth: string
           deviceId: number
           deviceSerialNumber: string
+          identifier: string
           nomisId: string
           pncRef: string
           positions: Array<{
