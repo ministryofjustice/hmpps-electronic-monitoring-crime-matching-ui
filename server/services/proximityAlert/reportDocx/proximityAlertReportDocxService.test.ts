@@ -6,6 +6,9 @@ import customParseFormat from 'dayjs/plugin/customParseFormat'
 import ProximityAlertReportDocxService from './proximityAlertReportDocxService'
 import type { ProximityAlertReportData } from '../../../presenters/proximityAlertReportData'
 import type { ProximityAlertReportImages } from '../proximityAlertMapImageService'
+import { createMockCrimeVersion } from '../../../testutils/createMockCrimeVersion'
+import createMockAuthorisingManager from '../../../testutils/createMockAuthorisingManager'
+import presentProximityAlertReportData from '../../../presenters/proximityAlertReportData'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
@@ -76,6 +79,24 @@ describe('ProximityAlertReportDocxService', () => {
 
       // DOCX files are ZIP files and start with the PK file signature.
       expect(buffer.subarray(0, 2).toString()).toBe('PK')
+    })
+
+    it('should throw an error if the device wearer image is missing', async () => {
+      // Given valid proximity alert data
+      const crimeVersion = createMockCrimeVersion()
+      const authorisingManager = createMockAuthorisingManager()
+      const proximityAlertData = presentProximityAlertReportData(crimeVersion, { authorisingManager })
+      const service = new ProximityAlertReportDocxService()
+
+      // Add images with the deviceWearer image missing
+      const images = {
+        overviewJpg: tinyJpeg,
+        deviceWearerJpgByDeviceId: {},
+      }
+
+      await expect(service.build({ report: proximityAlertData, images })).rejects.toThrow(
+        'Device wearer image is required for device 123456789',
+      )
     })
   })
 })

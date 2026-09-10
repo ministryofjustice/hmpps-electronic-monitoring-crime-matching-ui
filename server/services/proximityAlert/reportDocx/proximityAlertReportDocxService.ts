@@ -22,13 +22,13 @@ export type BuildProximityAlertReportDocxArgs = {
 
 const requiredImage = (
   imagesByDeviceId: Record<string, Buffer>,
-  deviceWearerId: string,
+  deviceId: string,
   imageDescription: string,
 ): Buffer => {
-  const image = imagesByDeviceId[String(deviceWearerId)]
+  const image = imagesByDeviceId[deviceId]
 
   if (!image) {
-    throw new Error(`${imageDescription} image is required for device wearer ${deviceWearerId}`)
+    throw new Error(`${imageDescription} image is required for device ${deviceId}`)
   }
 
   return image
@@ -71,7 +71,11 @@ export default class ProximityAlertReportDocxService {
         sections.push(new Paragraph({ children: [new PageBreak()] }))
         sections.push(await witnessStatementTable({ report, wearer }))
 
-        const deviceWearerJpg = requiredImage(images.deviceWearerJpgByDeviceId, wearer.deviceWearerId, 'Device wearer')
+        const deviceWearerJpg = requiredImage(
+          images.deviceWearerJpgByDeviceId,
+          wearer.deviceId.toString(),
+          'Device wearer',
+        )
 
         sections.push(new Paragraph({ children: [new PageBreak()] }))
         sections.push(
