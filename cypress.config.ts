@@ -5,6 +5,7 @@ import tokenVerification from './integration_tests/mockApis/tokenVerification'
 import crimeMatching from './integration_tests/mockApis/crimeMatching'
 import probationComponents from './integration_tests/mockApis/probationComponents'
 import files from './integration_tests/support/files'
+import os from './integration_tests/mockApis/ordnanceSurvey'
 
 export default defineConfig({
   chromeWebSecurity: false,
@@ -25,6 +26,7 @@ export default defineConfig({
         ...crimeMatching,
         ...probationComponents,
         ...files,
+        ...os,
       })
     },
     baseUrl: 'http://localhost:3007',

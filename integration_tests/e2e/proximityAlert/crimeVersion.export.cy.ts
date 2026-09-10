@@ -1,21 +1,37 @@
+import path from 'path'
 import { hubCaseworker } from '../../fixtures/auth'
 import Page from '../../pages/page'
 import CrimeVersionPage from '../../pages/proximityAlert/crimeVersion'
 import { crimeVersionId, hubManager, crimeVersionWithManyMatches } from './fixtures'
 
+const downloadsFolder = Cypress.config('downloadsFolder')
+
 context('Crime Version', () => {
   context('Exporting a proximity alert', () => {
     beforeEach(() => {
       cy.task('reset')
+      cy.task('resetDownloads', downloadsFolder)
       cy.task('stubSignIn', hubCaseworker)
       cy.signIn()
 
-      cy.stubMapMiddleware()
+      cy.stubOrdnanceSurvey()
       cy.stubGetHubManagers({
         status: 200,
         response: {
           data: [hubManager],
         },
+      })
+      cy.stubGetHubManager({
+        id: hubManager.id,
+        status: 200,
+        response: {
+          data: hubManager,
+        },
+      })
+      cy.stubGetHubManagerSignature({
+        id: hubManager.id,
+        status: 200,
+        response: Buffer.from('').toString('base64'),
       })
       cy.stubGetCrimeVersion({
         status: 200,
@@ -48,20 +64,31 @@ context('Crime Version', () => {
       )
     })
 
-    it('should emit the expected audit message when exporting a proximity alert', () => {
+    it('should export a proximity alert', () => {
       // When the user loads the page
       cy.visit(`/proximity-alert/${crimeVersionId}`)
-
       const page = Page.verifyOnPage(CrimeVersionPage)
 
-      // And clicks export
+      // And exports a proximity alert
       page.exportProximityAlertButton.click()
       page.map.sidebar.exportProximityAlertForm.fillInWith({
-        authorisingManager: 'a6e61168-f7ca-4056-8a2d-7db0fd77fb62',
+        authorisingManager: hubManager.id,
       })
       page.map.sidebar.exportProximityAlertForm.exportButton.click()
 
-      // Then the expected audit message was sent
+      // Then a docx file should have been downloaded
+      cy.getDownloads(downloadsFolder)
+        .then(files => {
+          expect(files, 'downloaded files').to.have.length.greaterThan(0)
+          const [first] = files
+          return first
+        })
+        .then(file => {
+          expect(file).to.equal(`proximity-alert-${crimeVersionId}.docx`)
+          cy.readFile(path.join(downloadsFolder, file)).should('have.length.gt', 0)
+        })
+
+      // And an audit message was sent
       cy.expectAuditEvents([
         {
           who: 'USER1',

@@ -144,11 +144,81 @@ const stubUpdateHubManagerSignature = (options: StubUpdateHubManagerSignaturesOp
   })
 }
 
+type StubGetHubManager200Options = {
+  id: string
+  status: 200
+  response: {
+    data: {
+      id: string
+      name: string
+      hasSignature: boolean
+    }
+  }
+}
+
+type StubGetHubManagerErrorOptions = {
+  id: string
+  status: 404 | 500
+  response: string
+}
+
+type StubGetHubManagerOptions = StubGetHubManager200Options | StubGetHubManagerErrorOptions
+
+const stubGetHubManager = (options: StubGetHubManagerOptions) => {
+  return stubFor({
+    request: {
+      method: 'GET',
+      urlPattern: `${baseUrl}/hub-managers/${options.id}`,
+    },
+    response: {
+      status: options.status,
+      headers: {
+        'Content-Type': 'application/json;charset=UTF-8',
+      },
+      jsonBody: options.response,
+    },
+  })
+}
+
+type StubGetHubManagerSignature200Options = {
+  id: string
+  status: 200
+  response: string
+}
+
+type StubGetHubManagerSignatureErrorOptions = {
+  id: string
+  status: 404 | 500
+  response: string
+}
+
+type StubGetHubManagerSignatureOptions = StubGetHubManagerSignature200Options | StubGetHubManagerSignatureErrorOptions
+
+const stubGetHubManagerSignature = (options: StubGetHubManagerSignatureOptions) => {
+  return stubFor({
+    request: {
+      method: 'GET',
+      urlPattern: `${baseUrl}/hub-managers/${options.id}/signature`,
+    },
+    response: {
+      status: options.status,
+      headers: {
+        'Content-Type': 'application/json;charset=UTF-8',
+      },
+      base64Body: options.response,
+    },
+  })
+}
+
 export {
   stubCreateHubManager,
   StubCreateHubManagerOptions,
   stubDeleteHubManager,
   StubDeleteHubManagerOptions,
+  stubGetHubManager,
+  StubGetHubManagerOptions,
+  stubGetHubManagerSignature,
+  StubGetHubManagerSignatureOptions,
   stubGetHubManagers,
   StubGetHubManagersOptions,
   stubUpdateHubManagerSignature,
