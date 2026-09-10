@@ -11,6 +11,7 @@ context('Location Data', () => {
     beforeEach(() => {
       cy.task('reset')
       cy.task('stubSignIn', hubCaseworker)
+      cy.stubOrdnanceSurvey()
       cy.signIn()
     })
 
