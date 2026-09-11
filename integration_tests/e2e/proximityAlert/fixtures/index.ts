@@ -38,6 +38,8 @@ const matchedDeviceWearer1 = {
     {
       capturedDateTime: '2025-01-01T00:00',
       direction: 10,
+      entryBearing: 20,
+      exitBearing: 200,
       longitude: deviceLocation[0],
       latitude: deviceLocation[1],
       precision: 10,
@@ -60,6 +62,8 @@ const matchedDeviceWearer2 = {
     {
       capturedDateTime: '2025-01-01T00:00',
       direction: 10,
+      entryBearing: null,
+      exitBearing: null,
       longitude: -2.528865717,
       latitude: 53.43157277,
       precision: 10,
@@ -137,6 +141,39 @@ const crimeVersionWithMultipleSequences = {
   },
 }
 
+const crimeVersionWithEntryExitBearings = {
+  ...crimeVersion,
+  matching: {
+    deviceWearers: [
+      {
+        ...matchedDeviceWearer1,
+        positions: [
+          {
+            ...matchedDeviceWearer1.positions[0],
+            latitude: deviceLocation[1],
+            longitude: deviceLocation[0],
+            // Natural point1->point2 direction here is due north (bearing 0), so entryBearing of 90
+            // (due east) can only appear if the field is honoured, not the geometry fallback.
+            entryBearing: 90,
+            exitBearing: null,
+            sequenceLabel: 'A1',
+          },
+          {
+            ...matchedDeviceWearer1.positions[0],
+            latitude: deviceLocation[1] + 0.002,
+            longitude: deviceLocation[0],
+            entryBearing: null,
+            // Natural point1->point2 direction here is due north (bearing 0), so exitBearing of 270
+            // (due west) can only appear if the field is honoured, not the geometry fallback.
+            exitBearing: 270,
+            sequenceLabel: 'A2',
+          },
+        ],
+      },
+    ],
+  },
+}
+
 export {
   crimeLocation,
   crimeVersionAwaitingMatching,
@@ -148,4 +185,5 @@ export {
   deviceLocation,
   hubManager,
   crimeVersionWithMultipleSequences,
+  crimeVersionWithEntryExitBearings,
 }
