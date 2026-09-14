@@ -18,6 +18,8 @@ type CrimeVersion = {
 type DeviceWearerPosition = {
   capturedDateTime: string
   direction: number
+  entryBearing?: number | null
+  exitBearing?: number | null
   latitude: number
   longitude: number
   precision: number

@@ -31,6 +31,8 @@ const getCrimeVersionDtoSchema = z.object({
               z.object({
                 capturedDateTime: z.string(),
                 direction: z.number(),
+                entryBearing: z.number().nullish(),
+                exitBearing: z.number().nullish(),
                 latitude: z.number(),
                 longitude: z.number(),
                 precision: z.number(),

@@ -3,12 +3,14 @@ import Map from 'ol/Map'
 import BaseLayer from 'ol/layer/Base'
 import { fromLonLat, transform } from 'ol/proj'
 import VectorLayer from 'ol/layer/Vector'
+import { LineString } from 'ol/geom'
 import { Style } from 'ol/style'
 import Page from '../../pages/page'
 import CrimeVersionPage from '../../pages/proximityAlert/crimeVersion'
 import {
   crimeLocation,
   crimeVersionId,
+  crimeVersionWithEntryExitBearings,
   crimeVersionWithManyMatches,
   crimeVersionWithMultipleSequences,
   deviceLocation,
@@ -31,6 +33,39 @@ const getLayers = (map: Map, pattern: RegExp = /device-wearer-.*/): Array<{ titl
     .getAllLayers()
     .filter(layer => pattern.test(getTitle(layer)))
     .map(layer => ({ title: getTitle(layer), visible: layer.isVisible() }))
+}
+
+// Compass bearing (0-360, clockwise from north) of the line from `start` to `end`, matching the
+// convention used by the map library's bearingToVector helper (x = east, y = north).
+const bearingBetween = (start: [number, number], end: [number, number]): number => {
+  const dx = end[0] - start[0]
+  const dy = end[1] - start[1]
+  const bearing = (Math.atan2(dx, dy) * 180) / Math.PI
+
+  return (bearing + 360) % 360
+}
+
+const getTrackSegmentBearing = (map: Map, layerTitle: string, segmentType: 'entry' | 'exit'): number | undefined => {
+  const layer = map.getAllLayers().find(l => l.get('title') === layerTitle)
+
+  if (!layer) {
+    return undefined
+  }
+
+  const feature = (layer as VectorLayer)
+    .getSource()!
+    .getFeatures()
+    .find(f => f.get('trackSegmentType') === segmentType)
+
+  if (!feature) {
+    return undefined
+  }
+
+  const coordinates = (feature.getGeometry() as LineString).getCoordinates() as [number, number][]
+
+  // Entry segments are drawn [entryPoint, firstTrackPoint], so the direction of travel is entryPoint -> firstTrackPoint.
+  // Exit segments are drawn [lastTrackPoint, exitPoint], so the direction of travel is lastTrackPoint -> exitPoint.
+  return bearingBetween(coordinates[0], coordinates[1])
 }
 
 const getResolvedStyles = (map: Map, layerId: string): Array<Array<Style>> => {
@@ -299,6 +334,39 @@ context('Crime Version', () => {
             { title: 'device-wearer-circles-2', visible: true },
             { title: 'device-wearer-positions-2', visible: true },
           ])
+        })
+      })
+    })
+
+    it('should draw the track entry/exit lines using the entryBearing and exitBearing values, not a geometry fallback', () => {
+      // Given a two-point track where the natural point-to-point direction is due north, but
+      // entryBearing/exitBearing are set to due east/west respectively (see fixtures/index.ts)
+      cy.stubGetCrimeVersion({
+        status: 200,
+        crimeVersionId,
+        response: {
+          data: crimeVersionWithEntryExitBearings,
+        },
+      })
+
+      // When the user loads the page
+      cy.visit(`/proximity-alert/${crimeVersionId}`)
+
+      const page = Page.verifyOnPage(CrimeVersionPage)
+
+      // And the map is ready
+      page.map.mapInstance.then(map => {
+        // And the user shows the tracks for device wearer 1
+        page.map.sidebar.deviceWearerTrackToggles.select('device-wearer-tracks-1')
+
+        cy.wait(100).then(() => {
+          // Then the entry line should point at bearing 90 (due east, as provided by entryBearing),
+          // not the geometry fallback direction (due north/south)
+          expect(getTrackSegmentBearing(map, 'device-wearer-tracks-1-A', 'entry')).to.be.closeTo(90, 1)
+
+          // And the exit line should point at bearing 270 (due west, as provided by exitBearing),
+          // not the geometry fallback direction (due north/south)
+          expect(getTrackSegmentBearing(map, 'device-wearer-tracks-1-A', 'exit')).to.be.closeTo(270, 1)
         })
       })
     })

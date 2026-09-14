@@ -49,6 +49,10 @@ class DeviceWearerLayer extends LayerGroup {
             entryExit: {
               enabled: true,
               extensionDistanceMeters: 50,
+              direction: {
+                property: { entry: 'entryBearing', exit: 'exitBearing' },
+                units: 'degrees',
+              },
               centre: [crime.longitude, crime.latitude],
               radiusMeters: crime.precision,
             },

@@ -39,22 +39,36 @@ const presentDevicePositions = ({
   nomisId,
   positions,
 }: DeviceWearer): Array<Position & Record<string, unknown>> => {
-  return positions.map(({ capturedDateTime, direction, latitude, longitude, precision, sequenceLabel, speed }) => {
-    return {
+  return positions.map(
+    ({
+      capturedDateTime,
+      direction,
+      entryBearing,
+      exitBearing,
       latitude,
       longitude,
       precision,
-      capturedDateTime: formatDateTime(capturedDateTime, 'DD/MM/YYYY, HH:mm:ss'),
-      deviceId: deviceSerialNumber,
-      direction,
-      name,
-      nomisId,
-      overlayTitleTemplateId: 'overlay-title-device-location',
-      overlayBodyTemplateId: 'overlay-body-device-location',
       sequenceLabel,
       speed,
-    }
-  })
+    }) => {
+      return {
+        latitude,
+        longitude,
+        precision,
+        capturedDateTime: formatDateTime(capturedDateTime, 'DD/MM/YYYY, HH:mm:ss'),
+        deviceId: deviceSerialNumber,
+        direction,
+        entryBearing,
+        exitBearing,
+        name,
+        nomisId,
+        overlayTitleTemplateId: 'overlay-title-device-location',
+        overlayBodyTemplateId: 'overlay-body-device-location',
+        sequenceLabel,
+        speed,
+      }
+    },
+  )
 }
 
 const presentMatchingResult = (crimeVersion: CrimeVersion) => {
