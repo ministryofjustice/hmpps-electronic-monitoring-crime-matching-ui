@@ -28,6 +28,7 @@ import type { Services } from './services'
 import populateConstants from './middleware/populateConstants'
 import { CRIME_MATCHING_ROLES } from './constants/roles'
 import auditMiddleware from './middleware/auditMiddleware'
+import setUpRateLimiter from './middleware/setUpRateLimiter'
 
 // Loads Probation Design System components into the request
 async function loadPdsComponents(req: express.Request, res: express.Response): Promise<void> {
@@ -46,7 +47,7 @@ export default function createApp(services: Services): express.Application {
   const app = express()
 
   app.set('json spaces', 2)
-  app.set('trust proxy', true)
+  app.set('trust proxy', 1) // Trust the client IP forwarded by the Kubernetes ingress, not an IP claimed by a client. This prevents clients bypassing IP-based rate limiting.
   app.set('port', process.env.PORT || 3000)
 
   // Ordnance Survey Maps middleware
@@ -65,6 +66,7 @@ export default function createApp(services: Services): express.Application {
     }),
   )
 
+  app.use(setUpRateLimiter({ enabled: process.env.RATE_LIMIT_ENABLED !== 'false' }))
   app.use(setUpHealthChecks(services.applicationInfo, services.playwrightBrowserService))
   app.use(setUpWebSecurity())
   app.use(setUpWebSession())
