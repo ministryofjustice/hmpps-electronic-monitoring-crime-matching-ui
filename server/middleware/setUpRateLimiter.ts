@@ -36,7 +36,11 @@ export default function setUpRateLimiter({
       limit,
       store,
       handler: (request, response, next, options) => {
-        logger.warn('client was rate limited', request.rateLimit)
+        const { key, ...rateLimitDetails } = request.rateLimit ?? {}
+        logger.warn(
+          { requestId: request.id, method: request.method, rateLimit: rateLimitDetails },
+          'client was rate limited',
+        )
         response.status(options.statusCode).send(options.message)
       },
     }),
