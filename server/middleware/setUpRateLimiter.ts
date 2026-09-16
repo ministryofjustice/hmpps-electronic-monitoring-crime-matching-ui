@@ -37,6 +37,7 @@ export default function setUpRateLimiter({
       store,
       handler: (request, response, next, options) => {
         const { key, ...rateLimitDetails } = request.rateLimit ?? {}
+        // Requires setUpWebSession to ensure request.id is available
         logger.warn(
           { requestId: request.id, method: request.method, rateLimit: rateLimitDetails },
           'client was rate limited',

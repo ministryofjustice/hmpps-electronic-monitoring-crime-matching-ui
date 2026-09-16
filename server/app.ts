@@ -66,10 +66,10 @@ export default function createApp(services: Services): express.Application {
     }),
   )
 
-  app.use(setUpRateLimiter({ enabled: process.env.RATE_LIMIT_ENABLED !== 'false' }))
   app.use(setUpHealthChecks(services.applicationInfo, services.playwrightBrowserService))
   app.use(setUpWebSecurity())
   app.use(setUpWebSession())
+  app.use(setUpRateLimiter({ enabled: process.env.RATE_LIMIT_ENABLED !== 'false' }))
   app.use(setUpWebRequestParsing())
   app.use(setUpStaticResources())
   nunjucksSetup(app)
