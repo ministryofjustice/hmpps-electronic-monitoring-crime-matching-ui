@@ -67,6 +67,7 @@
     "passport": "^0.7.0",
     "passport-oauth2": "^1.8.0",
     "playwright": "1.63.0",
+    "rate-limit-redis": "6.0.1",
     "redis": "6.2.1",
     "superagent": "^10.3.0",
     "zod": "^4.5.4"
