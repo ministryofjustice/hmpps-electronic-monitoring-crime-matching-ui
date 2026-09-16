@@ -121,13 +121,13 @@ export const defaultHeaderCellProps = () =>
     verticalAlign: VerticalAlign.CENTER,
   }) as const
 
-// Rows that shouldn't split across pages.
+// Pass `cantSplit: true` only for rows that are always short enough to never need to split.
 export const rowNoSplitAcrossPages = (
   children: TableCell[],
-  opts?: { heightWordUnits?: number; heightRule?: HeightRuleValue },
+  opts?: { heightWordUnits?: number; heightRule?: HeightRuleValue; cantSplit?: boolean },
 ): TableRow =>
   new TableRow({
-    cantSplit: true,
+    cantSplit: opts?.cantSplit ?? false,
     height: opts?.heightWordUnits
       ? {
           value: opts.heightWordUnits,

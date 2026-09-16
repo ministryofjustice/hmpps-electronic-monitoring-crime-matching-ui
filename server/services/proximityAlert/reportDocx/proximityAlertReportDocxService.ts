@@ -12,7 +12,7 @@ import {
 import disclaimerTable from './sections/disclaimerSection'
 import exhibitMapKeySection from './sections/exhibitMapKeySection'
 import exhibitPositionsSection from './sections/exhibitPositionsSection'
-import { fillerHeightForMapPage, mapImagePageTable } from './sections/mapImageSection'
+import mapImagePageTable, { fillerHeightForMapPage } from './sections/mapImageSection'
 import witnessStatementTable from './sections/witnessStatementSection'
 
 export type BuildProximityAlertReportDocxArgs = {
@@ -57,11 +57,14 @@ export default class ProximityAlertReportDocxService {
         showTitleRow: true,
         jpg: images.overviewJpg,
         report,
-        fillerHeightWordUnits: fillerHeightForMapPage(images.overviewJpg, true),
+        fillerHeightWordUnits: fillerHeightForMapPage(true),
       }),
     )
 
-    children.push(...spacer(1))
+    // A page break is added here to guarantee the Disclaimer
+    // starts on its own page even if the map page box ends up taller
+    // than a single page's worth of content.
+    children.push(new Paragraph({ children: [new PageBreak()] }))
     children.push(disclaimerTable())
 
     const wearerSections = await Promise.all(
@@ -84,7 +87,7 @@ export default class ProximityAlertReportDocxService {
             showTitleRow: true,
             jpg: deviceWearerJpg,
             report,
-            fillerHeightWordUnits: fillerHeightForMapPage(deviceWearerJpg, true),
+            fillerHeightWordUnits: fillerHeightForMapPage(true),
           }),
         )
 
