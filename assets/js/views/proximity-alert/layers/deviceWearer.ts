@@ -41,7 +41,7 @@ const createConfidenceCircles = (deviceId: number, positions: Array<PositionWith
     title: `device-wearer-circles-${deviceId}`,
     positions,
     visible: true,
-    zIndex: 3,
+    zIndex: 6,
   })
   const layer = confidenceCircles.getPrimaryLayer()
 
@@ -50,17 +50,15 @@ const createConfidenceCircles = (deviceId: number, positions: Array<PositionWith
       new Style({
         stroke: new Stroke({
           color: '#ffffff',
-          lineDash: [8, 8],
-          lineCap: 'round',
-          width: 5,
+          width: 3,
         }),
       }),
       new Style({
         stroke: new Stroke({
           color: colour,
-          lineDash: [8, 8],
+          lineDash: [8, 3],
           lineCap: 'round',
-          width: 2.5,
+          width: 1.5,
         }),
       }),
     ])
