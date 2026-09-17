@@ -5,6 +5,8 @@ import {
   TracksLayer,
 } from '@ministryofjustice/hmpps-electronic-monitoring-components/map/layers'
 import LayerGroup from 'ol/layer/Group'
+import VectorLayer from 'ol/layer/Vector'
+import { Stroke, Style } from 'ol/style'
 import { Position } from '@ministryofjustice/hmpps-electronic-monitoring-components/map'
 
 type PositionWithSequenceLabel = Position & {
@@ -32,6 +34,39 @@ const groupPositionsBySequence = (positions: Array<PositionWithSequenceLabel>) =
   })
 
   return Array.from(groups.entries())
+}
+
+const createConfidenceCircles = (deviceId: number, positions: Array<PositionWithSequenceLabel>, colour: string) => {
+  const confidenceCircles = new CirclesLayer({
+    title: `device-wearer-circles-${deviceId}`,
+    positions,
+    visible: true,
+    zIndex: 3,
+  })
+  const layer = confidenceCircles.getPrimaryLayer()
+
+  if (layer instanceof VectorLayer) {
+    layer.setStyle([
+      new Style({
+        stroke: new Stroke({
+          color: '#ffffff',
+          lineDash: [8, 8],
+          lineCap: 'round',
+          width: 5,
+        }),
+      }),
+      new Style({
+        stroke: new Stroke({
+          color: colour,
+          lineDash: [8, 8],
+          lineCap: 'round',
+          width: 2.5,
+        }),
+      }),
+    ])
+  }
+
+  return confidenceCircles.getLayers()
 }
 
 class DeviceWearerLayer extends LayerGroup {
@@ -71,20 +106,7 @@ class DeviceWearerLayer extends LayerGroup {
         }).getLayers(),
 
         // Confidence circles
-        ...new CirclesLayer({
-          title: `device-wearer-circles-${deviceId}`,
-          positions,
-          visible: true,
-          zIndex: 3,
-          style: {
-            fill: null,
-            stroke: {
-              color: colour,
-              lineDash: [8, 8],
-              width: 2,
-            },
-          },
-        }).getLayers(),
+        ...createConfidenceCircles(deviceId, positions, 'rgba(242, 201, 76, 1)'),
 
         // Locations
         ...new LocationsLayer({
