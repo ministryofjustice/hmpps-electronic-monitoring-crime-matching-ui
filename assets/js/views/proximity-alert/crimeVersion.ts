@@ -160,8 +160,6 @@ const initialiseProximityAlertView = async () => {
     })
 
     for (const deviceWearer of data.matching.deviceWearers) {
-      console.log(colourByDeviceId.get(deviceWearer.deviceId))
-
       emMap.addLayerGroup(
         new DeviceWearerLayer(
           deviceWearer.deviceId,

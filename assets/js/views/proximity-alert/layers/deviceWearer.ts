@@ -46,22 +46,21 @@ const createConfidenceCircles = (deviceId: number, positions: Array<PositionWith
   const layer = confidenceCircles.getPrimaryLayer()
 
   if (layer instanceof VectorLayer) {
-    layer.setStyle([
-      new Style({
-        stroke: new Stroke({
-          color: '#ffffff',
-          width: 3,
-        }),
+    const confidenceCircleDashes = new Style({
+      stroke: new Stroke({
+        color: colour,
+        lineDash: [8, 3],
+        lineCap: 'round',
+        width: 1.5,
       }),
-      new Style({
-        stroke: new Stroke({
-          color: colour,
-          lineDash: [8, 3],
-          lineCap: 'round',
-          width: 1.5,
-        }),
+    })
+    const confidenceCircleHalo = new Style({
+      stroke: new Stroke({
+        color: '#ffffff',
+        width: 3,
       }),
-    ])
+    })
+    layer.setStyle([confidenceCircleHalo, confidenceCircleDashes])
   }
 
   return confidenceCircles.getLayers()
