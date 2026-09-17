@@ -16,7 +16,7 @@ import PROXIMITY_ALERT_REPORT_CONTENT from '../../../../constants/proximityAlert
 import { USABLE_PAGE_WIDTH_WORD_UNITS } from '../constants'
 
 const fmtDate = (dateString: string): string => formatDateTime(dateString, 'DD/MM/YYYY')
-const fmtDateTime = (dateTimeString: string): string => formatDateTime(dateTimeString, 'DD/MM/YYYY HH:mm')
+const fmtDateTime = (dateTimeString: string): string => formatDateTime(dateTimeString, 'DD/MM/YYYY HH:mm:ss')
 
 // Top boxed table: Date + Title + Summary.
 export const topSummaryTable = (report: ProximityAlertReportData): Table => {

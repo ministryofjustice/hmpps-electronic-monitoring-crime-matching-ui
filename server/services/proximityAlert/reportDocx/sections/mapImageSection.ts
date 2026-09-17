@@ -25,7 +25,7 @@ import {
 import PROXIMITY_ALERT_REPORT_CONTENT from '../../../../constants/proximityAlert/reportContent'
 import { imageParagraph, pxToWordUnits, scaledImageSize } from '../imageHelpers'
 
-const fmtDateTime = (dateString: string): string => formatDateTime(dateString, 'DD/MM/YYYY HH:mm')
+const fmtDateTime = (dateString: string): string => formatDateTime(dateString, 'DD/MM/YYYY HH:mm:ss')
 
 // Details of Allegation (nested table for map pages).
 const detailsOfAllegationTable = (report: ProximityAlertReportData): Table => {
