@@ -79,7 +79,7 @@ class DeviceWearerLayer extends LayerGroup {
           style: {
             fill: null,
             stroke: {
-              color: 'rgba(242, 201, 76, 1)',
+              color: colour,
               lineDash: [8, 8],
               width: 2,
             },
