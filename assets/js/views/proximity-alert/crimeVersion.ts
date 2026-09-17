@@ -29,7 +29,6 @@ export type MapData = {
 }
 
 const palette = [
-  '#d00050',
   '#fffb06',
   '#1065f9',
   '#69c9ff',
