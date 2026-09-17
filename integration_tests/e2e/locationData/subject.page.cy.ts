@@ -53,6 +53,7 @@ context('Location Data', () => {
       page.map.sidebar.analysisToggles.shouldNotBeChecked('confidenceLayer')
       page.map.sidebar.analysisToggles.shouldNotBeChecked('tracksLayer')
       page.map.sidebar.analysisToggles.shouldNotBeChecked('numberingLayer')
+      page.map.sidebar.analysisToggles.shouldNotBeChecked('otherLocations')
     })
 
     it('should show an alert if no location data was returned from the api', () => {
