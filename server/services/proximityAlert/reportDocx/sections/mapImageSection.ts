@@ -1,29 +1,18 @@
-import {
-  AlignmentType,
-  HeightRule,
-  Paragraph,
-  Table,
-  TableCell,
-  TableLayoutType,
-  TableRow,
-  VerticalAlign,
-  WidthType,
-} from 'docx'
+import { AlignmentType, HeightRule, Paragraph, Table, TableCell, TableLayoutType, TableRow, WidthType } from 'docx'
 import type { ProximityAlertReportData } from '../../../../presenters/proximityAlertReportData'
 import { formatDateTime } from '../../../../utils/date'
-import { USABLE_PAGE_HEIGHT_WORD_UNITS, USABLE_PAGE_WIDTH_WORD_UNITS } from '../constants'
+import { CELL_PADDING_WORD_UNITS, USABLE_PAGE_HEIGHT_WORD_UNITS, USABLE_PAGE_WIDTH_WORD_UNITS } from '../constants'
 import {
   defaultCellProps,
   cellParagraph,
   fullWidthDxa,
-  noBorder,
   pctToDxa,
   rowNoSplitAcrossPages,
   sectionHeaderShading,
   strongBlackBorders,
 } from '../docxComponents'
 import PROXIMITY_ALERT_REPORT_CONTENT from '../../../../constants/proximityAlert/reportContent'
-import { imageParagraph, pxToWordUnits, scaledImageSize } from '../imageHelpers'
+import { imageParagraph } from '../imageHelpers'
 
 const fmtDateTime = (dateString: string): string => formatDateTime(dateString, 'DD/MM/YYYY HH:mm:ss')
 
@@ -45,9 +34,12 @@ const detailsOfAllegationTable = (report: ProximityAlertReportData): Table => {
   const additionalInfoRowSpan = detailRows.length
   const columnWidthPercentages = [22, 33, 45]
 
+  const nestedTableWidthWordUnits =
+    USABLE_PAGE_WIDTH_WORD_UNITS - CELL_PADDING_WORD_UNITS.left - CELL_PADDING_WORD_UNITS.right
+
   return new Table({
-    width: fullWidthDxa(),
-    columnWidths: columnWidthPercentages.map(pct => pctToDxa(pct)),
+    width: { size: nestedTableWidthWordUnits, type: WidthType.DXA },
+    columnWidths: columnWidthPercentages.map(pct => pctToDxa(pct, nestedTableWidthWordUnits)),
     layout: TableLayoutType.FIXED,
     borders,
     rows: [
@@ -70,19 +62,19 @@ const detailsOfAllegationTable = (report: ProximityAlertReportData): Table => {
         new TableCell({
           ...defaultCellProps(),
           borders,
-          width: { size: pctToDxa(22), type: WidthType.DXA },
+          width: { size: pctToDxa(22, nestedTableWidthWordUnits), type: WidthType.DXA },
           children: [cellParagraph(detailRows[0][0])],
         }),
         new TableCell({
           ...defaultCellProps(),
           borders,
-          width: { size: pctToDxa(33), type: WidthType.DXA },
+          width: { size: pctToDxa(33, nestedTableWidthWordUnits), type: WidthType.DXA },
           children: [cellParagraph(detailRows[0][1], { alignment: AlignmentType.CENTER })],
         }),
         new TableCell({
           ...defaultCellProps(),
           borders: { ...borders, bottom: borders.bottom },
-          width: { size: pctToDxa(45), type: WidthType.DXA },
+          width: { size: pctToDxa(45, nestedTableWidthWordUnits), type: WidthType.DXA },
           rowSpan: additionalInfoRowSpan,
           children: [
             cellParagraph(detailsOfAllegationContent.additionalInformation, {
@@ -101,13 +93,13 @@ const detailsOfAllegationTable = (report: ProximityAlertReportData): Table => {
           new TableCell({
             ...defaultCellProps(),
             borders,
-            width: { size: pctToDxa(22), type: WidthType.DXA },
+            width: { size: pctToDxa(22, nestedTableWidthWordUnits), type: WidthType.DXA },
             children: [cellParagraph(label)],
           }),
           new TableCell({
             ...defaultCellProps(),
             borders,
-            width: { size: pctToDxa(33), type: WidthType.DXA },
+            width: { size: pctToDxa(33, nestedTableWidthWordUnits), type: WidthType.DXA },
             children: String(value)
               .split('\n')
               .map(line => cellParagraph(line, { alignment: AlignmentType.CENTER })),
@@ -119,7 +111,7 @@ const detailsOfAllegationTable = (report: ProximityAlertReportData): Table => {
 }
 
 // Map page “frame” table: optional title row + image + allegation table + filler.
-export const mapImagePageTable = (args: {
+const mapImagePageTable = (args: {
   title?: string
   showTitleRow?: boolean
   jpg: Buffer
@@ -129,7 +121,12 @@ export const mapImagePageTable = (args: {
   const { title, showTitleRow = true, jpg, report, fillerHeightWordUnits } = args
 
   const borders = strongBlackBorders()
-  const imageCellPadding = { top: 0, bottom: 0, left: 0, right: 0 } as const
+  const imageFullBleedIndent = { left: -CELL_PADDING_WORD_UNITS.left, right: -CELL_PADDING_WORD_UNITS.right }
+  const fillerMarginWordUnits = 40
+  const fillerIndent = {
+    left: fillerMarginWordUnits - CELL_PADDING_WORD_UNITS.left,
+    right: fillerMarginWordUnits - CELL_PADDING_WORD_UNITS.right,
+  }
 
   const gapBeforeDetailsWordUnits = 360
   const rows: TableRow[] = []
@@ -148,39 +145,34 @@ export const mapImagePageTable = (args: {
   }
 
   rows.push(
-    rowNoSplitAcrossPages([
-      new TableCell({
-        verticalAlign: VerticalAlign.TOP,
-        margins: imageCellPadding,
-        borders: { ...borders, bottom: noBorder() },
-        children: [imageParagraph(jpg)],
-      }),
-    ]),
-  )
-
-  rows.push(
-    rowNoSplitAcrossPages([
-      new TableCell({
-        ...defaultCellProps(),
-        borders: { ...borders, top: noBorder(), bottom: noBorder() },
-        children: [
-          new Paragraph({ children: [], spacing: { before: gapBeforeDetailsWordUnits, after: 0 } }),
-          detailsOfAllegationTable(report),
-        ],
-      }),
-    ]),
-  )
-
-  rows.push(
     rowNoSplitAcrossPages(
       [
         new TableCell({
           ...defaultCellProps(),
-          borders: { ...borders, top: noBorder() },
-          children: [new Paragraph({ children: [], spacing: { before: 0, after: 0 } })],
+          borders,
+          children: [
+            imageParagraph(jpg, imageFullBleedIndent),
+            new Paragraph({
+              children: [],
+              spacing: { before: gapBeforeDetailsWordUnits, after: 0 },
+              indent: fillerIndent,
+              alignment: AlignmentType.CENTER,
+            }),
+            detailsOfAllegationTable(report),
+            ...Array.from(
+              { length: 6 },
+              () =>
+                new Paragraph({
+                  children: [],
+                  spacing: { before: 0, after: 0 },
+                  indent: fillerIndent,
+                  alignment: AlignmentType.CENTER,
+                }),
+            ),
+          ],
         }),
       ],
-      { heightWordUnits: fillerHeightWordUnits, heightRule: HeightRule.EXACT },
+      { heightWordUnits: fillerHeightWordUnits, heightRule: HeightRule.ATLEAST },
     ),
   )
 
@@ -193,16 +185,13 @@ export const mapImagePageTable = (args: {
   })
 }
 
-export const fillerHeightForMapPage = (jpg: Buffer, hasTitleRow: boolean): number => {
-  const imageSizeForPage = scaledImageSize(jpg)
-  const imageHeightWordUnits = pxToWordUnits(imageSizeForPage.height)
+// Estimated minimum height for the row holding the map image, the "Details of Allegation" table,
+// and the blank filler space below it, so that row visually reaches the bottom of the page.
+export const fillerHeightForMapPage = (hasTitleRow: boolean): number => {
   const titleRowWordUnits = hasTitleRow ? 520 : 0
-  const detailsBlockHeightWordUnits = 3400
   const safetyBufferHeightWordUnits = 500
 
-  return Math.max(
-    0,
-    USABLE_PAGE_HEIGHT_WORD_UNITS -
-      (titleRowWordUnits + imageHeightWordUnits + detailsBlockHeightWordUnits + safetyBufferHeightWordUnits),
-  )
+  return Math.max(0, USABLE_PAGE_HEIGHT_WORD_UNITS - (titleRowWordUnits + safetyBufferHeightWordUnits))
 }
+
+export default mapImagePageTable

@@ -34,7 +34,9 @@ const DEFAULT_VIEWPORT = {
   width: 1200,
   height: 650,
 }
-const DEFAULT_JPEG_QUALITY = 85
+// Double pixel density for better quality of map image
+const DEFAULT_DEVICE_SCALE_FACTOR = 2
+const DEFAULT_JPEG_QUALITY = 95
 
 // Parse a Cookie header into Playwright cookie objects.
 const cookiesFromHeader = (cookieHeader: string, baseUrlForCookies: string) => {
@@ -243,6 +245,7 @@ export default class MapImageRendererService {
 
     const context = await browser.newContext({
       viewport: DEFAULT_VIEWPORT,
+      deviceScaleFactor: DEFAULT_DEVICE_SCALE_FACTOR,
     })
 
     try {
