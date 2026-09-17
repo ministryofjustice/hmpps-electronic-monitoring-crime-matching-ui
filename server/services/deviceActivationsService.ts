@@ -26,7 +26,6 @@ class DeviceActivationsService {
       deviceActivation.deviceActivationId,
       fromDate.toISOString(),
       toDate.toISOString(),
-      'GPS',
     )
 
     return getDeviceActivationPositionsDtoSchema

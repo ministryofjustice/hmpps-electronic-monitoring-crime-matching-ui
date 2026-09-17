@@ -49,7 +49,7 @@ context('Location Data', () => {
       page.map.sidebar.form.toDateField.shouldHaveValue({ date: '02/01/2025', hour: '02', minute: '04', second: '50' })
 
       // Initial state should be to show only the locations
-      page.map.sidebar.analysisToggles.shouldBeChecked('pointsLayer')
+      page.map.sidebar.analysisToggles.shouldBeChecked('locationsLayer')
       page.map.sidebar.analysisToggles.shouldNotBeChecked('confidenceLayer')
       page.map.sidebar.analysisToggles.shouldNotBeChecked('tracksLayer')
       page.map.sidebar.analysisToggles.shouldNotBeChecked('numberingLayer')
@@ -210,7 +210,7 @@ context('Interacting with the map', () => {
   it('adds the expected layers for subject maps', () => {
     page.map.mapInstance.then(map => {
       const layerTitles = map.getAllLayers().map(l => l.get('title'))
-      expect(layerTitles).to.include.members(['pointsLayer', 'tracksLayer', 'numberingLayer', 'confidenceLayer'])
+      expect(layerTitles).to.include.members(['locationsLayer', 'tracksLayer', 'numberingLayer', 'confidenceLayer'])
     })
   })
 

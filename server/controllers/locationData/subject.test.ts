@@ -502,7 +502,6 @@ describe('SubjectController', () => {
         Number(deviceActivationId),
         from,
         to,
-        'GPS',
       )
       expect(res.render).toHaveBeenCalledWith('pages/locationData/subject', {
         alerts: [
@@ -639,7 +638,6 @@ describe('SubjectController', () => {
         Number(deviceActivationId),
         from,
         to,
-        'GPS',
       )
       expect(res.render).toHaveBeenCalledWith('pages/locationData/subject', {
         alerts: [],
@@ -833,7 +831,6 @@ describe('SubjectController', () => {
         Number(deviceActivationId),
         from,
         to,
-        'GPS',
       )
       expect(res.setHeader).toHaveBeenNthCalledWith(1, 'Content-Type', 'text/csv')
       expect(res.setHeader).toHaveBeenNthCalledWith(
