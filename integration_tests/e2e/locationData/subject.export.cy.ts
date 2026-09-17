@@ -23,7 +23,7 @@ context('Location Data', () => {
       cy.stubGetDeviceActivationPositions({
         status: 200,
         deviceActivationId,
-        query: 'from=\\S+&to=\\S+&geolocationMechanism=GPS',
+        query: 'from=\\S+&to=\\S+',
         response: sampleLocations,
       })
       cy.stubGetPerson()

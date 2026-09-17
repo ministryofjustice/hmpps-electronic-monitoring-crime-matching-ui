@@ -77,6 +77,7 @@ export default class CrimeMatchingClient extends RestClient {
     deviceActivationId: number,
     from: string,
     to: string,
+    geolocationMechanism?: string,
   ): Promise<unknown> {
     return this.get(
       {
@@ -84,6 +85,7 @@ export default class CrimeMatchingClient extends RestClient {
         query: {
           from,
           to,
+          geolocationMechanism,
         },
       },
       authOptions,
