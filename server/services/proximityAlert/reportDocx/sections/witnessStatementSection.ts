@@ -20,6 +20,13 @@ import {
   noTopBorder,
 } from '../docxComponents'
 import PROXIMITY_ALERT_REPORT_CONTENT from '../../../../constants/proximityAlert/reportContent'
+import { CELL_PADDING_WORD_UNITS, USABLE_PAGE_WIDTH_WORD_UNITS } from '../constants'
+
+// The mini table is nested inside a padded cell of the outer table, so it must be sized to that
+// cell's content width (page width minus the cell's own left/right padding) rather than the full
+// page width - otherwise it overflows past the outer table's right border.
+const NESTED_TABLE_WIDTH_WORD_UNITS =
+  USABLE_PAGE_WIDTH_WORD_UNITS - CELL_PADDING_WORD_UNITS.left - CELL_PADDING_WORD_UNITS.right
 
 const fmtDate = (dateString: string): string => formatDateTime(dateString, 'DD/MM/YYYY')
 const fmtDateTime = (dateString: string): string => formatDateTime(dateString, 'DD/MM/YYYY HH:mm')
@@ -193,8 +200,12 @@ const witnessStatementTable = async (args: {
   ])
 
   const witnessMiniTable = new Table({
-    width: fullWidthDxa(),
-    columnWidths: [pctToDxa(33), pctToDxa(34), pctToDxa(33)],
+    width: { size: NESTED_TABLE_WIDTH_WORD_UNITS, type: WidthType.DXA },
+    columnWidths: [
+      pctToDxa(33, NESTED_TABLE_WIDTH_WORD_UNITS),
+      pctToDxa(34, NESTED_TABLE_WIDTH_WORD_UNITS),
+      pctToDxa(33, NESTED_TABLE_WIDTH_WORD_UNITS),
+    ],
     layout: TableLayoutType.FIXED,
     borders,
     rows: [
@@ -203,7 +214,7 @@ const witnessStatementTable = async (args: {
           ...defaultCellProps(),
           borders,
           shading: sectionHeaderShading(),
-          width: { size: pctToDxa(33), type: WidthType.DXA },
+          width: { size: pctToDxa(33, NESTED_TABLE_WIDTH_WORD_UNITS), type: WidthType.DXA },
           children: [
             cellParagraph(witnessStatement.miniTableHeaders.personName, {
               bold: true,
@@ -215,7 +226,7 @@ const witnessStatementTable = async (args: {
           ...defaultCellProps(),
           borders,
           shading: sectionHeaderShading(),
-          width: { size: pctToDxa(34), type: WidthType.DXA },
+          width: { size: pctToDxa(34, NESTED_TABLE_WIDTH_WORD_UNITS), type: WidthType.DXA },
           children: [
             cellParagraph(witnessStatement.miniTableHeaders.firstLocationDateTime, {
               bold: true,
@@ -227,7 +238,7 @@ const witnessStatementTable = async (args: {
           ...defaultCellProps(),
           borders,
           shading: sectionHeaderShading(),
-          width: { size: pctToDxa(33), type: WidthType.DXA },
+          width: { size: pctToDxa(33, NESTED_TABLE_WIDTH_WORD_UNITS), type: WidthType.DXA },
           children: [
             cellParagraph(witnessStatement.miniTableHeaders.lastLocationDateTime, {
               bold: true,
