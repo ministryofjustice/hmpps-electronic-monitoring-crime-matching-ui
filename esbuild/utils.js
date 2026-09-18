@@ -158,6 +158,8 @@ class ESBuildManager {
 class ServerManager {
   constructor(options = {}) {
     this.serverProcess = null
+    this.restartPromise = null
+    this.restartRequested = false
     this.options = {
       label: 'Node',
       color: 'green',
@@ -169,7 +171,30 @@ class ServerManager {
    * Start or restart the server
    * Properly handles race conditions by waiting for old process to exit
    */
-  async restart() {
+  restart() {
+    this.restartRequested = true
+
+    if (!this.restartPromise) {
+      this.restartPromise = this.processRestarts().finally(() => {
+        this.restartPromise = null
+      })
+    }
+
+    return this.restartPromise
+  }
+
+  async processRestarts() {
+    this.restartRequested = false
+    await this.replaceServerProcess()
+
+    if (this.restartRequested) {
+      return this.processRestarts()
+    }
+
+    return undefined
+  }
+
+  async replaceServerProcess() {
     if (this.serverProcess) {
       // Check if process is still alive before waiting for exit
       const isAlive = this.serverProcess.exitCode === null && this.serverProcess.signalCode === null
