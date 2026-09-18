@@ -159,8 +159,6 @@ const mapImagePageTable = (args: {
     )
   }
 
-  // ATLEAST (not EXACT) so the row only stretches to fill the page when content is short -
-  // fillerHeightWordUnits already keeps a generous buffer below a full page's height.
   rows.push(
     rowNoSplitAcrossPages(
       [
@@ -179,6 +177,8 @@ const mapImagePageTable = (args: {
           ],
         }),
       ],
+      // ATLEAST (not EXACT) so the row only stretches to fill the page when content is short -
+      // fillerHeightWordUnits already keeps a generous buffer below a full page's height.
       { heightWordUnits: fillerHeightWordUnits, heightRule: HeightRule.ATLEAST },
     ),
   )
