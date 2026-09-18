@@ -14,7 +14,7 @@ const url = `/location-data/device-activations/${deviceActivationId}?${query}`
 const getLayers = (map: Map): Array<{ title: string; visible: boolean; positions: number }> => {
   return map
     .getAllLayers()
-    .filter(layer => getTitle(layer) !== '')
+    .filter(layer => layer.getSource() instanceof VectorSource)
     .map(layer => {
       const source = layer.getSource() as VectorSource
 
