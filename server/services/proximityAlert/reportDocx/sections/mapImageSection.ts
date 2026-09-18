@@ -21,6 +21,56 @@ import { imageParagraph } from '../imageHelpers'
 
 const fmtDateTime = (dateString: string): string => formatDateTime(dateString, 'DD/MM/YYYY HH:mm:ss')
 
+// Matches the document's default body font (see proximityAlertReportDocxService.ts `styles.default`).
+const BODY_FONT_SIZE_PT = 11
+const LINE_HEIGHT_WORD_UNITS = Math.round(BODY_FONT_SIZE_PT * 20 * 1.15)
+const CELL_VERTICAL_PADDING_WORD_UNITS = CELL_PADDING_WORD_UNITS.top + CELL_PADDING_WORD_UNITS.bottom
+
+// Deliberately wide (worst-case) average glyph width for Arial, so estimated wrapped-line counts
+// never undercount how many lines the text will actually take.
+const AVG_CHAR_WIDTH_WORD_UNITS_PER_PT = 11
+
+// Estimates how many lines `text` will wrap onto within a column of the given width, honouring
+// any existing newlines. This can't match Word's exact layout, but errs on the side of overestimating.
+const estimateWrappedLineCount = (text: string, columnWidthWordUnits: number): number => {
+  const avgCharWidthWordUnits = BODY_FONT_SIZE_PT * AVG_CHAR_WIDTH_WORD_UNITS_PER_PT
+  const charsPerLine = Math.max(1, Math.floor(columnWidthWordUnits / avgCharWidthWordUnits))
+
+  return text.split('\n').reduce((total, line) => total + Math.max(1, Math.ceil(line.length / charsPerLine)), 0)
+}
+
+// Estimates the total height of `detailsOfAllegationTable`, including the unbounded crime text
+// (see server/schemas/proximityAlert/crimeVersion.ts), so the map image can be sized without risking
+// pushing the table onto a new page - a fixed reservation can't guarantee that for arbitrary-length text.
+const estimateDetailsOfAllegationTableHeightWordUnits = (report: ProximityAlertReportData): number => {
+  const { crimeVersionData } = report
+  const detailsOfAllegationContent = PROXIMITY_ALERT_REPORT_CONTENT.detailsOfAllegation
+
+  const nestedTableWidthWordUnits =
+    USABLE_PAGE_WIDTH_WORD_UNITS - CELL_PADDING_WORD_UNITS.left - CELL_PADDING_WORD_UNITS.right
+  const additionalInfoColumnWidthWordUnits =
+    pctToDxa(45, nestedTableWidthWordUnits) - CELL_PADDING_WORD_UNITS.left - CELL_PADDING_WORD_UNITS.right
+
+  const headingRowWordUnits = LINE_HEIGHT_WORD_UNITS + CELL_VERTICAL_PADDING_WORD_UNITS
+
+  // 5 single-line label/value rows, plus the crimeLocation row which wraps onto 2 lines
+  // (latitude and longitude are rendered as separate paragraphs).
+  const fixedRowsWordUnits =
+    5 * (LINE_HEIGHT_WORD_UNITS + CELL_VERTICAL_PADDING_WORD_UNITS) +
+    (2 * LINE_HEIGHT_WORD_UNITS + CELL_VERTICAL_PADDING_WORD_UNITS)
+
+  const crimeText = crimeVersionData.crimeText || detailsOfAllegationContent.noAdditionalInformation
+  const crimeTextLines = estimateWrappedLineCount(crimeText, additionalInfoColumnWidthWordUnits)
+  const additionalInfoWordUnits =
+    LINE_HEIGHT_WORD_UNITS + // "Additional Information" heading line
+    120 + // spacingBefore applied to the crime text paragraph
+    crimeTextLines * LINE_HEIGHT_WORD_UNITS +
+    CELL_VERTICAL_PADDING_WORD_UNITS
+
+  // The rowSpan'd additional-info cell can force the whole table taller than its fixed rows.
+  return headingRowWordUnits + Math.max(fixedRowsWordUnits, additionalInfoWordUnits)
+}
+
 // Details of Allegation (nested table for map pages).
 const detailsOfAllegationTable = (report: ProximityAlertReportData): Table => {
   const borders = strongBlackBorders()
@@ -135,9 +185,9 @@ const mapImagePageTable = (args: {
 
   const gapBeforeDetailsWordUnits = 360
 
-  // Reserve space for the "Details of Allegation" table (its height varies with wrapped
-  // crime text) so the image can never grow tall enough to push the table onto a new page.
-  const reservedForDetailsTableWordUnits = 4200
+  // Reserve space for the "Details of Allegation" table based on its actual (unbounded) crime text,
+  // so the image can never grow tall enough to push the table onto a new page.
+  const reservedForDetailsTableWordUnits = estimateDetailsOfAllegationTableHeightWordUnits(report)
   const maxImageHeightWordUnits = Math.max(
     0,
     fillerHeightWordUnits - gapBeforeDetailsWordUnits - reservedForDetailsTableWordUnits,
