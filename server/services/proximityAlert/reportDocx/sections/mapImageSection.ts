@@ -1,7 +1,12 @@
 import { AlignmentType, HeightRule, Paragraph, Table, TableCell, TableLayoutType, TableRow, WidthType } from 'docx'
 import type { ProximityAlertReportData } from '../../../../presenters/proximityAlertReportData'
 import { formatDateTime } from '../../../../utils/date'
-import { CELL_PADDING_WORD_UNITS, USABLE_PAGE_HEIGHT_WORD_UNITS, USABLE_PAGE_WIDTH_WORD_UNITS } from '../constants'
+import {
+  CELL_PADDING_WORD_UNITS,
+  USABLE_PAGE_HEIGHT_WORD_UNITS,
+  USABLE_PAGE_WIDTH_WORD_UNITS,
+  WORD_UNITS_PER_PX,
+} from '../constants'
 import {
   defaultCellProps,
   cellParagraph,
@@ -129,6 +134,16 @@ const mapImagePageTable = (args: {
   }
 
   const gapBeforeDetailsWordUnits = 360
+
+  // Reserve space for the "Details of Allegation" table (its height varies with wrapped
+  // crime text) so the image can never grow tall enough to push the table onto a new page.
+  const reservedForDetailsTableWordUnits = 4200
+  const maxImageHeightWordUnits = Math.max(
+    0,
+    fillerHeightWordUnits - gapBeforeDetailsWordUnits - reservedForDetailsTableWordUnits,
+  )
+  const maxImageHeightPx = Math.floor(maxImageHeightWordUnits / WORD_UNITS_PER_PX)
+
   const rows: TableRow[] = []
 
   if (showTitleRow) {
@@ -151,7 +166,7 @@ const mapImagePageTable = (args: {
           ...defaultCellProps(),
           borders,
           children: [
-            imageParagraph(jpg, imageFullBleedIndent),
+            imageParagraph(jpg, imageFullBleedIndent, maxImageHeightPx),
             new Paragraph({
               children: [],
               spacing: { before: gapBeforeDetailsWordUnits, after: 0 },
@@ -159,19 +174,11 @@ const mapImagePageTable = (args: {
               alignment: AlignmentType.CENTER,
             }),
             detailsOfAllegationTable(report),
-            ...Array.from(
-              { length: 6 },
-              () =>
-                new Paragraph({
-                  children: [],
-                  spacing: { before: 0, after: 0 },
-                  indent: fillerIndent,
-                  alignment: AlignmentType.CENTER,
-                }),
-            ),
           ],
         }),
       ],
+      // ATLEAST (not EXACT) so the row only stretches to fill the page when content is short -
+      // fillerHeightWordUnits already keeps a generous buffer below a full page's height.
       { heightWordUnits: fillerHeightWordUnits, heightRule: HeightRule.ATLEAST },
     ),
   )
@@ -185,11 +192,14 @@ const mapImagePageTable = (args: {
   })
 }
 
-// Estimated minimum height for the row holding the map image, the "Details of Allegation" table,
-// and the blank filler space below it, so that row visually reaches the bottom of the page.
+// Target minimum height for the row holding the map image, allegation table and blank filler,
+// so the box visually reaches near the bottom of the page (for pasting in further images later).
+// titleRowWordUnits allows for the title wrapping onto 2 lines, and the safety buffer absorbs
+// rendering variance (fonts, border/margin rounding) between Word's preview and edit-mode layout,
+// so this deliberately stops well short of a full page rather than risking overflow onto a new one.
 export const fillerHeightForMapPage = (hasTitleRow: boolean): number => {
-  const titleRowWordUnits = hasTitleRow ? 520 : 0
-  const safetyBufferHeightWordUnits = 500
+  const titleRowWordUnits = hasTitleRow ? 900 : 0
+  const safetyBufferHeightWordUnits = 1440
 
   return Math.max(0, USABLE_PAGE_HEIGHT_WORD_UNITS - (titleRowWordUnits + safetyBufferHeightWordUnits))
 }
