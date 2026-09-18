@@ -11,17 +11,19 @@ const deviceActivationId = '1'
 const query = 'from=2025-01-01T01:20:03.000Z&to=2025-01-02T02:04:50.000Z'
 const url = `/location-data/device-activations/${deviceActivationId}?${query}`
 
+const includedLayers = new Set(['locationsLayer', 'confidenceLayer', 'tracksLayer', 'numberingLayer'])
+
 const getLayers = (map: Map): Array<{ title: string; visible: boolean; positions: number }> => {
   return map
     .getAllLayers()
-    .filter(layer => layer.getSource() instanceof VectorSource)
+    .filter(layer => includedLayers.has(getTitle(layer)))
     .map(layer => {
       const source = layer.getSource() as VectorSource
 
       return {
         title: getTitle(layer),
         visible: layer.isVisible(),
-        positions: source.getFeatures().length ?? 0,
+        positions: source.getFeatures().length,
       }
     })
 }
