@@ -1,7 +1,7 @@
 import path from 'path'
 import SubjectPage from '../../pages/locationData/subject'
 import Page from '../../pages/page'
-import sampleLocations from './fixtures/sample-locations'
+import { sampleLocations } from './fixtures/sample-locations'
 import { condensedReport, fullReport } from './fixtures/location-data-reports'
 import { hubCaseworker } from '../../fixtures/auth'
 

@@ -37,25 +37,6 @@ const initialiseLocationDataView = async () => {
     )
   }
 
-  const addNumberingLayer = (includeAllLocations: boolean) => {
-    const positionsToNumber = includeAllLocations ? positions : gpsLocations
-    const numberedPositions = positionsToNumber.map((position, index) => ({
-      ...position,
-      displaySequenceNumber: index + 1,
-    }))
-    emMap.removeLayer('numberingLayer')
-    emMap.addLayer(
-      new TextLayer({
-        id: 'numberingLayer',
-        title: 'numberingLayer',
-        positions: numberedPositions,
-        textProperty: 'displaySequenceNumber',
-        visible: document.querySelector<HTMLInputElement>('[value="numberingLayer"]')?.checked ?? false,
-        zIndex: 3,
-      }),
-    )
-  }
-
   const addTracksLayer = (includeAllLocations: boolean) => {
     emMap.removeLayer('tracksLayer')
     emMap.addLayer(
@@ -86,6 +67,25 @@ const initialiseLocationDataView = async () => {
             width: 2,
           },
         },
+      }),
+    )
+  }
+
+  const addNumberingLayer = (includeAllLocations: boolean) => {
+    const positionsToNumber = includeAllLocations ? positions : gpsLocations
+    const numberedPositions = positionsToNumber.map((position, index) => ({
+      ...position,
+      displaySequenceNumber: index + 1,
+    }))
+    emMap.removeLayer('numberingLayer')
+    emMap.addLayer(
+      new TextLayer({
+        id: 'numberingLayer',
+        title: 'numberingLayer',
+        positions: numberedPositions,
+        textProperty: 'displaySequenceNumber',
+        visible: document.querySelector<HTMLInputElement>('[value="numberingLayer"]')?.checked ?? false,
+        zIndex: 3,
       }),
     )
   }
