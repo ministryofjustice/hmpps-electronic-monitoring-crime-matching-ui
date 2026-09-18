@@ -52,6 +52,7 @@
     "dayjs": "^1.11.23",
     "docx": "9.7.1",
     "express": "^5.2.1",
+    "express-rate-limit": "8.7.0",
     "express-session": "^1.19.0",
     "file-type": "22.0.2",
     "govuk-frontend": "^6.5.0",
@@ -66,6 +67,7 @@
     "passport": "^0.7.0",
     "passport-oauth2": "^1.8.0",
     "playwright": "1.63.0",
+    "rate-limit-redis": "6.0.1",
     "redis": "6.2.1",
     "superagent": "^10.3.0",
     "zod": "^4.5.4"
