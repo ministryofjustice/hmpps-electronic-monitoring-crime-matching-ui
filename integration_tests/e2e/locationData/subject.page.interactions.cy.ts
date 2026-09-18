@@ -45,7 +45,7 @@ context('Location Data', () => {
       cy.task('stubSignIn', hubCaseworker)
       cy.signIn()
 
-      cy.stubMapMiddleware()
+      cy.stubOrdnanceSurvey()
 
       cy.stubGetDeviceActivation()
       cy.stubGetDeviceActivationPositions({
