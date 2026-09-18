@@ -1,4 +1,4 @@
-import { AlignmentType, Paragraph, Table, TableCell, TableLayoutType, TableRow, WidthType } from 'docx'
+import { AlignmentType, HeightRule, Paragraph, Table, TableCell, TableLayoutType, TableRow, WidthType } from 'docx'
 import type { ProximityAlertReportData } from '../../../../presenters/proximityAlertReportData'
 import { formatDateTime } from '../../../../utils/date'
 import {
@@ -159,25 +159,28 @@ const mapImagePageTable = (args: {
     )
   }
 
-  // No forced minimum height here: an ATLEAST row height close to a full page previously
-  // caused Word to overflow a near-empty page onto a new page once real pagination ran.
+  // ATLEAST (not EXACT) so the row only stretches to fill the page when content is short -
+  // fillerHeightWordUnits already keeps a generous buffer below a full page's height.
   rows.push(
-    rowNoSplitAcrossPages([
-      new TableCell({
-        ...defaultCellProps(),
-        borders,
-        children: [
-          imageParagraph(jpg, imageFullBleedIndent, maxImageHeightPx),
-          new Paragraph({
-            children: [],
-            spacing: { before: gapBeforeDetailsWordUnits, after: 0 },
-            indent: fillerIndent,
-            alignment: AlignmentType.CENTER,
-          }),
-          detailsOfAllegationTable(report),
-        ],
-      }),
-    ]),
+    rowNoSplitAcrossPages(
+      [
+        new TableCell({
+          ...defaultCellProps(),
+          borders,
+          children: [
+            imageParagraph(jpg, imageFullBleedIndent, maxImageHeightPx),
+            new Paragraph({
+              children: [],
+              spacing: { before: gapBeforeDetailsWordUnits, after: 0 },
+              indent: fillerIndent,
+              alignment: AlignmentType.CENTER,
+            }),
+            detailsOfAllegationTable(report),
+          ],
+        }),
+      ],
+      { heightWordUnits: fillerHeightWordUnits, heightRule: HeightRule.ATLEAST },
+    ),
   )
 
   return new Table({
@@ -189,11 +192,14 @@ const mapImagePageTable = (args: {
   })
 }
 
-// Content-height budget for the map page, used only to cap the image height so it can never
-// grow tall enough on its own to push the details table onto a new page.
+// Target minimum height for the row holding the map image, allegation table and blank filler,
+// so the box visually reaches near the bottom of the page (for pasting in further images later).
+// titleRowWordUnits allows for the title wrapping onto 2 lines, and the safety buffer absorbs
+// rendering variance (fonts, border/margin rounding) between Word's preview and edit-mode layout,
+// so this deliberately stops well short of a full page rather than risking overflow onto a new one.
 export const fillerHeightForMapPage = (hasTitleRow: boolean): number => {
-  const titleRowWordUnits = hasTitleRow ? 520 : 0
-  const safetyBufferHeightWordUnits = 500
+  const titleRowWordUnits = hasTitleRow ? 900 : 0
+  const safetyBufferHeightWordUnits = 1440
 
   return Math.max(0, USABLE_PAGE_HEIGHT_WORD_UNITS - (titleRowWordUnits + safetyBufferHeightWordUnits))
 }
