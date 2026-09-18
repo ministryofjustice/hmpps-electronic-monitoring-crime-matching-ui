@@ -1,4 +1,4 @@
-import { EmMap } from '@ministryofjustice/hmpps-electronic-monitoring-components/map'
+import { EmMap, type Position } from '@ministryofjustice/hmpps-electronic-monitoring-components/map'
 import {
   LocationsLayer,
   TracksLayer,
@@ -8,6 +8,11 @@ import {
 import { queryElement } from '../../utils/utils'
 import initialiseDateFilterForm from '../../forms/date-filter-form'
 
+type PositionWithGeolocationMechanism = Position & {
+  geolocationMechanism: 'GPS' | 'RF' | 'LBS' | 'WIFI'
+  displaySequenceNumber?: string
+}
+
 const initialiseLocationDataView = async () => {
   const emMap = queryElement(document, 'em-map') as EmMap
 
@@ -15,49 +20,89 @@ const initialiseLocationDataView = async () => {
     emMap.addEventListener('map:ready', () => resolve(), { once: true })
   })
 
-  const { positions } = emMap
+  const positions = emMap.positions as Array<PositionWithGeolocationMechanism>
 
-  const locationsLayer = new LocationsLayer({
-    title: 'pointsLayer',
-    positions,
-    zIndex: 4,
+  const gpsLocations = positions.filter(position => position.geolocationMechanism === 'GPS')
+
+  const addLocationsLayer = (includeAllLocations: boolean) => {
+    emMap.removeLayer('locationsLayer')
+    emMap.addLayer(
+      new LocationsLayer({
+        id: 'locationsLayer',
+        title: 'locationsLayer',
+        positions: includeAllLocations ? positions : gpsLocations,
+        visible: document.querySelector<HTMLInputElement>('[value="locationsLayer"]')?.checked ?? false,
+        zIndex: 4,
+      }),
+    )
+  }
+
+  const addTracksLayer = (includeAllLocations: boolean) => {
+    emMap.removeLayer('tracksLayer')
+    emMap.addLayer(
+      new TracksLayer({
+        id: 'tracksLayer',
+        title: 'tracksLayer',
+        positions: includeAllLocations ? positions : gpsLocations,
+        visible: document.querySelector<HTMLInputElement>('[value="tracksLayer"]')?.checked ?? false,
+        zIndex: 1,
+      }),
+    )
+  }
+
+  const addConfidenceLayer = (includeAllLocations: boolean) => {
+    emMap.removeLayer('confidenceLayer')
+    emMap.addLayer(
+      new CirclesLayer({
+        positions: includeAllLocations ? positions : gpsLocations,
+        id: 'confidenceLayer',
+        title: 'confidenceLayer',
+        visible: document.querySelector<HTMLInputElement>('[value="confidenceLayer"]')?.checked ?? false,
+        zIndex: 6,
+        style: {
+          fill: null,
+          stroke: {
+            color: 'rgba(242, 169, 59, 1)',
+            lineDash: [8, 2],
+            width: 2,
+          },
+        },
+      }),
+    )
+  }
+
+  const addNumberingLayer = (includeAllLocations: boolean) => {
+    const positionsToNumber = includeAllLocations ? positions : gpsLocations
+    const numberedPositions = positionsToNumber.map((position, index) => ({
+      ...position,
+      displaySequenceNumber: index + 1,
+    }))
+    emMap.removeLayer('numberingLayer')
+    emMap.addLayer(
+      new TextLayer({
+        id: 'numberingLayer',
+        title: 'numberingLayer',
+        positions: numberedPositions,
+        textProperty: 'displaySequenceNumber',
+        visible: document.querySelector<HTMLInputElement>('[value="numberingLayer"]')?.checked ?? false,
+        zIndex: 3,
+      }),
+    )
+  }
+
+  addLocationsLayer(false)
+  addConfidenceLayer(false)
+  addTracksLayer(false)
+  addNumberingLayer(false)
+
+  // Event listener to update layers to include all sources
+  document.addEventListener('app:location-data:all-sources-changed', event => {
+    const { allSourcesEnabled } = (event as CustomEvent<{ allSourcesEnabled: boolean }>).detail
+    addLocationsLayer(allSourcesEnabled)
+    addConfidenceLayer(allSourcesEnabled)
+    addTracksLayer(allSourcesEnabled)
+    addNumberingLayer(allSourcesEnabled)
   })
-
-  const tracksLayer = new TracksLayer({
-    title: 'tracksLayer',
-    positions,
-    visible: false,
-    zIndex: 1,
-  })
-
-  const confidenceLayer = new CirclesLayer({
-    positions,
-    id: 'confidence',
-    title: 'confidenceLayer',
-    visible: false,
-    zIndex: 6,
-    style: {
-      fill: null,
-      stroke: {
-        color: 'rgba(242, 169, 59, 1)',
-        lineDash: [8, 2],
-        width: 2,
-      },
-    },
-  })
-
-  const numbersLayer = new TextLayer({
-    positions,
-    textProperty: 'sequenceNumber',
-    title: 'numberingLayer',
-    visible: false,
-    zIndex: 8,
-  })
-
-  emMap.addLayer(locationsLayer)
-  emMap.addLayer(tracksLayer)
-  emMap.addLayer(confidenceLayer)
-  emMap.addLayer(numbersLayer)
 
   emMap.dispatchEvent(
     new CustomEvent('app:map:layers:ready', {

@@ -65,4 +65,40 @@ const sampleLocations = {
   ] as Array<Position>,
 }
 
-export default sampleLocations
+const additionalSampleLocations = {
+  data: [
+    ...sampleLocations.data,
+    {
+      latitude: 51.5764009008577,
+      longitude: 0.04543934145429323,
+      precision: 50,
+      direction: -0.784,
+      geolocationMechanism: 'LBS',
+      positionId: 7,
+      speed: 6,
+      timestamp: '2025-01-01T00:06:00.000Z',
+    },
+    {
+      latitude: 51.5764009008677,
+      longitude: 0.04543934145429423,
+      precision: 50,
+      direction: -0.784,
+      geolocationMechanism: 'RF',
+      positionId: 8,
+      speed: 6,
+      timestamp: '2025-01-01T00:07:00.000Z',
+    },
+    {
+      latitude: 51.5764009008777,
+      longitude: 0.04543934145429523,
+      precision: 50,
+      direction: -0.784,
+      geolocationMechanism: 'WIFI',
+      positionId: 9,
+      speed: 6,
+      timestamp: '2025-01-01T00:08:00.000Z',
+    },
+  ] as Array<Position>,
+}
+
+export { sampleLocations, additionalSampleLocations }

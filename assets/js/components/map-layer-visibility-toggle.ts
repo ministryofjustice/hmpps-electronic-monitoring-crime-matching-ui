@@ -26,11 +26,25 @@ class MapLayerVisibilityToggle extends Component {
     }
   }
 
+  // Event to send when all sources enabled
+  updateForAllSources(allSourcesEnabled: boolean) {
+    document.dispatchEvent(
+      new CustomEvent('app:location-data:all-sources-changed', {
+        detail: { allSourcesEnabled },
+      }),
+    )
+  }
+
   handleChange(event: Event) {
     const $changedInput = event.target
 
     // Ignore clicks on things that aren't checkbox inputs
     if (!($changedInput instanceof HTMLInputElement) || $changedInput.type !== 'checkbox') {
+      return
+    }
+
+    if ($changedInput.value === 'otherLocations') {
+      this.updateForAllSources($changedInput.checked)
       return
     }
 

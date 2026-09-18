@@ -2,10 +2,10 @@ import { fromLonLat } from 'ol/proj'
 import { hubCaseworker } from '../../fixtures/auth'
 import SubjectPage from '../../pages/locationData/subject'
 import Page from '../../pages/page'
-import sampleLocations from './fixtures/sample-locations'
+import { sampleLocations } from './fixtures/sample-locations'
 
 const deviceActivationId = '1'
-const query = 'from=2025-01-01T01:20:03.000Z&to=2025-01-02T02:04:50.000Z&geolocationMechanism=GPS'
+const query = 'from=2025-01-01T01:20:03.000Z&to=2025-01-02T02:04:50.000Z'
 const url = `/location-data/device-activations/${deviceActivationId}?${query}`
 
 context('Location Data', () => {
@@ -49,10 +49,11 @@ context('Location Data', () => {
       page.map.sidebar.form.toDateField.shouldHaveValue({ date: '02/01/2025', hour: '02', minute: '04', second: '50' })
 
       // Initial state should be to show only the locations
-      page.map.sidebar.analysisToggles.shouldBeChecked('pointsLayer')
+      page.map.sidebar.analysisToggles.shouldBeChecked('locationsLayer')
       page.map.sidebar.analysisToggles.shouldNotBeChecked('confidenceLayer')
       page.map.sidebar.analysisToggles.shouldNotBeChecked('tracksLayer')
       page.map.sidebar.analysisToggles.shouldNotBeChecked('numberingLayer')
+      page.map.sidebar.analysisToggles.shouldNotBeChecked('otherLocations')
     })
 
     it('should show an alert if no location data was returned from the api', () => {
@@ -93,7 +94,7 @@ context('Location Data', () => {
       cy.stubGetDeviceActivationPositions({
         status: 200,
         deviceActivationId,
-        query: 'from=\\S+&to=\\S+&geolocationMechanism=GPS',
+        query: 'from=\\S+&to=\\S+',
         response: sampleLocations,
       })
       cy.stubGetPerson()
@@ -210,7 +211,7 @@ context('Interacting with the map', () => {
   it('adds the expected layers for subject maps', () => {
     page.map.mapInstance.then(map => {
       const layerTitles = map.getAllLayers().map(l => l.get('title'))
-      expect(layerTitles).to.include.members(['pointsLayer', 'tracksLayer', 'numberingLayer', 'confidenceLayer'])
+      expect(layerTitles).to.include.members(['locationsLayer', 'tracksLayer', 'numberingLayer', 'confidenceLayer'])
     })
   })
 

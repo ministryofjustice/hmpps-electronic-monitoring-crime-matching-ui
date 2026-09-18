@@ -20,13 +20,14 @@ class DeviceActivationsService {
     deviceActivation: DeviceActivation,
     fromDate: Dayjs,
     toDate: Dayjs,
+    geolocationMechanism?: string,
   ): Promise<Array<Position>> {
     const response = await this.crimeMatchingApiClient.getDeviceActivationPositions(
       asSystem(username),
       deviceActivation.deviceActivationId,
       fromDate.toISOString(),
       toDate.toISOString(),
-      'GPS',
+      geolocationMechanism,
     )
 
     return getDeviceActivationPositionsDtoSchema
