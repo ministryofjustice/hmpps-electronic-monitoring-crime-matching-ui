@@ -66,7 +66,7 @@ class DeviceWearerLayer extends LayerGroup {
           title: `device-wearer-labels-${deviceId}`,
           positions,
           textProperty: 'sequenceLabel',
-          zIndex: 5,
+          zIndex: 8,
           visible: true,
         }).getLayers(),
 
@@ -75,12 +75,12 @@ class DeviceWearerLayer extends LayerGroup {
           title: `device-wearer-circles-${deviceId}`,
           positions,
           visible: true,
-          zIndex: 3,
+          zIndex: 6,
           style: {
             fill: null,
             stroke: {
-              color: 'rgba(242, 201, 76, 1)',
-              lineDash: [8, 8],
+              color: 'rgba(242, 169, 59, 1)',
+              lineDash: [8, 3],
               width: 2,
             },
           },

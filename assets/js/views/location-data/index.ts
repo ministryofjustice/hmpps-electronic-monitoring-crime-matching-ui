@@ -58,12 +58,12 @@ const initialiseLocationDataView = async () => {
         id: 'confidenceLayer',
         title: 'confidenceLayer',
         visible: document.querySelector<HTMLInputElement>('[value="confidenceLayer"]')?.checked ?? false,
-        zIndex: 3,
+        zIndex: 6,
         style: {
           fill: null,
           stroke: {
-            color: 'rgba(242, 201, 76, 1)',
-            lineDash: [8, 8],
+            color: 'rgba(242, 169, 59, 1)',
+            lineDash: [8, 2],
             width: 2,
           },
         },
