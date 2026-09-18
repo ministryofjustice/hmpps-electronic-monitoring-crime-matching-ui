@@ -1,7 +1,7 @@
 import { hubCaseworker } from '../../fixtures/auth'
 import SubjectPage from '../../pages/locationData/subject'
 import Page from '../../pages/page'
-import sampleLocations from './fixtures/sample-locations'
+import { sampleLocations } from './fixtures/sample-locations'
 
 const deviceActivationId = '1'
 const query = 'from=2025-01-01T01:20:03.000Z&to=2025-01-02T02:04:50.000Z'
@@ -21,7 +21,7 @@ context('Location Data', () => {
       cy.stubGetDeviceActivationPositions({
         status: 200,
         deviceActivationId,
-        query: 'from=\\S+&to=\\S+&geolocationMechanism=GPS',
+        query: 'from=\\S+&to=\\S+',
         response: sampleLocations,
       })
       cy.stubGetPerson()
@@ -69,7 +69,7 @@ context('Location Data', () => {
       cy.stubGetDeviceActivationPositions({
         status: 200,
         deviceActivationId,
-        query: 'from=\\S+&to=\\S+&geolocationMechanism=GPS',
+        query: 'from=\\S+&to=\\S+',
         response: sampleLocations,
       })
       cy.stubGetPerson()
@@ -122,7 +122,7 @@ context('Location Data', () => {
       cy.stubGetDeviceActivationPositions({
         status: 200,
         deviceActivationId,
-        query: 'from=\\S+&to=\\S+&geolocationMechanism=GPS',
+        query: 'from=\\S+&to=\\S+',
         response: sampleLocations,
       })
       cy.stubGetPerson()
@@ -175,7 +175,7 @@ context('Location Data', () => {
       cy.stubGetDeviceActivationPositions({
         status: 200,
         deviceActivationId,
-        query: 'from=\\S+&to=\\S+&geolocationMechanism=GPS',
+        query: 'from=\\S+&to=\\S+',
         response: sampleLocations,
       })
       cy.stubGetPerson()
@@ -246,7 +246,7 @@ context('Location Data', () => {
       cy.stubGetDeviceActivationPositions({
         status: 200,
         deviceActivationId,
-        query: 'from=\\S+&to=\\S+&geolocationMechanism=GPS',
+        query: 'from=\\S+&to=\\S+',
         response: sampleLocations,
       })
       cy.stubGetPerson({
@@ -330,7 +330,7 @@ context('Location Data', () => {
       cy.stubGetDeviceActivationPositions({
         status: 200,
         deviceActivationId,
-        query: 'from=\\S+&to=\\S+&geolocationMechanism=GPS',
+        query: 'from=\\S+&to=\\S+',
         response: sampleLocations,
       })
       cy.stubGetPerson({

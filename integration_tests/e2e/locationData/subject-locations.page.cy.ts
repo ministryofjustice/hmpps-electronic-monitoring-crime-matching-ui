@@ -1,7 +1,7 @@
 import PersonsPage from '../../pages/locationData/persons'
 import Page from '../../pages/page'
 import SubjectPage from '../../pages/locationData/subject'
-import sampleLocations from './fixtures/sample-locations'
+import { sampleLocations } from './fixtures/sample-locations'
 import { hubCaseworker } from '../../fixtures/auth'
 
 const url = '/location-data/persons'

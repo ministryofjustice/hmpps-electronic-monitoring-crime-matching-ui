@@ -33,6 +33,7 @@ export default class SubjectController {
     deviceActivation: DeviceActivation,
     fromDate: Dayjs,
     toDate: Dayjs,
+    geolocationMechanism?: string,
   ): Promise<[Person, Position[]]> {
     const deviceWearerPromise = this.personsService.getPerson(username, deviceActivation!.personId)
     const positionsPromise = this.deviceActivationsService.getDeviceActivationPositions(
@@ -40,6 +41,7 @@ export default class SubjectController {
       deviceActivation!,
       fromDate,
       toDate,
+      geolocationMechanism,
     )
     return Promise.all([deviceWearerPromise, positionsPromise])
   }
@@ -184,6 +186,7 @@ export default class SubjectController {
         deviceActivation!,
         fromDate,
         toDate,
+        'GPS',
       )
 
       const csvData = generateLocationDataReport(deviceWearer, deviceActivation!, positions, reportType === 'condensed')

@@ -502,7 +502,7 @@ describe('SubjectController', () => {
         Number(deviceActivationId),
         from,
         to,
-        'GPS',
+        undefined,
       )
       expect(res.render).toHaveBeenCalledWith('pages/locationData/subject', {
         alerts: [
@@ -639,7 +639,7 @@ describe('SubjectController', () => {
         Number(deviceActivationId),
         from,
         to,
-        'GPS',
+        undefined,
       )
       expect(res.render).toHaveBeenCalledWith('pages/locationData/subject', {
         alerts: [],
