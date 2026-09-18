@@ -51,7 +51,7 @@ const initialiseLocationDataView = async () => {
     textProperty: 'sequenceNumber',
     title: 'numberingLayer',
     visible: false,
-    zIndex: 3,
+    zIndex: 8,
   })
 
   emMap.addLayer(locationsLayer)

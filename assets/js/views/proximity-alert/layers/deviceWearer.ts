@@ -98,7 +98,7 @@ class DeviceWearerLayer extends LayerGroup {
           title: `device-wearer-labels-${deviceId}`,
           positions,
           textProperty: 'sequenceLabel',
-          zIndex: 5,
+          zIndex: 8,
           visible: true,
         }).getLayers(),
 
