@@ -35,7 +35,7 @@ const initialiseLocationDataView = async () => {
     id: 'confidence',
     title: 'confidenceLayer',
     visible: false,
-    zIndex: 3,
+    zIndex: 6,
     style: {
       fill: null,
       stroke: {
@@ -51,7 +51,7 @@ const initialiseLocationDataView = async () => {
     textProperty: 'sequenceNumber',
     title: 'numberingLayer',
     visible: false,
-    zIndex: 3,
+    zIndex: 8,
   })
 
   emMap.addLayer(locationsLayer)

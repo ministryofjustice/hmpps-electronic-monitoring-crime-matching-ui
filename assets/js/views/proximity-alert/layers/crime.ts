@@ -55,7 +55,7 @@ class CrimeLayer extends LayerGroup {
               anchor: [0.5, 0.5],
             },
           },
-          zIndex: 10,
+          zIndex: 7,
         }).getLayers(),
       ],
     })
