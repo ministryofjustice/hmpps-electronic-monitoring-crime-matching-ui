@@ -3,6 +3,14 @@ import { ValidationResult } from '../../models/ValidationResult'
 import DeviceActivation from '../../types/entities/deviceActivation'
 import type { ExportProximityAlertState } from '../form-pages/proximityAlert/exportProximityAlert'
 
+type RateLimitInfo = {
+  limit: number
+  used: number
+  remaining: number
+  resetTime?: Date
+  key: string
+}
+
 export declare module 'express-session' {
   interface SessionData {
     returnTo: string
@@ -26,6 +34,7 @@ export declare global {
       id: string
       logout(done: (err: unknown) => void): void
       deviceActivation?: DeviceActivation
+      rateLimit?: RateLimitInfo
     }
 
     interface Locals {
