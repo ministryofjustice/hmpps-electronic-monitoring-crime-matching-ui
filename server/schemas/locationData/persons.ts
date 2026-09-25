@@ -5,7 +5,10 @@ const MISSING_FORM_VALUE_ERROR = 'You must enter a value for Name, NOMIS ID or D
 const personsQueryParametersSchema = z.object({
   searchTerm: z.string().default(''),
   searchField: z.enum(['name', 'nomisId', 'deviceId']).optional(),
-  page: z.string().default(''),
+  page: z
+    .string()
+    .regex(/^\d{1,2}$/)
+    .default(''),
 })
 
 const personsFormDataSchema = z
