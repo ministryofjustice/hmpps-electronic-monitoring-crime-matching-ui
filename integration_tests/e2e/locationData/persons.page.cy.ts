@@ -150,44 +150,46 @@ context('Location Data', () => {
     })
 
     it('should display the second page of results if the user clicks the next page button', () => {
+      const response = {
+        data: [
+          {
+            personId: '1',
+            nomisId: 'Nomis 1',
+            pncRef: 'YY/NNNNNNND',
+            name: 'John',
+            dateOfBirth: '2000-12-01T00:00:00.000Z',
+            address: '123 Street',
+            probationPractitioner: 'John Smith',
+            deviceActivations: [
+              {
+                deviceActivationId: 123456,
+                deviceId: 123456,
+                deviceName: '123456',
+                deviceSerialNumber: '987654321',
+                personId: '1',
+                deviceActivationDate: '2024-12-01T00:00:00.000Z',
+                deviceDeactivationDate: null,
+                orderStart: '2024-12-01T00:00:00.000Z',
+                orderEnd: '2024-12-31T00:00:00.000Z',
+              },
+            ],
+          },
+        ],
+        pageCount: 2,
+        pageNumber: 0,
+        pageSize: 1,
+      }
+
       // Stub the api to simulate the query returning the first page results
       cy.stubGetPersons({
         status: 200,
-        query: '\\?name=foo&page=1',
-        response: {
-          data: [
-            {
-              personId: '1',
-              nomisId: 'Nomis 1',
-              pncRef: 'YY/NNNNNNND',
-              name: 'John',
-              dateOfBirth: '2000-12-01T00:00:00.000Z',
-              address: '123 Street',
-              probationPractitioner: 'John Smith',
-              deviceActivations: [
-                {
-                  deviceActivationId: 123456,
-                  deviceId: 123456,
-                  deviceName: '123456',
-                  deviceSerialNumber: '987654321',
-                  personId: '1',
-                  deviceActivationDate: '2024-12-01T00:00:00.000Z',
-                  deviceDeactivationDate: null,
-                  orderStart: '2024-12-01T00:00:00.000Z',
-                  orderEnd: '2024-12-31T00:00:00.000Z',
-                },
-              ],
-            },
-          ],
-          pageCount: 2,
-          pageNumber: 1,
-          pageSize: 10,
-        },
+        query: '\\?name=foo',
+        response,
       })
       // Stub the api to simulate the query returning the second page results
       cy.stubGetPersons({
         status: 200,
-        query: '\\?name=foo&page=2',
+        query: '\\?name=foo&page=1',
         response: {
           data: [
             {
@@ -214,8 +216,8 @@ context('Location Data', () => {
             },
           ],
           pageCount: 2,
-          pageNumber: 2,
-          pageSize: 10,
+          pageNumber: 1,
+          pageSize: 1,
         },
       })
 

@@ -11,9 +11,6 @@
 {% set mainClasses = "app-container govuk-body device-activation-search" %}
 {% set pageType = "index" %}
 {% set rows = [] %}
-{% set pageSize = 10 %}
-{% set currentPage = 1 %}
-{% set totalPages = (persons.length / pageSize) | round(0, 'ceil') %}
 {% set activeLinkId = "location-data" %}
 
 {% if searchField === 'name' %}
@@ -23,7 +20,6 @@
 {% elif searchField === 'deviceId' %}
   {% set deviceId = searchTerm %}
 {% endif %}
-
 
 {% set nameHtml %}
   {{

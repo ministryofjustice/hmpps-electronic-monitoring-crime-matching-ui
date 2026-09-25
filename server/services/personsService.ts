@@ -7,12 +7,24 @@ import CrimeMatchingClient from '../data/crimeMatchingClient'
 class PersonsService {
   constructor(private readonly crimeMatchingApiClient: CrimeMatchingClient) {}
 
+  private parsePageNumber(page: string): string | undefined {
+    const pageNumber = parseInt(page.trim(), 10)
+
+    if (!Number.isNaN(pageNumber)) {
+      // API is 0-indexed, UI is 1-indexed
+      return (pageNumber - 1).toString()
+    }
+
+    return undefined
+  }
+
   async getPersons(username: string, searchField: string, searchTerm: string, page: string): Promise<GetPersonsDto> {
+    const parsedPageNumber = this.parsePageNumber(page)
     const response = await this.crimeMatchingApiClient.getPersonsBySearchTerm(
       asSystem(username),
       searchField,
       searchTerm,
-      page,
+      parsedPageNumber,
     )
 
     return getPersonsDtoSchema.parse(response)

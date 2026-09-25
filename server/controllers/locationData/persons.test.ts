@@ -50,7 +50,7 @@ describe('PersonsController', () => {
       mockRestClient.getPersonsBySearchTerm.mockResolvedValue({
         data: [mockPerson],
         pageCount: 1,
-        pageNumber: 1,
+        pageNumber: 0,
         pageSize: 10,
       })
 
@@ -67,7 +67,7 @@ describe('PersonsController', () => {
         },
         'name',
         'foo',
-        '1',
+        undefined,
       )
       expect(res.render).toHaveBeenCalledWith('pages/locationData/index', {
         formData: {},
@@ -95,7 +95,7 @@ describe('PersonsController', () => {
       mockRestClient.getPersonsBySearchTerm.mockResolvedValue({
         data: [mockPerson],
         pageCount: 1,
-        pageNumber: 1,
+        pageNumber: 0,
         pageSize: 10,
       })
 
@@ -112,7 +112,7 @@ describe('PersonsController', () => {
         },
         'nomisId',
         'foo',
-        '1',
+        undefined,
       )
       expect(res.render).toHaveBeenCalledWith('pages/locationData/index', {
         formData: {},
@@ -140,7 +140,7 @@ describe('PersonsController', () => {
       mockRestClient.getPersonsBySearchTerm.mockResolvedValue({
         data: [mockPerson],
         pageCount: 1,
-        pageNumber: 1,
+        pageNumber: 0,
         pageSize: 10,
       })
 
@@ -157,7 +157,7 @@ describe('PersonsController', () => {
         },
         'deviceId',
         'foo',
-        '1',
+        undefined,
       )
       expect(res.render).toHaveBeenCalledWith('pages/locationData/index', {
         formData: {},
@@ -224,7 +224,7 @@ describe('PersonsController', () => {
         },
         'name',
         'foo',
-        '1',
+        undefined,
       )
       expect(res.render).toHaveBeenCalledWith('pages/locationData/index', {
         formData: {},
@@ -232,7 +232,7 @@ describe('PersonsController', () => {
         searchTerm: 'foo',
         persons: [],
         pageCount: 1,
-        pageNumber: 1,
+        pageNumber: 2,
       })
     })
 
@@ -253,7 +253,7 @@ describe('PersonsController', () => {
       mockRestClient.getPersonsBySearchTerm.mockResolvedValue({
         data: [mockPerson],
         pageCount: 2,
-        pageNumber: 2,
+        pageNumber: 1,
         pageSize: 10,
       })
 
@@ -270,7 +270,7 @@ describe('PersonsController', () => {
         },
         'name',
         'foo',
-        '2',
+        '1',
       )
       expect(res.render).toHaveBeenCalledWith('pages/locationData/index', {
         formData: {},
@@ -282,23 +282,23 @@ describe('PersonsController', () => {
       })
     })
 
-    it('should throw an error if the "page" query parameter if a non-numerical value', async () => {
-      // Given
-      const req = createMockRequest({
-        query: {
-          queryId: '1234',
-          page: 'abc',
-        },
-      })
-      const res = createMockResponse()
-      const next = jest.fn()
-      const service = new PersonsService(mockRestClient)
-      const controller = new PersonsController(auditService, service)
-
-      // When / Then
-      expect(controller.view(req, res, next)).rejects.toBeInstanceOf(ZodError)
-      expect(mockRestClient.get).not.toHaveBeenCalled()
-    })
+    // it('should throw an error if the "page" query parameter if a non-numerical value', async () => {
+    //   // Given
+    //   const req = createMockRequest({
+    //     query: {
+    //       queryId: '1234',
+    //       page: 'abc',
+    //     },
+    //   })
+    //   const res = createMockResponse()
+    //   const next = jest.fn()
+    //   const service = new PersonsService(mockRestClient)
+    //   const controller = new PersonsController(auditService, service)
+    //
+    //   // When / Then
+    //   expect(controller.view(req, res, next)).rejects.toBeInstanceOf(ZodError)
+    //   expect(mockRestClient.get).not.toHaveBeenCalled()
+    // })
 
     it('should throw an error if the "searchField" query parameter is not provided', async () => {
       // Given

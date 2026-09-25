@@ -15,15 +15,15 @@ export default class PersonsController {
     const { username } = res.locals.user
     const parsedQuery = personsQueryParametersSchema.parse(query)
 
-    const { searchField, searchTerm } = parsedQuery
+    const { searchField, searchTerm, page } = parsedQuery
 
     if (searchField && searchTerm) {
-      const queryResults = await this.service.getPersons(username, searchField, searchTerm, parsedQuery.page)
+      const queryResults = await this.service.getPersons(username, searchField, searchTerm, page)
       res.render('pages/locationData/index', {
         origin: req.originalUrl,
         persons: queryResults.data,
         pageCount: queryResults.pageCount,
-        pageNumber: queryResults.pageNumber,
+        pageNumber: queryResults.pageNumber + 1,
         searchField,
         searchTerm,
         formData: {
