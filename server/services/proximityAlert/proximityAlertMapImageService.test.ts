@@ -76,7 +76,7 @@ describe('MapImageRendererService', () => {
         width: 1200,
         height: 650,
       },
-      deviceScaleFactor: 2,
+      deviceScaleFactor: 1.2,
     })
 
     expect(context.addCookies).toHaveBeenCalledWith([
@@ -198,7 +198,7 @@ describe('MapImageRendererService', () => {
         width: 1200,
         height: 650,
       },
-      deviceScaleFactor: 2,
+      deviceScaleFactor: 1.2,
     })
     expect(context.addCookies).not.toHaveBeenCalled()
     expect(context.close).toHaveBeenCalled()
