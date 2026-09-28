@@ -117,7 +117,7 @@ export default class CrimeMatchingClient extends RestClient {
     authOptions: AuthOptions,
     searchField: string,
     searchTerm: string,
-    page: string,
+    page: string | undefined,
   ): Promise<unknown> {
     return this.get(
       {
@@ -125,6 +125,7 @@ export default class CrimeMatchingClient extends RestClient {
         query: {
           [searchField]: searchTerm,
           page,
+          pageSize: 10,
         },
       },
       authOptions,

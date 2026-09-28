@@ -8,7 +8,7 @@ const personsQueryParametersSchema = z.object({
   page: z
     .string()
     .regex(/^\d{1,2}$/)
-    .default('1'),
+    .default(''),
 })
 
 const personsFormDataSchema = z
