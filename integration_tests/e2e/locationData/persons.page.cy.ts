@@ -177,19 +177,19 @@ context('Location Data', () => {
         ],
         pageCount: 2,
         pageNumber: 0,
-        pageSize: 1,
+        pageSize: 10,
       }
 
       // Stub the api to simulate the query returning the first page results
       cy.stubGetPersons({
         status: 200,
-        query: '\\?name=foo',
+        query: '\\?name=foo&pageSize=10',
         response,
       })
       // Stub the api to simulate the query returning the second page results
       cy.stubGetPersons({
         status: 200,
-        query: '\\?name=foo&page=1',
+        query: '\\?name=foo&page=1&pageSize=10',
         response: {
           data: [
             {
@@ -217,7 +217,7 @@ context('Location Data', () => {
           ],
           pageCount: 2,
           pageNumber: 1,
-          pageSize: 1,
+          pageSize: 10,
         },
       })
 
