@@ -125,6 +125,7 @@ export default class CrimeMatchingClient extends RestClient {
         query: {
           [searchField]: searchTerm,
           page,
+          pageSize: 10,
         },
       },
       authOptions,
