@@ -1,4 +1,5 @@
 import type { Browser, Page } from 'playwright'
+import logger from '../../../logger'
 import {
   capturedMapStateValueSchema,
   type CapturedMapStateValue,
@@ -34,9 +35,27 @@ const DEFAULT_VIEWPORT = {
   width: 1200,
   height: 650,
 }
-// Double pixel density for better quality of map image
-const DEFAULT_DEVICE_SCALE_FACTOR = 2
-const DEFAULT_JPEG_QUALITY = 95
+
+const DEFAULT_DEVICE_SCALE_FACTOR = 1.2
+const DEFAULT_JPEG_QUALITY = 90
+
+// Number of exports currently in progress, used to correlate memory spikes with concurrent exports.
+let activeRenderCount = 0
+
+// Format extra key/value pairs for appending to a log message, e.g. "deviceScaleFactor=1.2, jpegQuality=90".
+const formatExtraInfo = (extraInfo: Record<string, unknown>): string => {
+  const entries = Object.entries(extraInfo)
+  if (entries.length === 0) return ''
+
+  return `, ${entries.map(([key, value]) => `${key}=${value}`).join(', ')}`
+}
+
+// Log a timestamped pipeline step, tagged with the number of exports in progress.
+const logStep = (step: string, extraInfo: Record<string, unknown> = {}): void => {
+  logger.info(
+    `[proximityAlertMapImageService] ${step} (activeRenders=${activeRenderCount}${formatExtraInfo(extraInfo)})`,
+  )
+}
 
 // Parse a Cookie header into Playwright cookie objects.
 const cookiesFromHeader = (cookieHeader: string, baseUrlForCookies: string) => {
@@ -243,10 +262,18 @@ export default class MapImageRendererService {
     const selectedDeviceIdsAsNumbers = parseSelectedDeviceIds(selectedDeviceIds)
     const selectedTrackDeviceIdsAsNumbers = parseSelectedDeviceIds(selectedTrackDeviceIds)
 
+    activeRenderCount += 1
+    logStep('render:start', {
+      deviceScaleFactor: DEFAULT_DEVICE_SCALE_FACTOR,
+      jpegQuality: DEFAULT_JPEG_QUALITY,
+      deviceWearerCount: selectedDeviceIdsAsNumbers.length,
+    })
+
     const context = await browser.newContext({
       viewport: DEFAULT_VIEWPORT,
       deviceScaleFactor: DEFAULT_DEVICE_SCALE_FACTOR,
     })
+    logStep('render:contextCreated')
 
     try {
       const cookies = cookiesFromHeader(cookieHeader, baseUrlForCookies)
@@ -269,6 +296,7 @@ export default class MapImageRendererService {
       await page.goto(targetUrl, { waitUntil: 'domcontentloaded' })
       await waitForAppLayersReady(page)
       await waitForOlRenderComplete(page)
+      logStep('render:pageReady')
 
       await applyRenderConfig(
         page,
@@ -282,6 +310,7 @@ export default class MapImageRendererService {
       )
       await waitForOlRenderComplete(page)
       const overviewJpg = await screenshotMapElement(page)
+      logStep('render:overviewCaptured')
 
       const deviceWearerJpgByDeviceId: Record<string, Buffer> = {}
 
@@ -302,12 +331,16 @@ export default class MapImageRendererService {
       }
       /* eslint-enable no-await-in-loop */
 
+      logStep('render:allImagesCaptured', { deviceWearerCount: selectedDeviceIdsAsNumbers.length })
+
       return {
         overviewJpg,
         deviceWearerJpgByDeviceId,
       }
     } finally {
       await context.close()
+      activeRenderCount -= 1
+      logStep('render:end')
     }
   }
 }
