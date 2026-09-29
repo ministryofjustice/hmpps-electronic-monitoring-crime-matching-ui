@@ -41,7 +41,7 @@ const getRow = (crimeMatchingResult: CrimeMatchingResult): Array<string> => {
     crimeMatchingResult.subjectNomisId,
     crimeMatchingResult.subjectPncRef,
     crimeMatchingResult.subjectAddress,
-    crimeMatchingResult.subjectDateOfBirth,
+    formatDateTime(crimeMatchingResult.subjectDateOfBirth, 'DD/MM/YYYY'),
     crimeMatchingResult.subjectManager,
   ]
 }
