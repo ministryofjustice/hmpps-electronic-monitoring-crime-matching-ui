@@ -28,7 +28,7 @@ const getRow = (crimeMatchingResult: CrimeMatchingResult): Array<string> => {
     crimeMatchingResult.policeForce,
     crimeMatchingResult.batchId,
     crimeMatchingResult.crimeRef,
-    crimeMatchingResult.crimeType,
+    crimeMatchingResult.crimeTypeDescription,
     formatDateTime(crimeMatchingResult.crimeDateTimeFrom, 'DD/MM/YYYY HH:mm'),
     formatDateTime(crimeMatchingResult.crimeDateTimeTo, 'DD/MM/YYYY HH:mm'),
     crimeMatchingResult.crimeLatitude.toString(),

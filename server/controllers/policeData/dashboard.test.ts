@@ -561,6 +561,7 @@ describe('PoliceDataDashboardController', () => {
             batchId: 'MPS20260101',
             crimeRef: '01/12345/23',
             crimeType: 'BOTD',
+            crimeTypeDescription: 'Burglary in a building other than a dwelling',
             crimeDateTimeFrom: '2026-01-01T00:00:00.000Z',
             crimeDateTimeTo: '2026-01-01T01:00:00.000Z',
             crimeLatitude: 0.0,
@@ -604,7 +605,7 @@ describe('PoliceDataDashboardController', () => {
         'attachment; filename="crime-matching-results-20260101000000.csv"',
       )
       expect(res.send).toHaveBeenCalledWith(
-        'POLICE FORCE,BATCH ID,CRIME REF,CRIME TYPE,FROM DATE/TIME,TO DATE/TIME,CRIME LATITUDE,CRIME LONGITUDE,OTHER INFO,DEVICE ID,DEVICE NAME,SUBJECT IDENTIFIER,OFFENDER NAME,NOMIS ID,PNC REF,OFFENDER ADDRESS,OFFENDER DATE OF BIRTH,OFFENDER MANAGER\nMETROPOLITAN,MPS20260101,01/12345/23,BOTD,01/01/2026 00:00,01/01/2026 01:00,0,0,Description,123456789,deviceName,123,John Smith,nomisId,pncRef,"Street,City,Address",01/01/1970,\n',
+        'POLICE FORCE,BATCH ID,CRIME REF,CRIME TYPE,FROM DATE/TIME,TO DATE/TIME,CRIME LATITUDE,CRIME LONGITUDE,OTHER INFO,DEVICE ID,DEVICE NAME,SUBJECT IDENTIFIER,OFFENDER NAME,NOMIS ID,PNC REF,OFFENDER ADDRESS,OFFENDER DATE OF BIRTH,OFFENDER MANAGER\nMETROPOLITAN,MPS20260101,01/12345/23,Burglary in a building other than a dwelling,01/01/2026 00:00,01/01/2026 01:00,0,0,Description,123456789,deviceName,123,John Smith,nomisId,pncRef,"Street,City,Address",01/01/1970,\n',
       )
       expect(next).not.toHaveBeenCalled()
     })

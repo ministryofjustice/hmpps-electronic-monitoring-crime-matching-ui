@@ -7,6 +7,7 @@ const getCrimeMatchingResultsDtoSchema = z.object({
       batchId: z.string(),
       crimeRef: z.string(),
       crimeType: z.string(),
+      crimeTypeDescription: z.string(),
       crimeDateTimeFrom: z.string(),
       crimeDateTimeTo: z.string(),
       crimeLatitude: z.number(),

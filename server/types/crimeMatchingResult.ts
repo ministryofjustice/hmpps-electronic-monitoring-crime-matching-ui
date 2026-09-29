@@ -3,6 +3,7 @@ type CrimeMatchingResult = {
   batchId: string
   crimeRef: string
   crimeType: string
+  crimeTypeDescription: string
   crimeDateTimeFrom: string
   crimeDateTimeTo: string
   crimeLatitude: number
