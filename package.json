@@ -30,7 +30,7 @@
     "npm": "^11"
   },
   "dependencies": {
-    "@aws-sdk/client-sqs": "^3.1142.0",
+    "@aws-sdk/client-sqs": "^3.1143.0",
     "@ministryofjustice/frontend": "^11.1.0",
     "@ministryofjustice/hmpps-auth-clients": "3.0.0",
     "@ministryofjustice/hmpps-azure-telemetry": "1.1.0",
@@ -95,7 +95,7 @@
     "audit-ci": "^7.1.0",
     "aws-sdk-client-mock": "^4.1.0",
     "concurrently": "^10.0.5",
-    "cypress": "^16.1.0",
+    "cypress": "^16.1.1",
     "cypress-multi-reporters": "^2.0.5",
     "del": "8.0.1",
     "esbuild": "0.28.2",
