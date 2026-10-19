@@ -19,7 +19,4 @@ generic-service:
     COMPONENT_API_URL: "https://probation-frontend-components-dev.hmpps.service.justice.gov.uk"
     OS_MAPS_TILE_CACHE_EXPIRY: "0"
 
-generic-prometheus-alerts:
-  alertSeverity: hmpps-em-crime-matching-alerts-dev
-
 deploy_stubs: false
