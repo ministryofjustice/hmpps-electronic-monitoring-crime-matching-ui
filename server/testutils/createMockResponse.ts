@@ -9,6 +9,7 @@ const createMockResponse = (roles: Array<string> = ['fakeRole']): Response => {
         token: 'fakeUserToken',
         authSource: 'nomis',
         userId: 'fakeId',
+        userUuid: '11111111-1111-1111-1111-111111111111',
         name: 'fake user',
         displayName: 'fuser',
         userRoles: roles,

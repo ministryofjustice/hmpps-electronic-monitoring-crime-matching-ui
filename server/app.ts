@@ -1,4 +1,5 @@
 import express from 'express'
+import { telemetryMiddleware } from '@ministryofjustice/hmpps-azure-telemetry'
 import multer from 'multer'
 import type { HTTPError } from 'superagent'
 import createError from 'http-errors'
@@ -76,6 +77,7 @@ export default function createApp(services: Services): express.Application {
   app.use(multer().single('file'))
   app.use(setUpCsrf())
   app.use(setUpCurrentUser())
+  app.use(telemetryMiddleware.addUserMetadataToTelemetry())
   app.use(populateConstants)
 
   app.use(
