@@ -20,6 +20,3 @@ generic-service:
 
     # OS Maps cache configuration (applies to vector tiles and assets)
     OS_MAPS_TILE_CACHE_EXPIRY: "604800" # 7 days
-
-generic-prometheus-alerts:
-  alertSeverity: hmpps-em-crime-matching-alerts-preprod
