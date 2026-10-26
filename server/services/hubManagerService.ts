@@ -8,32 +8,43 @@ import { getHubManagerDtoSchema, getHubManagersDtoSchema } from '../schemas/hubM
 class HubManagersService {
   constructor(private readonly crimeMatchingApiClient: CrimeMatchingClient) {}
 
-  private parseName(name?: string): Result<string, string> {
-    if (name === undefined) {
-      return { ok: false, error: 'Enter a name' }
+  private parseTextField(value: string | undefined, errorMessage: string): Result<string, string> {
+    if (value === undefined) {
+      return { ok: false, error: errorMessage }
     }
 
-    const sanitised = name.trim()
+    const sanitised = value.trim()
 
     if (sanitised.length > 0) {
       return { ok: true, data: sanitised }
     }
 
-    return { ok: false, error: 'Enter a name' }
+    return { ok: false, error: errorMessage }
+  }
+
+  private parseName(name: string | undefined): Result<string, string> {
+    return this.parseTextField(name, 'Enter a name')
+  }
+
+  private parseOccupation(occupation: string | undefined): Result<string, string> {
+    return this.parseTextField(occupation, 'Enter an occupation')
   }
 
   async createHubManager(
     username: string,
-    name?: string,
+    name: string | undefined,
+    occupation: string | undefined,
     file?: Express.Multer.File,
   ): Promise<ServiceResult<HubManager>> {
     const parsedName = this.parseName(name)
+    const parsedOccupation = this.parseOccupation(occupation)
 
-    if (!parsedName.ok || !file) {
+    if (!parsedName.ok || !parsedOccupation.ok || !file) {
       return {
         ok: false,
         validationErrors: {
           ...(!parsedName.ok ? { name: parsedName.error } : {}),
+          ...(!parsedOccupation.ok ? { occupation: parsedOccupation.error } : {}),
           ...(!file ? { file: 'Upload a file' } : {}),
         },
       }
@@ -42,6 +53,7 @@ class HubManagersService {
     const createHubManagerResponse = await this.crimeMatchingApiClient.createHubManager(
       asSystem(username),
       parsedName.data,
+      parsedOccupation.data,
     )
     const hubManager = getHubManagerDtoSchema.parse(createHubManagerResponse).data
     const updateSignatureResponse = await this.crimeMatchingApiClient.updateHubManagerSignature(

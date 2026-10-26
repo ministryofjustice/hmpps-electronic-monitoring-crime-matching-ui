@@ -16,6 +16,7 @@ context('Create Hub Manager', () => {
           data: {
             id: '2cbd9196-3051-4aa1-a5f7-d322ca1b89e7',
             name: '',
+            occupation: '',
             hasSignature: true,
           },
         },
@@ -27,6 +28,7 @@ context('Create Hub Manager', () => {
           data: {
             id: '2cbd9196-3051-4aa1-a5f7-d322ca1b89e7',
             name: '',
+            occupation: '',
             hasSignature: true,
           },
         },
@@ -41,6 +43,7 @@ context('Create Hub Manager', () => {
 
       // Then the form should be visible
       page.createManagerForm.nameField.element.should('exist')
+      page.createManagerForm.occupationField.element.should('exist')
       page.createManagerForm.signatureField.element.should('exist')
       page.createManagerForm.createButton.should('exist')
     })
@@ -60,6 +63,7 @@ context('Create Hub Manager', () => {
 
       // And should have validation messages
       page.createManagerForm.nameField.shouldHaveValidationMessage('Enter a name')
+      page.createManagerForm.occupationField.shouldHaveValidationMessage('Enter an occupation')
       page.createManagerForm.signatureField.shouldHaveValidationMessage('Upload a file')
     })
 
@@ -72,6 +76,7 @@ context('Create Hub Manager', () => {
       // And submits the form
       page.createManagerForm.fillInWith({
         name: 'Test manager',
+        occupation: 'Test occupation',
         signature: {
           contents: 'Test content',
           fileName: 'signature.png',

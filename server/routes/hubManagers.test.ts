@@ -164,6 +164,7 @@ describe('/hub-managers', () => {
       return request(app)
         .post('/hub-managers/create')
         .field('name', 'Test')
+        .field('occupation', 'Test occupation')
         .attach('file', Buffer.from('content'), 'image.png')
         .expect('Content-Type', /text\/plain/)
         .expect(303)

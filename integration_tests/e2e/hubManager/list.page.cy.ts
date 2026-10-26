@@ -36,6 +36,7 @@ context('Create Hub Manager', () => {
             {
               id: '205250b7-c150-410e-8dca-70c170dcec85',
               name: 'Test manager 1',
+              occupation: 'Test occupation',
               hasSignature: true,
             },
           ],
@@ -48,8 +49,8 @@ context('Create Hub Manager', () => {
       const page = Page.verifyOnPage(ListHubManagersPage)
 
       // Then the user should be shown a list of hub managers
-      page.dataTable.shouldHaveColumns(['Name', 'Has signature?', 'Actions'])
-      page.dataTable.shouldHaveRows([['Test manager 1', 'true', 'Delete']])
+      page.dataTable.shouldHaveColumns(['Name', 'Occupation', 'Has signature?', 'Actions'])
+      page.dataTable.shouldHaveRows([['Test manager 1', 'Test occupation', 'true', 'Delete']])
 
       // And the expected audit message was sent
       cy.expectAuditEvents([
@@ -63,7 +64,7 @@ context('Create Hub Manager', () => {
 
       // And the actions column should have a form to delete the hub manager
       page.dataTable
-        .cell(0, 2)
+        .cell(0, 3)
         .find('form')
         .should('have.attr', 'action', '/hub-managers/205250b7-c150-410e-8dca-70c170dcec85/delete')
     })
@@ -77,6 +78,7 @@ context('Create Hub Manager', () => {
             {
               id: '205250b7-c150-410e-8dca-70c170dcec85',
               name: 'Test manager 1',
+              occupation: 'Test occupation',
               hasSignature: true,
             },
           ],
@@ -93,7 +95,7 @@ context('Create Hub Manager', () => {
       const page = Page.verifyOnPage(ListHubManagersPage)
 
       // And the user clicks delete
-      page.dataTable.cell(0, 2).find('form').submit()
+      page.dataTable.cell(0, 3).find('form').submit()
 
       // Then the user should be shown an updated list of hub managers
       Page.verifyOnPage(ListHubManagersPage)

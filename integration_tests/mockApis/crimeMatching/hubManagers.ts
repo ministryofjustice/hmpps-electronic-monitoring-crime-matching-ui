@@ -9,6 +9,7 @@ type StubGetHubManagers200Options = {
     data: Array<{
       id: string
       name: string
+      occupation: string
       hasSignature: boolean
     }>
   }
@@ -50,6 +51,7 @@ type StubCreateHubManager200Options = {
     data: {
       id: string
       name: string
+      occupation: string
       hasSignature: boolean
     }
   }
@@ -114,6 +116,7 @@ type StubUpdateHubManagerSignature200Options = {
     data: {
       id: string
       name: string
+      occupation: string
       hasSignature: boolean
     }
   }
@@ -151,6 +154,7 @@ type StubGetHubManager200Options = {
     data: {
       id: string
       name: string
+      occupation: string
       hasSignature: boolean
     }
   }
