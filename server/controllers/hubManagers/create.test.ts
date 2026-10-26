@@ -50,45 +50,48 @@ describe('CreateHubManagerController', () => {
   })
 
   describe('submit', () => {
-    it.each([[{ name: undefined }], [{ name: '' }], [{ name: ' ' }]])(
-      'should render validation errors if invalid data entered',
-      async ({ name }) => {
-        // Given
-        const req = createMockRequest({ body: { name } })
-        const res = createMockResponse()
-        const next = jest.fn()
-        const service = new HubManagersService(mockRestClient)
-        const controller = new CreateHubManagersController(auditService, service)
+    it.each([
+      [{ name: undefined, occupation: undefined }],
+      [{ name: '', occupation: '' }],
+      [{ name: ' ', occupation: ' ' }],
+    ])('should render validation errors if invalid data entered', async ({ name, occupation }) => {
+      // Given
+      const req = createMockRequest({ body: { name, occupation } })
+      const res = createMockResponse()
+      const next = jest.fn()
+      const service = new HubManagersService(mockRestClient)
+      const controller = new CreateHubManagersController(auditService, service)
 
-        // When
-        await controller.submit(req, res, next)
+      // When
+      await controller.submit(req, res, next)
 
-        // Then
-        expect(mockRestClient.createHubManager).not.toHaveBeenCalled()
-        expect(mockRestClient.updateHubManagerSignature).not.toHaveBeenCalled()
-        expect(res.render).toHaveBeenCalledWith('pages/hubManagers/create', {
+      // Then
+      expect(mockRestClient.createHubManager).not.toHaveBeenCalled()
+      expect(mockRestClient.updateHubManagerSignature).not.toHaveBeenCalled()
+      expect(res.render).toHaveBeenCalledWith('pages/hubManagers/create', {
+        name,
+        validationErrors: {
+          file: 'Upload a file',
+          name: 'Enter a name',
+          occupation: 'Enter an occupation',
+        },
+      })
+      expect(auditService.logApiModificationCall).toHaveBeenCalledWith('ATTEMPT', 'CREATE', Page.HUB_MANAGER, {
+        who: 'fakeUserName',
+        correlationId: req.id,
+        details: {
           name,
-          validationErrors: {
-            file: 'Upload a file',
-            name: 'Enter a name',
-          },
-        })
-        expect(auditService.logApiModificationCall).toHaveBeenCalledWith('ATTEMPT', 'CREATE', Page.HUB_MANAGER, {
-          who: 'fakeUserName',
-          correlationId: req.id,
-          details: {
-            name,
-            filename: undefined,
-          },
-        })
-      },
-    )
+          filename: undefined,
+        },
+      })
+    })
 
     it('should create a hub manager, update the signature and redirect to the list', async () => {
       // Given
       const req = createMockRequest({
         body: {
           name: 'Test manager',
+          occupation: 'Test occupation',
         },
         file: createMockFile({ originalname: 'signature.png' }),
       })
@@ -101,6 +104,7 @@ describe('CreateHubManagerController', () => {
         data: {
           id: '5eb2f98e-0e8f-4519-9d52-20ff86cadbd2',
           name: 'Test manager',
+          occupation: 'Test occupation',
           hasSignature: false,
         },
       })
@@ -108,6 +112,7 @@ describe('CreateHubManagerController', () => {
         data: {
           id: '5eb2f98e-0e8f-4519-9d52-20ff86cadbd2',
           name: 'Test manager',
+          occupation: 'Test occupation',
           hasSignature: true,
         },
       })
@@ -116,7 +121,11 @@ describe('CreateHubManagerController', () => {
       await controller.submit(req, res, next)
 
       // Then
-      expect(mockRestClient.createHubManager).toHaveBeenCalledWith(expectedAuthOptions, 'Test manager')
+      expect(mockRestClient.createHubManager).toHaveBeenCalledWith(
+        expectedAuthOptions,
+        'Test manager',
+        'Test occupation',
+      )
       expect(mockRestClient.updateHubManagerSignature).toHaveBeenCalledWith(
         expectedAuthOptions,
         '5eb2f98e-0e8f-4519-9d52-20ff86cadbd2',

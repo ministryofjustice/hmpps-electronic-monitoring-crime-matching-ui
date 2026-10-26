@@ -5,6 +5,7 @@ import FormInputComponent from '../formInputComponent'
 
 type CreateHubManagerFormData = {
   name?: string
+  occupation?: string
   signature?: UploadFileOptions
 }
 
@@ -17,6 +18,10 @@ export default class CreateHubManagerFormComponent extends FormComponent {
 
   get nameField(): FormInputComponent {
     return new FormInputComponent(this.form, 'What is the name of the hub manager?')
+  }
+
+  get occupationField(): FormInputComponent {
+    return new FormInputComponent(this.form, 'What is the occupation of the hub manager?')
   }
 
   get signatureField(): FormFileUploadComponent {
@@ -32,6 +37,10 @@ export default class CreateHubManagerFormComponent extends FormComponent {
   fillInWith(data: CreateHubManagerFormData) {
     if (data.name) {
       this.nameField.set(data.name)
+    }
+
+    if (data.occupation) {
+      this.occupationField.set(data.occupation)
     }
 
     if (data.signature) {

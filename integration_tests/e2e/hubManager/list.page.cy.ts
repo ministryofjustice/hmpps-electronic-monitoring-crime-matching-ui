@@ -36,6 +36,7 @@ context('Create Hub Manager', () => {
             {
               id: '205250b7-c150-410e-8dca-70c170dcec85',
               name: 'Test manager 1',
+              occupation: 'Test occupation',
               hasSignature: true,
             },
           ],
@@ -77,6 +78,7 @@ context('Create Hub Manager', () => {
             {
               id: '205250b7-c150-410e-8dca-70c170dcec85',
               name: 'Test manager 1',
+              occupation: 'Test occupation',
               hasSignature: true,
             },
           ],
