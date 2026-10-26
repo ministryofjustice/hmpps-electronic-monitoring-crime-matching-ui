@@ -15,7 +15,7 @@ export default class CreateHubManagersController {
 
   submit: RequestHandler = async (req, res) => {
     const { username } = res.locals.user
-    const { name } = req.body
+    const { name, occupation } = req.body
     const { file } = req
 
     await this.auditService.logApiModificationCall('ATTEMPT', 'CREATE', Page.HUB_MANAGER, {
@@ -27,7 +27,7 @@ export default class CreateHubManagersController {
       },
     })
 
-    const result = await this.hubManagersService.createHubManager(username, name, file)
+    const result = await this.hubManagersService.createHubManager(username, name, occupation, file)
 
     if (result.ok) {
       await this.auditService.logApiModificationCall('SUCCESS', 'CREATE', Page.HUB_MANAGER, {
@@ -42,6 +42,7 @@ export default class CreateHubManagersController {
     } else {
       res.render('pages/hubManagers/create', {
         name,
+        occupation,
         validationErrors: result.ok ? {} : result.validationErrors,
       })
     }

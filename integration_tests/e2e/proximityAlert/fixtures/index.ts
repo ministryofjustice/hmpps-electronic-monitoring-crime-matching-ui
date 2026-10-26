@@ -3,6 +3,7 @@ const crimeVersionId = '64d41bd9-5450-4bbb-89d4-42ba75659f49'
 const hubManager = {
   id: 'a6e61168-f7ca-4056-8a2d-7db0fd77fb62',
   name: 'Test manager 1',
+  occupation: 'Test occupation',
   hasSignature: true,
 }
 

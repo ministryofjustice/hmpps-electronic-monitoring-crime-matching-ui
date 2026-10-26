@@ -70,6 +70,7 @@ describe('CreateHubManagerController', () => {
       expect(mockRestClient.updateHubManagerSignature).not.toHaveBeenCalled()
       expect(res.render).toHaveBeenCalledWith('pages/hubManagers/create', {
         name,
+        occupation,
         validationErrors: {
           file: 'Upload a file',
           name: 'Enter a name',

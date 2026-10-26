@@ -49,8 +49,8 @@ context('Create Hub Manager', () => {
       const page = Page.verifyOnPage(ListHubManagersPage)
 
       // Then the user should be shown a list of hub managers
-      page.dataTable.shouldHaveColumns(['Name', 'Has signature?', 'Actions'])
-      page.dataTable.shouldHaveRows([['Test manager 1', 'true', 'Delete']])
+      page.dataTable.shouldHaveColumns(['Name', 'Occupation', 'Has signature?', 'Actions'])
+      page.dataTable.shouldHaveRows([['Test manager 1', 'Test occupation', 'true', 'Delete']])
 
       // And the expected audit message was sent
       cy.expectAuditEvents([

@@ -7,12 +7,13 @@ export default class CrimeMatchingClient extends RestClient {
     super('Crime Matching Api', config.apis.crimeMatchingApi, logger, authenticationClient)
   }
 
-  createHubManager(authOptions: AuthOptions, name: string): Promise<unknown> {
+  createHubManager(authOptions: AuthOptions, name: string, occupation: string): Promise<unknown> {
     return this.post(
       {
         path: '/hub-managers',
         data: {
           name,
+          occupation,
         },
       },
       authOptions,

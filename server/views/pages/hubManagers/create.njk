@@ -31,6 +31,18 @@
         }}
 
         {{
+          govukInput({
+            id: "occupation",
+            name: "occupation",
+            label: {
+              text: "What is the occupation of the hub manager?"
+            },
+            errorMessage: { text: validationErrors.occupation } if validationErrors.occupation,
+            value: occupation
+          })
+        }}
+
+        {{
           govukFileUpload({
             id: "file",
             name: "file",
