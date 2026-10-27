@@ -1,6 +1,7 @@
 import { stringify } from 'csv-stringify/sync'
 import CrimeMatchingResult from '../../types/crimeMatchingResult'
 import { formatDateTime } from '../../utils/date'
+import { policeForceAreas } from '../../data/policeForceAreas'
 
 const headers = [
   'POLICE FORCE',
@@ -25,7 +26,7 @@ const headers = [
 
 const getRow = (crimeMatchingResult: CrimeMatchingResult): Array<string> => {
   return [
-    crimeMatchingResult.policeForce,
+    policeForceAreas.get(crimeMatchingResult.policeForce) || '',
     crimeMatchingResult.batchId,
     crimeMatchingResult.crimeRef,
     crimeMatchingResult.crimeTypeDescription,
