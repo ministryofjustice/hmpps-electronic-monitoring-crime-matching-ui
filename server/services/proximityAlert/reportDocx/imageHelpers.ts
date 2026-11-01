@@ -1,4 +1,4 @@
-import { AlignmentType, ImageRun, Paragraph } from 'docx'
+import { AlignmentType, ImageRun, IParagraphOptions, Paragraph } from 'docx'
 import { imageSize } from 'image-size'
 import { MAX_MAP_IMAGE_WIDTH_PX, WORD_UNITS_PER_PX } from './constants'
 
@@ -34,19 +34,22 @@ export const scaledImageSize = (
 // (i.e. the image sits within whatever margins its containing cell already applies).
 export const imageParagraph = (
   jpg: Buffer,
-  indent: { left: number; right: number } = { left: 0, right: 0 },
+  imageType: 'jpg' | 'png' = 'jpg',
+  paragraphOptions: IParagraphOptions = {
+    indent: { left: 0, right: 0 },
+    spacing: { before: 0, after: 0 },
+    alignment: AlignmentType.CENTER,
+  },
   maxHeightPx?: number,
 ): Paragraph => {
   const size = scaledImageSize(jpg, MAX_MAP_IMAGE_WIDTH_PX, maxHeightPx)
 
   return new Paragraph({
-    alignment: AlignmentType.CENTER,
-    spacing: { before: 0, after: 0 },
-    indent,
+    ...paragraphOptions,
     children: [
       new ImageRun({
         data: jpg,
-        type: 'jpg',
+        type: imageType,
         transformation: size,
       }),
     ],
