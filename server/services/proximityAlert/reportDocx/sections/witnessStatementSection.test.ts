@@ -45,9 +45,8 @@ describe('witnessStatementSection', () => {
   })
 
   it('should create the signature paragraph', async () => {
-    // Given proximity alert report data with an signature image
+    // Given proximity alert report data with a signature image
     const signature = readFileSync(path.join(__dirname, '../../../../testutils', 'example.png'))
-
     const data = presentProximityAlertReportData(createMockCrimeVersion(), {
       authorisingManager: createMockAuthorisingManager(),
       authorisingManagerSignature: signature,

@@ -207,7 +207,7 @@ const stubGetHubManagerSignature = (options: StubGetHubManagerSignatureOptions) 
     response: {
       status: options.status,
       headers: {
-        'Content-Type': 'application/json;charset=UTF-8',
+        'Content-Type': 'image/jpeg',
       },
       base64Body: options.response,
     },
