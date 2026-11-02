@@ -7,6 +7,8 @@ import isSameOrAfter from 'dayjs/plugin/isSameOrAfter'
 import isSameOrBefore from 'dayjs/plugin/isSameOrBefore'
 import { readFileSync } from 'fs'
 import path from 'path'
+import imageSize from 'image-size'
+import { fileTypeFromBuffer } from 'file-type'
 import createMockAuthorisingManager from '../../../../testutils/createMockAuthorisingManager'
 import { createMockCrimeVersion } from '../../../../testutils/createMockCrimeVersion'
 import presentProximityAlertReportData from '../../../../presenters/proximityAlertReportData'
@@ -26,23 +28,37 @@ jest.mock('docx', () => ({
 
 const mockImageRun = jest.mocked(ImageRun)
 const mockParagraph = jest.mocked(Paragraph)
+const mockFileTypeFromBuffer = jest.mocked(fileTypeFromBuffer)
 
-const signature = readFileSync(path.join(__dirname, '../../../../testutils', 'example.png'))
-
-const data = presentProximityAlertReportData(createMockCrimeVersion(), {
-  authorisingManager: createMockAuthorisingManager(),
-  authorisingManagerSignature: signature,
+// file-type is an ESM-only package, whereas Jest tests are running in a CommonJS environment
+// fileTypeBuffer is mocked in testutils/createMockFileType.ts as a work around and returns undefined
+// The signatureImageType returns a default value of 'jpg' if fileTypeFromBuffer returns undefined,
+// which doesn't match our test file, so we mock the resolved value here instead
+beforeEach(() => {
+  mockFileTypeFromBuffer.mockResolvedValue({
+    ext: 'png',
+    mime: 'image/png',
+  })
 })
 
 describe('witnessStatementSection', () => {
   it('should create the signature paragraph', async () => {
+    // Given proximity alert report data with an signature image
+    const signature = readFileSync(path.join(__dirname, '../../../../testutils', 'example.png'))
+
+    const data = presentProximityAlertReportData(createMockCrimeVersion(), {
+      authorisingManager: createMockAuthorisingManager(),
+      authorisingManagerSignature: signature,
+    })
+
+    // When the witness statement section is created
     await witnessStatementSection({ report: data, wearer: data.matchedDeviceWearers[0] })
 
     // Then the first call to ImageRun should be for the signature image
     expect(mockImageRun).toHaveBeenNthCalledWith(1, {
       data: signature,
       transformation: { width: 176, height: 100 },
-      type: 'jpg',
+      type: 'png',
     })
 
     // And the first call to Paragraph should be for the signature paragraph containing the ImageRun
@@ -55,5 +71,14 @@ describe('witnessStatementSection', () => {
         before: 0,
       },
     })
+
+    // And the image's aspect ratio should have been preserved
+    const { width: originalWidth, height: originalHeight } = imageSize(signature)
+    const { transformation } = mockImageRun.mock.calls[0][0]
+
+    const originalAspectRatio = originalWidth / originalHeight
+    const transformedAspectRatio = transformation.width / transformation.height
+
+    expect(transformedAspectRatio).toBeCloseTo(originalAspectRatio, 2)
   })
 })
