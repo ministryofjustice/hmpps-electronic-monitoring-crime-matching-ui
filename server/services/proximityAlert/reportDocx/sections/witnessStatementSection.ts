@@ -1,4 +1,4 @@
-import { AlignmentType, ImageRun, Paragraph, Table, TableCell, TableLayoutType, TextRun, WidthType } from 'docx'
+import { AlignmentType, Paragraph, Table, TableCell, TableLayoutType, TextRun, WidthType } from 'docx'
 import { fileTypeFromBuffer } from 'file-type'
 import type {
   ProximityAlertReportData,
@@ -21,6 +21,7 @@ import {
 } from '../docxComponents'
 import PROXIMITY_ALERT_REPORT_CONTENT from '../../../../constants/proximityAlert/reportContent'
 import { CELL_PADDING_WORD_UNITS, USABLE_PAGE_WIDTH_WORD_UNITS } from '../constants'
+import { imageParagraph } from '../imageHelpers'
 
 // The mini table is nested inside a padded cell of the outer table, so it must be sized to that
 // cell's content width (page width minus the cell's own left/right padding) rather than the full
@@ -42,19 +43,16 @@ const signatureParagraphs = async (signature?: Buffer): Promise<Paragraph[]> => 
   }
 
   return [
-    new Paragraph({
-      children: [
-        new ImageRun({
-          data: signature,
-          type: await signatureImageType(signature),
-          transformation: {
-            width: 160,
-            height: 60,
-          },
-        }),
-      ],
-      spacing: { before: 0, after: 0 },
-    }),
+    imageParagraph(
+      signature,
+      await signatureImageType(signature),
+      {
+        indent: { left: 0, right: 0 },
+        spacing: { before: 0, after: 0 },
+        alignment: AlignmentType.LEFT,
+      },
+      100,
+    ),
   ]
 }
 

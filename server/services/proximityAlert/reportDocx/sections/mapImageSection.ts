@@ -166,7 +166,12 @@ const mapImagePageTable = (args: {
           ...defaultCellProps(),
           borders,
           children: [
-            imageParagraph(jpg, imageFullBleedIndent, maxImageHeightPx),
+            imageParagraph(
+              jpg,
+              'jpg',
+              { indent: imageFullBleedIndent, spacing: { before: 0, after: 0 }, alignment: AlignmentType.CENTER },
+              maxImageHeightPx,
+            ),
             new Paragraph({
               children: [],
               spacing: { before: gapBeforeDetailsWordUnits, after: 0 },
