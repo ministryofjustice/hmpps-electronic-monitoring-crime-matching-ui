@@ -30,18 +30,20 @@ const mockImageRun = jest.mocked(ImageRun)
 const mockParagraph = jest.mocked(Paragraph)
 const mockFileTypeFromBuffer = jest.mocked(fileTypeFromBuffer)
 
-// file-type is an ESM-only package, whereas Jest tests are running in a CommonJS environment
-// fileTypeBuffer is mocked in testutils/createMockFileType.ts as a work around and returns undefined
-// The signatureImageType returns a default value of 'jpg' if fileTypeFromBuffer returns undefined,
-// which doesn't match our test file, so we mock the resolved value here instead
-beforeEach(() => {
-  mockFileTypeFromBuffer.mockResolvedValue({
-    ext: 'png',
-    mime: 'image/png',
-  })
-})
-
 describe('witnessStatementSection', () => {
+  // file-type is an ESM-only package, whereas Jest tests are running in a CommonJS environment
+  // fileTypeBuffer is mocked in testutils/createMockFileType.ts as a work around and returns undefined
+  // The signatureImageType returns a default value of 'jpg' if fileTypeFromBuffer returns undefined,
+  // which doesn't match our test file, so we mock the resolved value here instead
+  beforeEach(() => {
+    jest.clearAllMocks()
+
+    mockFileTypeFromBuffer.mockResolvedValue({
+      ext: 'png',
+      mime: 'image/png',
+    })
+  })
+
   it('should create the signature paragraph', async () => {
     // Given proximity alert report data with an signature image
     const signature = readFileSync(path.join(__dirname, '../../../../testutils', 'example.png'))

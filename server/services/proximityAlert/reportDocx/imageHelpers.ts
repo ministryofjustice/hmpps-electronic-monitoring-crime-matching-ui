@@ -33,7 +33,7 @@ export const scaledImageSize = (
 // Creates a centred DOCX paragraph containing a scaled image. `indent` defaults to no indent
 // (i.e. the image sits within whatever margins its containing cell already applies).
 export const imageParagraph = (
-  jpg: Buffer,
+  image: Buffer,
   imageType: 'jpg' | 'png' = 'jpg',
   paragraphOptions: IParagraphOptions = {
     indent: { left: 0, right: 0 },
@@ -42,13 +42,13 @@ export const imageParagraph = (
   },
   maxHeightPx?: number,
 ): Paragraph => {
-  const size = scaledImageSize(jpg, MAX_MAP_IMAGE_WIDTH_PX, maxHeightPx)
+  const size = scaledImageSize(image, MAX_MAP_IMAGE_WIDTH_PX, maxHeightPx)
 
   return new Paragraph({
     ...paragraphOptions,
     children: [
       new ImageRun({
-        data: jpg,
+        data: image,
         type: imageType,
         transformation: size,
       }),
