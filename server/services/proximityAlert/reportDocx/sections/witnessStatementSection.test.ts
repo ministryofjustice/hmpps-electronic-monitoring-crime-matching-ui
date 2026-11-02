@@ -41,13 +41,15 @@ describe('witnessStatementSection', () => {
     // Then the first call to ImageRun should be for the signature image
     expect(mockImageRun).toHaveBeenNthCalledWith(1, {
       data: signature,
-      transformation: { width: 160, height: 60 },
+      transformation: { width: 176, height: 100 },
       type: 'jpg',
     })
 
     // And the first call to Paragraph should be for the signature paragraph containing the ImageRun
     expect(mockParagraph).toHaveBeenNthCalledWith(1, {
+      alignment: 'left',
       children: [mockImageRun.mock.results[0].value],
+      indent: { left: 0, right: 0 },
       spacing: {
         after: 0,
         before: 0,
