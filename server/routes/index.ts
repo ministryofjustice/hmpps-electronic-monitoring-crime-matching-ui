@@ -10,6 +10,7 @@ import policeDataRoutes from './police-data'
 import proximityAlertRoutes from './proximity-alert'
 import hubManagersRoutes from './hubManagers'
 import HomepageController from '../controllers/homepage'
+import managementInformationRoutes from '../management-information'
 
 export default function routes(services: Services): Router {
   const { auditService, featuresService, personsService } = services
@@ -35,6 +36,7 @@ export default function routes(services: Services): Router {
   router.use(policeDataRoutes(services))
   router.use(proximityAlertRoutes(services))
   router.use(hubManagersRoutes(services))
+  router.use(managementInformationRoutes())
 
   return router
 }

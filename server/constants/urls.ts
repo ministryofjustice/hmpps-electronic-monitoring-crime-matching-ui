@@ -12,6 +12,9 @@ const URLS = {
       VIEW: '/location-data/persons' as const,
     },
   },
+  MANAGEMENT_INFORMATION: {
+    VIEW: '/management-information' as const,
+  },
   POLICE_DATA: {
     INGESTION_ATTEMPT: {
       VIEW: '/police-data/ingestion-attempts/:ingestionAttemptId' as const,
