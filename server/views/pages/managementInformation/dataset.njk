@@ -58,17 +58,17 @@
 
             {% if "policeForceArea" in dataset.filters %}
               <div class="govuk-grid-column-one-third">
-                 {{
-                    govukSelect({
-                    id: "policeForceArea",
-                    name: "policeForceArea",
-                    label: {
-                        text: "Police force area"
-                    },
-                    errorMessage: { text: validationErrors.policeForceArea } if validationErrors.policeForceArea,
-                    items: policeForceAreaOptions,
-                    value: policeForceArea
-                    })
+                {{
+                  govukSelect({
+                  id: "policeForceArea",
+                  name: "policeForceArea",
+                  label: {
+                      text: "Police force area"
+                  },
+                  errorMessage: { text: validationErrors.policeForceArea } if validationErrors.policeForceArea,
+                  items: policeForceAreaOptions,
+                  value: policeForceArea
+                  })
                 }}
               </div>
             {% endif %}
