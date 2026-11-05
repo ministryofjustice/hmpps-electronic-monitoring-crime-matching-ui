@@ -167,11 +167,15 @@ To start the main services excluding the example typescript template app:
 Create an environment file by copying `.env.example` -> `.env`
 Environment variables set in here will be available when running `start:dev`
 
-Install dependencies using `npm install`, ensuring you are using `node v20`
+Install dependencies using `npm run setup`, ensuring you are using `node v26`
 
 Note: Using `nvm` (or [fnm](https://github.com/Schniz/fnm)), run `nvm install --latest-npm` within the repository folder
 to use the correct version of node, and the latest version of npm. This matches the `engines` config in `package.json`
 and the github pipeline build config.
+
+Install scripts only run for packages listed in the `allowScripts` section of `package.json` (npm 12 native support,
+enforced by `strict-allow-scripts` in `.npmrc`). If you add a dependency with an install script, npm will fail until
+you explicitly allow or deny it there.
 
 And then, to build the assets and start the app with esbuild:
 
@@ -217,7 +221,7 @@ Or run tests with the cypress UI:
 
 ## Development Environment
 
-To facilitate demos / development whilst waiting for reliable data feeds from the Electronic Monitoring suppliers, we have deployed a wiremock instance to the `hmpps-electronic-monitoring-crime-matching-dev` namespace that stubs responses from the crime matching API. 
+To facilitate demos / development whilst waiting for reliable data feeds from the Electronic Monitoring suppliers, we have deployed a wiremock instance to the `hmpps-electronic-monitoring-crime-matching-dev` namespace that stubs responses from the crime matching API.
 
 The configuration for the stubs is located in `helm_deploy/hmpps-electronic-monitoring-crime-matching-ui/files/stubs`. Changes to this directory do not trigger a redeployment of the wiremock pod and wiremock does not automatically recognise changes to its file mappings. To resolve this, the wiremock admin api exposes a route that will trigger a reload of the current mappings. The following snippet can be used to invoke that route.
 
