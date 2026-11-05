@@ -1,14 +1,5 @@
-import type { Dataset } from './dataset'
+import createMockDataset from '../testutils/createMockDataset'
 import DatasetRegistry from './datasetRegistry'
-
-const createMockDataset = (id: string): Dataset => ({
-  id,
-  title: `Dataset ${id}`,
-  description: `Description for ${id}`,
-  filters: [],
-  columns: [],
-  retrieve: async () => ({ rows: [] }),
-})
 
 describe('DatasetRegistry', () => {
   describe('constructor', () => {

@@ -1,0 +1,35 @@
+{% extends "partials/layout.njk" %}
+
+{% set pageTitle = applicationName + " - Management information" %}
+{% set mainClasses = "app-container govuk-body" %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+      <h1 class="govuk-!-static-margin-top-0">Management information</h1>
+
+      <p class="govuk-body">
+        View, copy or download information from the Crime Matching Tool to help produce management information reports.
+      </p>
+
+      <h2 class="govuk-heading-m">Available datasets</h2>
+
+      {% if datasets.length %}
+        <ul class="govuk-list">
+          {% for dataset in datasets %}
+            <li class="govuk-!-margin-bottom-5">
+              <h3 class="govuk-heading-s govuk-!-margin-bottom-1">
+                <a class="govuk-link" href="/management-information/{{ dataset.id }}"> {{ dataset.title }} </a>
+              </h3>
+
+              <p class="govuk-body">{{ dataset.description }}</p>
+              <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible" />
+            </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <p class="govuk-body">No management information datasets are currently available.</p>
+      {% endif %}
+    </div>
+  </div>
+{% endblock %}
