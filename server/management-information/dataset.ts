@@ -1,7 +1,7 @@
 type DatasetQuery = {
   from?: string
   to?: string
-  policeForce?: string
+  policeForceArea?: string
 }
 
 type DatasetFilter = keyof DatasetQuery

@@ -1,0 +1,82 @@
+{% extends "partials/layout.njk" %}
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+{% from "moj/components/date-picker/macro.njk" import mojDatePicker %}
+{% from "govuk/components/select/macro.njk" import govukSelect %}
+
+{% set pageTitle = applicationName + " - " + dataset.title %}
+{% set mainClasses = "app-container govuk-body govuk-!-static-padding-top-0" %}
+
+{% block beforeContent %}
+  {{
+    govukBackLink({
+      text: "Back",
+      href: "/management-information"
+    })
+  }}
+{% endblock %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+      <h1 class="govuk-!-static-margin-top-0">
+        {{ dataset.title }}
+        <span class="govuk-caption-l">{{ dataset.description }}</span>
+      </h1>
+
+      {% if dataset.filters.length %}
+        <form method="get" action="/management-information/{{ dataset.id }}">
+          <div class="govuk-grid-row">
+            {% if "from" in dataset.filters %}
+              <div class="govuk-grid-column-one-quarter">
+                {{
+                  mojDatePicker({
+                  id: "from",
+                  name: "from",
+                  label: {
+                      text: "From"
+                  },
+                  value: from
+                  })
+                }}
+              </div>
+            {% endif %}
+
+            {% if "to" in dataset.filters %}
+              <div class="govuk-grid-column-one-quarter">
+                {{
+                  mojDatePicker({
+                  id: "to",
+                  name: "to",
+                  label: {
+                      text: "To"
+                  },
+                  value: to
+                  })
+                }}
+              </div>
+            {% endif %}
+
+            {% if "policeForceArea" in dataset.filters %}
+              <div class="govuk-grid-column-one-third">
+                 {{
+                    govukSelect({
+                    id: "policeForceArea",
+                    name: "policeForceArea",
+                    label: {
+                        text: "Police force area"
+                    },
+                    errorMessage: { text: validationErrors.policeForceArea } if validationErrors.policeForceArea,
+                    items: policeForceAreaOptions,
+                    value: policeForceArea
+                    })
+                }}
+              </div>
+            {% endif %}
+          </div>
+
+          <button type="submit" class="govuk-button" data-module="govuk-button">View data</button>
+        </form>
+      {% endif %}
+    </div>
+  </div>
+{% endblock %}
