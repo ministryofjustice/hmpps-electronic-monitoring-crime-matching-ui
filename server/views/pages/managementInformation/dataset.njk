@@ -35,7 +35,8 @@
                   label: {
                       text: "From"
                   },
-                  value: from
+                  value: from,
+                  errorMessage: { text: validationErrors.from } if validationErrors.from
                   })
                 }}
               </div>
@@ -50,7 +51,8 @@
                   label: {
                       text: "To"
                   },
-                  value: to
+                  value: to,
+                  errorMessage: { text: validationErrors.to } if validationErrors.to
                   })
                 }}
               </div>

@@ -23,7 +23,72 @@ describe('DatasetController', () => {
       controller.view(req, res, next)
 
       // Then the response should render the dataset page with the dataset
-      expect(res.render).toHaveBeenCalledWith('pages/managementInformation/dataset', { dataset })
+      expect(res.render).toHaveBeenCalledWith('pages/managementInformation/dataset', {
+        dataset,
+        validationErrors: undefined,
+        from: '',
+        to: '',
+        policeForceArea: '',
+      })
+    })
+
+    it('renders the dataset with valid query parameters', () => {
+      // Given a request for the 'first' dataset with valid query parameters
+      const req = createMockRequest({
+        params: { id: 'first' },
+        query: {
+          from: '01/10/2026',
+          to: '31/10/2026',
+        },
+      })
+      const res = createMockResponse()
+      const next = jest.fn()
+
+      // And a dataset that includes the 'from' and 'to' filters
+      const dataset = createMockDataset('first', { filters: ['from', 'to'] })
+      const registry = new DatasetRegistry([dataset])
+      const controller = new DatasetController(registry)
+
+      // When the view method is called
+      controller.view(req, res, next)
+
+      // Then the response should render the original query params with no errors
+      expect(res.render).toHaveBeenCalledWith('pages/managementInformation/dataset', {
+        dataset,
+        validationErrors: undefined,
+        from: '01/10/2026',
+        to: '31/10/2026',
+        policeForceArea: '',
+      })
+    })
+
+    it('renders validation errors for invalid query parameters', () => {
+      // Given a request for the 'first' dataset with an invalid 'from' date
+      const req = createMockRequest({
+        params: { id: 'first' },
+        query: { from: '31/02/2026' },
+      })
+      const res = createMockResponse()
+      const next = jest.fn()
+
+      // And a dataset that includes the 'from' filter
+      const dataset = createMockDataset('first', { filters: ['from'] })
+      const registry = new DatasetRegistry([dataset])
+      const controller = new DatasetController(registry)
+
+      // When the view method is called
+      controller.view(req, res, next)
+
+      // Then the response should include validation errors
+      expect(res.render).toHaveBeenCalledWith('pages/managementInformation/dataset', {
+        dataset,
+        from: '31/02/2026',
+        policeForceArea: '',
+        to: '',
+        validationErrors: {
+          from: 'Enter a valid from date',
+        },
+      })
     })
 
     it('returns 404 when the dataset does not exist', () => {
