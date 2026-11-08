@@ -22,7 +22,7 @@ type Dataset = {
   filters: DatasetFilter[]
   columns: DatasetColumn[]
 
-  retrieve(query: DatasetQuery): Promise<DatasetResult>
+  retrieve(username: string, query: DatasetQuery): Promise<DatasetResult>
 }
 
 export { Dataset, DatasetColumn, DatasetFilter, DatasetQuery, DatasetResult }

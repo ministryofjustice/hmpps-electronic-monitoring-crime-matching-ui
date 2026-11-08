@@ -198,4 +198,17 @@ export default class CrimeMatchingClient extends RestClient {
       authOptions,
     )
   }
+
+  getZeroPrecisionCrimeMatchesDataset(authOptions: AuthOptions, from?: string, to?: string): Promise<unknown> {
+    return this.get(
+      {
+        path: '/management-information/zero-precision-crime-matches',
+        query: {
+          from,
+          to,
+        },
+      },
+      authOptions,
+    )
+  }
 }

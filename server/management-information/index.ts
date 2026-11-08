@@ -1,4 +1,5 @@
 import { Router } from 'express'
+import type { Services } from '../services'
 import asyncMiddleware from '../middleware/asyncMiddleware'
 import ManagementInformationController from './managementInformationController'
 import DatasetController from './datasetController'
@@ -6,10 +7,11 @@ import URLS from '../constants/urls'
 import { ROLES } from '../constants/roles'
 import hasRole from '../middleware/hasRole'
 import DatasetRegistry from './datasetRegistry'
+import ZeroPrecisionCrimeMatches from './datasets/zeroPrecisionCrimeMatches'
 
-const managementInformationRoutes = (): Router => {
+const managementInformationRoutes = ({ crimeMatchingApiClient }: Services): Router => {
   const router = Router()
-  const registry = new DatasetRegistry()
+  const registry = new DatasetRegistry([new ZeroPrecisionCrimeMatches(crimeMatchingApiClient)])
   const datasetController = new DatasetController(registry)
   const managementInformationController = new ManagementInformationController(registry)
 

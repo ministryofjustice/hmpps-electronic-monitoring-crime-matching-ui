@@ -36,7 +36,7 @@ export default function routes(services: Services): Router {
   router.use(policeDataRoutes(services))
   router.use(proximityAlertRoutes(services))
   router.use(hubManagersRoutes(services))
-  router.use(managementInformationRoutes())
+  router.use(managementInformationRoutes(services))
 
   return router
 }
