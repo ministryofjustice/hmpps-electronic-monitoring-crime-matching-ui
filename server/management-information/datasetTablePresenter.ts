@@ -1,5 +1,6 @@
 import type { GovUkTableCell } from '../types/govUk/table'
-import type { Dataset, DatasetResult } from './dataset'
+import { formatDateTime } from '../utils/date'
+import type { Dataset, DatasetColumnFormat, DatasetResult } from './dataset'
 
 type DatasetTable = {
   columns: Array<GovUkTableCell>
@@ -10,7 +11,7 @@ class DatasetTablePresenter {
   presentResults(dataset: Dataset, result: DatasetResult): DatasetTable {
     const columns = dataset.columns.map(column => ({ text: column.heading }))
     const rows: Array<Array<GovUkTableCell>> = result.rows.map(row =>
-      dataset.columns.map(column => ({ text: String(row[column.key] ?? '') })),
+      dataset.columns.map(column => ({ text: this.formatValue(row[column.key], column.format) })),
     )
 
     if (rows.length === 0) {
@@ -26,6 +27,18 @@ class DatasetTablePresenter {
       columns,
       rows,
     }
+  }
+
+  private formatValue(value: string | number | null | undefined, format?: DatasetColumnFormat): string {
+    if (value == null || value === undefined) {
+      return ''
+    }
+
+    if (typeof value === 'string' && format === 'datetime') {
+      return formatDateTime(value, 'DD/MM/YYYY, HH:mm:ss')
+    }
+
+    return String(value)
   }
 }
 

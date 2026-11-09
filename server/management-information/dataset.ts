@@ -6,9 +6,12 @@ type DatasetQuery = {
 
 type DatasetFilter = keyof DatasetQuery
 
+type DatasetColumnFormat = 'datetime'
+
 type DatasetColumn = {
   key: string
   heading: string
+  format?: DatasetColumnFormat
 }
 
 type DatasetResult = {
@@ -25,4 +28,4 @@ type Dataset = {
   retrieve(username: string, query: DatasetQuery): Promise<DatasetResult>
 }
 
-export { Dataset, DatasetColumn, DatasetFilter, DatasetQuery, DatasetResult }
+export { Dataset, DatasetColumn, DatasetColumnFormat, DatasetFilter, DatasetQuery, DatasetResult }
