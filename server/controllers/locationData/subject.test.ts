@@ -773,7 +773,7 @@ describe('SubjectController', () => {
             longitude: 123.123,
             precision: 10,
             speed: 5,
-            direction: 3.14159,
+            direction: 10,
             timestamp: '2025-01-01T00:00:00Z',
             geolocationMechanism: 'GPS',
           },
@@ -783,7 +783,7 @@ describe('SubjectController', () => {
             longitude: 456.123,
             precision: 20,
             speed: 7,
-            direction: 3.66519,
+            direction: 350,
             timestamp: '2025-01-01T00:01:00Z',
             geolocationMechanism: 'GPS',
           },
@@ -842,7 +842,7 @@ describe('SubjectController', () => {
         'attachment; filename="location-data-123456789-2025-01-01T00:00:00.000Z-2025-01-02T00:00:00.000Z-full.csv"',
       )
       expect(res.send).toHaveBeenCalledWith(
-        `DEVICE ID,DEVICE NAME,SUBJECT IDENTIFIER,PoP NAME,NOMIS ID,PNC REF,PoP ADDRESS,PoP DATE OF BIRTH,PROBATION PRACTITIONER,ORDER START,ORDER END,DATE/TIME,LATITUDE,LONGITUDE,CONFIDENCE CIRCLE,SPEED,DIRECTION,SEQUENCE NO.\n987654321,123456789,1,Jane Doe,Nomis 1,YY/NNNNNNND,123 Street,01/12/2000,John Smith,01/12/2024 00:00,31/12/2024 00:00,01/01/2025 00:00,123.123,123.123,10,5,179.99984796050427,1\n987654321,123456789,1,Jane Doe,Nomis 1,YY/NNNNNNND,123 Street,01/12/2000,John Smith,01/12/2024 00:00,31/12/2024 00:00,01/01/2025 00:01,456.123,456.123,20,7,209.9999181135542,2\n`,
+        `DEVICE ID,DEVICE NAME,SUBJECT IDENTIFIER,PoP NAME,NOMIS ID,PNC REF,PoP ADDRESS,PoP DATE OF BIRTH,PROBATION PRACTITIONER,ORDER START,ORDER END,DATE/TIME,LATITUDE,LONGITUDE,CONFIDENCE CIRCLE,SPEED,DIRECTION,SEQUENCE NO.\n987654321,123456789,1,Jane Doe,Nomis 1,YY/NNNNNNND,123 Street,01/12/2000,John Smith,01/12/2024 00:00,31/12/2024 00:00,01/01/2025 00:00,123.123,123.123,10,5,10,1\n987654321,123456789,1,Jane Doe,Nomis 1,YY/NNNNNNND,123 Street,01/12/2000,John Smith,01/12/2024 00:00,31/12/2024 00:00,01/01/2025 00:01,456.123,456.123,20,7,350,2\n`,
       )
     })
 
