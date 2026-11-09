@@ -1,4 +1,3 @@
-import { convertRadiansToDegrees } from './helpers/formatters'
 import Position from '../types/entities/position'
 import { formatDateTime } from '../utils/date'
 import DeviceActivation from '../types/entities/deviceActivation'
@@ -17,7 +16,7 @@ export default function presentPositionsWithDeviceInfo(
     overlayBodyTemplateId: 'overlay-body-mdss-location',
 
     // Display values
-    displayDirection: convertRadiansToDegrees(position.direction),
+    displayDirection: position.direction,
     displayTimestamp: formatDateTime(position.timestamp, 'DD/MM/YYYY, HH:mm:ss'),
 
     // Subject information
