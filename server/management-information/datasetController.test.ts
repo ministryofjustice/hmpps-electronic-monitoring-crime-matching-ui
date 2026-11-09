@@ -71,7 +71,7 @@ describe('DatasetController', () => {
       })
 
       // And it retrieves data when valid query parameters are provided
-      expect(dataset.retrieve).toHaveBeenCalledWith({
+      expect(dataset.retrieve).toHaveBeenCalledWith('fakeUserName', {
         from: '2026-10-01',
         to: '2026-10-31',
       })
@@ -113,7 +113,7 @@ describe('DatasetController', () => {
       })
 
       // And it retrieves data when valid query parameters are provided
-      expect(dataset.retrieve).toHaveBeenCalledWith({
+      expect(dataset.retrieve).toHaveBeenCalledWith('fakeUserName', {
         from: '2026-10-01',
         to: '2026-10-31',
       })

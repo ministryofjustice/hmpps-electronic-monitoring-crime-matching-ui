@@ -11,6 +11,7 @@ class DatasetController {
   constructor(private readonly registry: DatasetRegistry) {}
 
   view: RequestHandler = async (req, res, next) => {
+    const { username } = res.locals.user
     const dataset = this.registry.get(req.params.id)
 
     if (!dataset) {
@@ -19,7 +20,8 @@ class DatasetController {
     }
 
     const queryResult = this.queryParser.parse(req.query, dataset.filters)
-    const result = queryResult.ok && req.query.view === 'true' ? await dataset.retrieve(queryResult.data) : undefined
+    const result =
+      queryResult.ok && req.query.view === 'true' ? await dataset.retrieve(username, queryResult.data) : undefined
     const table = result ? this.tablePresenter.presentResults(dataset, result) : undefined
 
     res.render('pages/managementInformation/dataset', {

@@ -27,6 +27,7 @@ export const services = () => {
   return {
     applicationInfo,
     auditService,
+    crimeMatchingApiClient,
     crimeService,
     crimeMatchingResultsService,
     deviceActivationsService,
