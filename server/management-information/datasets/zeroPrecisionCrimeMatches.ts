@@ -2,6 +2,7 @@ import { asSystem } from '@ministryofjustice/hmpps-rest-client'
 import type { Dataset, DatasetColumn, DatasetFilter, DatasetQuery, DatasetResult } from '../dataset'
 import CrimeMatchingClient from '../../data/crimeMatchingClient'
 import { zeroPrecisionCrimeMatchDatasetSchema } from '../schemas/zeroPrecisionCrimeMatchDataset'
+import { formatDateTime } from '../../utils/date'
 
 class ZeroPrecisionCrimeMatches implements Dataset {
   constructor(private readonly crimeMatchingApiClient: CrimeMatchingClient) {}
@@ -22,6 +23,15 @@ class ZeroPrecisionCrimeMatches implements Dataset {
     { key: 'matchedAt', heading: 'Matched at', format: 'datetime' },
     { key: 'zeroPrecisionPositionCount', heading: 'Zero-precision positions' },
   ]
+
+  defaultQuery = (): DatasetQuery => {
+    const today = formatDateTime(new Date().toISOString(), 'DD/MM/YYYY')
+
+    return {
+      from: today,
+      to: today,
+    }
+  }
 
   async retrieve(username: string, query: DatasetQuery): Promise<DatasetResult> {
     const response = await this.crimeMatchingApiClient.getZeroPrecisionCrimeMatchesDataset(

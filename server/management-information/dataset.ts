@@ -25,6 +25,8 @@ type Dataset = {
   filters: DatasetFilter[]
   columns: DatasetColumn[]
 
+  defaultQuery?: () => DatasetQuery
+
   retrieve(username: string, query: DatasetQuery): Promise<DatasetResult>
 }
 
