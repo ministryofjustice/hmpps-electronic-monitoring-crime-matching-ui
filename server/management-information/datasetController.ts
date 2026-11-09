@@ -3,7 +3,7 @@ import { ParsedQs } from 'qs'
 import DatasetRegistry from './datasetRegistry'
 import DatasetQueryParser from './datasetQueryParser'
 import DatasetTablePresenter from './datasetTablePresenter'
-import { DatasetQuery } from './dataset'
+import { Dataset, DatasetQuery } from './dataset'
 
 class DatasetController {
   private queryParser = new DatasetQueryParser()
@@ -26,7 +26,9 @@ class DatasetController {
     const resolvedQuery = this.resolveQuery(req.query, defaultQuery)
     const queryResult = this.queryParser.parse(resolvedQuery, dataset.filters)
     const result = queryResult.ok && submitted ? await dataset.retrieve(username, queryResult.data) : undefined
-    const table = result ? this.tablePresenter.presentResults(dataset, result) : undefined
+    const table = result
+      ? this.tablePresenter.presentResults(dataset, result, this.getPaginationHrefPrefix(dataset, resolvedQuery))
+      : undefined
 
     res.render('pages/managementInformation/dataset', {
       dataset,
@@ -45,6 +47,22 @@ class DatasetController {
       to: requestQuery.to ?? defaultQuery.to ?? '',
       policeForceArea: requestQuery.policeForceArea ?? defaultQuery.policeForceArea ?? '',
     }
+  }
+
+  private getPaginationHrefPrefix(dataset: Dataset, query: ParsedQs): string {
+    const paginationParams = new URLSearchParams()
+
+    for (const filter of dataset.filters) {
+      const value = query[filter]
+
+      if (typeof value === 'string') {
+        paginationParams.set(filter, value)
+      }
+    }
+
+    paginationParams.set('view', 'true')
+
+    return `?${paginationParams.toString()}`
   }
 }
 

@@ -52,6 +52,7 @@ describe('ZeroPrecisionCrimeMatches', () => {
       const result = await dataset.retrieve('test-user', {
         from: '2026-11-01T00:00:00.000Z',
         to: '2026-11-08T00:00:00.000Z',
+        page: 1,
       })
 
       // Then the client is called with the correct authentication and filters
@@ -59,11 +60,17 @@ describe('ZeroPrecisionCrimeMatches', () => {
         asSystem('test-user'),
         '2026-11-01T00:00:00.000Z',
         '2026-11-08T00:00:00.000Z',
+        0,
       )
 
       // And the validated records are returned
       expect(result).toEqual({
         rows: [crimeMatch],
+        pagination: {
+          pageCount: 1,
+          pageNumber: 1,
+          pageSize: 10,
+        },
       })
     })
 
@@ -74,13 +81,16 @@ describe('ZeroPrecisionCrimeMatches', () => {
       mockRestClient.getZeroPrecisionCrimeMatchesDataset.mockResolvedValue(createResponse([crimeMatch]))
 
       // When the dataset is retrieved
-      await dataset.retrieve('test-user', {})
+      await dataset.retrieve('test-user', {
+        page: 1,
+      })
 
       // Then the client is called without date filters
       expect(mockRestClient.getZeroPrecisionCrimeMatchesDataset).toHaveBeenCalledWith(
         asSystem('test-user'),
         undefined,
         undefined,
+        0,
       )
     })
 
@@ -96,6 +106,11 @@ describe('ZeroPrecisionCrimeMatches', () => {
       // Then the result contains no rows
       expect(result).toEqual({
         rows: [],
+        pagination: {
+          pageCount: 1,
+          pageNumber: 1,
+          pageSize: 10,
+        },
       })
     })
 

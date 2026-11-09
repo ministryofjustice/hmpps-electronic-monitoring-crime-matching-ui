@@ -102,6 +102,11 @@ describe('DatasetController', () => {
         table: {
           columns: [{ text: 'Police force' }, { text: 'Matched crimes' }],
           rows: [[{ text: 'Metropolitan' }, { text: '100' }]],
+          pagination: {
+            currentPage: 1,
+            hrefPrefix: '?from=01%2F10%2F2026&to=31%2F10%2F2026&view=true',
+            pageCount: 1,
+          },
         },
       })
 
@@ -146,6 +151,11 @@ describe('DatasetController', () => {
         table: {
           columns: [{ text: 'Police force' }, { text: 'Matched crimes' }],
           rows: [[{ text: 'Metropolitan' }, { text: '100' }]],
+          pagination: {
+            currentPage: 1,
+            hrefPrefix: '?from=&to=&view=true',
+            pageCount: 1,
+          },
         },
       })
 
@@ -167,7 +177,9 @@ describe('DatasetController', () => {
       const next = jest.fn()
 
       // And a dataset that includes the 'from' and 'to' filters
-      const retrieve = jest.fn().mockResolvedValue({ rows: [] })
+      const retrieve = jest
+        .fn()
+        .mockResolvedValue({ rows: [], pagination: { pageCount: 2, pageNumber: 1, pageSize: 10 } })
       const dataset = createMockDataset('first', { filters: ['from', 'to'], retrieve })
       const registry = new DatasetRegistry([dataset])
       const controller = new DatasetController(registry)
@@ -185,6 +197,11 @@ describe('DatasetController', () => {
         table: {
           columns: [{ text: 'Police force' }, { text: 'Matched crimes' }],
           rows: [[{ text: 'No results found for applied filters.', colspan: 2 }]],
+          pagination: {
+            currentPage: 2,
+            hrefPrefix: '?from=01%2F10%2F2026&to=31%2F10%2F2026&view=true',
+            pageCount: 2,
+          },
         },
       })
 

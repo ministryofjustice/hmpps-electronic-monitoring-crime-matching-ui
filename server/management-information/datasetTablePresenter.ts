@@ -5,10 +5,15 @@ import type { Dataset, DatasetColumnFormat, DatasetResult } from './dataset'
 type DatasetTable = {
   columns: Array<GovUkTableCell>
   rows: Array<Array<GovUkTableCell>>
+  pagination: {
+    pageCount: number
+    currentPage: number
+    hrefPrefix: string
+  }
 }
 
 class DatasetTablePresenter {
-  presentResults(dataset: Dataset, result: DatasetResult): DatasetTable {
+  presentResults(dataset: Dataset, result: DatasetResult, hrefPrefix: string): DatasetTable {
     const columns = dataset.columns.map(column => ({ text: column.heading }))
     const rows: Array<Array<GovUkTableCell>> = result.rows.map(row =>
       dataset.columns.map(column => ({ text: this.formatValue(row[column.key], column.format) })),
@@ -26,6 +31,11 @@ class DatasetTablePresenter {
     return {
       columns,
       rows,
+      pagination: {
+        pageCount: result.pagination.pageCount,
+        currentPage: result.pagination.pageNumber + 1,
+        hrefPrefix,
+      },
     }
   }
 
