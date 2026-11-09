@@ -1,5 +1,5 @@
 import { asSystem } from '@ministryofjustice/hmpps-rest-client'
-import type { Dataset, DatasetFilter, DatasetQuery, DatasetResult } from '../dataset'
+import type { Dataset, DatasetColumn, DatasetFilter, DatasetQuery, DatasetResult } from '../dataset'
 import CrimeMatchingClient from '../../data/crimeMatchingClient'
 import { zeroPrecisionCrimeMatchDatasetSchema } from '../schemas/zeroPrecisionCrimeMatchDataset'
 
@@ -14,12 +14,12 @@ class ZeroPrecisionCrimeMatches implements Dataset {
 
   readonly filters: DatasetFilter[] = ['from', 'to']
 
-  readonly columns = [
+  readonly columns: Array<DatasetColumn> = [
     { key: 'policeForceArea', heading: 'Police force area' },
     { key: 'batchId', heading: 'Batch ID' },
     { key: 'crimeReference', heading: 'Crime reference' },
     { key: 'deviceSerialNumber', heading: 'Device serial number' },
-    { key: 'matchedAt', heading: 'Matched at' },
+    { key: 'matchedAt', heading: 'Matched at', format: 'datetime' },
     { key: 'zeroPrecisionPositionCount', heading: 'Zero-precision positions' },
   ]
 
