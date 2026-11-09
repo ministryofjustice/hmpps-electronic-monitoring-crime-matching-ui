@@ -17,8 +17,8 @@ describe('DatasetQueryParser', () => {
       expect(result).toEqual({
         ok: true,
         data: {
-          from: '2026-10-01',
-          to: '2026-10-31',
+          from: '2026-10-01T00:00:00.000Z',
+          to: '2026-11-01T00:00:00.000Z',
         },
       })
     })
@@ -72,7 +72,7 @@ describe('DatasetQueryParser', () => {
       expect(result).toEqual({
         ok: true,
         data: {
-          from: '2026-10-01',
+          from: '2026-10-01T00:00:00.000Z',
         },
       })
     })
@@ -126,7 +126,7 @@ describe('DatasetQueryParser', () => {
       expect(result).toEqual({
         ok: true,
         data: {
-          from: '2024-02-29',
+          from: '2024-02-29T00:00:00.000Z',
         },
       })
     })
@@ -143,8 +143,8 @@ describe('DatasetQueryParser', () => {
       expect(result).toEqual({
         ok: true,
         data: {
-          from: '2026-10-01',
-          to: '2026-10-01',
+          from: '2026-10-01T00:00:00.000Z',
+          to: '2026-10-02T00:00:00.000Z',
         },
       })
     })
