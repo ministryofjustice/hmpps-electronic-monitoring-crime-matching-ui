@@ -62,7 +62,19 @@ class DatasetQueryParser {
   }
 
   private parseTo(value: QueryParam): Result<string, string> {
-    return this.parseDate(value, 'Enter a valid to date')
+    const result = this.parseDate(value, 'Enter a valid to date')
+
+    if (!result.ok || !result.data) {
+      return result
+    }
+
+    const nextDay = new Date(result.data)
+    nextDay.setUTCDate(nextDay.getUTCDate() + 1)
+
+    return {
+      ok: true,
+      data: nextDay.toISOString(),
+    }
   }
 
   private parseDate(value: QueryParam, errorMessage: string): Result<string, string> {
@@ -81,8 +93,8 @@ class DatasetQueryParser {
     }
 
     const [, day, month, year] = match
-    const isoDate = `${year}-${month}-${day}`
-    const date = new Date(`${isoDate}T00:00:00Z`)
+    const isoDate = `${year}-${month}-${day}T00:00:00.000Z`
+    const date = new Date(`${isoDate}`)
 
     if (
       Number.isNaN(date.getTime()) ||

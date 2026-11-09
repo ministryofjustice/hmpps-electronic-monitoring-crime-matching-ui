@@ -38,15 +38,15 @@ describe('ZeroPrecisionCrimeMatches', () => {
 
       // When the dataset is retrieved
       const result = await dataset.retrieve('test-user', {
-        from: '2026-11-01',
-        to: '2026-11-07',
+        from: '2026-11-01T00:00:00.000Z',
+        to: '2026-11-08T00:00:00.000Z',
       })
 
       // Then the client is called with the correct authentication and filters
       expect(mockRestClient.getZeroPrecisionCrimeMatchesDataset).toHaveBeenCalledWith(
         asSystem('test-user'),
-        '2026-11-01',
-        '2026-11-07',
+        '2026-11-01T00:00:00.000Z',
+        '2026-11-08T00:00:00.000Z',
       )
 
       // And the validated records are returned
