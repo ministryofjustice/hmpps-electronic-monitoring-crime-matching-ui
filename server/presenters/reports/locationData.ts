@@ -3,7 +3,6 @@ import DeviceActivation from '../../types/entities/deviceActivation'
 import Person from '../../types/entities/person'
 import Position from '../../types/entities/position'
 import { formatDateTime } from '../../utils/date'
-import radToDeg from '../../utils/math'
 
 const getHeaders = (condensed: boolean): Array<string> => {
   const condensedHeaders = [
@@ -50,7 +49,7 @@ const getRow = (
     position.longitude.toString(),
     position.precision.toString(),
     position.speed.toString(),
-    radToDeg(position.direction).toString(),
+    position.direction.toString(),
     (index + 1).toString(),
   ]
   const fullColumns = [
