@@ -36,6 +36,38 @@ describe('DatasetController', () => {
       expect(dataset.retrieve).not.toHaveBeenCalled()
     })
 
+    it('renders the requested dataset with default parameters if no query is provided', async () => {
+      // Given a request for the 'first' dataset
+      const req = createMockRequest({
+        params: { id: 'first' },
+      })
+      const res = createMockResponse()
+      const next = jest.fn()
+
+      // And a dataset registered under the same ID with a default query
+      const dataset = createMockDataset('first', {
+        defaultQuery: () => ({ from: '01/01/2026', to: '01/01/2026', policeForceArea: 'METROPOLITAN' }),
+      })
+      const registry = new DatasetRegistry([dataset])
+      const controller = new DatasetController(registry)
+
+      // When the view method is called
+      await controller.view(req, res, next)
+
+      // Then the response should render the dataset page with the dataset
+      expect(res.render).toHaveBeenCalledWith('pages/managementInformation/dataset', {
+        dataset,
+        table: undefined,
+        validationErrors: undefined,
+        from: '01/01/2026',
+        to: '01/01/2026',
+        policeForceArea: 'METROPOLITAN',
+      })
+
+      // And it does not retrieve data when the page is first opened
+      expect(dataset.retrieve).not.toHaveBeenCalled()
+    })
+
     it('renders the dataset with valid query parameters', async () => {
       // Given a request for the 'first' dataset with valid query parameters
       const req = createMockRequest({
@@ -50,14 +82,17 @@ describe('DatasetController', () => {
       const next = jest.fn()
 
       // And a dataset that includes the 'from' and 'to' filters
-      const dataset = createMockDataset('first', { filters: ['from', 'to'] })
+      const dataset = createMockDataset('first', {
+        defaultQuery: () => ({ from: '01/01/2026', to: '01/01/2026' }),
+        filters: ['from', 'to'],
+      })
       const registry = new DatasetRegistry([dataset])
       const controller = new DatasetController(registry)
 
       // When the view method is called
       await controller.view(req, res, next)
 
-      // Then the response should render the original query params with no errors
+      // Then the response should render the submitted query params with no errors
       expect(res.render).toHaveBeenCalledWith('pages/managementInformation/dataset', {
         dataset,
         validationErrors: undefined,
@@ -77,7 +112,48 @@ describe('DatasetController', () => {
       })
     })
 
-    it('renders the an empty result when no data is available', async () => {
+    it('does not override empty query parameters with default values', async () => {
+      // Given a request for the 'first' dataset with valid query parameters
+      const req = createMockRequest({
+        params: { id: 'first' },
+        query: {
+          from: '',
+          to: '',
+          view: 'true',
+        },
+      })
+      const res = createMockResponse()
+      const next = jest.fn()
+
+      // And a dataset that includes the a default query
+      const dataset = createMockDataset('first', {
+        defaultQuery: () => ({ from: '01/01/2026', to: '01/01/2026' }),
+        filters: ['from', 'to'],
+      })
+      const registry = new DatasetRegistry([dataset])
+      const controller = new DatasetController(registry)
+
+      // When the view method is called
+      await controller.view(req, res, next)
+
+      // Then the response should render the submitted query params with no errors
+      expect(res.render).toHaveBeenCalledWith('pages/managementInformation/dataset', {
+        dataset,
+        validationErrors: undefined,
+        from: '',
+        to: '',
+        policeForceArea: '',
+        table: {
+          columns: [{ text: 'Police force' }, { text: 'Matched crimes' }],
+          rows: [[{ text: 'Metropolitan' }, { text: '100' }]],
+        },
+      })
+
+      // And it retrieves data without default values for empty query parameters
+      expect(dataset.retrieve).toHaveBeenCalledWith('fakeUserName', {})
+    })
+
+    it('renders an empty result when no data is available', async () => {
       // Given a request for the 'first' dataset with valid query parameters
       const req = createMockRequest({
         params: { id: 'first' },
