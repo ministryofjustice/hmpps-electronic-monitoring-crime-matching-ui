@@ -594,7 +594,7 @@ describe('SubjectController', () => {
             longitude: 123.123,
             precision: 10,
             speed: 5,
-            direction: 3.14159,
+            direction: 180,
             timestamp: '2025-01-01T00:00:00Z',
             geolocationMechanism: 'GPS',
           },
@@ -604,7 +604,7 @@ describe('SubjectController', () => {
             longitude: 456.123,
             precision: 20,
             speed: 7,
-            direction: 3.66519,
+            direction: 210,
             timestamp: '2025-01-01T00:01:00Z',
             geolocationMechanism: 'GPS',
           },
@@ -656,7 +656,7 @@ describe('SubjectController', () => {
         origin: undefined,
         positions: [
           {
-            direction: 3.14159,
+            direction: 180,
             geolocationMechanism: 'GPS',
             latitude: 123.123,
             longitude: 123.123,
@@ -678,7 +678,7 @@ describe('SubjectController', () => {
             subjectTagStartDate: '01/01/2025',
           },
           {
-            direction: 3.66519,
+            direction: 210,
             geolocationMechanism: 'GPS',
             latitude: 456.123,
             longitude: 456.123,
