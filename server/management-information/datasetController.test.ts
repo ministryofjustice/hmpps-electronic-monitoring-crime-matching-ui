@@ -114,6 +114,7 @@ describe('DatasetController', () => {
       expect(dataset.retrieve).toHaveBeenCalledWith('fakeUserName', {
         from: '2026-10-01T00:00:00.000Z',
         to: '2026-11-01T00:00:00.000Z',
+        page: 0,
       })
     })
 
@@ -160,7 +161,9 @@ describe('DatasetController', () => {
       })
 
       // And it retrieves data without default values for empty query parameters
-      expect(dataset.retrieve).toHaveBeenCalledWith('fakeUserName', {})
+      expect(dataset.retrieve).toHaveBeenCalledWith('fakeUserName', {
+        page: 0,
+      })
     })
 
     it('renders an empty result when no data is available', async () => {
@@ -209,6 +212,7 @@ describe('DatasetController', () => {
       expect(dataset.retrieve).toHaveBeenCalledWith('fakeUserName', {
         from: '2026-10-01T00:00:00.000Z',
         to: '2026-11-01T00:00:00.000Z',
+        page: 0,
       })
     })
 

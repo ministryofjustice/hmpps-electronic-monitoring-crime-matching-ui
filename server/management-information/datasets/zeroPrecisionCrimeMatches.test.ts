@@ -52,7 +52,7 @@ describe('ZeroPrecisionCrimeMatches', () => {
       const result = await dataset.retrieve('test-user', {
         from: '2026-11-01T00:00:00.000Z',
         to: '2026-11-08T00:00:00.000Z',
-        page: 1,
+        page: 0,
       })
 
       // Then the client is called with the correct authentication and filters
@@ -82,7 +82,7 @@ describe('ZeroPrecisionCrimeMatches', () => {
 
       // When the dataset is retrieved
       await dataset.retrieve('test-user', {
-        page: 1,
+        page: 0,
       })
 
       // Then the client is called without date filters
@@ -91,6 +91,21 @@ describe('ZeroPrecisionCrimeMatches', () => {
         undefined,
         undefined,
         0,
+      )
+    })
+
+    it('retrieves all records when no page is specified', async () => {
+      const dataset = new ZeroPrecisionCrimeMatches(mockRestClient)
+
+      mockRestClient.getZeroPrecisionCrimeMatchesDataset.mockResolvedValue(createResponse([crimeMatch]))
+
+      await dataset.retrieve('test-user', {})
+
+      expect(mockRestClient.getZeroPrecisionCrimeMatchesDataset).toHaveBeenCalledWith(
+        asSystem('test-user'),
+        undefined,
+        undefined,
+        undefined,
       )
     })
 

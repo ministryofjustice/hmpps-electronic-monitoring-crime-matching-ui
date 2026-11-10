@@ -46,6 +46,7 @@ class DatasetController {
       from: requestQuery.from ?? defaultQuery.from ?? '',
       to: requestQuery.to ?? defaultQuery.to ?? '',
       policeForceArea: requestQuery.policeForceArea ?? defaultQuery.policeForceArea ?? '',
+      page: requestQuery.page ?? '1',
     }
   }
 
