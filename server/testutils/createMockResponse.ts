@@ -3,6 +3,7 @@ import type { Response } from 'express'
 const createMockResponse = (roles: Array<string> = ['fakeRole']): Response => {
   // @ts-expect-error stubbing res.render
   return {
+    attachment: jest.fn(),
     locals: {
       user: {
         username: 'fakeUserName',
@@ -22,6 +23,7 @@ const createMockResponse = (roles: Array<string> = ['fakeRole']): Response => {
     set: jest.fn(),
     setHeader: jest.fn(),
     send: jest.fn(),
+    type: jest.fn(),
   }
 }
 

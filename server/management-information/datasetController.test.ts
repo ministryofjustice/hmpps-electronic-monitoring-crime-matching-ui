@@ -108,6 +108,7 @@ describe('DatasetController', () => {
             pageCount: 1,
           },
         },
+        downloadUrl: '/management-information/first/download?from=01%2F10%2F2026&to=31%2F10%2F2026',
       })
 
       // And it retrieves data when valid query parameters are provided
@@ -158,6 +159,7 @@ describe('DatasetController', () => {
             pageCount: 1,
           },
         },
+        downloadUrl: '/management-information/first/download?from=&to=',
       })
 
       // And it retrieves data without default values for empty query parameters
@@ -206,6 +208,7 @@ describe('DatasetController', () => {
             pageCount: 2,
           },
         },
+        downloadUrl: '/management-information/first/download?from=01%2F10%2F2026&to=31%2F10%2F2026',
       })
 
       // And it retrieves data when valid query parameters are provided

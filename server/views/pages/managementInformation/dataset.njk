@@ -85,6 +85,14 @@
     </div>
   </div>
 
+  {% if table %}
+    <p class="govuk-body">
+      <a class="govuk-link" href="{{ downloadUrl }}">
+        Download CSV
+      </a>
+    </p>
+  {% endif %}
+
   {{
     dataTable({
       classes: "dataset-results-table",
