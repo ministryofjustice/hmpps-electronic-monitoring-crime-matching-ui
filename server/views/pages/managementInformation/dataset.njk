@@ -86,9 +86,28 @@
   </div>
 
   {% if table %}
-    <p class="govuk-body">
-      <a class="govuk-link" href="{{ downloadUrl }}"> Download CSV </a>
-    </p>
+    <div class="govuk-button-group">
+      <button
+        type="button"
+        class="govuk-link"
+        data-module="copy-dataset"
+        data-copy-url="{{ copyUrl }}"
+      >
+        Copy table
+      </button>
+
+      <a class="govuk-link" href="{{ downloadUrl }}">
+        Download CSV
+      </a>
+    </div>
+
+    <p
+      id="copy-dataset-status"
+      class="govuk-body govuk-!-margin-top-2"
+      role="status"
+      aria-live="polite"
+      hidden
+    ></p>
   {% endif %}
 
   {{
