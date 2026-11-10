@@ -38,7 +38,7 @@ class ZeroPrecisionCrimeMatches implements Dataset {
       asSystem(username),
       query.from,
       query.to,
-      (query.page ?? 1) - 1,
+      query.page,
     )
     const parsed = zeroPrecisionCrimeMatchDatasetSchema.parse(response)
 

@@ -2,6 +2,8 @@ type DatasetQuery = {
   from?: string
   to?: string
   policeForceArea?: string
+
+  /** 0-indexed page number */
   page?: number
 }
 

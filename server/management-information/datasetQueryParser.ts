@@ -149,7 +149,7 @@ class DatasetQueryParser {
       return { ok: false, error: 'Invalid page number' }
     }
 
-    return { ok: true, data: page }
+    return { ok: true, data: page - 1 }
   }
 }
 
