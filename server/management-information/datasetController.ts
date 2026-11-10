@@ -37,6 +37,7 @@ class DatasetController {
       from: typeof resolvedQuery.from === 'string' ? resolvedQuery.from : '',
       to: typeof resolvedQuery.to === 'string' ? resolvedQuery.to : '',
       policeForceArea: typeof resolvedQuery.policeForceArea === 'string' ? resolvedQuery.policeForceArea : '',
+      downloadUrl: table ? this.getDownloadUrl(dataset, resolvedQuery) : undefined,
     })
   }
 
@@ -50,20 +51,35 @@ class DatasetController {
     }
   }
 
-  private getPaginationHrefPrefix(dataset: Dataset, query: ParsedQs): string {
-    const paginationParams = new URLSearchParams()
+  private getQueryParams(dataset: Dataset, query: ParsedQs): URLSearchParams {
+    const params = new URLSearchParams()
 
     for (const filter of dataset.filters) {
       const value = query[filter]
 
       if (typeof value === 'string') {
-        paginationParams.set(filter, value)
+        params.set(filter, value)
       }
     }
+
+    return params
+  }
+
+  private getPaginationHrefPrefix(dataset: Dataset, query: ParsedQs): string {
+    const paginationParams = this.getQueryParams(dataset, query)
 
     paginationParams.set('view', 'true')
 
     return `?${paginationParams.toString()}`
+  }
+
+  private getDownloadUrl(dataset: Dataset, query: ParsedQs): string {
+    const params = this.getQueryParams(dataset, query)
+    const queryString = params.toString()
+
+    const path = `/management-information/${encodeURIComponent(dataset.id)}/download`
+
+    return queryString ? `${path}?${queryString}` : path
   }
 }
 
