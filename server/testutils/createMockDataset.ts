@@ -9,7 +9,10 @@ const createMockDataset = (id: string, overrides: Partial<Dataset> = {}): Datase
     { key: 'policeForce', heading: 'Police force' },
     { key: 'matched', heading: 'Matched crimes' },
   ],
-  retrieve: jest.fn().mockResolvedValue({ rows: [{ policeForce: 'Metropolitan', matched: 100 }] }),
+  retrieve: jest.fn().mockResolvedValue({
+    rows: [{ policeForce: 'Metropolitan', matched: 100 }],
+    pagination: { pageCount: 1, pageNumber: 0, pageSize: 10 },
+  }),
   ...overrides,
 })
 

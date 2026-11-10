@@ -2,9 +2,10 @@ type DatasetQuery = {
   from?: string
   to?: string
   policeForceArea?: string
+  page?: number
 }
 
-type DatasetFilter = keyof DatasetQuery
+type DatasetFilter = Exclude<keyof DatasetQuery, 'page'>
 
 type DatasetColumnFormat = 'datetime'
 
@@ -16,6 +17,11 @@ type DatasetColumn = {
 
 type DatasetResult = {
   rows: Record<string, string | number | null>[]
+  pagination: {
+    pageCount: number
+    pageNumber: number
+    pageSize: number
+  }
 }
 
 type Dataset = {

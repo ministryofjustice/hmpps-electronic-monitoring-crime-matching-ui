@@ -54,6 +54,14 @@ class DatasetQueryParser {
       errors.to = 'To date must be on or after from date'
     }
 
+    if (query.page !== undefined) {
+      const result = this.parsePage(query.page)
+
+      if (result.ok) {
+        parsedQuery.page = result.data
+      }
+    }
+
     return Object.keys(errors).length === 0 ? { data: parsedQuery, ok: true } : { error: errors, ok: false }
   }
 
@@ -128,6 +136,20 @@ class DatasetQueryParser {
     }
 
     return { ok: true, data: value }
+  }
+
+  private parsePage(value: QueryParam): Result<number, string> {
+    if (typeof value !== 'string' || !/^[1-9]\d*$/.test(value)) {
+      return { ok: false, error: 'Invalid page number' }
+    }
+
+    const page = Number(value)
+
+    if (!Number.isSafeInteger(page)) {
+      return { ok: false, error: 'Invalid page number' }
+    }
+
+    return { ok: true, data: page }
   }
 }
 
