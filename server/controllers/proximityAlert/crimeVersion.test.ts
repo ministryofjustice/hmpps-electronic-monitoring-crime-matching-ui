@@ -1,7 +1,3 @@
-import dayjs from 'dayjs'
-import utc from 'dayjs/plugin/utc'
-import timezone from 'dayjs/plugin/timezone'
-import customParseFormat from 'dayjs/plugin/customParseFormat'
 import CrimeMatchingClient from '../../data/crimeMatchingClient'
 import CrimeVersionController from './crimeVersion'
 import logger from '../../../logger'
@@ -13,10 +9,6 @@ import HubManagersService from '../../services/hubManagerService'
 import expectedAuthOptions from '../../testutils/expectedAuthOptions'
 import HmppsAuditClient from '../../data/hmppsAuditClient'
 import AuditService, { Page } from '../../services/auditService'
-
-dayjs.extend(utc)
-dayjs.extend(timezone)
-dayjs.extend(customParseFormat)
 
 jest.mock('../../services/auditService')
 jest.mock('../../data/crimeMatchingClient')

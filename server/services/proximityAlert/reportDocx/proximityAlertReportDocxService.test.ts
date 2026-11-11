@@ -1,18 +1,9 @@
-import dayjs from 'dayjs'
-import utc from 'dayjs/plugin/utc'
-import timezone from 'dayjs/plugin/timezone'
-import customParseFormat from 'dayjs/plugin/customParseFormat'
-
 import ProximityAlertReportDocxService from './proximityAlertReportDocxService'
 import type { ProximityAlertReportData } from '../../../presenters/proximityAlertReportData'
 import type { ProximityAlertReportImages } from '../proximityAlertMapImageService'
 import { createMockCrimeVersion } from '../../../testutils/createMockCrimeVersion'
 import createMockAuthorisingManager from '../../../testutils/createMockAuthorisingManager'
 import presentProximityAlertReportData from '../../../presenters/proximityAlertReportData'
-
-dayjs.extend(utc)
-dayjs.extend(timezone)
-dayjs.extend(customParseFormat)
 
 // Minimal valid 1x1 JPEG
 const tinyJpeg = Buffer.from(

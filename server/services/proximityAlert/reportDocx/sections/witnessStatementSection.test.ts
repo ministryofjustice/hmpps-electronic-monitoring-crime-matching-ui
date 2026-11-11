@@ -1,10 +1,4 @@
 import { Paragraph, ImageRun } from 'docx'
-import dayjs from 'dayjs'
-import utc from 'dayjs/plugin/utc'
-import timezone from 'dayjs/plugin/timezone'
-import customParseFormat from 'dayjs/plugin/customParseFormat'
-import isSameOrAfter from 'dayjs/plugin/isSameOrAfter'
-import isSameOrBefore from 'dayjs/plugin/isSameOrBefore'
 import { readFileSync } from 'fs'
 import path from 'path'
 import imageSize from 'image-size'
@@ -13,12 +7,6 @@ import createMockAuthorisingManager from '../../../../testutils/createMockAuthor
 import { createMockCrimeVersion } from '../../../../testutils/createMockCrimeVersion'
 import presentProximityAlertReportData from '../../../../presenters/proximityAlertReportData'
 import witnessStatementSection from './witnessStatementSection'
-
-dayjs.extend(utc)
-dayjs.extend(timezone)
-dayjs.extend(customParseFormat)
-dayjs.extend(isSameOrAfter)
-dayjs.extend(isSameOrBefore)
 
 jest.mock('docx', () => ({
   ...jest.requireActual('docx'),

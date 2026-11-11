@@ -1,16 +1,4 @@
-import dayjs from 'dayjs'
-import utc from 'dayjs/plugin/utc'
-import timezone from 'dayjs/plugin/timezone'
-import customParseFormat from 'dayjs/plugin/customParseFormat'
-import isSameOrAfter from 'dayjs/plugin/isSameOrAfter'
-import isSameOrBefore from 'dayjs/plugin/isSameOrBefore'
 import DateTimeInputModel from './dateTime'
-
-dayjs.extend(utc)
-dayjs.extend(timezone)
-dayjs.extend(customParseFormat)
-dayjs.extend(isSameOrAfter)
-dayjs.extend(isSameOrBefore)
 
 describe('DateTimeInputModel', () => {
   it('should parse a valid GMT date time', () => {
