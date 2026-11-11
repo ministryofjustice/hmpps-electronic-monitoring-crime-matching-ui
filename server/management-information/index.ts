@@ -21,7 +21,7 @@ const managementInformationRoutes = ({ crimeMatchingApiClient }: Services): Rout
 
   router.get(URLS.MANAGEMENT_INFORMATION.VIEW, asyncMiddleware(managementInformationController.view))
   router.get(URLS.MANAGEMENT_INFORMATION.VIEW_DATASET, asyncMiddleware(datasetController.view))
-  router.get(URLS.MANAGEMENT_INFORMATION.DOWNLOAD_DATASET, asyncMiddleware(datasetExportController.download))
+  router.get(URLS.MANAGEMENT_INFORMATION.EXPORT_DATASET, asyncMiddleware(datasetExportController.export))
 
   return router
 }

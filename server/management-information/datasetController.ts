@@ -37,7 +37,8 @@ class DatasetController {
       from: typeof resolvedQuery.from === 'string' ? resolvedQuery.from : '',
       to: typeof resolvedQuery.to === 'string' ? resolvedQuery.to : '',
       policeForceArea: typeof resolvedQuery.policeForceArea === 'string' ? resolvedQuery.policeForceArea : '',
-      downloadUrl: table ? this.getDownloadUrl(dataset, resolvedQuery) : undefined,
+      downloadUrl: table ? this.getExportUrl(dataset, resolvedQuery, 'csv') : undefined,
+      copyUrl: table ? this.getExportUrl(dataset, resolvedQuery, 'tsv') : undefined,
     })
   }
 
@@ -73,13 +74,13 @@ class DatasetController {
     return `?${paginationParams.toString()}`
   }
 
-  private getDownloadUrl(dataset: Dataset, query: ParsedQs): string {
+  private getExportUrl(dataset: Dataset, query: ParsedQs, format: 'csv' | 'tsv'): string {
+    const path = `/management-information/${encodeURIComponent(dataset.id)}/export`
     const params = this.getQueryParams(dataset, query)
-    const queryString = params.toString()
 
-    const path = `/management-information/${encodeURIComponent(dataset.id)}/download`
+    params.set('format', format)
 
-    return queryString ? `${path}?${queryString}` : path
+    return `${path}?${params.toString()}`
   }
 }
 

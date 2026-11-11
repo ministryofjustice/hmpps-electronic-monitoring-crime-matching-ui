@@ -15,7 +15,7 @@ const URLS = {
   MANAGEMENT_INFORMATION: {
     VIEW: '/management-information' as const,
     VIEW_DATASET: '/management-information/:id' as const,
-    DOWNLOAD_DATASET: '/management-information/:id/download' as const,
+    EXPORT_DATASET: '/management-information/:id/export' as const,
   },
   POLICE_DATA: {
     INGESTION_ATTEMPT: {
