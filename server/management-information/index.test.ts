@@ -2,7 +2,7 @@ import request from 'supertest'
 import logger from '../../logger'
 import { appWithAllRoutes, hubCaseworker, hubManager } from '../routes/testutils/appSetup'
 import HmppsAuditClient from '../data/hmppsAuditClient'
-import AuditService from '../services/auditService'
+import AuditService, { Page } from '../services/auditService'
 import CrimeMatchingClient from '../data/crimeMatchingClient'
 import ZeroPrecisionCrimeMatches from './datasets/zeroPrecisionCrimeMatches'
 
@@ -45,6 +45,14 @@ describe('/management-information', () => {
         .expect(res => {
           expect(res.status).toEqual(200)
           expect(res.text).toContain('Management information')
+          expect(auditService.logPageView).toHaveBeenCalledWith(Page.MANAGEMENT_INFORMATION_LANDING, {
+            who: hubManager.username,
+            correlationId: expect.any(String),
+            details: {
+              params: {},
+              query: {},
+            },
+          })
         })
     })
 
@@ -58,6 +66,7 @@ describe('/management-information', () => {
         .expect('Content-Type', /html/)
         .expect(res => {
           expect(res.status).toEqual(403)
+          expect(auditService.logPageView).not.toHaveBeenCalled()
         })
     })
   })
@@ -74,6 +83,14 @@ describe('/management-information', () => {
         .expect(res => {
           expect(res.status).toEqual(200)
           expect(res.text).toContain(dataset.title)
+          expect(auditService.logPageView).toHaveBeenCalledWith(Page.MANAGEMENT_INFORMATION_DATASET, {
+            who: hubManager.username,
+            correlationId: expect.any(String),
+            details: {
+              params: { id: dataset.id },
+              query: {},
+            },
+          })
         })
     })
 
@@ -87,6 +104,7 @@ describe('/management-information', () => {
         .expect('Content-Type', /html/)
         .expect(res => {
           expect(res.status).toEqual(403)
+          expect(auditService.logPageView).not.toHaveBeenCalled()
         })
     })
 
@@ -100,6 +118,7 @@ describe('/management-information', () => {
         .expect('Content-Type', /html/)
         .expect(res => {
           expect(res.status).toEqual(404)
+          expect(auditService.logPageView).not.toHaveBeenCalled()
         })
     })
   })
@@ -115,6 +134,7 @@ describe('/management-information', () => {
         .expect('Content-Type', /html/)
         .expect(res => {
           expect(res.status).toEqual(403)
+          expect(auditService.logPageView).not.toHaveBeenCalled()
         })
     })
 
@@ -128,6 +148,7 @@ describe('/management-information', () => {
         .expect('Content-Type', /html/)
         .expect(res => {
           expect(res.status).toEqual(404)
+          expect(auditService.logPageView).not.toHaveBeenCalled()
         })
     })
   })
