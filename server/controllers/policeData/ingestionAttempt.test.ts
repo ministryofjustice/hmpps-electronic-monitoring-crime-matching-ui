@@ -1,9 +1,3 @@
-import dayjs from 'dayjs'
-import utc from 'dayjs/plugin/utc'
-import timezone from 'dayjs/plugin/timezone'
-import customParseFormat from 'dayjs/plugin/customParseFormat'
-import isSameOrAfter from 'dayjs/plugin/isSameOrAfter'
-import isSameOrBefore from 'dayjs/plugin/isSameOrBefore'
 import logger from '../../../logger'
 import CrimeMatchingClient from '../../data/crimeMatchingClient'
 import PoliceDataService from '../../services/policeDataService'
@@ -12,12 +6,6 @@ import createMockResponse from '../../testutils/createMockResponse'
 import PoliceDataIngestionAttemptController from './ingestionAttempt'
 import HmppsAuditClient from '../../data/hmppsAuditClient'
 import AuditService, { Page } from '../../services/auditService'
-
-dayjs.extend(utc)
-dayjs.extend(timezone)
-dayjs.extend(customParseFormat)
-dayjs.extend(isSameOrAfter)
-dayjs.extend(isSameOrBefore)
 
 jest.mock('../../services/auditService')
 jest.mock('../../data/crimeMatchingClient')

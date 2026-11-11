@@ -1,11 +1,5 @@
-import dayjs from 'dayjs'
-import utc from 'dayjs/plugin/utc'
-import timezone from 'dayjs/plugin/timezone'
 import { convertToTitleCase, initialiseName } from './utils'
 import { formatDateTime } from './date'
-
-dayjs.extend(utc)
-dayjs.extend(timezone)
 
 describe('convert to title case', () => {
   it.each([

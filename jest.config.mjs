@@ -24,4 +24,5 @@ export default {
   moduleNameMapper: {
     '^file-type$': '<rootDir>/server/testutils/createMockFileType.ts',
   },
+  setupFilesAfterEnv: ['<rootDir>/server/testutils/setupDayjs.ts'],
 }

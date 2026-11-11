@@ -1,11 +1,5 @@
-import dayjs from 'dayjs'
-import utc from 'dayjs/plugin/utc'
-import timezone from 'dayjs/plugin/timezone'
 import presentCrimeVersion from './crimeVersion'
 import { CrimeVersion } from '../types/crimeVersion'
-
-dayjs.extend(utc)
-dayjs.extend(timezone)
 
 const baseCrimeVersion: CrimeVersion = {
   crimeVersionId: 'crime-version-1',
