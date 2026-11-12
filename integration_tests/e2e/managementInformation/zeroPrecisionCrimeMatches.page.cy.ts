@@ -1,6 +1,7 @@
 import { hubManager } from '../../fixtures/auth'
 import Page from '../../pages/page'
 import DatasetPage from '../../pages/managementInformation/dataset'
+import ErrorPage from '../../pages/error'
 
 context('Management Information', () => {
   context('Zero Precision Crime Matches page', () => {
@@ -200,6 +201,76 @@ context('Management Information', () => {
       page.dataTable.shouldHaveRows([['No results found for applied filters.']])
       page.dataTable.shouldHavePagination()
       page.dataTable.pagination.shouldHaveCurrentPage('1')
+    })
+
+    it('should show an error when the api returns a server error', () => {
+      // Given a stubbed dataset for zero-precision crime matches
+      cy.stubGetManagementInformationDataset({
+        request: {
+          id: 'zero-precision-crime-matches',
+          query: {
+            from: '2023-01-01T00:00:00.000Z',
+            to: '2024-01-01T00:00:00.000Z',
+            page: 0,
+          },
+        },
+        response: {
+          status: 500,
+          body: 'Internal Server Error',
+        },
+      })
+
+      cy.visit('/management-information/zero-precision-crime-matches')
+
+      const page = Page.verifyOnPage(DatasetPage, 'Crime matches with zero-precision positions')
+
+      // When the user submits the form with valid dates
+      page.form.fillInWith({
+        from: '01/01/2023',
+        to: '31/12/2023',
+      })
+      page.form.submitButton.click()
+
+      // Then the application should display an error page
+      Page.verifyOnPage(ErrorPage, 'Internal Server Error')
+    })
+
+    it('should show an error when the api returns an invalid response', () => {
+      // Given a stubbed dataset for zero-precision crime matches
+      cy.stubGetManagementInformationDataset({
+        request: {
+          id: 'zero-precision-crime-matches',
+          query: {
+            from: '2023-01-01T00:00:00.000Z',
+            to: '2024-01-01T00:00:00.000Z',
+            page: 0,
+          },
+        },
+        response: {
+          status: 200,
+          body: {
+            data: [{ foo: 'bar' }],
+            pageCount: 1,
+            pageNumber: 0,
+            pageSize: 1,
+          },
+        },
+      })
+
+      cy.visit('/management-information/zero-precision-crime-matches')
+
+      const page = Page.verifyOnPage(DatasetPage, 'Crime matches with zero-precision positions')
+
+      // When the user submits the form with valid dates
+      page.form.fillInWith({
+        from: '01/01/2023',
+        to: '31/12/2023',
+      })
+      page.form.submitButton.click()
+
+      // Then the data table should display results
+      // N.B. the development error page shows the specific error, in production it will show a generic error message
+      Page.verifyOnPage(ErrorPage, 'invalid_type')
     })
   })
 })
