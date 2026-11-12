@@ -15,6 +15,7 @@ import {
   StubGetHubManagersOptions,
   StubUpdateHubManagerSignaturesOptions,
 } from './mockApis/crimeMatching/hubManagers'
+import { StubGetManagementInformationDatasetOptions } from './mockApis/managementInformation'
 
 declare global {
   namespace Cypress {
@@ -137,6 +138,11 @@ declare global {
        * Stub a wiremock response for the crimeMatchingApi PUT /hub-managers/{id}/signature
        */
       stubUpdateHubManagerSignature(options?: StubUpdateHubManagerSignaturesOptions): Chainable<void>
+
+      /**
+       * Stub a wiremock response for the crimeMatchingApi GET /management-information/{id}
+       */
+      stubGetManagementInformationDataset(options?: StubGetManagementInformationDatasetOptions): Chainable<void>
     }
   }
 }

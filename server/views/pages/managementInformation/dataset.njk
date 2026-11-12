@@ -25,7 +25,7 @@
       </h1>
 
       {% if dataset.filters.length %}
-        <form method="get" action="/management-information/{{ dataset.id }}">
+        <form id="filter-dataset-form" method="get" action="/management-information/{{ dataset.id }}">
           <div class="govuk-grid-row">
             {% if "from" in dataset.filters %}
               <div class="govuk-grid-column-one-quarter">

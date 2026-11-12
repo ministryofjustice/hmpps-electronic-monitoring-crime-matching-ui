@@ -6,6 +6,7 @@ import crimeMatching from './integration_tests/mockApis/crimeMatching'
 import probationComponents from './integration_tests/mockApis/probationComponents'
 import files from './integration_tests/support/files'
 import os from './integration_tests/mockApis/ordnanceSurvey'
+import managementInformation from './integration_tests/mockApis/managementInformation'
 
 export default defineConfig({
   chromeWebSecurity: false,
@@ -27,6 +28,7 @@ export default defineConfig({
         ...probationComponents,
         ...files,
         ...os,
+        ...managementInformation,
       })
     },
     baseUrl: 'http://localhost:3007',
