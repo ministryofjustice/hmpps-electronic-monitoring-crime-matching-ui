@@ -85,3 +85,7 @@ Cypress.Commands.add('stubOrdnanceSurvey', () => {
   cy.task('stubOSGetVectorSource')
   cy.task('stubOSGetTile')
 })
+
+Cypress.Commands.add('stubGetManagementInformationDataset', options => {
+  cy.task('stubGetManagementInformationDataset', options)
+})
