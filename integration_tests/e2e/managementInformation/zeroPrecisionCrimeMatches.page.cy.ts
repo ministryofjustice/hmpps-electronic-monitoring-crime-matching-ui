@@ -201,5 +201,204 @@ context('Management Information', () => {
       page.dataTable.shouldHavePagination()
       page.dataTable.pagination.shouldHaveCurrentPage('1')
     })
+
+    it('should download the complete filtered dataset as CSV', () => {
+      // Given a stubbed dataset for the first page
+      cy.stubGetManagementInformationDataset({
+        request: {
+          id: 'zero-precision-crime-matches',
+          query: {
+            from: '2023-01-01T00:00:00.000Z',
+            to: '2024-01-01T00:00:00.000Z',
+            page: 0,
+          },
+        },
+        response: {
+          status: 200,
+          body: {
+            data: [
+              {
+                policeForceArea: 'Metropolitan',
+                batchId: 'MPS20230601',
+                crimeReference: '0000001',
+                deviceSerialNumber: '000000001',
+                matchedAt: '2023-06-01T10:30:00Z',
+                zeroPrecisionPositionCount: 1,
+              },
+            ],
+            pageCount: 2,
+            pageNumber: 0,
+            pageSize: 10,
+          },
+        },
+      })
+
+      // And an unpaged response containing all matching records
+      cy.stubGetManagementInformationDataset({
+        request: {
+          id: 'zero-precision-crime-matches',
+          query: {
+            from: '2023-01-01T00:00:00.000Z',
+            to: '2024-01-01T00:00:00.000Z',
+          },
+        },
+        response: {
+          status: 200,
+          body: {
+            data: [
+              {
+                policeForceArea: 'Metropolitan',
+                batchId: 'MPS20230601',
+                crimeReference: '0000001',
+                deviceSerialNumber: '000000001',
+                matchedAt: '2023-06-01T10:30:00Z',
+                zeroPrecisionPositionCount: 1,
+              },
+              {
+                policeForceArea: 'Metropolitan',
+                batchId: 'MPS20230601',
+                crimeReference: '0000002',
+                deviceSerialNumber: '000000002',
+                matchedAt: '2023-06-01T11:30:00Z',
+                zeroPrecisionPositionCount: 2,
+              },
+            ],
+            pageCount: 1,
+            pageNumber: 0,
+            pageSize: 2,
+          },
+        },
+      })
+
+      cy.visit('/management-information/zero-precision-crime-matches')
+
+      const page = Page.verifyOnPage(DatasetPage, 'Crime matches with zero-precision positions')
+
+      page.form.fillInWith({
+        from: '01/01/2023',
+        to: '31/12/2023',
+      })
+      page.form.submitButton.click()
+
+      // When the user requests the CSV export
+      cy.contains('a', 'Download CSV')
+        .invoke('attr', 'href')
+        .then(href => {
+          cy.request(href!).then(response => {
+            expect(response.status).to.eq(200)
+            expect(response.headers['content-type']).to.include('text/csv')
+            expect(response.headers['content-disposition']).to.include('attachment')
+            expect(response.body).to.equal(
+              'Police force area,Batch ID,Crime reference,Device serial number,Matched at,Zero-precision positions\nMetropolitan,MPS20230601,0000001,000000001,"01/06/2023, 11:30:00",1\nMetropolitan,MPS20230601,0000002,000000002,"01/06/2023, 12:30:00",2\n',
+            )
+          })
+        })
+    })
+
+    it('should copy the complete filtered dataset as TSV', () => {
+      // Given a stubbed dataset for the first page
+      cy.stubGetManagementInformationDataset({
+        request: {
+          id: 'zero-precision-crime-matches',
+          query: {
+            from: '2023-01-01T00:00:00.000Z',
+            to: '2024-01-01T00:00:00.000Z',
+            page: 0,
+          },
+        },
+        response: {
+          status: 200,
+          body: {
+            data: [
+              {
+                policeForceArea: 'Metropolitan',
+                batchId: 'MPS20230601',
+                crimeReference: '0000001',
+                deviceSerialNumber: '000000001',
+                matchedAt: '2023-06-01T10:30:00Z',
+                zeroPrecisionPositionCount: 1,
+              },
+            ],
+            pageCount: 2,
+            pageNumber: 0,
+            pageSize: 10,
+          },
+        },
+      })
+
+      // And an unpaged response containing all matching records
+      cy.stubGetManagementInformationDataset({
+        request: {
+          id: 'zero-precision-crime-matches',
+          query: {
+            from: '2023-01-01T00:00:00.000Z',
+            to: '2024-01-01T00:00:00.000Z',
+          },
+        },
+        response: {
+          status: 200,
+          body: {
+            data: [
+              {
+                policeForceArea: 'Metropolitan',
+                batchId: 'MPS20230601',
+                crimeReference: '0000001',
+                deviceSerialNumber: '000000001',
+                matchedAt: '2023-06-01T10:30:00Z',
+                zeroPrecisionPositionCount: 1,
+              },
+              {
+                policeForceArea: 'Metropolitan',
+                batchId: 'MPS20230601',
+                crimeReference: '0000002',
+                deviceSerialNumber: '000000002',
+                matchedAt: '2023-06-01T11:30:00Z',
+                zeroPrecisionPositionCount: 2,
+              },
+            ],
+            pageCount: 1,
+            pageNumber: 0,
+            pageSize: 2,
+          },
+        },
+      })
+
+      cy.visit('/management-information/zero-precision-crime-matches')
+
+      const page = Page.verifyOnPage(DatasetPage, 'Crime matches with zero-precision positions')
+
+      page.form.fillInWith({
+        from: '01/01/2023',
+        to: '31/12/2023',
+      })
+      page.form.submitButton.click()
+
+      // And clipboard access is stubbed
+      cy.window().then(win => {
+        const writeText = cy.stub(win.navigator.clipboard, 'writeText').resolves()
+
+        cy.wrap(writeText).as('writeText')
+      })
+
+      // When the user copies the table
+      cy.contains('button', 'Copy table').click()
+
+      // Then the complete dataset should be copied
+      cy.get('@writeText').should('have.been.calledOnce')
+
+      cy.get('@writeText').should(
+        'have.been.calledWithMatch',
+        'Police force area\tBatch ID\tCrime reference\tDevice serial number\tMatched at\tZero-precision positions\n' +
+          'Metropolitan\tMPS20230601\t0000001\t000000001\t01/06/2023, 11:30:00\t1\n' +
+          'Metropolitan\tMPS20230601\t0000002\t000000002\t01/06/2023, 12:30:00\t2\n',
+      )
+
+      // And the user should see a success message
+      cy.get('#copy-dataset-status')
+        .should('contain.text', 'Table copied to clipboard')
+        .and('have.class', 'app-copy-status--success')
+
+      cy.contains('button', 'Copy table').should('not.be.disabled')
+    })
   })
 })
