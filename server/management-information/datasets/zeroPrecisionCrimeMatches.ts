@@ -21,7 +21,7 @@ class ZeroPrecisionCrimeMatches implements Dataset {
     { key: 'crimeReference', heading: 'Crime reference' },
     { key: 'deviceSerialNumber', heading: 'Device serial number' },
     { key: 'matchedAt', heading: 'Matched at', format: 'datetime' },
-    { key: 'zeroPrecisionPositionCount', heading: 'Zero-precision positions' },
+    { key: 'zeroPrecisionPositionCount', heading: 'Zero-precision positions', format: 'numeric' },
   ]
 
   defaultQuery = (): DatasetQuery => {

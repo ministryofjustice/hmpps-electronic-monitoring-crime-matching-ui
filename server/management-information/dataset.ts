@@ -9,7 +9,7 @@ type DatasetQuery = {
 
 type DatasetFilter = Exclude<keyof DatasetQuery, 'page'>
 
-type DatasetColumnFormat = 'datetime'
+type DatasetColumnFormat = 'datetime' | 'numeric' | 'percentage'
 
 type DatasetColumn = {
   key: string

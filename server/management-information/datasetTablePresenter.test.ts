@@ -7,7 +7,7 @@ describe('DatasetTablePresenter', () => {
   const dataset = createMockDataset('test', {
     columns: [
       { key: 'policeForce', heading: 'Police force' },
-      { key: 'matched', heading: 'Matched crimes' },
+      { key: 'matched', heading: 'Matched crimes', format: 'numeric' },
       { key: 'unmatched', heading: 'Unmatched crimes' },
       { key: 'matchedAt', heading: 'Matched at', format: 'datetime' },
     ],
@@ -30,13 +30,23 @@ describe('DatasetTablePresenter', () => {
       expect(presenter.presentResults(dataset, result, '?foo=bar')).toEqual({
         columns: [
           { text: 'Police force' },
-          { text: 'Matched crimes' },
+          { text: 'Matched crimes', format: 'numeric' },
           { text: 'Unmatched crimes' },
           { text: 'Matched at' },
         ],
         rows: [
-          [{ text: 'Metropolitan' }, { text: '100' }, { text: '20' }, { text: '01/10/2026, 01:00:00' }],
-          [{ text: 'West Midlands' }, { text: '75' }, { text: '15' }, { text: '01/10/2026, 01:00:00' }],
+          [
+            { text: 'Metropolitan' },
+            { text: '100', format: 'numeric' },
+            { text: '20' },
+            { text: '01/10/2026, 01:00:00' },
+          ],
+          [
+            { text: 'West Midlands' },
+            { text: '75', format: 'numeric' },
+            { text: '15' },
+            { text: '01/10/2026, 01:00:00' },
+          ],
         ],
         pagination: {
           currentPage: 1,
@@ -57,7 +67,12 @@ describe('DatasetTablePresenter', () => {
       }
 
       expect(presenter.presentResults(dataset, result, '').rows).toEqual([
-        [{ text: 'Metropolitan' }, { text: '100' }, { text: '20' }, { text: '01/10/2026, 01:00:00' }],
+        [
+          { text: 'Metropolitan' },
+          { text: '100', format: 'numeric' },
+          { text: '20' },
+          { text: '01/10/2026, 01:00:00' },
+        ],
       ])
     })
 

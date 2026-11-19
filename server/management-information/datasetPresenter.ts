@@ -18,6 +18,10 @@ class DatasetPresenter {
       return formatDateTime(value, 'DD/MM/YYYY, HH:mm:ss')
     }
 
+    if (typeof value === 'number' && format === 'percentage') {
+      return `${value.toFixed(2)}%`
+    }
+
     return String(value)
   }
 }

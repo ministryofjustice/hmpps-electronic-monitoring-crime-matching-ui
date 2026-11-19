@@ -1,5 +1,5 @@
 import type { GovUkTableCell } from '../types/govUk/table'
-import type { Dataset, DatasetResult } from './dataset'
+import type { Dataset, DatasetColumn, DatasetResult } from './dataset'
 import DatasetPresenter from './datasetPresenter'
 
 type DatasetTable = {
@@ -17,8 +17,12 @@ class DatasetTablePresenter {
 
   presentResults(dataset: Dataset, result: DatasetResult, hrefPrefix: string): DatasetTable {
     const presented = this.presenter.present(dataset, result)
-    const columns: GovUkTableCell[] = presented.headings.map(text => ({ text }))
-    const rows: GovUkTableCell[][] = presented.rows.map(row => row.map(text => ({ text })))
+    const columns: GovUkTableCell[] = presented.headings.map((text, index) =>
+      this.createTableCell(text, dataset.columns[index]),
+    )
+    const rows: GovUkTableCell[][] = presented.rows.map(row =>
+      row.map((text, index) => this.createTableCell(text, dataset.columns[index])),
+    )
 
     if (rows.length === 0) {
       rows.push([
@@ -37,6 +41,13 @@ class DatasetTablePresenter {
         currentPage: result.pagination.pageNumber + 1,
         hrefPrefix,
       },
+    }
+  }
+
+  private createTableCell(value: string, column: DatasetColumn): GovUkTableCell {
+    return {
+      text: value,
+      ...(column.format === 'numeric' ? { format: 'numeric' } : {}),
     }
   }
 }
