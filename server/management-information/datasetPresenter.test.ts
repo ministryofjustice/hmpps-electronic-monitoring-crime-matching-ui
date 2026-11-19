@@ -85,5 +85,21 @@ describe('DatasetPresenter', () => {
         rows: [],
       })
     })
+
+    it('renders percentages with correct formatting', () => {
+      const percentageDataset = createMockDataset('test', {
+        columns: [{ key: 'notIngestedPercentage', heading: 'Not ingested percentage', format: 'percentage' }],
+      })
+
+      const result = {
+        rows: [
+          {
+            notIngestedPercentage: 12.3456,
+          },
+        ],
+      }
+
+      expect(presenter.present(percentageDataset, result).rows).toEqual([['12.35%']])
+    })
   })
 })
