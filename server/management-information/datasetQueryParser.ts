@@ -94,14 +94,14 @@ class DatasetQueryParser {
       return { ok: false, error: errorMessage }
     }
 
-    const match = /^(\d{2})\/(\d{2})\/(\d{4})$/.exec(value)
+    const match = /^(\d{1,2})\/(\d{1,2})\/(\d{4})$/.exec(value)
 
     if (!match) {
       return { ok: false, error: errorMessage }
     }
 
     const [, day, month, year] = match
-    const isoDate = `${year}-${month}-${day}T00:00:00.000Z`
+    const isoDate = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}T00:00:00.000Z`
     const date = new Date(`${isoDate}`)
 
     if (

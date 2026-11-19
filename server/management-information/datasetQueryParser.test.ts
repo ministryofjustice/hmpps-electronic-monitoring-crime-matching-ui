@@ -5,11 +5,15 @@ describe('DatasetQueryParser', () => {
   const parser = new DatasetQueryParser()
 
   describe('parse', () => {
-    it('parses valid dates into ISO format', () => {
+    it.each([
+      ['01/10/2026', '31/10/2026', '2026-10-01T00:00:00.000Z', '2026-11-01T00:00:00.000Z'],
+      ['2/10/2026', '31/10/2026', '2026-10-02T00:00:00.000Z', '2026-11-01T00:00:00.000Z'],
+      ['01/1/2026', '31/1/2026', '2026-01-01T00:00:00.000Z', '2026-02-01T00:00:00.000Z'],
+    ])('parses valid dates into ISO format', (from, to, expectedFrom, expectedTo) => {
       const result = parser.parse(
         {
-          from: '01/10/2026',
-          to: '31/10/2026',
+          from,
+          to,
         },
         ['from', 'to'],
       )
@@ -17,8 +21,8 @@ describe('DatasetQueryParser', () => {
       expect(result).toEqual({
         ok: true,
         data: {
-          from: '2026-10-01T00:00:00.000Z',
-          to: '2026-11-01T00:00:00.000Z',
+          from: expectedFrom,
+          to: expectedTo,
         },
       })
     })
