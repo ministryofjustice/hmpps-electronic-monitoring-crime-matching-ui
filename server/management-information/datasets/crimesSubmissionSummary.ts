@@ -17,9 +17,9 @@ class CrimesSubmissionSummary implements Dataset {
 
   readonly columns: Array<DatasetColumn> = [
     { key: 'crimeType', heading: 'Crime type' },
-    { key: 'submitted', heading: 'Number of crimes submitted' },
-    { key: 'ingested', heading: 'Number of crimes ingested' },
-    { key: 'failed', heading: 'Number of crimes failed ingestion' },
+    { key: 'submitted', heading: 'Number of crimes submitted', format: 'numeric' },
+    { key: 'ingested', heading: 'Number of crimes ingested', format: 'numeric' },
+    { key: 'failed', heading: 'Number of crimes failed ingestion', format: 'numeric' },
     { key: 'notIngestedPercentage', heading: 'Percentage of crimes not ingested', format: 'percentage' },
   ]
 
