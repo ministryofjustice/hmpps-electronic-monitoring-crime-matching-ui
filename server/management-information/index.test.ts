@@ -5,6 +5,7 @@ import HmppsAuditClient from '../data/hmppsAuditClient'
 import AuditService, { Page } from '../services/auditService'
 import CrimeMatchingClient from '../data/crimeMatchingClient'
 import ZeroPrecisionCrimeMatches from './datasets/zeroPrecisionCrimeMatches'
+import CrimesSubmissionSummary from './datasets/crimesSubmissionSummary'
 
 jest.mock('../services/auditService')
 jest.mock('../data/crimeMatchingClient')
@@ -27,7 +28,10 @@ describe('/management-information', () => {
       crimeMatchingApiClient,
     },
   })
-  const datasets = [new ZeroPrecisionCrimeMatches(crimeMatchingApiClient)]
+  const datasets = [
+    new CrimesSubmissionSummary(crimeMatchingApiClient),
+    new ZeroPrecisionCrimeMatches(crimeMatchingApiClient),
+  ]
 
   beforeEach(() => {
     jest.clearAllMocks()
