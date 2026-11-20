@@ -126,13 +126,11 @@
     "minimatch@3.1.5": {
       "brace-expansion": "1.1.21"
     },
-    "minimatch@9.0.9": {
-      "brace-expansion": "5.0.12"
-    },
-    "minimatch@10.2.5": {
-      "brace-expansion": "5.0.12"
-    },
+    "minimatch@>=7.0.0 <11.0.1": "11.0.5",
     "shell-quote": "1.12.0"
+  },
+  "overrides-comments": {
+    "minimatch@>=7.0.0 <11.0.1": "https://github.com/advisories/GHSA-g3hv-75wg-m249"
   },
   "allowScripts": {
     "@parcel/watcher@2.6.0": true,
