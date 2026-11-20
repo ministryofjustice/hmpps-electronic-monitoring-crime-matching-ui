@@ -217,4 +217,25 @@ export default class CrimeMatchingClient extends RestClient {
       authOptions,
     )
   }
+
+  getFailedCrimeSubmissionsDataset(
+    authOptions: AuthOptions,
+    policeForce?: string,
+    from?: string,
+    to?: string,
+    page?: number,
+  ): Promise<unknown> {
+    return this.get(
+      {
+        path: '/management-information/failed-crime-submissions',
+        query: {
+          policeForce,
+          from,
+          to,
+          page,
+        },
+      },
+      authOptions,
+    )
+  }
 }
