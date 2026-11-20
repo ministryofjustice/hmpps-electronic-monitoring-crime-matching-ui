@@ -47,7 +47,7 @@ class DatasetTablePresenter {
   private createTableCell(value: string, column: DatasetColumn): GovUkTableCell {
     return {
       text: value,
-      ...(column.format === 'numeric' ? { format: 'numeric' } : {}),
+      ...(column.format === 'numeric' || column.format === 'percentage' ? { format: 'numeric' } : {}),
     }
   }
 }
