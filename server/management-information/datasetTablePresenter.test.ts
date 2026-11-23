@@ -8,7 +8,7 @@ describe('DatasetTablePresenter', () => {
     columns: [
       { key: 'policeForce', heading: 'Police force' },
       { key: 'matched', heading: 'Matched crimes', format: 'numeric' },
-      { key: 'unmatched', heading: 'Unmatched crimes' },
+      { key: 'unmatched', heading: 'Unmatched crimes', format: 'percentage' },
       { key: 'matchedAt', heading: 'Matched at', format: 'datetime' },
     ],
   })
@@ -31,20 +31,20 @@ describe('DatasetTablePresenter', () => {
         columns: [
           { text: 'Police force' },
           { text: 'Matched crimes', format: 'numeric' },
-          { text: 'Unmatched crimes' },
+          { text: 'Unmatched crimes', format: 'numeric' },
           { text: 'Matched at' },
         ],
         rows: [
           [
             { text: 'Metropolitan' },
             { text: '100', format: 'numeric' },
-            { text: '20' },
+            { text: '20.00%', format: 'numeric' },
             { text: '01/10/2026, 01:00:00' },
           ],
           [
             { text: 'West Midlands' },
             { text: '75', format: 'numeric' },
-            { text: '15' },
+            { text: '15.00%', format: 'numeric' },
             { text: '01/10/2026, 01:00:00' },
           ],
         ],
@@ -70,7 +70,7 @@ describe('DatasetTablePresenter', () => {
         [
           { text: 'Metropolitan' },
           { text: '100', format: 'numeric' },
-          { text: '20' },
+          { text: '20.00%', format: 'numeric' },
           { text: '01/10/2026, 01:00:00' },
         ],
       ])

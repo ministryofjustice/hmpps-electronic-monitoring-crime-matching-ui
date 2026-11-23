@@ -4,8 +4,7 @@ import { appWithAllRoutes, hubCaseworker, hubManager } from '../routes/testutils
 import HmppsAuditClient from '../data/hmppsAuditClient'
 import AuditService, { Page } from '../services/auditService'
 import CrimeMatchingClient from '../data/crimeMatchingClient'
-import ZeroPrecisionCrimeMatches from './datasets/zeroPrecisionCrimeMatches'
-import FailedCrimeSubmissions from './datasets/failedCrimeSubmissions'
+import DatasetRegistry from './datasetRegistry'
 
 jest.mock('../services/auditService')
 jest.mock('../data/crimeMatchingClient')
@@ -28,10 +27,7 @@ describe('/management-information', () => {
       crimeMatchingApiClient,
     },
   })
-  const datasets = [
-    new ZeroPrecisionCrimeMatches(crimeMatchingApiClient),
-    new FailedCrimeSubmissions(crimeMatchingApiClient),
-  ]
+  const datasets = DatasetRegistry.create(crimeMatchingApiClient).getAll()
 
   beforeEach(() => {
     jest.clearAllMocks()

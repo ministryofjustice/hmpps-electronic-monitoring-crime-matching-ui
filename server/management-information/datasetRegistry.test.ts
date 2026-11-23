@@ -1,3 +1,4 @@
+import CrimeMatchingClient from '../data/crimeMatchingClient'
 import createMockDataset from '../testutils/createMockDataset'
 import DatasetRegistry from './datasetRegistry'
 
@@ -70,6 +71,17 @@ describe('DatasetRegistry', () => {
       registry.register(second)
 
       expect(registry.getAll()).toEqual([first, second])
+    })
+  })
+
+  describe('create', () => {
+    it('registers the available datasets', () => {
+      const registry = DatasetRegistry.create({} as jest.Mocked<CrimeMatchingClient>)
+
+      expect(registry.getAll().map(dataset => dataset.id)).toEqual([
+        'crimes-submission-summary',
+        'zero-precision-crime-matches',
+      ])
     })
   })
 })
