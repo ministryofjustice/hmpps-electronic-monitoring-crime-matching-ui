@@ -9,7 +9,7 @@ class FailedCrimeSubmissions implements Dataset {
 
   readonly id = 'failed-crime-submissions'
 
-  readonly title = 'Failed Crime Submissions'
+  readonly title = 'Failed crime submissions'
 
   readonly description = 'A list of failed crime submissions by error type and police force.'
 

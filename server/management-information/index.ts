@@ -9,10 +9,14 @@ import { ROLES } from '../constants/roles'
 import hasRole from '../middleware/hasRole'
 import DatasetRegistry from './datasetRegistry'
 import ZeroPrecisionCrimeMatches from './datasets/zeroPrecisionCrimeMatches'
+import FailedCrimeSubmissions from './datasets/failedCrimeSubmissions'
 
 const managementInformationRoutes = ({ crimeMatchingApiClient }: Services): Router => {
   const router = Router()
-  const registry = new DatasetRegistry([new ZeroPrecisionCrimeMatches(crimeMatchingApiClient)])
+  const registry = new DatasetRegistry([
+    new ZeroPrecisionCrimeMatches(crimeMatchingApiClient),
+    new FailedCrimeSubmissions(crimeMatchingApiClient),
+  ])
   const datasetController = new DatasetController(registry)
   const datasetExportController = new DatasetExportController(registry)
   const managementInformationController = new ManagementInformationController(registry)

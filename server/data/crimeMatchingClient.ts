@@ -220,7 +220,7 @@ export default class CrimeMatchingClient extends RestClient {
 
   getFailedCrimeSubmissionsDataset(
     authOptions: AuthOptions,
-    policeForce?: string,
+    policeForceArea?: string,
     from?: string,
     to?: string,
     page?: number,
@@ -229,7 +229,7 @@ export default class CrimeMatchingClient extends RestClient {
       {
         path: '/management-information/failed-crime-submissions',
         query: {
-          policeForce,
+          policeForceArea,
           from,
           to,
           page,

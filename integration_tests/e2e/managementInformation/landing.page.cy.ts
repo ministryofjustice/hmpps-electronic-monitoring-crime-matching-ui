@@ -22,6 +22,10 @@ context('Management Information', () => {
           text: 'Crime matches with zero-precision positions',
           link: '/management-information/zero-precision-crime-matches',
         },
+        {
+          text: 'Failed crime submissions',
+          link: '/management-information/failed-crime-submissions',
+        },
       ])
     })
   })
