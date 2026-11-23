@@ -80,6 +80,7 @@ describe('DatasetRegistry', () => {
 
       expect(registry.getAll().map(dataset => dataset.id)).toEqual([
         'crimes-submission-summary',
+        'failed-crime-submissions',
         'zero-precision-crime-matches',
       ])
     })
