@@ -137,7 +137,7 @@ describe('FailedCrimeSubmissions', () => {
   })
 
   describe('defaultQuery', () => {
-    it('defaults to the current UK date', () => {
+    it('defaults to the previous month', () => {
       jest.useFakeTimers()
       jest.setSystemTime(new Date('2026-07-01T23:30:00Z'))
 
@@ -145,8 +145,8 @@ describe('FailedCrimeSubmissions', () => {
         const dataset = new FailedCrimeSubmissions(mockRestClient)
 
         expect(dataset.defaultQuery()).toEqual({
-          from: '02/07/2026',
-          to: '02/07/2026',
+          from: '01/06/2026',
+          to: '30/06/2026',
         })
       } finally {
         jest.useRealTimers()

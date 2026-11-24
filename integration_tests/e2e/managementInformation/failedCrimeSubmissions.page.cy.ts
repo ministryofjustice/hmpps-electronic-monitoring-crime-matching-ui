@@ -26,9 +26,13 @@ context('Management Information', () => {
 
       // And the form should be populated with default values
       const today = new Date()
-      const todayString = `${today.getDate()}/${today.getMonth() + 1}/${today.getFullYear()}`
-      page.form.fromField.shouldHaveValue(todayString)
-      page.form.toField.shouldHaveValue(todayString)
+      const firstDay = new Date(Date.UTC(today.getUTCFullYear(), today.getUTCMonth() - 1, 1))
+      const lastDay = new Date(Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), 0))
+      const format = (date: Date) =>
+        `${String(date.getUTCDate()).padStart(2, '0')}/${String(date.getUTCMonth() + 1).padStart(2, '0')}/${date.getUTCFullYear()}`
+
+      page.form.fromField.shouldHaveValue(format(firstDay))
+      page.form.toField.shouldHaveValue(format(lastDay))
       page.form.policeForceAreaField.shouldHaveValue('')
     })
 

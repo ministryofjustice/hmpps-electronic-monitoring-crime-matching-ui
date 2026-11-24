@@ -21,11 +21,14 @@ class FailedCrimeSubmissions implements Dataset {
   ]
 
   defaultQuery = (): DatasetQuery => {
-    const today = formatDateTime(new Date().toISOString(), 'DD/MM/YYYY')
+    const now = new Date()
+
+    const firstDay = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() - 1, 1))
+    const lastDay = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 0))
 
     return {
-      from: today,
-      to: today,
+      from: formatDateTime(firstDay.toISOString(), 'DD/MM/YYYY'),
+      to: formatDateTime(lastDay.toISOString(), 'DD/MM/YYYY'),
     }
   }
 
