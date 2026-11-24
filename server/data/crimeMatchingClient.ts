@@ -1,7 +1,6 @@
 import { AuthOptions, AuthenticationClient, RestClient } from '@ministryofjustice/hmpps-rest-client'
 import Logger from 'bunyan'
 import config from '../config'
-import { DatasetQuery } from '../management-information/dataset'
 
 export default class CrimeMatchingClient extends RestClient {
   constructor(logger: Logger, authenticationClient?: AuthenticationClient) {
@@ -200,7 +199,7 @@ export default class CrimeMatchingClient extends RestClient {
     )
   }
 
-  getDataset(authOptions: AuthOptions, datasetId: string, query: DatasetQuery): Promise<unknown> {
+  getDataset(authOptions: AuthOptions, datasetId: string, query?: string | object | undefined): Promise<unknown> {
     return this.get(
       {
         path: `/management-information/${datasetId}`,
