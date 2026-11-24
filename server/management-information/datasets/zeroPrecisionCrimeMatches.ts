@@ -34,12 +34,7 @@ class ZeroPrecisionCrimeMatches implements Dataset {
   }
 
   async retrieve(username: string, query: DatasetQuery): Promise<DatasetResult> {
-    const response = await this.crimeMatchingApiClient.getZeroPrecisionCrimeMatchesDataset(
-      asSystem(username),
-      query.from,
-      query.to,
-      query.page,
-    )
+    const response = await this.crimeMatchingApiClient.getDataset(asSystem(username), this.id, query)
     const parsed = zeroPrecisionCrimeMatchDatasetSchema.parse(response)
 
     return {
