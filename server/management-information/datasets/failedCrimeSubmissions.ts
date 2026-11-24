@@ -33,13 +33,7 @@ class FailedCrimeSubmissions implements Dataset {
   }
 
   async retrieve(username: string, query: DatasetQuery): Promise<DatasetResult> {
-    const response = await this.crimeMatchingApiClient.getFailedCrimeSubmissionsDataset(
-      asSystem(username),
-      query.policeForceArea,
-      query.from,
-      query.to,
-      query.page,
-    )
+    const response = await this.crimeMatchingApiClient.getDataset(asSystem(username), this.id, query)
     const parsed = failedCrimeSubmissionsDatasetSchema.parse(response)
 
     return {

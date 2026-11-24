@@ -39,7 +39,7 @@ describe('FailedCrimeSubmissions', () => {
       const dataset = new FailedCrimeSubmissions(mockRestClient)
 
       // Given a client returning a valid response
-      mockRestClient.getFailedCrimeSubmissionsDataset.mockResolvedValue(createResponse([failedCrimeSubmissions]))
+      mockRestClient.getDataset.mockResolvedValue(createResponse([failedCrimeSubmissions]))
 
       // When the dataset is retrieved
       const result = await dataset.retrieve('test-user', {
@@ -50,13 +50,12 @@ describe('FailedCrimeSubmissions', () => {
       })
 
       // Then the client is called with the correct authentication and filters
-      expect(mockRestClient.getFailedCrimeSubmissionsDataset).toHaveBeenCalledWith(
-        asSystem('test-user'),
-        'METROPOLITAN',
-        '2026-11-01T00:00:00.000Z',
-        '2026-11-08T00:00:00.000Z',
-        0,
-      )
+      expect(mockRestClient.getDataset).toHaveBeenCalledWith(asSystem('test-user'), 'failed-crime-submissions', {
+        policeForceArea: 'METROPOLITAN',
+        from: '2026-11-01T00:00:00.000Z',
+        to: '2026-11-08T00:00:00.000Z',
+        page: 0,
+      })
 
       // And the validated records are returned
       expect(result).toEqual({
@@ -73,7 +72,7 @@ describe('FailedCrimeSubmissions', () => {
       const dataset = new FailedCrimeSubmissions(mockRestClient)
 
       // Given a client returning a valid response
-      mockRestClient.getFailedCrimeSubmissionsDataset.mockResolvedValue(createResponse([failedCrimeSubmissions]))
+      mockRestClient.getDataset.mockResolvedValue(createResponse([failedCrimeSubmissions]))
 
       // When the dataset is retrieved
       await dataset.retrieve('test-user', {
@@ -81,35 +80,25 @@ describe('FailedCrimeSubmissions', () => {
       })
 
       // Then the client is called without any filters
-      expect(mockRestClient.getFailedCrimeSubmissionsDataset).toHaveBeenCalledWith(
-        asSystem('test-user'),
-        undefined,
-        undefined,
-        undefined,
-        0,
-      )
+      expect(mockRestClient.getDataset).toHaveBeenCalledWith(asSystem('test-user'), 'failed-crime-submissions', {
+        page: 0,
+      })
     })
 
     it('retrieves all records when no page is specified', async () => {
       const dataset = new FailedCrimeSubmissions(mockRestClient)
 
-      mockRestClient.getFailedCrimeSubmissionsDataset.mockResolvedValue(createResponse([failedCrimeSubmissions]))
+      mockRestClient.getDataset.mockResolvedValue(createResponse([failedCrimeSubmissions]))
 
       await dataset.retrieve('test-user', {})
 
-      expect(mockRestClient.getFailedCrimeSubmissionsDataset).toHaveBeenCalledWith(
-        asSystem('test-user'),
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-      )
+      expect(mockRestClient.getDataset).toHaveBeenCalledWith(asSystem('test-user'), 'failed-crime-submissions', {})
     })
 
     it('returns an empty dataset when no records are found', async () => {
       const dataset = new FailedCrimeSubmissions(mockRestClient)
 
-      mockRestClient.getFailedCrimeSubmissionsDataset.mockResolvedValue(createResponse([]))
+      mockRestClient.getDataset.mockResolvedValue(createResponse([]))
 
       const result = await dataset.retrieve('test-user', {})
 
@@ -127,7 +116,7 @@ describe('FailedCrimeSubmissions', () => {
       const dataset = new FailedCrimeSubmissions(mockRestClient)
 
       // Given a client returning an invalid response structure
-      mockRestClient.getFailedCrimeSubmissionsDataset.mockResolvedValue({
+      mockRestClient.getDataset.mockResolvedValue({
         data: 'invalid',
       })
 
