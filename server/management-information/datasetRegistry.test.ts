@@ -79,6 +79,7 @@ describe('DatasetRegistry', () => {
       const registry = DatasetRegistry.create({} as jest.Mocked<CrimeMatchingClient>)
 
       expect(registry.getAll().map(dataset => dataset.id)).toEqual([
+        'crime-matching-result-summary',
         'crimes-submission-summary',
         'failed-crime-submissions',
         'zero-precision-crime-matches',

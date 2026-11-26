@@ -3,6 +3,7 @@ import type { Dataset } from './dataset'
 import CrimesSubmissionSummary from './datasets/crimesSubmissionSummary'
 import ZeroPrecisionCrimeMatches from './datasets/zeroPrecisionCrimeMatches'
 import FailedCrimeSubmissions from './datasets/failedCrimeSubmissions'
+import CrimeMatchingResultSummary from './datasets/crimeMatchingResultSummary'
 
 class DatasetRegistry {
   private readonly datasets = new Map<string, Dataset>()
@@ -29,6 +30,7 @@ class DatasetRegistry {
 
   static create(crimeMatchingApiClient: CrimeMatchingClient): DatasetRegistry {
     return new DatasetRegistry([
+      new CrimeMatchingResultSummary(crimeMatchingApiClient),
       new CrimesSubmissionSummary(crimeMatchingApiClient),
       new FailedCrimeSubmissions(crimeMatchingApiClient),
       new ZeroPrecisionCrimeMatches(crimeMatchingApiClient),
