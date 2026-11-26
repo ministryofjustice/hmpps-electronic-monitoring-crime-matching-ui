@@ -19,6 +19,10 @@ context('Management Information', () => {
       // Then the page should display the management information datasets
       page.datasets.should('deep.equal', [
         {
+          text: 'Crime matching result summary',
+          link: '/management-information/crime-matching-result-summary',
+        },
+        {
           text: 'Crimes submission summary',
           link: '/management-information/crimes-submission-summary',
         },
